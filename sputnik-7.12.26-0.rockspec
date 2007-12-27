@@ -31,6 +31,7 @@ description = {
 dependencies = {
   'versium >= 7.12.26',
   'colors >= 7.12.26',
+  'markdown >= 0.13',
 }
 
 -- Build rules

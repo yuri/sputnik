@@ -1,6 +1,6 @@
 -- Package metadata
 package = 'Sputnik'
-version = '7.12.26-0'
+version = '8.01.01-0'
 description = {
   summary = 'A wiki and a framework for wiki-like applications',
   detailed = [[
@@ -32,6 +32,7 @@ dependencies = {
   'versium >= 7.12.26',
   'colors >= 7.12.26',
   'markdown >= 0.13',
+  'md5 >= 1.1',
 }
 
 -- Build rules

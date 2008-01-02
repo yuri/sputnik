@@ -1,6 +1,6 @@
 -- Package metadata
 package = 'Versium'
-version = '7.12.26-0'
+version = '8.01.01-0'
 description = {
   summary = 'A versioned storage system',
   detailed = [[
@@ -25,6 +25,7 @@ description = {
 -- Dependency information
 dependencies = {
   'cosmo >= 7.12.26',
+  'luafilesystem >= 1.3'
 }
 
 -- Build rules

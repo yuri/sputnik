@@ -39,6 +39,25 @@ result = cosmo.f(template){
         }
 assert(result=="You have: Ace of Spades, Queen of Diamonds, 10 of Hearts, and 2 of Clubs")
    
+
+template = [====[You have: $do_cards[[$rank of $suit]],
+[[, $rank of $suit]],
+[[, and $rank of $suit]]]====]
+result = cosmo.f(template){
+           do_cards = function()
+              for i,v in ipairs(mycards) do
+                 if i == #mycards then -- for the last item use the third template (with "and")
+                    template = 3
+                 elseif i~=1 then -- use the second template for items 2...n-1
+                    template = 2
+                 end
+                 cosmo.yield{rank=v[1], suit=v[2], _template=template}
+              end
+           end
+        }
+assert(result=="You have: Ace of Spades, Queen of Diamonds, 10 of Hearts, and 2 of Clubs")
+
+
 players = {"John", "João"}
 cards = {}
 cards["John"] = mycards
@@ -85,3 +104,49 @@ result = cosmo.f(template){
 
 assert(result=="John* has Ace of Spades, Queen of Diamonds, 10 of Hearts, 2 of Clubs, \nJoão has Ace of Diamonds, \n")
 
+template = "$do_players[=[$do_cards[[$rank of $suit ($player), ]]]=]"
+result = cosmo.f(template){
+           do_players = function()
+              for i,p in ipairs(players) do
+                 cosmo.yield {
+                    player = p,
+                    do_cards = function()
+                       for i,v in ipairs(cards[p]) do
+                          cosmo.yield{rank=v[1], suit=v[2]}
+                       end
+                    end,
+                 }         
+             end
+          end
+        }
+
+assert(result=="Ace of Spades (John), Queen of Diamonds (John), 10 of Hearts (John), 2 of Clubs (John), Ace of Diamonds (João), ")
+
+template = "$do_players[=[$player: $n card$if_plural[[s]] $if_needs_more[[(needs $n more)]]\n]=]"
+result = cosmo.f(template){
+           do_players = function()
+              for i,p in ipairs(players) do
+                 cosmo.yield {
+                    player = p,
+                    n = #cards[p],
+                    if_plural = cosmo.cond(#cards[p] > 1, {}),
+                    if_needs_more = cosmo.cond(#cards[p] < 3, { n = 3-#cards[p] })
+                 }         
+             end
+          end
+        }
+assert(result=="John: 4 cards \nJoão: 1 card (needs 2 more)\n")
+
+result = cosmo.f(template){
+           do_players = function()
+              for i,p in ipairs(players) do
+                 cosmo.yield {
+                    player = p,
+                    n = #cards[p],
+                    if_plural = cosmo.c(#cards[p] > 1){},
+                    if_needs_more = cosmo.c(#cards[p] < 3){ n = 3-#cards[p] }
+                 }         
+             end
+          end
+        }
+assert(result=="John: 4 cards \nJoão: 1 card (needs 2 more)\n")

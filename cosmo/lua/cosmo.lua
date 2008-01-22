@@ -4,23 +4,23 @@ module("cosmo", package.seeall)
 -- Expands a template with the values supplied as a table.
 --
 -- @param text           The template.
--- @param table          The values to fill in.
+-- @param values         The values to fill in.
 -- @param lazy           A flag to determine whether unfilled fields should be removed (lazy==True)
 --                       or left as is.
 -- @return               Filled template as a string.
 ---------------------------------------------------------------------------------------------------
 
-function fill(text, table, lazy)
+function fill(text, values, lazy)
    text = text or "" --if not text then return "" end
-   assert(type(table)=="table", "the second parameter to cosmo.fill should be a table")
+   assert(type(values)=="table", "the second parameter to cosmo.fill should be a table")
    local function lazify(pattern)
       return (lazy and "") or pattern -- hide unfilled keys in "lazy" mode
    end
 
    -- First, setup a function to later use with gsub to handle subtemplates
    local function do_subtemplate (match, key, eqs, template, template2, template3)
-      if not table[key] then return lazify(match) end -- check if there is a value to work with
-      local coro = function_or_table_to_coroutine(table[key]) -- turn this value into a coroutine
+      if not values[key] then return lazify(match) end -- check if there is a value to work with
+      local coro = function_or_table_to_coroutine(values[key]) -- turn this value into a coroutine
       assert(coro, "Cosmo: "..key.." is neither a table, nor a function but "..type(key))
       -- create a function for selecting the template (out of possible three)
       local function get_template(values)
@@ -32,10 +32,11 @@ function fill(text, table, lazy)
       -- now iterate over the items using the coroutine   
       local buffer = ""
       while true do -- until the coroutine stops yielding
-         local status, values = coroutine.resume(coro)
-         assert(status, "Cosmo: the iterator for "..key.." failed: "..tostring(values))
-         if values then
-            buffer=buffer..fill(get_template(values), values, lazy) -- yes, recursion
+         local status, new_values = coroutine.resume(coro)
+         assert(status, "Cosmo: the iterator for "..key.." failed: "..tostring(new_values))
+         if new_values then
+            setmetatable(new_values, values) -- to make upvalues visible
+            buffer=buffer..fill(get_template(new_values), new_values, lazy) -- yes, recursion
          else
             return buffer
          end
@@ -55,10 +56,10 @@ function fill(text, table, lazy)
    -- now do the simple fields ( $key )
    text = string.gsub(text, "($([%w_]+))",
                       function(match, key)
-                         local t=type(table[key]) 
+                         local t=type(values[key]) 
                          if t=="nil" then return lazify(match)
-                         elseif t=="function" then return table[key]()
-                         else return tostring(table[key])
+                         elseif t=="function" then return values[key]()
+                         else return tostring(values[key])
                          end
                       end)
    return text
@@ -82,16 +83,16 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Same as fill() but skips unfilled keys.
 ---------------------------------------------------------------------------------------------------
-function lazy_fill(template, table) 
-   return fill(template, table, true) 
+function lazy_fill(template, values) 
+   return fill(template, values, true) 
 end
 
 ---------------------------------------------------------------------------------------------------
--- A "shortcut" for fill(), which returns a function to which the table can be then passed.
+-- A "shortcut" for fill(), which returns a function to which the values can be then passed.
 ---------------------------------------------------------------------------------------------------
 function f(template)
-   return function(table) 
-      return fill(template, table)
+   return function(values) 
+      return fill(template, values)
    end
 end
 
@@ -105,10 +106,10 @@ function cond (condition, values)
 end
 
 ---------------------------------------------------------------------------------------------------
--- A "shortcut" for cond(), which returns a function to which the table can be then passed.
+-- A "shortcut" for cond(), which returns a function to which the values can be then passed.
 ---------------------------------------------------------------------------------------------------
 function c (condition)
-   return function(table) return cond(condition, table) end
+   return function(values) return cond(condition, values) end
 end
 
 yield = coroutine.yield -- so that clients could use "cosmo.yield"

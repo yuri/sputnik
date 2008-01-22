@@ -1,6 +1,6 @@
 -- Package metadata
 package = 'Cosmo'
-version = '7.12.26-0'
+version = '8.01.21-0'
 description = {
   summary = 'A "safe template" library',
   detailed = [[
@@ -19,7 +19,7 @@ dependencies = {
 
 -- Build rules
 source = {
-  url = 'http://sputnik.freewisdom.org/files/cosmo-7.12.26.tar.gz',
-  md5 = 'c9f27c455dd74a963ae2cabcf34f84dc',
+  url = 'http://sputnik.freewisdom.org/cosmo/cosmo-8.01.22.zip',
+  md5 = '05fc5246e4a6a4885b30bd29ffb7f270',
 }
 

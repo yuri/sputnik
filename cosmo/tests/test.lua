@@ -28,6 +28,7 @@ template = "You have: $do_cards[[$rank of $suit]],[[, $rank of $suit]],[[, and $
 result = cosmo.f(template){
            do_cards = function()
               for i,v in ipairs(mycards) do
+                 local template
                  if i == #mycards then -- for the last item use the third template (with "and")
                     template = 3
                  elseif i~=1 then -- use the second template for items 2...n-1

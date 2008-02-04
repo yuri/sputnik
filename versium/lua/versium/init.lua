@@ -1,7 +1,9 @@
-module(..., package.seeall)
+---------------------------------------------------------------------------------------------------
+-- <b>Implements core Versium functionality</b> (just versioned storage).
+---------------------------------------------------------------------------------------------------
 
+module("versium", package.seeall)
 require("versium.util")
-
 local Versium = {}
 
 ---------------------------------------------------------------------------------------------------
@@ -11,7 +13,7 @@ local Versium = {}
 -- @param params         the parameters to pass to the implementation.
 -- @return               a new versium object.
 ---------------------------------------------------------------------------------------------------
-function Versium.new(self, args)
+function Versium:new(args)
    local obj = {}
    setmetatable(obj, self)
    self.__index = self
@@ -32,7 +34,7 @@ end
 -- @param version        the desired version of the node (defaults to latest).
 -- @return               the node as a table with its data in node.data.
 ---------------------------------------------------------------------------------------------------
-function Versium.get_node(self, id, version)
+function Versium:get_node(id, version)
    assert(id and id:len() > 0)
    if not self:node_exists(id) then
       return nil
@@ -50,7 +52,7 @@ end
 -- @param id             the id of the desired node.
 -- @return               the node stub as a string.
 ---------------------------------------------------------------------------------------------------
-function Versium.get_stub(self, id)
+function Versium:get_stub(id)
    assert(id and id:len() > 0)
    local node = self.storage:get_stub(self:escape_id(id))
    assert(node.data)
@@ -65,7 +67,7 @@ end
 -- @param id             an id of an node.
 -- @return               true or false.
 ---------------------------------------------------------------------------------------------------
-function Versium.node_exists (self, id)
+function Versium:node_exists(id)
    assert(id and id:len() > 0)
    return self.storage:node_exists(self:escape_id(id))
 end
@@ -77,7 +79,7 @@ end
 -- @param id             an id of an node.
 -- @return               the metadata for the latest version or nil.
 ---------------------------------------------------------------------------------------------------
-function Versium.get_node_info (self, id)
+function Versium:get_node_info(id)
    assert(id and id:len() > 0)
    return self.storage:node_info(self:escape_id(id))
 end
@@ -87,7 +89,7 @@ end
 -- 
 -- @return               a list of IDs.
 ---------------------------------------------------------------------------------------------------
-function Versium.get_node_ids (self)
+function Versium:get_node_ids()
    local ids = {}
    for i, v in ipairs(self.storage:get_node_ids()) do
       ids[i] = self:unescape_id(v)
@@ -105,7 +107,7 @@ end
 -- @param extra          any extra metadata (depends on the storage module).
 -- @return               the version of ID of the new node.
 ---------------------------------------------------------------------------------------------------
-function Versium.save_version(self, id, data, author, comment, extra)
+function Versium:save_version(id, data, author, comment, extra)
    assert(id and id:len() > 0)
    assert(data, "empty string is ok, but nil is not")
    assert(author and author:len() > 0, "author is required")
@@ -123,7 +125,7 @@ end
 -- @return               a list of tables representing the versions (the list will be empty if the 
 --                       node doesn't exist).
 ---------------------------------------------------------------------------------------------------
-function Versium.get_node_history (self, id, prefix)
+function Versium:get_node_history (id, prefix)
    assert(id and id:len() > 0) -- prefix is optional though
    return self.storage:get_node_history(self:escape_id(id), prefix)
 end
@@ -135,7 +137,7 @@ end
 -- @return               A table representing the fields of the node, with the metadata and the 
 --                       string representation pushed into the metatable.
 ---------------------------------------------------------------------------------------------------
-function Versium.inflate(self, node, param)
+function Versium:inflate(node, param)
    local object = self.inflator:inflate(node.data)
    assert(object, "the inflator should give us a table unless something went very wrong")
    local meta = {
@@ -161,7 +163,7 @@ end
 -- @param node           A node as a table.
 -- @return               The string representation of the node.
 ---------------------------------------------------------------------------------------------------
-function Versium.deflate(self, node)
+function Versium:deflate(node)
    return self.inflator:deflate(node)
 end
 
@@ -173,7 +175,7 @@ end
 -- @param v2             the "new" revision id.
 -- @return               a list of annotated tokens.
 ---------------------------------------------------------------------------------------------------
-function Versium.diff(self, id, v1, v2)
+function Versium:diff(id, v1, v2)
    assert(id and id:len() > 0)
    return versium.util.diff(self:get_node(id, v1).data, self:get_node(id, v2).data)
 end
@@ -186,7 +188,7 @@ end
 -- @param v2             the "new" revision id.
 -- @return               a table of lists of annotated tokens, keyed by field name.
 ---------------------------------------------------------------------------------------------------
-function Versium.smart_diff(self, id, v1, v2)
+function Versium:smart_diff(id, v1, v2)
    assert(id and id:len() > 0)
    local node1 = self:inflate(self:get_node(id, v1))
    local node2 = self:inflate(self:get_node(id, v2))
@@ -205,7 +207,7 @@ end
 -- @param text           the id of the node.
 -- @return               long-quoted text.
 ---------------------------------------------------------------------------------------------------
-function Versium.longquote(self, text)
+function Versium:longquote(text)
    assert(text)
    text = text or ""
    local max_eqs = ""
@@ -226,7 +228,7 @@ end
 -- @param id             a node id.
 -- @return               an escaped node id.
 ---------------------------------------------------------------------------------------------------
-function Versium.escape_id(self, id)
+function Versium:escape_id(id)
    assert(id and id:len() > 0)
    return string.gsub(id, ":", "%%3A")
 end
@@ -238,7 +240,7 @@ end
 -- @param id             an escaped node id.
 -- @return               the original node id.
 ---------------------------------------------------------------------------------------------------
-function Versium.unescape_id(self, id)
+function Versium:unescape_id(id)
    assert(id and id:len() > 0)
    return string.gsub(id, "%%3A", ":")
 end

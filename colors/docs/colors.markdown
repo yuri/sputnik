@@ -44,7 +44,7 @@ Colors library provides methods to do color computation in HSL color space and f
 
 Colors consists of a single file (colors.lua) of slightly more than 100 lines, plus a test script (test.lua).  Here is a list of recent releases:
 
-* [Colors-8.02.03](Colors-8.02.03.zip)
+* [colors-8.02.03](http://sputnik.freewisdom.org/files/colors-8.02.03.zip)
 
 Colors installs like any other single-file Lua module: just put it somewhere in your Lua path.  You can also 
 install Colors as a LuaRock from the repository at http://sputnik.freewisdom.org/rocks/.

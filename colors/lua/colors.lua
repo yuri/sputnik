@@ -92,7 +92,7 @@ Color = {
    end,
 
    lighten_by = function(self, r)
-      return self:new(self.H, self.S, r)
+      return self:new(self.H, self.S, self.L*r)
    end,
 
    variations = function(self, f, n)

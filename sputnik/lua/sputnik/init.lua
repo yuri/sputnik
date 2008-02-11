@@ -47,9 +47,6 @@ function Sputnik:init(initial_config)
    -- setup the repository -- do this before loading user configuration
    self.repo = versium.smart.repository.Repository:new(initial_config)
    self.repo.logger = self.logger 
-   -- setup markup
-   self.markup_module = require(initial_config.MARKUP_MODULE or "sputnik.markup.markdown")
-   self.markup = self.markup_module.new(self)
 
    -- WARNING ------------------------------------------------------------------------
    -- Up to now we were using "initial_config" which is loaded from sputnik/config.lua
@@ -61,6 +58,12 @@ function Sputnik:init(initial_config)
    for k,v in pairs(self:get_node(self.config.CONFIG_PAGE_NAME).content) do
       self.config[k] = v
    end
+
+   -- setup markup
+
+   self.markup_module = require(self.config.MARKUP_MODULE or "sputnik.markup.markdown")
+   self.markup = self.markup_module.new(self)
+
       
    -- setup authentication
    self.auth = sputnik.authentication.simple.make_authenticator(self)
@@ -112,7 +115,7 @@ function Sputnik:make_link(node_name, action, params, anchor)
    local css_class = "local"
    local url = self:make_url(node_name, action, params, anchor)
    self.logger:debug("Creating a link to "..node_name)
-   if not self.repo:node_exists(node_name) then
+   if not self.repo:node_exists(self:dirify(node_name)) then
       css_class="no_such_node"
       url = self:make_url(node_name, action, params, achnor) --"edit", params, anchor)
       self.logger:debug("No such node, will link to .edit")

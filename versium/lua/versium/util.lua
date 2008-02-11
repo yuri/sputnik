@@ -1,3 +1,7 @@
+---------------------------------------------------------------------------------------------------
+-- Provides some utility functions for use by versium and its clients.
+---------------------------------------------------------------------------------------------------
+
 module(..., package.seeall)
 
 ---------------------------------------------------------------------------------------------------
@@ -18,15 +22,16 @@ local function _diffsplit(text)
 end
 
 ---------------------------------------------------------------------------------------------------
--- Derives the least common subsequence of two strings.  This is a faster implementation and
--- provided by stdlib.  Written by Hisham Muhammad. Algorithm from:
+-- Derives the longest common subsequence of two strings.  This is a faster implementation than one
+-- provided by stdlib.  Submitted by Hisham Muhammad. 
+-- The algorithm was taken from:
 -- http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Longest_common_subsequence
 --
 -- @param t1             the first string.
 -- @param t2             the second string.
 -- @return               the least common subsequence as a matrix.
 ---------------------------------------------------------------------------------------------------
-function QuickLCS(t1, t2)
+function quick_LCS(t1, t2)
    local m = #t1
    local n = #t2
 
@@ -127,7 +132,7 @@ function diff(t2, t1)
          end
       end
    end
-   get_diff(QuickLCS(t1, t2), t1, t2, #t1 + 1, #t2 + 1)
+   get_diff(quick_LCS(t1, t2), t1, t2, #t1 + 1, #t2 + 1)
 
    -- Put the prefix in at the end
    rev_diff:same(prefix)

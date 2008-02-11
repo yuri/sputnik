@@ -1,7 +1,8 @@
+---------------------------------------------------------------------------------------------------
+-- <b>A fancy version of a Versium node that supports inheritance and field activation.</b>
+---------------------------------------------------------------------------------------------------
 
 module(..., package.seeall)
-
-require("versium.field_activator")
 require("versium.luaenv")
 
 SmartNode = {}
@@ -23,6 +24,18 @@ function SmartNode:new(versium_node, repository, root_prototype_id, mode)
    -- SmartNode as the metatable of versium_node's metatable.
    setmetatable(getmetatable(versium_node), self)
    self.__index = self
+
+   self.activators = {}
+   self.activators.lua = function(value, helpers) 
+      return versium.luaenv.make_sandbox(helpers.config).do_lua(value)
+   end
+   self.activators.node_list = function(value, helpers)
+      local nodes = {}
+      for line in (value or ""):gmatch("[^%s]+") do
+         table.insert(nodes, line)
+      end
+      return nodes
+   end
 
    -- Then we make a new node with versium_node as it's metatable.  We can do this using
    -- SmartNode's "wrap" method.  After that we can access the original node as node._vnode.
@@ -172,7 +185,7 @@ function SmartNode:activate()
             repository = self.repository,
          }
          setmetatable(helper.config, self.repository.config)
-         self[field] = versium.field_activator[fieldinfo.activate](self[field], helper)
+         self[field] = self.activators[fieldinfo.activate](self[field], helper)
       end
    end
    return self

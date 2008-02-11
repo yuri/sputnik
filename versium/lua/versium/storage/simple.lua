@@ -1,6 +1,7 @@
 ---------------------------------------------------------------------------------------------------
 -- Provides an implementation of versium storage using the local file system.
 ---------------------------------------------------------------------------------------------------
+
 module(..., package.seeall)
 require("lfs")
 local luaenv = require("versium.luaenv")
@@ -86,7 +87,7 @@ SimpleVersiumStorage = {}
 -- @param params         the parameters to pass to the implementation.
 -- @return               a new versium object.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage.new(self, params, versium)
+function SimpleVersiumStorage:new(params, versium)
    local dir = params.dir
    local obj = {dir=dir, node_table={}, versium=versium}
    setmetatable(obj, self)
@@ -102,10 +103,11 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Returns a table representing the node with a given id.
 --
+-- @param id             the node id.
 -- @param version        the desired version of the node (defaults to current).
 -- @return               the node as table with its content in node.data.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage.get_node(self, id, version)
+function SimpleVersiumStorage:get_node(id, version)
    local history = self:get_node_history(id) or {}
    if not history or #history == 0 then
       versium.storage_error(versium.errors.NODE_DOES_NOT_EXIST, tostring(id))
@@ -127,7 +129,7 @@ end
 --
 -- @return               the stub of the node as a table.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage.get_stub(self, id)
+function SimpleVersiumStorage:get_stub(id)
    return {
       version = "000000",
       data = "",
@@ -141,7 +143,7 @@ end
 -- @param id             an id of an node.
 -- @return               true or false.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage.node_exists (self, id)
+function SimpleVersiumStorage:node_exists(id)
    assert(id)
    return self.node_table[id]
 end
@@ -153,7 +155,7 @@ end
 -- @param id             an id of an node.
 -- @return               the metadata for the latest version or nil.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage.get_node_info (self, id)
+function SimpleVersiumStorage:get_node_info(id)
    assert(id)
    return self:get_node_history(id)[1]
 end
@@ -163,7 +165,7 @@ end
 -- 
 -- @return               a list of IDs.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage.get_node_ids (self)
+function SimpleVersiumStorage:get_node_ids()
    local ids = {} 
    for id, _ in pairs(self.node_table) do
       ids[#ids+1] = id
@@ -181,7 +183,7 @@ end
 -- @param extra          any extra metadata (optional).
 -- @return               the version id of the new node.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage.save_version (self, id, data, author, comment, extra)
+function SimpleVersiumStorage:save_version(id, data, author, comment, extra, timestamp)
    assert(id)
    assert(data)
    assert(author)
@@ -197,8 +199,10 @@ function SimpleVersiumStorage.save_version (self, id, data, author, comment, ext
    _write_file(node_path.."/"..new_version_id, data)
    -- generate and save the new index
    local t = os.date("*t")
-   local timestamp = string.format("%02d-%02d-%02d %02d:%02d:%02d", 
-                                   t.year, t.month, t.day, t.hour, t.min, t.sec)
+   print(timestamp)
+   timestamp = timestamp or string.format("%02d-%02d-%02d %02d:%02d:%02d", 
+                                          t.year, t.month, t.day, t.hour, t.min, t.sec)
+   print(timestamp)
    local extra_buffer = ""
    for k,v in pairs(extra or {}) do
       extra_buffer = extra_buffer.."\n "..k.."     = "..self.versium:longquote(v)..","
@@ -226,7 +230,7 @@ end
 --                               if the node doesn't exist)
 --                           (2) the raw prepresentation of nodes history (as lua code).
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage.get_node_history (self, id, prefix)
+function SimpleVersiumStorage:get_node_history(id, prefix)
    assert(id)
    local raw_history = _read_file_if_exists(self.dir.."/"..id.."/index")
    local all_versions = {}

@@ -4,13 +4,13 @@
 
 module("versium", package.seeall)
 require("versium.util")
-local Versium = {}
+Versium = {}
 
 ---------------------------------------------------------------------------------------------------
 -- Instantiates a new versium object.
 -- 
--- @param impl_mod       the name implementation module.
--- @param params         the parameters to pass to the implementation.
+-- @param args           the arguments (with the name implementation module as args.storage and the
+--                       the parameters to pass to the implementation module as args.params).
 -- @return               a new versium object.
 ---------------------------------------------------------------------------------------------------
 function Versium:new(args)
@@ -104,15 +104,16 @@ end
 -- @param data           the value to save (required, but "" is ok).
 -- @param author         the user name to be associated with the change (required).
 -- @param comment        the change comment (optional).
--- @param extra          any extra metadata (depends on the storage module).
+-- @param extra          any extra metadata (optional, depends on the storage module).
+-- @param timestamp      the timestamp to use when saving the revision (optional).
 -- @return               the version of ID of the new node.
 ---------------------------------------------------------------------------------------------------
-function Versium:save_version(id, data, author, comment, extra)
+function Versium:save_version(id, data, author, comment, extra, timestamp)
    assert(id and id:len() > 0)
    assert(data, "empty string is ok, but nil is not")
    assert(author and author:len() > 0, "author is required")
    -- comment and extra params are optional
-   return self.storage:save_version(self:escape_id(id), data, author, comment, extra)
+   return self.storage:save_version(self:escape_id(id), data, author, comment, extra, timestamp)
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -134,6 +135,8 @@ end
 -- Inflates an node, turning it into a Lua table.  How the string representation of the node's 
 -- payload is turned into a Lua table depends on which "inflator" module is being used.
 --
+-- @param node           The node to be "inflated" (represented as a versium node object).
+-- @param param          Parameters to be passed on to the inflator.
 -- @return               A table representing the fields of the node, with the metadata and the 
 --                       string representation pushed into the metatable.
 ---------------------------------------------------------------------------------------------------
@@ -170,7 +173,7 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Diff the raw string representation of two revisions of the node.
 --
--- @id                   the node id.
+-- @param id             the node id.
 -- @param v1             the "old" revision id.
 -- @param v2             the "new" revision id.
 -- @return               a list of annotated tokens.
@@ -183,7 +186,7 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Diff inflated representations of two revisions of the node, field-by-field.
 --
--- @id                   the node id.
+-- @param id             the node id.
 -- @param v1             the "old" revision id.
 -- @param v2             the "new" revision id.
 -- @return               a table of lists of annotated tokens, keyed by field name.
@@ -204,7 +207,7 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Quotes an arbitrary string by putting [=[ with enough ==='s around it.
 --
--- @param text           the id of the node.
+-- @param text           the text to be long-quoted.
 -- @return               long-quoted text.
 ---------------------------------------------------------------------------------------------------
 function Versium:longquote(text)
@@ -252,21 +255,10 @@ errors = {
 ---------------------------------------------------------------------------------------------------
 -- Throws an error coming from a storage module.
 --  
--- @param error          the error message.
+-- @param error_message  the error message.
 -- @param ...            error-specific additional parameters.
 -- @return               nothing (an error will be thrown).
 ---------------------------------------------------------------------------------------------------
 function storage_error(error_message, ...)
    error ("Versium storage error: " .. string.format(error_message, ...))
-end
-
----------------------------------------------------------------------------------------------------
--- Creates a new versium object.
--- 
--- @param impl           the implementation module.
--- @param params         the parameters to pass to the implementation.
--- @return               a new versium object.
----------------------------------------------------------------------------------------------------
-function open(...)
-   return Versium:new(...)
 end

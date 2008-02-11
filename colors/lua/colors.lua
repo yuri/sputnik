@@ -37,17 +37,17 @@ function hsl_to_rgb(h, s, L)
 end
 
 
-Color = {
+Color = {}
 
-   new = function(self, H, S, L) 
+function Color:new(H, S, L) 
       obj = {H = H, S = S, L = L}
       setmetatable(obj, self)		
       self.__index = self
       self.__tostring = self.to_rgb
       return obj
-   end,
+end
 
-   to_rgb = function(self)
+function Color:to_rgb()
       local r, g, b = hsl_to_rgb(self.H, self.S, self.L)
       local rgb = {hsl_to_rgb(self.H, self.S, self.L)}
       buffer = "#"
@@ -55,76 +55,76 @@ Color = {
 	 buffer = buffer..string.format("%02x",math.floor(v*255))
       end
       return buffer
-   end,
+end
 
-   hue_offset = function(self, delta)
+function Color:hue_offset(delta)
       return self:new((self.H + delta) % 360, self.S, self.L)
-   end,
+end
 
-   complementary = function(self) 
+function Color:complementary() 
       return self:hue_offset(180)
-   end,
+   end
 
-   neighbors = function(self, angle)
+function Color:neighbors(angle)
       angle = angle or 30
       return self:hue_offset(angle), self:hue_offset(360-angle)
-   end,
+end
 
-   triadic = function(self) 
+function Color:triadic() 
       return self:neighbors(120)
-   end,
+end
 
-   split_complementary = function(self, angle)
+function Color:split_complementary(angle)
       angle = angle or 30
       return self:neighbors(180-angle)
-   end,
+end
 
-   desaturate_to = function(self, v)
+function Color:desaturate_to(v)
       return self:new(self.H, v, self.L)
-   end,
+end
 
-   desaturate_by = function(self, r)
+function Color:desaturate_by(r)
       return self:new(self.H, self.S*r, self.L)
-   end,	      
+end	      
 
-   lighten_to = function(self, v)
+function Color:lighten_to(v)
       return self:new(self.H, self.S, v)
-   end,
+end
 
-   lighten_by = function(self, r)
+function Color:lighten_by(r)
       return self:new(self.H, self.S, self.L*r)
-   end,
+end
 
-   variations = function(self, f, n)
+function Color:variations(f, n)
       n = n or 5
       local results = {}
       for i=1,n do
 	 table.insert(results, f(self, i, n))
       end
       return results
-   end,
+end
 
-   tints = function(self, n)
+function Color:tints(n)
       local f = function (color, i, n) 
 		   return color:lighten_to(color.L + (1-color.L)/n*i)
 		end
       return self:variations(f, n)
-   end,
+end
 
-   shades = function(self, n)
+function Color:shades(n)
       local f = function (color, i, n) 
 		   return color:lighten_to(color.L - (color.L)/n*i)
 		end
       return self:variations(f, n)
-   end,
+end
 
-   tint = function(self, r)
+function Color:tint(r)
       return self:lighten_to(self.L + (1-self.L)*r)
-   end,
+end
 
-   shade = function(self,r)
+function Color:shade(r)
       return self:lighten_to(self.L - self.L*r)
-   end,		
-}
+end
+
 
 

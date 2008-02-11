@@ -1,7 +1,10 @@
-title="Templates for World Clock"
-prototype="@Lua_Config"
-category="Demo Templates"
-content = [=============[WORLD_CLOCK = [==========[
+module(..., package.seeall)
+NODE = {
+   title="Templates for World Clock",
+   prototype="@Lua_Config",
+   category="Demo Templates",
+}
+NODE.content = [=============[WORLD_CLOCK = [==========[
 <style>
  table { spacing : 0px 0px 0px 0px}
  table { margins: 50 50 50 50}
@@ -36,19 +39,16 @@ content = [=============[WORLD_CLOCK = [==========[
  </style>
  <div id="worldclock">
  <table>
-  $do_hour[===[
-      $if_city[[
-          <tr class="hour$hh">
-           <td class="active">$city</td>
-           <td align="right" class="active">$hh:$mm:$ss</td>
-          </tr>
-	 ]]
-      $if_no_city[[
-          <tr>
-           <td class="hour$hh" colspan="2">&nbsp;</td>
-          </tr>
-	 ]]
-  ]===]
+  $do_hour[[
+    <tr class="hour$hh">
+     <td class="active">$city</td>
+     <td align="right" class="active">$hh:$mm:$ss</td>
+    </tr>
+  ]],[[
+    <tr>
+     <td class="hour$hh" colspan="2">&nbsp;</td>
+    </tr>
+  ]]
  </table>
  </div>
 ]==========]

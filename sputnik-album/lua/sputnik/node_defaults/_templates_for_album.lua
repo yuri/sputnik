@@ -18,7 +18,7 @@ class='local'>
         <img style="position: absolute; left: $left; top: $top;" 
              width="$width"
              height="$height"
-             src="$thumb_base/$thumb_dir/$image.$suffix"
+             src="$thumb_base/$thumb_dir/$image.thumb$suffix.jpg"
              title="$title"/>
      </a>
    ]]

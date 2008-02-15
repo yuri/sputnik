@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
--- <b>Implements core Versium functionality</b> (just versioned storage).
+-- <b>Implements core Versium functionality</b> (just versioned storage).                        --
 ---------------------------------------------------------------------------------------------------
 
 module("versium", package.seeall)

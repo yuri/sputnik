@@ -1,4 +1,3 @@
-
 module(..., package.seeall)
 
 require("md5")
@@ -373,22 +372,19 @@ function Sputnik:translate_request (request)
    end
    request.action = request.action or "show"
 
+
+   self.logger:debug("login")
    -- now login/logout/register the user
    if request.params.logout then 
+      self.logger:debug("logout")
       request.user = nil
    elseif (request.params.user or ""):len() > 0 then
-      local success, v1, v2 = self:mypcall(self.auth.check_password, request.params.user, request.params.password)
-      if success then
-         request.user = v1
-         request.auth_token = v2
-      else
-         request.err, request.traceback = unpack(v1)
-         return request -- give up, send the error message up
-      end
-
+      self.logger:debug("knock knock: "..request.params.user)
+      request.user, request.auth_token = self.auth.check_password(request.params.user, request.params.password)
       if not request.user then
          request.auth_message = "INCORRECT_PASSWORD"
       end
+      self.logger:debug(request.user..","..request.auth_token)
    else
       local cookie = request.cookies[self.cookie_name] or ""
       local user_from_cookie, auth_token = sputnik.util.split(cookie, "|")
@@ -403,52 +399,11 @@ function Sputnik:translate_request (request)
 end
 
 ---------------------------------------------------------------------------------------------------
--- Executes a function safely.
+-- Handles a request.
 ---------------------------------------------------------------------------------------------------
-function Sputnik:mypcall(fn, ...)
-   local params = {...}
-   return xpcall(function()
-                    return fn(unpack(params))
-                 end,
-                 function (e)
-                      local debug = require"debug"
-                      local t = debug.traceback()
-                      return {e, t}
-                 end)
-end
-
----------------------------------------------------------------------------------------------------
--- Reports an error to the user.
----------------------------------------------------------------------------------------------------
-function Sputnik:report_error(request)
-    local response = wsapi.response.new()
-    local message = "An unexpected error occurred" -- ::LOCALIZE::
-    local dummy, path = string.match(request.err, "Versium storage error: (.*) Can't open file: (.*) in mode w") 
-    if path and path:sub(1, self.config.VERSIUM_PARAMS.dir:len()) == self.config.VERSIUM_PARAMS.dir then
-       message = "Versium's data directory ("..self.config.VERSIUM_PARAMS.dir
-                  ..") is not writable.<br/> Please fix directory permissions." -- ::LOCALIZE::
-    end
-    response:write(string.format([[<br/>
-       <span style="color:red; font-size: 19pt;">%s</span></br><br/><br/>
-       Error details:
-       <b><code>%s</code></b><br/>
-       <pre><code>%s</code></pre>
-    ]], message, request.err, request.traceback)) --, string.gsub(request.traceback, "\n", "<br/>\n")))
-    return response:finish()
-end
-
----------------------------------------------------------------------------------------------------
--- Executes a request.
----------------------------------------------------------------------------------------------------
-function Sputnik:run(request)
-   local response = wsapi.response.new()
+function Sputnik:run(request, response)
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
-   local request_for_logger = request.params.p or "<default>"
-   self.logger:info("=== "..request_for_logger.." ============")
    request = self:translate_request(request)
-   if request.err then 
-       return self:report_error(request, response)
-   end
 
    local node = self:get_node(request.node_name, request.params.version)
    if request.params.prototype then 
@@ -461,62 +416,121 @@ function Sputnik:run(request)
 
    local content, content_type = action_function(node, request, self)
    assert(content)
-
+   self.logger:info(self.cookie_name.."=".. ((request.user or "").."|"..(request.auth_token or "")))
    response.headers["Content-type"] = content_type or "text/html"
-   response:set_cookie(self.cookie_name, (request.user or "").."|"..(request.auth_token or ""), {path="/"})
+   local cookie_value = (request.user or "").."|"..(request.auth_token or "")
+   response:set_cookie(self.cookie_name, {value=cookie_value, path="/"})
    response:write(content)
-   self.logger:info("--- end of "..request_for_logger.." -----")
-   return response:finish()
+   return response
 end
 
-
---require("sputnik_config")
-require("wsapi.request")
-require("wsapi.response")
-
-
-function unprotected_run(wsapi_env)
+---------------------------------------------------------------------------------------------------
+-- Handles a request, throwing errors if something goes wrong.
+---------------------------------------------------------------------------------------------------
+function unprotected_run(request, response)
    SPUTNIK_CONFIG.ROOT_PROTOTYPE   = SPUTNIK_CONFIG.ROOT_PROTOTYPE   or "@Root"
    SPUTNIK_CONFIG.SECRET_CODE      = SPUTNIK_CONFIG.SECRET_CODE      or "23489701982370894172309847123"
    SPUTNIK_CONFIG.CONFIG_PAGE_NAME = SPUTNIK_CONFIG.CONFIG_PAGE_NAME or "_config"
    SPUTNIK_CONFIG.PASS_PAGE_NAME   = SPUTNIK_CONFIG.PASS_PAGE_NAME   or "_passwords"
-   --SPUTNIK_CONFIG.LOGGER           = SPUTNIK_CONFIG.LOGGER           or "file"
-   --SPUTNIK_CONFIG.LOGGER_PARAMS    = SPUTNIK_CONFIG.LOGGER_PARAMS    or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
+   SPUTNIK_CONFIG.LOGGER           = SPUTNIK_CONFIG.LOGGER           or "file"
+   SPUTNIK_CONFIG.LOGGER_PARAMS    = SPUTNIK_CONFIG.LOGGER_PARAMS    or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
 
-   local mySputnik = sputnik.Sputnik:new(SPUTNIK_CONFIG)
-   return mySputnik:run(wsapi.request.new(wsapi_env))
+   sputnik.Sputnik:new(SPUTNIK_CONFIG):run(request, response)
 end
 
-function mypcall(fn, ...)
-   local params = {...}
-   return xpcall(function()
-                    return fn(unpack(params))
-                 end,
-                 function (e)
-                      local debug = require"debug"
-                      local t = debug.traceback()
-                      return {e, t}
-                 end)
-end
 
-function show_error(err, traceback) 
-    local response = wsapi.response.new()
-    local message = "Sputnik ran but failed due to an unexpected error." -- ::LOCALIZE::
-    local dummy, path = string.match(err, "Versium storage error: (.*) Can't open file: (.*) in mode w") 
-    response:write(string.format([[<br/>
+---------------------------------------------------------------------------------------------------
+-- Handles a request safely.
+---------------------------------------------------------------------------------------------------
+function protected_run(request, response)
+   local function mypcall(fn, ...)
+      local params = {...} -- this is to keep the inner function from being confused
+      return xpcall(function()  return fn(unpack(params)) end,
+                    function(err) return {err, require("debug").traceback()} end )
+   end  
+
+   local success, err = mypcall(unprotected_run, request, response)
+   if success then
+      return success
+   else
+      local message = "Sputnik ran but failed due to an unexpected error." -- ::LOCALIZE::
+
+      -- catch some common errors
+      local dummy, path = string.match(err[1], "Versium storage error: (.*) Can't open file: (.*) in mode w") 
+      if path and path:sub(1, SPUTNIK_CONFIG.VERSIUM_PARAMS.dir:len()) == SPUTNIK_CONFIG.VERSIUM_PARAMS.dir then
+         message = "Versium's data directory ("..SPUTNIK_CONFIG.VERSIUM_PARAMS.dir
+                   ..") is not writable.<br/> Please fix directory permissions." -- ::LOCALIZE::
+      end
+
+      return success, string.format([[
+       <br/>
        <span style="color:red; font-size: 19pt;">%s</span></br><br/><br/>
        Error details: <b><code>%s</code></b><br/>
        <pre><code>%s</code></pre>
-    ]], message, err, traceback))
-    return response:finish()
-end
-
-function run(wsapi_env)
-   success, status_code, headers, callback = mypcall(unprotected_run, wsapi_env)
-   if success then 
-      return status_code, headers, callback 
-   else -- Huston, we have a problem
-      local err, traceback = unpack(status_code) -- status_code is actually the output of the error function at this point
-      return show_error(err, traceback)
+      ]], message, err[1], err[2])
    end
 end
+
+
+
+
+---------------------------------------------------------------------------------------------------
+-- Handles a request coming from WSAPI
+---------------------------------------------------------------------------------------------------
+
+function wsapi_run(wsapi_env)
+
+   _G.format = string.format -- to work around a bug in wsapi.response
+
+   require("wsapi.request")
+   local request = wsapi.request.new(wsapi_env)
+   require("wsapi.response")
+   local response = wsapi.response.new()
+   local success, error_message = protected_run(request, response)
+   if not success then
+      response = wsapi.response.new()
+      response:write(error_message)
+   end
+   return response:finish()
+end
+
+
+---------------------------------------------------------------------------------------------------
+-- Handles a request coming from CGILua
+---------------------------------------------------------------------------------------------------
+
+function cgilua_run()
+
+   require'cgilua'
+   require'cgilua.cookies'
+
+   local request  = {
+      cookies = {},
+      POST = cgilua.POST,
+      GET = cgilua.QUERY,
+      method = cgilua.requestmethod,
+   }
+   setmetatable(request.cookies, {__index = function(t, cookie_name) return cgilua.cookies.get(cookie_name) end })
+
+   local content = ""
+   local response = {
+      headers = {},
+      set_cookie = function(self, cookie_name, cookie)
+         cgilua.cookies.set(cookie_name, cookie.value, cookie)
+      end,
+      write = function(self, more_content)
+         content = content..more_content
+      end,
+   }
+
+   success, err = sputnik.protected_run(request, response)
+
+   if not success then 
+      cgilua.put(err) 
+   else
+      SAPI.Response.contenttype(response.headers["Content-type"] or "text/html")
+      cgilua.put(content)
+   end
+end
+
+

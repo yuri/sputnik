@@ -1,0 +1,19 @@
+modules = {}
+commands = {}
+repository = {
+  ['colors'] = {},
+  ['cosmo'] = {},
+  ['sputnik'] = {},
+  ['sputnik-tickets'] = {},
+  ['versium'] = {},
+}
+
+repository['cosmo']['7.12.26-0']={ {arch='all'}, {arch='rockspec'} }
+repository['versium']['7.12.26-0']={ {arch='all'}, {arch='rockspec'} }
+repository['versium']['8.01.01-0']={ {arch='all'}, {arch='rockspec'} }
+repository['sputnik']['7.12.26-0']={ {arch='all'}, {arch='rockspec'} }
+repository['sputnik']['8.01.01-0']={ {arch='all'}, {arch='rockspec'} }
+repository['sputnik-tickets']['8.01.01-0']={ {arch='all'}, {arch='rockspec'} }
+repository['colors']['7.12.26-0']={ {arch='all'}, {arch='rockspec'} }
+repository['cosmo']['8.01.21-0']={ {arch='all'}, {arch='rockspec'} }
+repository['colors']['8.02.03-0']={ {arch='all'}, {arch='rockspec'} }

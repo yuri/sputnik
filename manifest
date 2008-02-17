@@ -17,3 +17,5 @@ repository['sputnik-tickets']['8.01.01-0']={ {arch='all'}, {arch='rockspec'} }
 repository['colors']['7.12.26-0']={ {arch='all'}, {arch='rockspec'} }
 repository['cosmo']['8.01.21-0']={ {arch='all'}, {arch='rockspec'} }
 repository['colors']['8.02.03-0']={ {arch='all'}, {arch='rockspec'} }
+repository['sputnik']['8.02.14-0']={ {arch='all'}, {arch='rockspec'} }
+repository['sputnik']['8.02.16-0']={ {arch='all'}, {arch='rockspec'} }

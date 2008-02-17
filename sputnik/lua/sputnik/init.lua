@@ -432,8 +432,8 @@ function unprotected_run(request, response)
    SPUTNIK_CONFIG.SECRET_CODE      = SPUTNIK_CONFIG.SECRET_CODE      or "23489701982370894172309847123"
    SPUTNIK_CONFIG.CONFIG_PAGE_NAME = SPUTNIK_CONFIG.CONFIG_PAGE_NAME or "_config"
    SPUTNIK_CONFIG.PASS_PAGE_NAME   = SPUTNIK_CONFIG.PASS_PAGE_NAME   or "_passwords"
-   SPUTNIK_CONFIG.LOGGER           = SPUTNIK_CONFIG.LOGGER           or "file"
-   SPUTNIK_CONFIG.LOGGER_PARAMS    = SPUTNIK_CONFIG.LOGGER_PARAMS    or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
+   --SPUTNIK_CONFIG.LOGGER           = SPUTNIK_CONFIG.LOGGER           or "file"
+   --SPUTNIK_CONFIG.LOGGER_PARAMS    = SPUTNIK_CONFIG.LOGGER_PARAMS    or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
 
    sputnik.Sputnik:new(SPUTNIK_CONFIG):run(request, response)
 end

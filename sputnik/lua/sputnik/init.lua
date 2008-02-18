@@ -43,6 +43,10 @@ function Sputnik:init(initial_config)
    end
    versium.luaenv.logger = self.logger
 
+   --- Turns a string into something that can be used as a node name.
+   local dirify = initial_config.DIRIFY_FN or sputnik.util.dirify
+   self.dirify = function(self, text) return dirify(text) end
+
    -- setup the repository -- do this before loading user configuration
    self.repo = versium.smart.repository.Repository:new(initial_config)
    self.repo.logger = self.logger 
@@ -76,8 +80,6 @@ end
 function Sputnik.escape(self, text) return sputnik.util.escape(text) end
 --- Escapes a URL.
 function Sputnik.escape_url (self, text) return sputnik.util.escape_url(text) end
---- Turns a string into something that can be used as a node name.
-function Sputnik.dirify(self, text) return sputnik.util.dirify(text) end
 
 ---------------------------------------------------------------------------------------------------
 --- Makes a URL from a table of parameters.

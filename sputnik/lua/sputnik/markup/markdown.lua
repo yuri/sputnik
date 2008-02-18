@@ -26,7 +26,15 @@ function new(sputnik)
                      local function dolink(wikilink)
                         return wikify_link(wikilink, sputnik)
                      end
-                     return markdown(string.gsub(text, "%[%[([^%]]*)%]%]", dolink))
+                     local buffer = ""
+                     for line in string.gmatch("\n"..text, "(\n[^\n]*)") do
+                        if line:len() < 5 or line:sub(1,5)~="\n    " then
+                           buffer = buffer..string.gsub(line, "%[%[([^%]]*)%]%]", dolink)
+                        else
+                           buffer = buffer..line
+                        end
+                     end 
+                     return markdown(buffer)
                   end
    }
 end

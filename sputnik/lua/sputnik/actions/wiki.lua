@@ -491,7 +491,7 @@ function actions.edit (node, request, sputnik)
                         post_fields     = table.concat(field_list,","),
                         post_token      = post_token,
                         post_timestamp  = post_timestamp,
-                        action_url      = sputnik.config.BASE_URL,
+                        action_url      = sputnik.config.NICE_URL..node.name,
                      }
    return node.wrappers.default(node, request, sputnik)
 end

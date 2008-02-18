@@ -1,6 +1,4 @@
 
---- Submitted by Hisham Muhammad
-
 module("medialike", package.seeall)
 
 ---------- Utility functions ----------
@@ -92,7 +90,7 @@ local function format_span(output, input)
       elseif which == ref_pattern then
          table.insert(output.references, match)
          local id = tostring(#output.references)
-         table.insert(result, '<sup><a href="#_note-'..id..'">['..id..']</a></sup>')
+         table.insert(result, '<sup><a href="#_ref-'..id..'">['..id..']</a></sup>')
       elseif which == references_pattern then
          table.insert(result, '<ol class="references">\n')
          for i, ref in ipairs(output.references) do
@@ -169,7 +167,7 @@ function check_blocks(output, line, at)
    end
 end
 
-local heading_tags={ "h1", "h2", "h3", "h4", "h5" }
+heading_tags={ "h1", "h2", "h3", "h4", "h5" }
 
 function open_if_not(output, tag)
    local tags = output.tags
@@ -272,21 +270,21 @@ function format_content(input, wikilink_fn)
    local lines = split(input)
    local output = {}
    output.blocks = {}
-   output.tags = {}
+   output.tags = { "p" }
    output.references = {}
    output.pending_blocks = {}
    output.wikilink = wikilink_fn
    local blocks = output.blocks
+   local tags = output.tags
    output.paragraph = ""
-   local first_tr = false
-   local in_tag = false
-   local in_pre = false
    for _, line in ipairs(lines) do
       local all = line
       local start = check_blocks(output, line, 1)
       line = line:sub(start)
+
+      local current_tag = tags[#tags]
       local current_block = blocks[#blocks]
-      if all:match("^ [^ ]") or (in_pre and all:match("^ ")) then
+      if all:match("^ +[^ ]") or (current_tag == "pre" and all:match("^ ")) then
          handle_content(output, "pre", all:sub(2))
       elseif current_block == "dl" then
          local current_item = all:sub(start-1, start-1)
@@ -318,7 +316,7 @@ function format_content(input, wikilink_fn)
          local tag = heading_tags[#marks]
          if not tag then tag = "h5" end
          handle_content(output, tag, heading)
-      elseif line:find("^%s*$") then
+      elseif current_tag == "p" and line:find("^%s*$") then
          handle_content(output, "/p")
       else
          handle_content(output, "p", line)

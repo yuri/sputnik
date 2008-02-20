@@ -26,7 +26,8 @@ Nov = "11",
 Dec = "12",
 }
 
-function import(source_dir, decameled, versium_params)
+function import(source_dir, --decameled, 
+                versium_params)
 
    local users = {}
    
@@ -67,9 +68,9 @@ function import(source_dir, decameled, versium_params)
 
          for i,rev in ipairs(revs) do
             rev_id, user, comment, timestamp = unpack(revs[#revs-i+1])
-            f = io.open(decameled..node.."/"..rev_id)
+            f = io.open(source_dir..node.."/"..rev_id)  --used to be "decameled"
             vers:save_version(node, string.format(template, string.gsub(node, "([a-z])([A-Z])", "%1 %2"), 
-                                                                        f:read("*all")), user, comment, {}, timestamp)
+                                                                        string.gsub(f:read("*all"), '&#39;', "'")), user, comment, {}, timestamp)
 
          end
                
@@ -97,4 +98,6 @@ end
 --end
 
 
-import("/home/yuri/gk/sputnik/luausrs/nodes/", "/home/yuri/gk/sputnik/luausrs/decameled/", {dir="/home/yuri/sputnik/wiki-data"}, users)
+--import("/home/yuri/gk/sputnik/luausrs/nodes/", "/home/yuri/gk/sputnik/luausrs/decameled/", {dir="/home/yuri/sputnik/wiki-data"})
+
+import(arg[1], {dir=arg[2]})

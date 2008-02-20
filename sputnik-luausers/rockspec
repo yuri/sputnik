@@ -1,0 +1,22 @@
+-- Package metadata
+package = 'Medialike'
+version = '8.02.19-0'
+description = {
+  summary = 'A plugin to make Sputnik look like LuaUsers wiki (half-finished)',
+  detailed = [[
+  ]],
+  license = 'MIT/X11',
+  homepage = 'http://sputnik.freewisdom.org/en/LuaUsers',  
+  maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+}
+
+-- Dependency information
+dependencies = {
+}
+
+-- Build rules
+source = {
+  url = 'http://sputnik.freewisdom.org/files/sputnik-luausers-8.02.19.zip',
+  md5 = '8b0dc910a9e202fb59a7c827d21b067d',
+}
+

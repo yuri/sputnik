@@ -312,7 +312,7 @@ function format_content(input, wikilink_fn)
       elseif line:find("^%-%-%-%-") then
          handle_content(output, "hr")
       elseif line:find("^=") then
-         local marks, heading, closing_marks = line:match("^(=+)(.*[^=])(=+)$")
+         local marks, heading, closing_marks = line:match("^(=+)(.*[^=])(=+)%s*$")
          local tag = heading_tags[#marks]
          if not tag then tag = "h5" end
          handle_content(output, tag, heading)

@@ -220,6 +220,7 @@ function actions.history(node, request, sputnik)
                                  cosmo.yield{
                                     version_link = node.links:show{ version = edit.version },
                                     version      = edit.version,
+                                    timestamp    = edit.timestamp,
                                     if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
                                     title        = node.name,
                                     author_link  = sputnik:make_link((edit.author or "Anon")),
@@ -491,7 +492,7 @@ function actions.edit (node, request, sputnik)
                         post_fields     = table.concat(field_list,","),
                         post_token      = post_token,
                         post_timestamp  = post_timestamp,
-                        action_url      = sputnik.config.NICE_URL..node.name,
+                        action_url      = sputnik.config.BASE_URL,
                      }
    return node.wrappers.default(node, request, sputnik)
 end
@@ -710,6 +711,8 @@ function wrappers.default(node, request, sputnik)
       site_rss_link    = sputnik:pseudo_node(sputnik.config.HISTORY_PAGE).links:rss(),
       node_rss_link    = node.links:rss(),
       -- urls are just urls
+      base_url         = sputnik.config.BASE_URL, -- for mods
+      nice_url         = sputnik.config.NICE_URL, -- for mods
       logo_url         = sputnik.config.LOGO_URL,
       home_page_url    = sputnik.config.HOME_PAGE_URL,
       icons_url        = sputnik.config.ICONS_URL,

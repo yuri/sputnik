@@ -17,6 +17,6 @@ dependencies = {
 -- Build rules
 source = {
   url = 'http://sputnik.freewisdom.org/files/medialike-0.03.zip',
-  md5 = '05fc5246e4a6a4885b30bd29ffb7f270',
+  md5 = '10ca6d359a775d85af773a6f36b3799a',
 }
 

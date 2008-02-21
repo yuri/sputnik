@@ -45,7 +45,7 @@ MAIN = [===[
                 <tr>
                     <td><img src="http://lua-users.org/images/nav-elbow.png" alt="" width="48" height="40"></td>
                     <td nowrap valign="middle" width="100%">
-                        <a href="/wiki/" class="nav">wiki</a></td>
+                        <a href="$nice_url" class="nav">wiki</a></td>
 
                 </tr>
                 </tbody>
@@ -59,7 +59,7 @@ MAIN = [===[
 $content
 
 <hr>
-<a href="/wiki/FindPage" >FindPage</a> &middot; <a href="/wiki/RecentChanges" >RecentChanges</a> &middot; <a href="/cgi-bin/wiki.pl?action=editprefs" >preferences</a><br>
+<a href="$nice_url/FindPage" >FindPage</a> &middot; <a href="$nice_url/RecentChanges">RecentChanges</a>
 <a $edit_link>edit</a> &middot; <a $history_link>history</a> &middot;
 $if_logged_in[[ logged as $user (<a $logout_link>logout</a>)]]
 $if_not_logged_in[[<a $login_link>login</a>]]
@@ -103,7 +103,7 @@ $do_revisions[==[
 Revision $version: <a $version_link>View</a> 
 <input class="diff_radio" type="radio" value="$version" name="other"/>
 <input class="diff_radio" type="radio" value="$version" name="version"/>
- . .$if_minor[[<i>(minor edit)</i>]] by <a $author_link>$author</a>$if_summary[[ <b>[$summary]</b>]]<br>
+ . . $timestamp $if_minor[[<i>(minor edit)</i>]] by <a $author_link>$author</a>$if_summary[[ <b>[$summary]</b>]]<br>
 ]==]
 </form>
 ]===]

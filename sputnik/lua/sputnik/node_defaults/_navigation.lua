@@ -14,7 +14,7 @@ NAVIGATION = {
    {id="News", title="Timeline",
      {id="News"},
      {id="Future Plans"},
-     {id="_history", title="Recent Wiki Edit"},
+     {id="_history", title="Recent Wiki Edits"},
      {id="_edits_by_recent_users", title="Edits by Recent Users"},
      {id="_history.rss", title="RSS Feed"},
    },

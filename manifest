@@ -6,6 +6,8 @@ repository = {
   ['sputnik'] = {},
   ['sputnik-tickets'] = {},
   ['versium'] = {},
+  ['medialike'] = {},
+  ['sputnik-luausers'] = {},
 }
 
 repository['cosmo']['7.12.26-0']={ {arch='all'}, {arch='rockspec'} }
@@ -19,3 +21,5 @@ repository['cosmo']['8.01.21-0']={ {arch='all'}, {arch='rockspec'} }
 repository['colors']['8.02.03-0']={ {arch='all'}, {arch='rockspec'} }
 repository['sputnik']['8.02.14-0']={ {arch='all'}, {arch='rockspec'} }
 repository['sputnik']['8.02.16-0']={ {arch='all'}, {arch='rockspec'} }
+repository['medialike']['0.03-0']={ {arch='all'}, {arch='rockspec'} }
+repository['sputnik-luausers']['8.02.19-0']={ {arch='all'}, {arch='rockspec'} }

@@ -1,6 +1,6 @@
 -- Package metadata
 package = 'Sputnik'
-version = '8.02.16-0'
+version = '8.02.20-0'
 description = {
   summary = 'A wiki and a framework for wiki-like applications',
   detailed = [[
@@ -37,7 +37,7 @@ dependencies = {
 
 -- Build rules
 source = {
-  url = 'http://sputnik.freewisdom.org/files/sputnik-8.02.16.zip',
+  url = 'http://sputnik.freewisdom.org/files/sputnik-8.02.20.zip',
   dir = 'sputnik',
 }
 

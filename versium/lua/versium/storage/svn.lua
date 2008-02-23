@@ -71,6 +71,66 @@ local function _read_file_if_exists(path)
    end
 end
 
+
+---------------------------------------------------------------------------------------------------
+-- Gets the last name of a path
+-- 
+-- @param path           a path like "/home/dir/file
+-- @return               the name after the last "/"
+---------------------------------------------------------------------------------------------------
+
+local function fileName (path)
+	local n = #path
+	for i=n, 1, -1 do
+		if string.sub (path, i, i) == '/' then
+			return string.sub (path, i+1, n)
+		end
+	end
+
+	return ""
+end
+
+
+---------------------------------------------------------------------------------------------------
+-- Builds the node table
+-- 
+-- @param obj            a Versium object
+-- @return               nothing
+---------------------------------------------------------------------------------------------------
+
+local function build_node_table (obj)
+	local node_table = {}
+	local wc = obj.wc
+
+	--gets the list of the files
+	local t = svn.list (wc)
+	--number of the last revision
+	local n = 0
+
+	for file, r in pairs (t) do
+		node_table[file] = {}
+		if r > n then
+			n = r
+		end
+	end
+
+	--get the "versium:version" property of the files in each revision, so
+	--we can associate the Versium revision number with the SVN revision number
+	for i=n, 1, -1 do
+		local prop = svn.propget (wc, "versium:version", i)
+        for path, v in pairs (prop) do
+			local s = loadstring ('return ' .. v) ()
+        	node_table [fileName (path)][s] = i
+		end
+	end
+
+	obj.node_table = node_table
+
+
+end
+
+
+
 SVNVersiumStorage = {}
 
 ---------------------------------------------------------------------------------------------------
@@ -266,59 +326,4 @@ function open(params, versium)
 end
 
 
----------------------------------------------------------------------------------------------------
--- Gets the last name of a path
--- 
--- @param path           a path like "/home/dir/file
--- @return               the name after the last "/"
----------------------------------------------------------------------------------------------------
 
-local function fileName (path)
-	local n = #path
-	for i=n, 1, -1 do
-		if string.sub (path, i, i) == '/' then
-			return string.sub (path, i+1, n)
-		end
-	end
-
-	return ""
-end
-
-
----------------------------------------------------------------------------------------------------
--- Builds the node table
--- 
--- @param obj            a Versium object
--- @return               nothing
----------------------------------------------------------------------------------------------------
-
-local function build_node_table (obj)
-	local node_table = {}
-	local wc = obj.wc
-
-	--gets the list of the files
-	local t = svn.list (wc)
-	--number of the last revision
-	local n = 0
-
-	for file, r in pairs (t) do
-		node_table[file] = {}
-		if r > n then
-			n = r
-		end
-	end
-
-	--get the "versium:version" property of the files in each revision, so
-	--we can associate the Versium revision number with the SVN revision number
-	for i=n, 1, -1 do
-		local prop = svn.propget (wc, "versium:version", i)
-        for path, v in pairs (prop) do
-			local s = loadstring ('return ' .. v) ()
-        	node_table [fileName (path)][s] = i
-		end
-	end
-
-	obj.node_table = node_table
-
-
-end

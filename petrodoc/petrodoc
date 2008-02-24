@@ -1,0 +1,69 @@
+package    = 'Petrodoc'
+versions   = {
+   {'8.02.23', 'Feb. 23, 2008', 'the first version'}
+}
+summary    = 'Making Rockspecs, HTML and RSS from a single source'
+author     = 'Yuri Takhteyev'
+maintainer = author
+email      = 'yuri@freewisdom.org'
+
+detailed   = [[ Petrodoc allows you to use a single configuration file to generate a rockspec, 
+                HTML documentation (with Luadoc) and an RSS feed for new releases.]]
+license    = 'MIT/X11'
+homepage   = 'http://sputnik.freewisdom.org/petrodoc/'
+favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
+download   = 'http://sputnik.freewisdom.org/files/petrodoc-$version.zip'
+copyyears  = '2008'
+
+logo       = nil -- 'http://sputnik.freewisdom.org/colors/colors.png'
+keywords   = 'Lua, LuaRocks, rockspec, HTML, documentation, luadoc, rss'
+rss        = homepage.."releases.rss"
+--------------------------------------------------------------------------------
+
+build      = [[
+   type = "none",
+   install = {
+      bin = { "src/petrodoc.lua" }
+   }
+]] -----------------------------------------------------------------------------
+
+dependecies = [[
+   "luadoc"
+]] -----------------------------------------------------------------------------
+
+Installation = [[
+  $package consists of a single file (petrodoc.lua).  Here is a list of recent
+  releases:
+
+  <ul>
+  $do_versions[=[<li><a href="$url">$package-$version</a> - $comment ($date) </li> ]=]
+  </ul>
+
+  You can also install $package as a LuaRock from the repository at 
+  http://sputnik.freewisdom.org/rocks/.
+]] ----------------------------------------------------------------------------
+
+Contact = [[
+  For more information please contact the author, 
+  [Yuri Takhteyev](http://takhteyev.org/contact/) or write to the 
+  [Sputnik Mailing List](http://sputnik.freewisdom.org/en/Mailing_List).
+
+  Comments are welcome! 
+]] ----------------------------------------------------------------------------
+
+toc = {
+   { "Overview",     detailed },
+   { "Installation", markdown(Installation) },
+   { "Using Colors", markdown(include("docs/howto.md")) },
+   { "Contact",      markdown(Contact)},
+   { "LuaDoc",       luadoc{"colors.lua"} },
+   { "License",      markdown(
+                        MIT_X_LICENSE_EXPLAIN
+                        .." The implementation was not derived from licensed software.\n\n"
+                        .."-----------------------------------------"
+                        ..MIT_X_LICENSE) }
+}
+-------------------------------------------------------------------------------
+
+
+

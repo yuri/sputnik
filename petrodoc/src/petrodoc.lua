@@ -239,7 +239,7 @@ function petrodoc(spec, revision, name)
    end
 
    -- fill in the necessary parameters
-   spec.name = name
+   spec.name = spec.package:lower()
    spec.last_version = spec.versions[1][1]
    spec.version = spec.last_version
    spec.last_release_url = cosmo.fill(spec.download, spec)
@@ -307,12 +307,12 @@ function petrodoc(spec, revision, name)
 end
 
 
-local dir = arg[1].."/"..arg[2]
+local dir = arg[1]
 lfs.chdir(dir)
 local petrofunc, err = loadfile("petrodoc")
 if not petrofunc then error(err) end
 
 local spec = getfenv(petrofunc())
-petrodoc(spec, arg[3] or "0", arg[2])
+petrodoc(spec, arg[2] or "0", arg[1])
 
 

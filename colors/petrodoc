@@ -1,22 +1,36 @@
 package    = 'Colors'
-versions   = {'8.02.03'}
+versions   = {
+   {'8.02.23', 'Feb. 23, 2008', 'added Luadoc comments'},
+   {'8.02.03', 'Feb. 2, 2008',  'cleaned up for a stand-alone release'}
+}
 summary    = 'HSL Color Theory Computation in Lua'
-maintainer = 'Yuri Takhteyev'
+author     = 'Yuri Takhteyev'
+maintainer = author
 email      = 'yuri@freewisdom.org'
+
+license    = MIT_X_LICENSE_EXPLAIN
+             .." The implementation was not derived from licensed software.\n\n"
+             .."-----------------------------------------"
+             ..MIT_X_LICENSE
 
 detailed   = [[ Colors library provides methods to do color computation in
                 HSL color space and for finding "harmonious" color palettes. ]]
 license    = 'MIT/X11'
 homepage   = 'http://sputnik.freewisdom.org/colors/'
+favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
 download   = 'http://sputnik.freewisdom.org/files/colors-$version.zip'
+copyyears  = '2007, 2008'
 
-logo       = 'colors.png'
+logo       = 'http://sputnik.freewisdom.org/colors/colors.png'
 keywords   = 'Lua, HSL'
+rss        = homepage.."releases.rss"
 --------------------------------------------------------------------------------
 
-
 build      = [[
-
+   type = "none",
+   install = {
+      lua = { "src/colors.lua" }
+   }
 ]] -----------------------------------------------------------------------------
 
 
@@ -25,7 +39,9 @@ Installation = [[
   than 100 lines, plus a test script (test.lua).  Here is a list of recent
   releases:
 
-  $recent_releases
+  <ul>
+  $do_versions[=[<li><a href="$url">$package-$version</a> - $comment ($date) </li> ]=]
+  </ul>
 
   Colors installs like any other single-file Lua module: just put it somewhere in
   your Lua path.  
@@ -43,12 +59,12 @@ Contact = [[
 ]] ----------------------------------------------------------------------------
 
 toc = {
-   { "Overview",     detailed },
+   { "Overview",     "<p>"..detailed.."</p>" },
    { "Installation", markdown(Installation) },
    { "Using Colors", markdown(include("docs/howto.md")) },
    { "Contact",      markdown(Contact)},
    { "LuaDoc",       luadoc{"colors.lua"} },
-   --{ "License",      license(package.license, "Yuri Takhteyev", "2007-2008") }
+   { "License",      markdown(license) }
 }
 -------------------------------------------------------------------------------
 

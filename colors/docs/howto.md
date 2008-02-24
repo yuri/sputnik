@@ -788,8 +788,6 @@ Creating a color in HSL space and converting it to RGB
  <tr><td width="100"></td><td width="160" style="background: #0f8923">&nbsp;</td></tr>
 </table>
 
-    > foo
-
     > =c -- convert implicitly
     #0f8923
 

@@ -167,6 +167,7 @@ function SVNVersiumStorage:get_node(id, version)
       node = history[1]
    end
 	assert(node.version) -- should come from history
+   node.id = id
    node.data = svn.cat (self.wc.."/"..id, self.node_table [id][version])
    return node
 end
@@ -257,7 +258,6 @@ function SVNVersiumStorage:save_version(id, data, author, comment, extra, timest
 				   t.year, t.month, t.day,
 				   t.hour, t.min, t.sec)
 
-	comment = string.format ("%s,%s", comment)
 
    svn.propset (node_path, "versium:version", self.versium:longquote (new_version_id))
    svn.propset (node_path, "versium:timestamp", self.versium:longquote (timestamp))
@@ -288,13 +288,13 @@ end
 function SVNVersiumStorage:get_node_history(id, prefix)
    assert(id)
    
-	local node_path = self.wc .. "/" .. id
+   local node_path = self.wc .. "/" .. id
    local raw_history = ""
    local log = svn.log (node_path)
    
    for i, _ in pairs (log) do
-   	local s = "add_version{"
-	  	local prop = svn.proplist (node_path, i)
+        local s = "add_version{"
+	    local prop = svn.proplist (node_path, i)
 	  	prop = prop [self.reposurl .. "/" .. id]
 	  	s = s .. "\n version = " .. prop ["versium:version"]
 	  	s = s .. ",\n timestamp = " .. prop ["versium:timestamp"]
@@ -305,11 +305,12 @@ function SVNVersiumStorage:get_node_history(id, prefix)
 
    local all_versions = {}
 
-   local env = self.versium:load_lua(raw_history, 
-   				     { add_version = function (values)
-   					  table.insert(all_versions, values)
-   				       end } )
-  
+   	luaenv.make_sandbox{add_version = function (values)
+                                        table.insert(all_versions, values)
+                                     end 
+                       }.do_lua(raw_history)
+
+
    return all_versions, raw_history
 end
 

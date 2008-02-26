@@ -459,7 +459,7 @@ function actions.edit (node, request, sputnik)
    for i=0, (sputnik.config.NUM_HONEYPOTS_IN_FORMS or 0) do
       local field_name = "honey"..tostring(i)
       honeypots = honeypots.."\n"..cosmo.f([[$name          = {$order, "honeypot"}]]){
-                                order = tostring(math.random()*5),
+                                order = string.gsub (tostring(math.random()*5), ",", "."),
                                 name  = field_name,
                              }
       fields[field_name] = ""

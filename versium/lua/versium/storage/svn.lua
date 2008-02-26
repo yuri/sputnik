@@ -120,7 +120,7 @@ local function build_node_table (obj)
 		local prop = svn.propget (wc, "versium:version", i)
         for path, v in pairs (prop) do
 			local s = loadstring ('return ' .. v) ()
-        	node_table [fileName (path)][s] = i
+			node_table [fileName (path)][s] = i
 		end
 	end
 
@@ -143,7 +143,7 @@ SVNVersiumStorage = {}
 function SVNVersiumStorage:new(params, versium)
 	local reposurl = params.reposurl
 	local wc = params.wc
-  	local obj = {reposurl=reposurl, wc = wc, versium=versium}
+  	local obj = {reposurl=reposurl, node_table = {}, wc = wc, versium=versium}
   	svn.checkout (reposurl, wc)
 	build_node_table (obj)
    setmetatable(obj, self)
@@ -159,9 +159,14 @@ end
 -- @return               the node as table with its content in node.data.
 ---------------------------------------------------------------------------------------------------
 function SVNVersiumStorage:get_node(id, version)
- 	local history = self:get_node_history(id)
+	--did not understand the "OR" in "simple.lua'
+ 	local history = self:get_node_history(id) or {}
+	if not history or #history == 0 then
+      versium.storage_error(versium.errors.NODE_DOES_NOT_EXIST, tostring(id))
+   end
+
    local node
-   if version then
+   if version and tonumber(version) then
       node = history[#history-tonumber(version)+1]
    else
       node = history[1]
@@ -192,8 +197,8 @@ end
 -- @return               true or false.
 ---------------------------------------------------------------------------------------------------
 function SVNVersiumStorage:node_exists(id)
-   assert(id)
-	return self.node_table [id]
+	assert(id)
+	return self.node_table [id] ~= nil
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -204,7 +209,7 @@ end
 -- @return               the metadata for the latest version or nil.
 ---------------------------------------------------------------------------------------------------
 function SVNVersiumStorage:get_node_info(id)
-   assert(id)
+	assert(id)
 	return self:get_node_history(id)[1]
 end
 
@@ -214,7 +219,7 @@ end
 -- @return               a list of IDs.
 ---------------------------------------------------------------------------------------------------
 function SVNVersiumStorage:get_node_ids()
-   local ids = {} 
+	local ids = {} 
    for id, _ in pairs(self.node_table) do
       ids[#ids+1] = id
    end
@@ -232,7 +237,7 @@ end
 -- @return               the version id of the new node.
 ---------------------------------------------------------------------------------------------------
 function SVNVersiumStorage:save_version(id, data, author, comment, extra, timestamp)
-   assert(id)
+	assert(id)
    assert(data)
    assert(author)
 
@@ -259,9 +264,14 @@ function SVNVersiumStorage:save_version(id, data, author, comment, extra, timest
 				   t.hour, t.min, t.sec)
 
 
+   local extra_buffer = ""
+   for k,v in pairs(extra or {}) do
+      extra_buffer = extra_buffer.."\n "..k.."     = "..self.versium:longquote(v)..","
+   end
    svn.propset (node_path, "versium:version", self.versium:longquote (new_version_id))
    svn.propset (node_path, "versium:timestamp", self.versium:longquote (timestamp))
    svn.propset (node_path, "versium:author", self.versium:longquote (author))
+   svn.propset (node_path, "versium:comment", self.versium:longquote (comment))
    svn.propset (node_path, "versium:comment", self.versium:longquote (comment))
 
    local rev = svn.commit (self.wc)
@@ -286,22 +296,31 @@ end
 --                           (2) the raw prepresentation of nodes history (as lua code).
 ---------------------------------------------------------------------------------------------------
 function SVNVersiumStorage:get_node_history(id, prefix)
-   assert(id)
+	assert(id)
    
-   local node_path = self.wc .. "/" .. id
-   local raw_history = ""
-   local log = svn.log (node_path)
+   	local raw_history = "" 
+	
+	if self.node_table [id] ~= nil then
+
+   		local node_path = self.wc .. "/" .. id
+   		local log = svn.log (node_path)
    
-   for i, _ in pairs (log) do
-        local s = "add_version{"
-	    local prop = svn.proplist (node_path, i)
-	  	prop = prop [self.reposurl .. "/" .. id]
-	  	s = s .. "\n version = " .. prop ["versium:version"]
-	  	s = s .. ",\n timestamp = " .. prop ["versium:timestamp"]
-	  	s = s .. ",\n author = " .. prop ["versium:author"]
-	  	s = s .. ",\n comment = " .. prop ["versium:comment"] .. ",\n}\n"
-	  	raw_history = s .. raw_history
-   end
+	    local t = {}
+   		for k, _ in pairs (log) do
+			t[#t+1] = k
+		end
+		table.sort (t)
+	    for i, r in ipairs (t) do
+        	local s = "add_version{"
+	    	local prop = svn.proplist (node_path, r)
+	  		prop = prop [self.reposurl .. "/" .. id]
+	  		s = s .. "\n version = " .. prop ["versium:version"]
+	  		s = s .. ",\n timestamp = " .. prop ["versium:timestamp"]
+	  		s = s .. ",\n author = " .. prop ["versium:author"]
+	  		s = s .. ",\n comment = " .. prop ["versium:comment"] .. ",\n}\n"
+	  		raw_history = s .. raw_history
+   		end
+	end
 
    local all_versions = {}
 
@@ -309,7 +328,6 @@ function SVNVersiumStorage:get_node_history(id, prefix)
                                         table.insert(all_versions, values)
                                      end 
                        }.do_lua(raw_history)
-
 
    return all_versions, raw_history
 end

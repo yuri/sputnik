@@ -20,7 +20,7 @@ function Repository:new(initial_config)
    setmetatable(repo, self)
    self.__index = self
 
-   repo.versium = versium.Versium:new{
+   repo.versium = versium.open{
        storage = initial_config.VERSIUM_STORAGE_MODULE 
                  or "versium.storage.simple",
        params = initial_config.VERSIUM_PARAMS

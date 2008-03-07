@@ -54,8 +54,15 @@ function Repository:get_node(id, version, mode)
       local status, page_module = pcall(require, "sputnik.node_defaults."..id)
       if status then
          local default = self.versium:deflate(page_module.NODE)
-         self.versium:save_version(id, default, "Sputnik", "the default version")
-         versium_node = self.versium:get_node(id, version)
+         if not page_module.NOCREATE then
+             self.versium:save_version(id, default, "Sputnik", "the default version")
+             versium_node = self.versium:get_node(id, version)
+         else
+             -- Otherwise, create a stub and set the data
+             -- This page won't be saved until it's explicitly edited and saved
+             versium_node = self.versium:get_stub(id)
+             versium_node.data = default
+         end
       else 
          versium_node = self.versium:get_stub(id)
       end

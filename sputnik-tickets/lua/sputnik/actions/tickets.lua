@@ -44,11 +44,11 @@ status_colors = {
 
 priority_to_number = {
    unassigned = "",
-   highest = "5",
-   high = "4",
-   medium = "3",
-   low = "2",
-   lowest = "1",
+   highest = "*****",
+   high = "****",
+   medium = "***",
+   low = "**",
+   lowest = "*",
 }
 
 status_to_number = {

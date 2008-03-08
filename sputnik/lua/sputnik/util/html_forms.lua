@@ -35,7 +35,7 @@ function make_html_form(form_params)
                     end
                  end, 
       honeypot = function(field)
-                    field.div_class = " class='honey'"
+                    field.div_class = field.div_class.." honey"
                     field.label = form_params.translator.translate_key("EDIT_FORM_HONEY")
                  end,
    }
@@ -52,6 +52,7 @@ function make_html_form(form_params)
       field.label  = label
       field.anchor = name
       field.html = ""
+      field.div_class = field.div_class or ""
 
       if not (field.value == false) then
          field.value = field.value or form_params.values[name]
@@ -65,12 +66,12 @@ function make_html_form(form_params)
          field.html = cosmo.fill(form_params.templates.EDIT_FORM_LABEL, field)
       end
       field.html = field.html..cosmo.fill(template, field)
-
-      local div_class = ""
+      
+      field.div_class = field.div_class.." ctrlHolder"
       if field.advanced then
-         field.div_class = " class='advanced_field'"
+         field.div_class = field.div_class.." advanced_field"
       end
-      html = html.."       <div"..(field.div_class or "")..">"..field.html.."       </div>\n"
+      html = html.."       <div class='"..field.div_class.."'>"..field.html.."       </div>\n"
    end
    return html, just_field_names
 end

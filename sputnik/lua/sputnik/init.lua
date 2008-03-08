@@ -389,8 +389,9 @@ function Sputnik:translate_request (request)
       request.user, request.auth_token = self.auth.check_password(request.params.user, request.params.password)
       if not request.user then
          request.auth_message = "INCORRECT_PASSWORD"
+      else
+         self.logger:debug(request.user..","..request.auth_token)
       end
-      self.logger:debug(request.user..","..request.auth_token)
    else
       local cookie = request.cookies[self.cookie_name] or ""
       local user_from_cookie, auth_token = sputnik.util.split(cookie, "|")

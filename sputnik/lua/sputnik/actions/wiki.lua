@@ -84,27 +84,31 @@ function actions.post(node, request, sputnik)
    for k,v in pairs(request.params) do
       local action = string.match(k, "^action_(.*)$")
       if action then
+         function err_msg(err_code)
+            request.try_again = "true"
+            node:post_error(node.translator.translate_key(err_code))
+         end
          sputnik.logger:debug(action)
          sputnik.logger:debug(request.params.post_token)
          sputnik.logger:debug(request.params.post_timestamp)
          if not request.params.post_token then
-            request.try_again = "MISSING_POST_TOKEN"
+            err_msg"MISSING_POST_TOKEN"
          elseif not request.params.post_timestamp then
-            request.try_again = "MISSING_POST_TIME_STAMP"
+            err_msg"MISSING_POST_TIME_STAMP"
          elseif (sputnik.auth.hours_since_ce(sputnik.auth.now())
                  -sputnik.auth.hours_since_ce(request.params.post_timestamp)) > 3 then
-            request.try_again = "YOUR_POST_TOKEN_HAS_EXPIRED"
+            err_msg"YOUR_POST_TOKEN_HAS_EXPIRED"
          elseif sputnik.auth.get_token_for_timestamp(request.params.post_timestamp)
                  ~=request.params.post_token then
-            request.try_again = "YOUR_POST_TOKEN_IS_INVALID"
+            err_msg"YOUR_POST_TOKEN_IS_INVALID"
          elseif not request.user then
             if request.auth_message then
                request.try_again = request.auth_message
             else 
-               request.try_again = "YOU_MUST_BE_LOGGED_IN"
+               err_msg"YOU_MUST_BE_LOGGED_IN"
             end
          elseif not node.check_permissions(request.user, action) then
-            request.try_again = "ACTION_NOT_ALLOWED"
+            err_msg"ACTION_NOT_ALLOWED"
          end
          return actions[action](node, request, sputnik) 
       end
@@ -483,9 +487,6 @@ function actions.edit (node, request, sputnik)
                                        }
    
    node.inner_html = cosmo.f(node.templates.EDIT){
-                        if_try_again    = cosmo.c(request.try_again){
-                                             alert = node.translator.translate_key(request.try_again or "")
-                                          },
                         if_preview      = cosmo.c(request.preview){
                                              preview = request.preview,
                                              summary = fields.summary

@@ -1,18 +1,64 @@
 
 module(..., package.seeall)
-
+sorttable = require"sputnik.javascript.sorttable"
 
 local TEMPLATE = [===[
 
-<a $new_ticket_link>Create New Ticket</a>
+<a $new_ticket_link>Create a New Ticket</a>
+<br/><br/>
 
-<ul>
- $do_tickets[[<li>$status: <a $ticket_link>$ticket_id</a> ($title)</li>]]
-</ul>
+<script>
+ $sorttable_script
+</script>
+<table class="sortable" width="100%">
+ <thead>
+  <tr>
+   <th>ID</th>
+   <th>priority</th>
+   <th>status</th>
+   <th>title</th>
+  </tr>
+ </thead>
+ $do_tickets[[
+  <tr style="background:$color">
+   <td width="20px"><a $ticket_link>$ticket_id</a></td>
+   <td width="20px">$priority</td>
+   <td sorttable_customkey="$num_status" width="20px">$status</td>
+   <td>$title</td>
+  </tr>
+ ]]
+</table>
+
+(Click on the headers to sort.)
 ]===]
 
-
 actions = {}
+
+status_colors = {
+   fixed = "#f0fff0",
+   new = "#f0f0ff",
+   assigned = "#fffff0",
+   wontfix = "#f0f0f0",
+   confirmed = "#fff0ff",
+}
+
+priority_to_number = {
+   unassigned = "",
+   highest = "5",
+   high = "4",
+   medium = "3",
+   low = "2",
+   lowest = "1",
+}
+
+status_to_number = {
+   new = "1",
+   confirmed = "2",
+   assigned = "3",
+   wontfix = "4",
+   fixed = "5",
+   tested = "6",
+}
 
 actions.show = function(node, request, sputnik)
    local tickets = {}
@@ -26,14 +72,20 @@ actions.show = function(node, request, sputnik)
           if ticket_number > ticket_counter then ticket_counter = ticket_number; end 
        end
    end
+   table.sort(tickets, function(x,y) return x.ticket_id > y.ticket_id end)
    node.inner_html = cosmo.f(TEMPLATE){
+                        sorttable_script = sorttable.script,
                         do_tickets = function()
                                         for i, ticket in ipairs(tickets) do
+                                           
                                            cosmo.yield{
                                               ticket_link = sputnik:make_link(ticket.name),
                                               ticket_id   = ticket.ticket_id,
                                               status      = ticket.status,
+                                              num_status  = status_to_number[ticket.status],
+                                              priority    = priority_to_number[ticket.priority],
                                               title       = ticket.title,
+                                              color       = status_colors[ticket.status] or "white",
                                            }
                                         end
                                      end,

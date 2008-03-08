@@ -35,6 +35,16 @@ function get_nav_bar (node, sputnik)
       end
    end
 
+   local do_subsections = function(section)
+              for i, subsection in ipairs(section or {}) do
+                 cosmo.yield {
+                    class = util.choose(subsection.is_active, "front", "back"),
+                    link = sputnik:make_link(subsection.id),
+                    label = subsection.title
+                 }
+              end
+   end
+
    return cosmo.f(node.templates.NAV_BAR){  
             do_sections = function() 
                for i, section in ipairs(nav) do               
@@ -42,19 +52,12 @@ function get_nav_bar (node, sputnik)
                      class = util.choose(section.is_active, "front", "back"),
                      id    = section.id,
                      link  = sputnik:make_link(section.id),  
-                     label = section.title
+                     label = section.title,
+                     do_subsections = function() return do_subsections(section) end
                   }
                end
             end,
-            do_subsections = function() 
-               for i, subsection in ipairs(nav.current_section or {}) do
-                  cosmo.yield { 
-                     class = util.choose(subsection.is_active, "front", "back"),
-                     link = sputnik:make_link(subsection.id),
-                     label = subsection.title 
-                  }
-               end
-            end,
+            do_subsections = function() return do_subsections(nav.current_section) end
          }
 end
 

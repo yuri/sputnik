@@ -303,9 +303,6 @@ EDIT_FORM_SHOW_ADVANCED = [[<a id="more_fields" href="#" class="local" onclick="
 
 
 LOGIN_FORM              = [===[      
-      $if_try_again[[
-       <br/><font color='red'><b>$alert</b></font><br/><br/>
-      ]]
    
       <form method="post" action="$action_url">
        <input class="hidden" type="hidden" name="p" value="$node_name.post"/>

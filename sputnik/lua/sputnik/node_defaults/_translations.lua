@@ -397,5 +397,8 @@ RECENT_EDITS_TO_PAGE = {
    en_US = "Recent edits to $site_title: $title"
 }
 
+INCORRECT_PASSWORD = {
+   en_US = "Logging incorrect"
+}
 
 ]=============]

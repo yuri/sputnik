@@ -103,7 +103,7 @@ function actions.post(node, request, sputnik)
             err_msg"YOUR_POST_TOKEN_IS_INVALID"
          elseif not request.user then
             if request.auth_message then
-               request.try_again = request.auth_message
+               err_msg(request.auth_message)
             else 
                err_msg"YOU_MUST_BE_LOGGED_IN"
             end
@@ -644,9 +644,6 @@ function actions.show_login_form(node, request, sputnik)
                                        }
    
    node.inner_html = cosmo.f(node.templates.LOGIN_FORM){
-                        if_try_again    = cosmo.c(request.auth_message){
-                                             alert = node.translator.translate_key(request.auth_message or "")
-                                          },
                         html_for_fields = html_for_fields,
                         node_name       = node.name,
                         post_fields     = "user,password",

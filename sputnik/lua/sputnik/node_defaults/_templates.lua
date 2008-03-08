@@ -49,12 +49,12 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    </div>
    
    <div id='hd'><!--navigation bar -->    $nav_bar   </div>
-   
+ 
    <div id='bd'><!--the body, consisting of the page and the sidebar--> 
-   
+
     <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]><!--this just marks the page as "main" -->
      <div class="yui-b" id='page'>
-     
+
       <span class="toolbar">
           <a $edit_link > _(EDIT)      </a>
           | <a $history_link> _(HISTORY)   </a>
@@ -65,7 +65,9 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       </span>
 
       <h1 class="title"><a $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]</h1>
-      
+
+      $do_messages[[<p class="error $class">$message</p>]]
+
       <div class='content'>$content</div>
       
      </div>  <!-- end of div .yui-b#page -->     
@@ -89,6 +91,7 @@ NAV_BAR = [===[
      <li class='$class'><a $link>$label</a></li>]]
     </ul>
 ]===]
+
 
 LOGGED_OUT = [===[_(YOU_ARE_NOW_LOGGED_OUT)]===]
 

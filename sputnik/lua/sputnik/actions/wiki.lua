@@ -704,6 +704,13 @@ function wrappers.default(node, request, sputnik)
       content          = node.inner_html,
       sidebar          = "",
       
+      -- Include messages that may have been added to the page
+      do_messages      = function()
+                            for i,message in ipairs(node.messages) do
+                               cosmo.yield(message)
+                            end
+                         end,
+ 
       -- "links" include "href="
       show_link        = node.links:show(),
       edit_link        = node.links:edit{version = request.params.version},

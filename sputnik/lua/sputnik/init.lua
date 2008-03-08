@@ -218,6 +218,10 @@ function Sputnik:prime_node(node)
    node.markup = self.markup
    self:add_urls(node)
    self:add_links(node)
+   node.messages = {}
+   for i, class in ipairs{"error", "warning", "success", "notice"} do
+      node["post_"..class] = function(self, message) table.insert(self.messages, {message=message, class=class}) end
+   end
    return node
 end  
 

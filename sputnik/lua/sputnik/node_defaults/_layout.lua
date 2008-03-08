@@ -55,6 +55,15 @@ body               {                                                            
   #bd              { margin:   0em   0em   0em   0em;  padding:   0em   0em   0em   2em;                                              }
    #yui-main       {                                                                                                                  }
     #page          {                                   padding:   0em   0em   0em   0em;  min-height: 450px; min-width: 830px;        }
+    .error         { margin:   1em  auto  .5em  auto;  padding:   1em   1em   1em   1em;  background-color: #F8E0E0; 
+                                                                                          border: medium solid #DF0101; width: 90%;   }
+    .warning       { margin:   1em  auto  .5em  auto;  padding:   1em   1em   1em   1em;  background-color: #F8F8D0; 
+                                                                                          border: medium solid #DF0101; width: 90%;   }
+    .success       { margin:   1em  auto  .5em  auto;  padding:   1em   1em   1em   1em;  background-color: #D0F8D0; 
+                                                                                          border: medium solid #01DF01; width: 90%;   }
+    .notice        { margin:   1em  auto  .5em  auto;  padding:   1em   1em   1em   1em;  background-color: #D0D0F8; 
+                                                                                          border: medium solid #0101DF; width: 90%;   }
+
     .content       {                                   padding:   1em   1em   1em   1em;  font-size: 100%;                            }
      .toolbar      { margin:   0em   0em   0em   0em;  padding:  .5em  .5em  .5em   2em;  float:right;                                }
      .toolbar A    {                                                                      text-decoration: none;                      }

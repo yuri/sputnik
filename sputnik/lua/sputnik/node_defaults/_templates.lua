@@ -219,9 +219,6 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 --------------------------------------------------------------------------------
 
 EDIT = [===[
-      $if_try_again[[
-       <br/><font color='red'><b>$alert</b></font><br/><br/>
-      ]]
    
       <form method="post" action="$action_url">
        <script type="text/javascript">
@@ -287,10 +284,7 @@ EDIT_FORM_SHOW_ADVANCED = [[<a id="more_fields" href="#" class="local" onclick="
                              <div id="toggle_advanced_fields">_(SHOW_ADVANCED_OPTIONS)</div></a>]]
 
 
-LOGIN_FORM              = [===[      
-      $if_try_again[[
-       <br/><font color='red'><b>$alert</b></font><br/><br/>
-      ]]
+LOGIN_FORM              = [===[
    
       <form method="post" action="$action_url">
        <input class="hidden" type="hidden" name="p" value="$node_name.post"/>

@@ -7,7 +7,8 @@ PASSWORD_TEMPLATE = [=[USERS = {}
 $do_users[[USERS["$user"]={hash="$hash", time="$time"}
 ]]]=]
 
-function make_authenticator (sputnik)
+function make_authenticator (sputnik, params)
+   params = params or {}
 
    local password_node = sputnik:get_node(sputnik.config.PASS_PAGE_NAME)
    local users = password_node.content
@@ -85,8 +86,8 @@ function make_authenticator (sputnik)
    local function check_password(user, password) 
       if users[user] and users[user].hash == get_salted_hash(users[user].time, password) then
          return user, get_token(user)
-      elseif user_exists(user) then 
-	      return nil
+      elseif user_exists(user) or params.NO_AUTO_REGISTRATION then
+          return nil
       else
 	      add_user(user, password)
 	      save(user)

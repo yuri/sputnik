@@ -6,7 +6,6 @@ require("versium.smart.repository")
 require("versium.luaenv")
 require("sputnik")
 require("sputnik.actions.wiki")
-require("sputnik.authentication.simple")
 require("sputnik.i18n")
 require("sputnik.util")
 
@@ -69,7 +68,9 @@ function Sputnik:init(initial_config)
 
       
    -- setup authentication
-   self.auth = sputnik.authentication.simple.make_authenticator(self)
+   
+   local auth_mod = require(self.config.AUTHENTICATION_MODULE or "sputnik.authentication.simple")
+   self.auth = auth_mod.make_authenticator(self, self.config.AUTHENTICATION_MODULE_PARAMS)
    
    -- setup wrappers
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      

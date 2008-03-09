@@ -1,5 +1,6 @@
 package    = 'Colors'
 versions   = {
+   {'8.03.08', 'March 8, 2008', 'updated petrodoc, no functional changes'},
    {'8.02.23', 'Feb. 23, 2008', 'added Luadoc comments'},
    {'8.02.03', 'Feb. 2, 2008',  'cleaned up for a stand-alone release'}
 }
@@ -12,28 +13,17 @@ detailed   = [[ Colors library provides methods to do color computation in
                 HSL color space and for finding "harmonious" color palettes. ]]
 license    = 'MIT/X11'
 
-license_txt=  MIT_X_LICENSE_EXPLAIN
-             .." The implementation was not derived from licensed software.\n\n"
-             .."-----------------------------------------"
-             ..MIT_X_LICENSE
-
 homepage   = 'http://sputnik.freewisdom.org/colors/'
 favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
-download   = 'http://sputnik.freewisdom.org/files/colors-$version.zip'
-copyyears  = '2007, 2008'
+download   = 'http://sputnik.freewisdom.org/files/colors-$version.tar.gz'
 
 logo       = 'http://sputnik.freewisdom.org/colors/colors.png'
 keywords   = 'Lua, HSL'
 rss        = homepage.."releases.rss"
 --------------------------------------------------------------------------------
 
-build      = [[
-   type = "none",
-   install = {
-      lua = { "src/colors.lua" }
-   }
-]] -----------------------------------------------------------------------------
-
+dependencies = ""
+build = nil
 
 Installation = [[
   Colors consists of a single file (colors.lua) of slightly more 
@@ -59,13 +49,13 @@ Contact = [[
   Comments are welcome! 
 ]] ----------------------------------------------------------------------------
 
-toc = {
+TOC = {
    { "Overview",     "<p>"..detailed.."</p>" },
    { "Installation", markdown(Installation) },
    { "Using Colors", markdown(include("docs/howto.md")) },
    { "Contact",      markdown(Contact)},
    { "LuaDoc",       luadoc{"colors.lua"} },
-   { "License",      markdown(license_txt) }
+   { "License",      markdown(include("LICENSE.txt")) }
 }
 -------------------------------------------------------------------------------
 

@@ -1,14 +1,16 @@
 require"luarocks.require"
+require"luarocks.pack"
+require"luarocks.build"
+require"luarocks.make_manifest"
 require"lfs"
 require"markdown"
 require"cosmo"
-require"md5"
 require "logging.file"
 taglet = require"luadoc.taglet.standard"
 
 
 ---------------------------------------------------------------------------------------------------
--- The main template
+-- The main HTML template
 ---------------------------------------------------------------------------------------------------
 HTML_TEMPLATE = [[<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -67,25 +69,10 @@ HTML_TEMPLATE = [[<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.
 </html>
 ]]
 
-ROCKSPEC_TEMPLATE = [[package = "$package"
-version = "$last_version-$revision"
-source = {
-   url = "$last_release_url",
-   md5 = "$md5",
-}
-description = {
-   summary    = "$summary",
-   detailed   = [===[$detailed]===],
-   license    =  "$license",
-   homepage   = "$homepage",
-   maintainer = "$maintainer ($email)",
-}
-dependencies = {
-$dependencies}
-build = {
-$build}
 
-]]
+---------------------------------------------------------------------------------------------------
+-- A template for an RSS feed about releases
+---------------------------------------------------------------------------------------------------
 
 RSS = [===[<rss version="2.0">
  <channel>
@@ -133,45 +120,39 @@ LUADOC = [[
 ]]
 
 
-MIT_X_LICENSE_EXPLAIN = [[
+---------------------------------------------------------------------------------------------------
+-- The rockspec template
+---------------------------------------------------------------------------------------------------
 
-Copyright © $copyyears $author.
+ROCKSPEC_TEMPLATE = [[package = "$package"
+version = "$last_version-$revision"
+source = {
+   url = "$last_release_url",
+}
+description = {
+   summary    = "$summary",
+   detailed   = [===[$detailed]===],
+   license    =  "$license",
+   homepage   = "$homepage",
+   maintainer = "$maintainer ($email)",
+}
+dependencies = {
+$dependencies}
+build = {
+$build}
 
-$package is free software: it can be used for both academic and
-commercial purposes at absolutely no cost.  There are no royalties or
-GNU-like "copyleft" restrictions. $package qualifies as Open Source
-software.  Its licenses are compatible with GPL. The legal details are
-below.
-
-The spirit of the license is that you are free to use $package for any
-purpose at no cost without having to ask us. The only requirement is
-that if you do use $package, then you should give us credit by including
-the appropriate copyright notice somewhere in your product or its
-documentation.
-
-The $package library is designed and implemented by $author.  $authorship_details
 ]]
 
-MIT_X_LICENSE = [[
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-"Software"), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+---------------------------------------------------------------------------------------------------
+-- A template for the build section of the rockspec
+---------------------------------------------------------------------------------------------------
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
-LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
-WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+BUILD_TEMPLATE = [[
+  type = "none",
+  install = {
+     lua = {%s     }
+  }
 ]]
 
 ---------------------------------------------------------------------------------------------------
@@ -179,7 +160,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ---------------------------------------------------------------------------------------------------
 
 function luadoc(modules)
-   lfs.chdir("src")
+   lfs.chdir("lua")
    taglet.logger = logging.file("luadoc.log")
    taglet.options = {}
    local doc = taglet.start(modules)
@@ -216,25 +197,51 @@ end
 
 
 ---------------------------------------------------------------------------------------------------
--- Used to include the content of another file
+-- Includes the content of another file.
 ---------------------------------------------------------------------------------------------------
 
 function include(path)
+   print(lfs.currentdir())
+   print(path)
    local f, x = io.open(path)
    return f:read("*all")
 end
 
 
+---------------------------------------------------------------------------------------------------
+-- Makes a map from module names to file paths for the "none" build.
+---------------------------------------------------------------------------------------------------
+
+function make_module_map(dir, subtract)
+   local mode = lfs.attributes(dir).mode
+   if mode == "file" then
+      local path = string.gsub(dir, subtract, "")
+      if string.match(path, "%.lua$") then
+         local mod = path:gsub("%.lua$", ""):gsub("%/", ".")
+         return string.format([=[        ["%s"] = "lua/%s",]=], mod, path)
+      end 
+   elseif mode == "directory" then
+      local buffer = ""
+      for child in lfs.dir(dir) do
+         if not (child=="." or child=="..") then
+            buffer=buffer..make_module_map(dir.."/"..child, subtract).."\n"
+         end
+      end
+      return buffer
+   end
+   return ""
+end
+
 
 ---------------------------------------------------------------------------------------------------
--- "Main"
+-- Does everything ("Main")
 ---------------------------------------------------------------------------------------------------
 
-function petrodoc(spec, revision, name)
+function petrodoc(name, spec, revision, server)
 
    function fill_and_save(path, content)
       local f = io.open(path, "w")
-      f:write(cosmo.lazy_fill(content, spec))
+      f:write(cosmo.fill(content, spec))
       f:close()
    end
 
@@ -243,7 +250,6 @@ function petrodoc(spec, revision, name)
    spec.last_version = spec.versions[1][1]
    spec.version = spec.last_version
    spec.last_release_url = cosmo.fill(spec.download, spec)
-   spec.dirs = spec.dirs or {"src", "docs", "LICENSE.txt"}
    spec.favicon = spec.favicon or 'http://www.lua.org/favicon.ico'
    spec.do_versions = function() 
                          for i, version in ipairs(versions) do
@@ -254,16 +260,20 @@ function petrodoc(spec, revision, name)
                             cosmo.yield(spec)
                          end
                       end
-   spec.body = ""
-   for i,item in ipairs(spec.toc) do
-      spec.anchor = item[1]
-      spec.h1 = item[1]
-      spec.text = cosmo.lazy_fill(item[2], spec)
-      spec.body=spec.body..cosmo.lazy_fill('\n\n<a name="$anchor"></a><h1>$h1<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>\n$text\n', spec)
+   if not spec.build then 
+      spec.build = string.format(BUILD_TEMPLATE, make_module_map(name.."/lua", name.."/lua/"))
    end
 
+   -- generate the documentation page
+   spec.body = ""
+   for i,item in ipairs(spec.TOC) do
+      spec.anchor = item[1]
+      spec.h1 = item[1]
+      spec.text = cosmo.fill(item[2], spec)
+      spec.body=spec.body..cosmo.fill('\n\n<a name="$anchor"></a><h1>$h1<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>\n$text\n', spec)
+   end
    spec.do_toc = function()
-                     for i, item in ipairs(spec.toc) do
+                     for i, item in ipairs(spec.TOC) do
                         --item.anchor = string.gsub(item[1], "([^%w]*)", "_")
                         local template = 1
                         if i > 1 then template = 2 end
@@ -279,40 +289,41 @@ function petrodoc(spec, revision, name)
    spec.revision = revision
    spec.download_filled = cosmo.fill(spec.download, spec)
 
-   -- generate the license
-   fill_and_save("LICENSE.txt", spec.license_txt)
+   fill_and_save(name.."/docs/index.html", HTML_TEMPLATE)
+   fill_and_save(name.."/docs/releases.rss", RSS)
 
-   -- generate the html file
-   fill_and_save("docs/index.html", HTML_TEMPLATE)
-   fill_and_save("tmp/index.html", HTML_TEMPLATE)
+   -- make a release
+   local released_rock_dir = name.."-"..spec.last_version
+   os.execute("cp -r "..name.." "..released_rock_dir)
+   os.execute("tar czvpf "..released_rock_dir..".tar.gz "..released_rock_dir)
 
-   -- make an archive
-   local archive_name = spec.name.."-"..spec.last_version
-   lfs.chdir("tmp")
-   os.remove(archive_name..".zip")
-   lfs.mkdir(archive_name)   
-   for i, dir in ipairs(spec.dirs) do
-      os.execute("cp -r ../"..dir.." "..archive_name.."/")
-      os.execute("zip -r "..archive_name..".zip".." "..archive_name.."/"..dir.." -x *.svn/* *~ *log")
+   -- publish it
+   if server then 
+      os.execute("scp "..released_rock_dir..".tar.gz "..server)
    end
-   spec.md5 = md5.sumhexa(io.open(archive_name..".zip"):read("*all"))
-   lfs.chdir("..")
 
    -- make the rockspec
-   spec.version = spec.versions[1][1]
-   fill_and_save("tmp/"..spec.name.."-"..spec.last_version.."-"..revision..".rockspec", ROCKSPEC_TEMPLATE)
+   local rockspec = released_rock_dir.."-"..revision..".rockspec"
+   fill_and_save(rockspec, ROCKSPEC_TEMPLATE)
 
-   -- make the RSS feed
-   fill_and_save("tmp/releases.rss", RSS)
+   -- pack the rock
+   luarocks.pack.run(rockspec)
+   luarocks.build.run(rockspec)
+   luarocks.make_manifest.run()
+   luarocks.pack.run(name, spec.last_version.."-"..revision)   
+
 end
 
 
-local dir = arg[1]
-lfs.chdir(dir)
+local cwd = lfs.currentdir()
+local rock = arg[1]
+lfs.chdir(rock)
+print(lfs.currentdir())
 local petrofunc, err = loadfile("petrodoc")
 if not petrofunc then error(err) end
-
 local spec = getfenv(petrofunc())
-petrodoc(spec, arg[2] or "0", arg[1])
+lfs.chdir(cwd)
+
+petrodoc(rock, spec, arg[2] or "0", arg[3])
 
 

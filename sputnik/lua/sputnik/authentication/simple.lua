@@ -41,8 +41,7 @@ function make_authenticator (sputnik, params)
    
    local function hours_since_ce(timestamp)
       return days_since_ce(timestamp)*24+tonumber(timestamp:sub(12,13))
-   end
-   
+   end   
    
    local function is_recent(username)
       if username and users[username] and users[username].time then
@@ -86,7 +85,7 @@ function make_authenticator (sputnik, params)
    local function check_password(user, password) 
       if users[user] and users[user].hash == get_salted_hash(users[user].time, password) then
          return user, get_token(user)
-      elseif user_exists(user) or params.NO_AUTO_REGISTRATION then
+      elseif user_exists(user) or (params.NO_AUTO_REGISTRATION and user~="Admin") then
           return nil
       else
 	      add_user(user, password)

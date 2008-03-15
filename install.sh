@@ -1,7 +1,8 @@
 SPUTNIK_DIR=`pwd`
 # Install Kepler, with both Xavante and CGI launchers -------------------------
 TMP=$SPUTNIK_DIR/tmp/
-mkdir $TMP && cd $TMP
+mkdir -p $TMP && cd $TMP
+wget () { if [ ! -e $(basename $1)]; then /usr/bin/wget $1; fi; }
 wget http://sputnik.freewisdom.org/files/kepler-1.1-snapshot-20071217-2000.tar.gz
 tar xvzf kepler-1.1-snapshot-20071217-2000.tar.gz
 cd kepler-1.1

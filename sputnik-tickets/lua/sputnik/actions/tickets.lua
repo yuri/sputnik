@@ -15,6 +15,7 @@ local TEMPLATE = [===[
   <tr>
    <th>ID</th>
    <th>priority</th>
+   <th>milestone</th>
    <th>status</th>
    <th>title</th>
   </tr>
@@ -23,6 +24,7 @@ local TEMPLATE = [===[
   <tr style="background:$color">
    <td width="20px"><a $ticket_link>$ticket_id</a></td>
    <td width="20px">$priority</td>
+   <td width="20px">$milestone</td>
    <td sorttable_customkey="$num_status" width="20px">$status</td>
    <td>$title</td>
   </tr>
@@ -84,6 +86,7 @@ actions.show = function(node, request, sputnik)
                                               status      = ticket.status,
                                               num_status  = status_to_number[ticket.status],
                                               priority    = priority_to_number[ticket.priority],
+                                              milestone   = ticket.milestone or "undef",
                                               title       = ticket.title,
                                               color       = status_colors[ticket.status] or "white",
                                            }

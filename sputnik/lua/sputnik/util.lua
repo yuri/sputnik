@@ -56,7 +56,7 @@ end
 -- @return               the dirified string.
 ---------------------------------------------------------------------------------------------------
 function dirify(text)
-   local pattern = [[[%?%+%=%%%s%'%"%/%\]+]]
+   local pattern = [[[%?%+%=%%%s%'%"%\]+]]
    text = text or ""
    return text:gsub(pattern, "_")
 end

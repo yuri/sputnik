@@ -40,6 +40,7 @@ function Versium:get_node(id, version)
       return nil
    end
    local node = self.storage:get_node(self:escape_id(id), version)
+   node.id = self:unescape_id(node.id)
    assert(node.data)
    assert(node.id)
    assert(node.version)
@@ -55,6 +56,7 @@ end
 function Versium:get_stub(id)
    assert(id and id:len() > 0)
    local node = self.storage:get_stub(self:escape_id(id))
+   node.id = self:unescape_id(node.id)
    assert(node.data)
    assert(node.id)
    assert(node.version)
@@ -233,7 +235,7 @@ end
 ---------------------------------------------------------------------------------------------------
 function Versium:escape_id(id)
    assert(id and id:len() > 0)
-   return string.gsub(id, ":", "%%3A")
+   return id:gsub("%%", "%%25"):gsub(":", "%%3A"):gsub("/", "%%2F")
 end
 
 
@@ -245,7 +247,7 @@ end
 ---------------------------------------------------------------------------------------------------
 function Versium:unescape_id(id)
    assert(id and id:len() > 0)
-   return string.gsub(id, "%%3A", ":")
+   return id:gsub("%%2F", "/"):gsub("%%3A", ":"):gsub("%%25", "%%")
 end
 
 errors = {

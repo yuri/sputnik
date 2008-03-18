@@ -110,7 +110,7 @@ function actions.post(node, request, sputnik)
          elseif not node.check_permissions(request.user, action) then
             err_msg"ACTION_NOT_ALLOWED"
          end
-         return actions[action](node, request, sputnik) 
+         return node.actions[action](node, request, sputnik)
       end
    end 
 end

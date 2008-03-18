@@ -39,6 +39,7 @@ raw             = "wiki.raw"
 raw_content     = "wiki.raw_content"
 login           = "wiki.show_login_form"
 sputnik_version = "wiki.sputnik_version"
+save            = "wiki.save"
 ]],
 templates = "_templates",
 translations = "_translations",

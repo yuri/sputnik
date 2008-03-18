@@ -65,14 +65,12 @@ status_to_number = {
 actions.show = function(node, request, sputnik)
    local tickets = {}
    local ticket_counter = 0
-   for i, node_id in ipairs(sputnik:get_node_names()) do
-       if node_id:sub(0,7) == "Ticket:" then
-          local ticket = sputnik:get_node(node_id)
-          ticket.ticket_id = node_id:sub(8)
-          table.insert(tickets, ticket)
-          local ticket_number = tonumber(ticket.ticket_id) or 0
-          if ticket_number > ticket_counter then ticket_counter = ticket_number; end 
-       end
+   for i, node_id in ipairs(sputnik:get_node_names{prefix="Tickets/"}) do
+      local ticket = sputnik:get_node(node_id)
+      ticket.ticket_id = node_id:sub(9)
+      table.insert(tickets, ticket)
+      local ticket_number = tonumber(ticket.ticket_id) or 0
+      if ticket_number > ticket_counter then ticket_counter = ticket_number; end 
    end
    table.sort(tickets, function(x,y) return x.ticket_id > y.ticket_id end)
    node.inner_html = cosmo.f(TEMPLATE){
@@ -92,7 +90,7 @@ actions.show = function(node, request, sputnik)
                                            }
                                         end
                                      end,
-                        new_ticket_link = sputnik:make_link(string.format("Ticket:%06d", ticket_counter + 1), "edit",
+                        new_ticket_link = sputnik:make_link(string.format("Tickets/%06d", ticket_counter + 1), "edit",
                                                             {prototype = "@Ticket", reported_by = request.user})
                      }
    return node.wrappers.default(node, request, sputnik)

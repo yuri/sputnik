@@ -315,8 +315,8 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Returns a list of all node ids.
 ---------------------------------------------------------------------------------------------------
-function Sputnik.get_node_names(self)
-   local node_ids = self.repo.versium:get_node_ids() -- reaching deep
+function Sputnik.get_node_names(self, args)
+   local node_ids = self.repo.versium:get_node_ids(args) -- reaching deep
    return node_ids
 end
 
@@ -377,6 +377,7 @@ function Sputnik:translate_request (request)
    else
       request.node_name = self.config.HOME_PAGE 
    end
+   request.node_name = request.node_name:gsub("/$", "") -- remove the trailing slash
    request.action = request.action or "show"
 
 

@@ -88,13 +88,21 @@ end
 
 ---------------------------------------------------------------------------------------------------
 -- Lists ids for all existing nodes.
--- 
+--
+-- @param args.prefix    a prefix to be used for filtering nodes
 -- @return               a list of IDs.
 ---------------------------------------------------------------------------------------------------
-function Versium:get_node_ids()
+function Versium:get_node_ids(args)
    local ids = {}
-   for i, v in ipairs(self.storage:get_node_ids()) do
-      ids[i] = self:unescape_id(v)
+   local args = args or {}
+   args.prefix = args.prefix or ""
+   local preflen = args.prefix:len()
+   local id
+   for i, v in ipairs(self.storage:get_node_ids(args)) do
+      id = self:unescape_id(v)
+      if id:sub(1, preflen) == args.prefix then
+         table.insert(ids, id)
+      end
    end
    return ids
 end

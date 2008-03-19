@@ -220,7 +220,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 EDIT = [===[
    
-      <form method="post" action="$action_url">
+      <form method="post" enctype="multipart/form-data" action="$action_url">
        <script type="text/javascript">
          function toggleElements(class_name) {
             var re = new RegExp('\\b' + "advanced_field" + '\\b');
@@ -267,6 +267,7 @@ EDIT = [===[
 EDIT_FORM_HEADER        = [[<a name="$anchor"></a><h2>$label</h2>]]
 EDIT_FORM_NOTE          = [[<h3>$label</h3>]]
 EDIT_FORM_LABEL         = [[<label>$label</label>]]
+EDIT_FORM_FILE          = [[<input type="file" value="$value" name="$name"/>]]
 EDIT_FORM_HONEYPOT      = [[<input type="text" value="$value" name="$name"/>]]
 EDIT_FORM_TEXT_FIELD    = [[<input type="text" value="$value" name="$name"/>]]
 EDIT_FORM_HIDDEN        = [[<input type="hidden" value="$value" name="$name"/>]]
@@ -278,6 +279,7 @@ EDIT_FORM_BIG_TEXTAREA  = [[<textarea name="$name" id="main_text_area" rows="$ro
 EDIT_FORM_CHECKBOX      = [[<input class="checkbox" style="border:1px solid black" 
                                    type="checkbox" name="$name" value="yes"
                                    $if_checked[=[checked="checked"]=] /><br/>]]
+
 EDIT_FORM_SELECT        = [[<select name="$name">
                                $do_options[===[<option $if_selected[=[selected="yes"]=]>$option</option>]===]
                             </select>]]

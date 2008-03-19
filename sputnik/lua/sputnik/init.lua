@@ -223,6 +223,9 @@ function Sputnik:prime_node(node)
    for i, class in ipairs{"error", "warning", "success", "notice"} do
       node["post_"..class] = function(self, message) table.insert(self.messages, {message=message, class=class}) end
    end
+   -- Table/Function that allow the developer to add custom HTML response headers
+   node.headers = {}
+   node.add_header = function(self, header, value) self.headers[header] = value end
    return node
 end  
 
@@ -427,6 +430,12 @@ function Sputnik:run(request, response)
    assert(content)
    self.logger:info(self.cookie_name.."=".. ((request.user or "").."|"..(request.auth_token or "")))
    response.headers["Content-type"] = content_type or "text/html"
+   
+   -- If we have any custom HTML headers, add them to the response
+   for header,value in pairs(node.headers) do
+      response.headers[header] = value
+   end
+
    local cookie_value = (request.user or "").."|"..(request.auth_token or "")
    response:set_cookie(self.cookie_name, {value=cookie_value, path="/"})
    response:write(content)
@@ -538,6 +547,13 @@ function cgilua_run()
       cgilua.put(err) 
    else
       SAPI.Response.contenttype(response.headers["Content-type"] or "text/html")
+      -- Output any other headers that have been added to this request
+      for header,value in pairs(response.headers) do
+         if header ~= "Content-type" then
+            SAPI.Response.header(header, value)
+         end
+      end
+
       cgilua.put(content)
    end
 end

@@ -721,9 +721,11 @@ function wrappers.default(node, request, sputnik)
       -- urls are just urls
       base_url         = sputnik.config.BASE_URL, -- for mods
       nice_url         = sputnik.config.NICE_URL, -- for mods
-      logo_url         = sputnik.config.LOGO_URL,
+      logo_url         = sputnik.config.IMAGES.logo,
+      favicon_url      = sputnik.config.IMAGES.favicon,
+      rss_medium_url   = sputnik.config.IMAGES.rss_medium,
+      rss_small_url    = sputnik.config.IMAGES.rss_small,
       home_page_url    = sputnik.config.HOME_PAGE_URL,
-      icons_url        = sputnik.config.ICONS_URL,
       sputnik_link     = "href='http://sputnik.freewisdom.org/'"
    }, "text/html"
 end

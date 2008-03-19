@@ -23,7 +23,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   <title>$site_title: $title</title>
   $do_stylesheets[[<link type="text/css" rel="stylesheet" href="$url" />
   ]]
-  <link rel="shortcut icon" href="$icons_url/sputnik-icon.png"/>
+  <link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_node)" $node_rss_link/>
  </head>
@@ -39,7 +39,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
             title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>]]    
     $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
     $if_not_logged_in[[<A $login_link>_(LOGIN)</a>]]
-    <a $site_rss_link><img src="$icons_url/feed-icon-28x28.png" id="rss_icon" title="RSS for edits to this wiki" alt="Small RSS Icon" /></a>
+    <a $site_rss_link><img src="$rss_medium_url" id="rss_icon" title="RSS for edits to this wiki" alt="Small RSS Icon" /></a>
    </div>
    
    <div id="logo">
@@ -59,7 +59,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           <a $edit_link > _(EDIT)      </a>
           | <a $history_link> _(HISTORY)   </a>
           | <a $node_rss_link>
-             <img src="$icons_url/feed-icon-12x12.png" class="rss_icon"
+             <img src="$rss_small_url" class="rss_icon"
                   title="RSS for edits to this node" alt="Small RSS Icon" />
             </a>
       </span>

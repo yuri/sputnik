@@ -181,6 +181,14 @@ EDIT_FORM_FILE_SIZE = {
 	en_US = "File size",
 }
 
+EDIT_FORM_FILE_DESCRIPTION = {
+	en_US = "Description",
+}
+
+EDIT_FORM_FILE_COPYRIGHT = {
+	en_US = "Copyright",
+}
+
 -- The link to show fields for "advanced" page parameteters       
 SHOW_ADVANCED_OPTIONS = {
    en_US = "Show Advanced Options",

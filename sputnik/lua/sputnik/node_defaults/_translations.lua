@@ -169,6 +169,18 @@ EDIT_FORM_FILE_UPLOAD = {
    en_US = "File to upload",
 }
 
+EDIT_FORM_FILE_TYPE = {
+	en_US = "File 'Content-type'",
+}
+
+EDIT_FORM_FILE_NAME = {
+	en_US = "Filename",
+}
+
+EDIT_FORM_FILE_SIZE = {
+	en_US = "File size",
+}
+
 -- The link to show fields for "advanced" page parameteters       
 SHOW_ADVANCED_OPTIONS = {
    en_US = "Show Advanced Options",

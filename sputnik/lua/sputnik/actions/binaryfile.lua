@@ -5,6 +5,9 @@ actions = {}
 local types = {
    ["image/png"] = "png",
    ["application/pdf"] = "pdf",
+   ["image/jpeg"] = "jpg",
+   ["image/gif"] = "gif",
+   ["text/plain"] = "txt",
 }
 
 for mime,extension in pairs(types) do
@@ -38,7 +41,7 @@ $img
    <th>Content-type:</th>
    <td>$type</td>
 </tr></table>
-<a $link>View this file</a>
+<a $link>Download this file</a>
 ]=]
 
 function actions.show(node, request, sputnik)
@@ -68,25 +71,32 @@ function actions.save(node, request, sputnik)
    local size = info.filesize
    local file = info.file
 
-   file:seek("set");
-   local data = file:read("*all")
+   -- Check to see if we're editing fields, rather than uploading
+   -- a new file by checking filename and filesize.
 
-   request.params.content = string.format("%q", data)
-   request.params.file_type = type
-   request.params.file_name = tostring(name)
-   request.params.file_size = tostring(size)
+   if name:match("%S") and size > 0 then
+	  -- A file was uploaded 
 
-   -- Set the correct action
-   local ext = types[type]
+	  file:seek("set");
+	  local data = file:read("*all")
 
-   if not ext then
-	  node:post_error("The file you uploaded did not match a known file type: " .. tostring(type))
-	  return node.actions.edit(node, request, sputnik)
-   end
+	  request.params.content = string.format("%q", data)
+	  request.params.file_type = type
+	  request.params.file_name = tostring(name)
+	  request.params.file_size = tostring(size)
 
-   request.params.actions = string.format([[%s = "binaryfile.%s"]], ext, ext)
+	  -- Set the correct action
+	  local ext = types[type]
 
-   -- Was something incomplete?
+	  if not ext then
+		  node:post_error("The file you uploaded did not match a known file type: " .. tostring(type))
+		  return node.actions.edit(node, request, sputnik)
+	  end
+
+	  request.params.actions = string.format([[%s = "binaryfile.%s"]], ext, ext)
+  end
+
+	-- Was something incomplete?
    if request.try_again then
       return node.actions.edit(node, request, sputnik)
    else

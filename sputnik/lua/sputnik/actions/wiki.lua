@@ -130,7 +130,7 @@ function actions.save(node, request, sputnik)
    else
       local new_node = sputnik:update_node_with_params(node, request.params)
       new_node = sputnik:activate_node(new_node)
-      new_node:save(request.user, request.params.summary, {minor=request.params.minor})
+      new_node:save(request.user, request.params.summary or "", {minor=request.params.minor})
       return new_node.actions.show(new_node, request, sputnik)
    end
 end

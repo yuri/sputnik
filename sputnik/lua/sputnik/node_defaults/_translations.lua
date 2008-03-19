@@ -164,6 +164,11 @@ EDIT_FORM_TITLE = {
    pt_BR = "Título da Página",
 }
 
+-- A label for the "file" parameter for file uploads
+EDIT_FORM_FILE_UPLOAD = {
+   en_US = "File to upload",
+}
+
 -- The link to show fields for "advanced" page parameteters       
 SHOW_ADVANCED_OPTIONS = {
    en_US = "Show Advanced Options",

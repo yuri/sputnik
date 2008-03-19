@@ -38,17 +38,19 @@ $img
    <th>Content-type:</th>
    <td>$type</td>
 </tr></table>
+<a $link>View this file</a>
 ]=]
 
 function actions.show(node, request, sputnik)
+   local ext = types[node.file_type or ""]
+
    node.inner_html = cosmo.f(TPL_FILE_INFO){
 	  filename = node.file_name,
 	  size = node.file_size,
 	  type = node.file_type,
+	  link = sputnik:make_link(node.name, ext),
 	  img = function()
-		 local type = node.file_type
-		 if type:match("image") then
-			local ext = types[type]
+		 if node.file_type:match("image") then
 			return string.format([[<img style="float: right" src="%s" width="350"]], sputnik:make_url(node.name, ext))
 		 else
 			return ""
@@ -60,7 +62,7 @@ function actions.show(node, request, sputnik)
 end
 
 function actions.save(node, request, sputnik)
-   local info = request.params.file_info
+   local info = request.params.file_upload
    local type = info["content-type"]
    local name = info.filename
    local size = info.filesize

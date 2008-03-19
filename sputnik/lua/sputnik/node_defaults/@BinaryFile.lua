@@ -14,11 +14,11 @@ save = "binaryfile.save"
 file_name = {1.0}
 file_type = {1.1}
 file_size = {1.2}
-file_info = {virtual=true}
+file_upload = {virtual=true}
 ]=],
    edit_ui = [=[
 content_hdr = nil
 content = nil
-file_info = {1.0, "file"}
+file_upload = {1.30, "file"}
 ]=],
 }

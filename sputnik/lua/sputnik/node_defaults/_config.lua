@@ -34,10 +34,10 @@ SERVER_TZ      = "-05:00"                   -- set to the correct time zone offs
 --- that are used for the various icons (favicon, rss, etc.)
 
 IMAGES = {
-   logo        = NICE_URL .. "sputnik-logo.png",
-   favicon     = NICE_URL .. "sputnik-icon.png",
-   rss_small   = NICE_URL .. "feed-icon-12x12.png",
-   rss_medium  = NICE_URL .. "feed-icon-28x28.png",
+   logo        = NICE_URL .. "_logo.png",
+   favicon     = NICE_URL .. "_favicon.png",
+   rss_small   = NICE_URL .. "_rss_icon_small.png",
+   rss_medium  = NICE_URL .. "_rss_icon_medium.png",
 }
 
 --- changes the language of the wiki interface

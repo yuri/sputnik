@@ -8,6 +8,7 @@ NODE = {
    actions = [=[
 show = "binaryfile.show"
 save = "binaryfile.save"
+download = "binaryfile.download"
 ]=],
 
    fields = [=[

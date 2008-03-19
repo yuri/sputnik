@@ -126,7 +126,7 @@ function actions.save(node, request, sputnik)
       sputnik.logger:debug("~~ "..k)
    end
    if request.try_again then
-      return actions.edit(node, request, sputnik)
+      return node.actions.edit(node, request, sputnik)
    else
       local new_node = sputnik:update_node_with_params(node, request.params)
       new_node = sputnik:activate_node(new_node)
@@ -477,7 +477,7 @@ function actions.edit (node, request, sputnik)
    
    sputnik.logger:debug(node.edit_ui..login_spec..honeypots)
    local html_for_fields, field_list = html_forms.make_html_form{
-                                          field_spec = node.edit_ui..login_spec..honeypots, 
+                                          field_spec = node[edit_ui_field or "edit_ui"]..login_spec..honeypots, 
                                           templates  = node.templates, 
                                           translator = node.translator,
                                           values     = fields,

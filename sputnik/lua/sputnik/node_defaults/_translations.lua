@@ -164,6 +164,31 @@ EDIT_FORM_TITLE = {
    pt_BR = "Título da Página",
 }
 
+-- A label for the "file" parameter for file uploads
+EDIT_FORM_FILE_UPLOAD = {
+   en_US = "File to upload",
+}
+
+EDIT_FORM_FILE_TYPE = {
+	en_US = "File 'Content-type'",
+}
+
+EDIT_FORM_FILE_NAME = {
+	en_US = "Filename",
+}
+
+EDIT_FORM_FILE_SIZE = {
+	en_US = "File size",
+}
+
+EDIT_FORM_FILE_DESCRIPTION = {
+	en_US = "Description",
+}
+
+EDIT_FORM_FILE_COPYRIGHT = {
+	en_US = "Copyright",
+}
+
 -- The link to show fields for "advanced" page parameteters       
 SHOW_ADVANCED_OPTIONS = {
    en_US = "Show Advanced Options",

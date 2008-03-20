@@ -23,7 +23,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   <title>$site_title: $title</title>
   $do_stylesheets[[<link type="text/css" rel="stylesheet" href="$url" />
   ]]
-  <link rel="shortcut icon" href="$icons_url/sputnik-icon.png"/>
+  <link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_node)" $node_rss_link/>
  </head>
@@ -39,7 +39,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
             title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>]]    
     $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
     $if_not_logged_in[[<A $login_link>_(LOGIN)</a>]]
-    <a $site_rss_link><img src="$icons_url/feed-icon-28x28.png" id="rss_icon" title="RSS for edits to this wiki" alt="Small RSS Icon" /></a>
+    <a $site_rss_link><img src="$rss_medium_url" id="rss_icon" title="RSS for edits to this wiki" alt="Small RSS Icon" /></a>
    </div>
    
    <div id="logo">
@@ -59,7 +59,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           <a $edit_link > _(EDIT)      </a>
           | <a $history_link> _(HISTORY)   </a>
           | <a $node_rss_link>
-             <img src="$icons_url/feed-icon-12x12.png" class="rss_icon"
+             <img src="$rss_small_url" class="rss_icon"
                   title="RSS for edits to this node" alt="Small RSS Icon" />
             </a>
       </span>
@@ -220,7 +220,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 EDIT = [===[
    
-      <form method="post" action="$action_url">
+      <form method="post" enctype="multipart/form-data" action="$action_url">
        <script type="text/javascript">
          function toggleElements(class_name) {
             var re = new RegExp('\\b' + "advanced_field" + '\\b');
@@ -267,6 +267,7 @@ EDIT = [===[
 EDIT_FORM_HEADER        = [[<a name="$anchor"></a><h2>$label</h2>]]
 EDIT_FORM_NOTE          = [[<h3>$label</h3>]]
 EDIT_FORM_LABEL         = [[<label>$label</label>]]
+EDIT_FORM_FILE          = [[<input type="file" value="$value" name="$name"/>]]
 EDIT_FORM_HONEYPOT      = [[<input type="text" value="$value" name="$name"/>]]
 EDIT_FORM_TEXT_FIELD    = [[<input type="text" value="$value" name="$name"/>]]
 EDIT_FORM_HIDDEN        = [[<input type="hidden" value="$value" name="$name"/>]]
@@ -278,6 +279,7 @@ EDIT_FORM_BIG_TEXTAREA  = [[<textarea name="$name" id="main_text_area" rows="$ro
 EDIT_FORM_CHECKBOX      = [[<input class="checkbox" style="border:1px solid black" 
                                    type="checkbox" name="$name" value="yes"
                                    $if_checked[=[checked="checked"]=] /><br/>]]
+
 EDIT_FORM_SELECT        = [[<select name="$name">
                                $do_options[===[<option $if_selected[=[selected="yes"]=]>$option</option>]===]
                             </select>]]

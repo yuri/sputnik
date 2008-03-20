@@ -95,3 +95,14 @@ actions.show = function(node, request, sputnik)
                      }
    return node.wrappers.default(node, request, sputnik)
 end
+
+--local wiki = require("sputnik.actions.wiki")
+
+actions.save_new = function(node, request, sputnik)
+   new_node = sputnik.get_node("Tickets/Foo")
+   sputnik:update_node_with_params(node, {prototype = "@Ticket"})
+   new_node = sputnik:activate_node(new_node, request)
+   request.params.prototype="@Ticket"
+   return wiki.actions.save(new_node, request, sputnik)
+end
+

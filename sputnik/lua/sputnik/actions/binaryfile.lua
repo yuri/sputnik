@@ -12,19 +12,12 @@ local types = {
 
 for mime,extension in pairs(types) do
    actions[extension] = function(node, request, sputnik)
-      if node.file_type == mime then
-	 local func = loadstring("return " .. node.content)
-	 local succ,err = pcall(func)
-	 if succ then
-	    return err, mime
-	 else
-	    node:post_error("There was an error expanding the stored file: " .. tostring(err))
-	 end
-      else
-	 node:post_error("Requested action does not match file content: " .. tostring(node.type))
-      end
-
-      return node.wrappers.default(node, request, sputnik)
+	  if node.file_type == mime then
+         return node.content, mime
+	  else
+		 node:post_error("Requested action does not match file content: " .. tostring(node.type))
+   	     return node.wrappers.default(node, request, sputnik)
+	  end
    end
 end
 
@@ -54,7 +47,8 @@ function actions.show(node, request, sputnik)
       link = sputnik:make_link(node.name, "download"),
       img = function()
 	 if node.file_type:match("image") then
-	    return string.format([[<img style="float: right" src="%s" width="350"]], sputnik:make_url(node.name, ext))
+        local image_url = sputnik:make_url(node.name, ext, {version=request.params.version})
+	    return '<img style="float: right" src="'..image_url..'" width="350"'
 	 else
 	    return ""
 	 end
@@ -67,16 +61,9 @@ end
 function actions.download(node, request, sputnik)
    local filename = node.file_name
    local mime = node.file_type
-
-   local func = loadstring("return " .. node.content)
-   local succ,err = pcall(func)
-   if succ then
-      -- Set the Content-disposition header, and suggest a filename
-      node:add_header("Content-Disposition", "attachment; filename=\""..node.file_name.."\"")
-      return err, mime
-   else
-      node:post_error("There was an error expanding the stored file: " .. tostring(err))
-   end
+   -- Set the Content-disposition header, and suggest a filename
+   node:add_header("Content-Disposition", "attachment; filename=\""..node.file_name.."\"")
+   return node.content, mime
 end
 
 function actions.save(node, request, sputnik)
@@ -92,13 +79,11 @@ function actions.save(node, request, sputnik)
    if name:match("%S") and size > 0 then
       -- A file was uploaded 
 
-      file:seek("set");
-      local data = file:read("*all")
-
-      request.params.content = string.format("%q", data)
-      request.params.file_type = type
-      request.params.file_name = tostring(name)
-      request.params.file_size = tostring(size)
+	  file:seek("set");
+	  request.params.content = file:read("*all")
+	  request.params.file_type = type
+	  request.params.file_name = tostring(name)
+	  request.params.file_size = tostring(size)
 
       -- Set the correct action
       local ext = types[type]

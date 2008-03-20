@@ -16,6 +16,7 @@ tar xvzf luarocks-0.4.2.tar.gz && cd luarocks-0.4.2
 ./configure --with-lua=$SPUTNIK_DIR --with-lua-include=$SPUTNIK_DIR/include/ --prefix=$SPUTNIK_DIR --default-config=$SPUTNIK_DIR/etc/luarocks_config
 make && make install 
 # Configure Luarocks and install Sputnik --------------------------------------
+LUA_INIT=""
 echo "repo_dir='$SPUTNIK_DIR/rocks'" > $SPUTNIK_DIR/etc/luarocks_config
 echo "scripts_dir = '$SPUTNIK_DIR/bin'" >> $SPUTNIK_DIR/etc/luarocks_config
 echo "repositories = {'http://sputnik.freewisdom.org/rocks'}" >> $SPUTNIK_DIR/etc/luarocks_config

@@ -2,14 +2,14 @@ module(..., package.seeall)
 
 NODE = {
  file_size= [=[1737]=],
- prototype= [=[@BinaryFile]=],
+ prototype= [=[@Binary_File]=],
  file_name= [=[feed-icon-28x28.png]=],
  title= [=[RSS icon 28x28]=],
  actions= [=[png = "binaryfile.png"]=],
  file_type= [=[image/png]=],
 }
 
-NODE.content = [=["‰PNG\r\
+NODE.content = "‰PNG\r\
 \
 \000\000\000\rIHDR\000\000\000\000\000\000\000\000\000r\rß”\000\000\000gAMA\000\000¯È7Šé\000\000\000tEXtSoftware\000Adobe ImageReadyqÉe<\000\000[IDATxÚ”VYŒEşª«ºg˜ÙY…İ•{… ‡dYƒ$.ñ€Jbx ˆ>¨D^¼ƒ|UL|@bğ@!1áÀP\r …rÈ±Ë{ÎìÌtwùÿÕİÓ3KHtfş©êîªúêû¯Zh­ñÛ‹c,\000K©¿‚Ú&2húòï®¾;|Wÿ§ö:5_ÑÅ¶¹_w]'—f0Ï™qÓ ¤!@w…E-õ…eÓZVøÌÜ'Sø$?§¾ŒÆó\rO$ĞÙ>€›gO£pëÚ\\EC—3Øğ	Â»ó<·NĞ(oÉ\
 Ôá‚à)aÆšñÆ0'ÂqJ*Œ­Šdz&Ú¾»ºZ‘‹VgÆOƒO`ğ\
@@ -21,5 +21,5 @@ NODE.content = [=["‰PNG\r\
 ·áÓ¢E\
 xÎ­¢dÊ$-x¿‰ö]¯¦[¯ G=\000‡’®ûè6øÅ¸>Ix¨ZCŞO¡‡öD©L4¨/=Éç óÆ%$_:{ôCÆuî™]ÄdG	9c	\"~gúÚÆ€µS€êq1ËCV/K1¤#Š&æèxÊ,Ø\000§nšqHÕÀ^¼1MRwş„˜äâ…æÑ0›|ôÿ¥BğA	éĞ1¡ÒXÁiAñpÉ‰úé•zf›E÷ÎEä.Ÿ(S™Èª1ä™ëç*“‹äĞ¸”ÕÍŞ‡,£¥2x%d6Yşú©Š‰:wÇ2ë23É·ÿUV'$VÕcÁ§š×s³bÙ\000–Ò(q*O$Hš„şo¸‚3z¦ÑC÷àz³ E ìZïÊqdÏN\"„<$¿BôwÓBt¿§“bÜjèpúçÛ~\rbH \"t©øiÙ0İüÄ, ë‚9ZXÕ\\/qâMŒ„y+Óa)ÆQæYd-£èjã>^ó3ÆPÕMFÛÙïMçh¦JõƒÀ­C¨T8İ#°È$—\
 aPßbW…fQù9·Vf6F¯Šù@ss·tœ>\r‘®£‰ø°•A—KÔ½,ªµb\\¦Ïl‘ 9‡®‹&/ö\
-Nš#OİT[Ÿ\\];u’)»†,r'ü2™ò‚Ì3íÆà‘”f>»¹€Û—O\"‹Ş	ë=½º^Zı2\rYI—³ÿÇk|øú_Ş×qvıãd[æïv7óÅ¿\000¸i.Zš‡˜\000\000\000\000IEND®B`‚"]=]
+Nš#OİT[Ÿ\\];u’)»†,r'ü2™ò‚Ì3íÆà‘”f>»¹€Û—O\"‹Ş	ë=½º^Zı2\rYI—³ÿÇk|øú_Ş×qvıãd[æïv7óÅ¿\000¸i.Zš‡˜\000\000\000\000IEND®B`‚"
 

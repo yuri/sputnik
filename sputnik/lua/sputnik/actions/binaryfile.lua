@@ -60,16 +60,7 @@ end
 function actions.download(node, request, sputnik)
    local filename = node.file_name
    local mime = node.file_type
-
-   local func = loadstring("return " .. node.content)
-   local succ,err = pcall(func)
-   if succ then
-      -- Set the Content-disposition header, and suggest a filename
-      node:add_header("Content-Disposition", "attachment; filename=\""..node.file_name.."\"")
-      return err, mime
-   else
-      node:post_error("There was an error expanding the stored file: " .. tostring(err))
-   end
+   return node.content, mime
 end
 
 function actions.save(node, request, sputnik)

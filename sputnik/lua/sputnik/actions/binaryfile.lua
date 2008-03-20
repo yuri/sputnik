@@ -47,7 +47,8 @@ function actions.show(node, request, sputnik)
       link = sputnik:make_link(node.name, "download"),
       img = function()
 	 if node.file_type:match("image") then
-	    return string.format([[<img style="float: right" src="%s" width="350"]], sputnik:make_url(node.name, ext))
+        local image_url = sputnik:make_url(node.name, ext, {version=request.params.version})
+	    return '<img style="float: right" src="'..image_url..'" width="350"'
 	 else
 	    return ""
 	 end

@@ -13,13 +13,14 @@ local types = {
 for mime,extension in pairs(types) do
    actions[extension] = function(node, request, sputnik)
 	  if node.file_type == mime then
-		 local func = loadstring("return " .. node.content)
+         return node.content, mime
+		 --[[local func = loadstring("return " .. node.content)
 		 local succ,err = pcall(func)
 		 if succ then
 			return err, mime
 		 else
 			node:post_error("There was an error expanding the stored file: " .. tostring(err))
-		 end
+		 end]]
 	  else
 		 node:post_error("Requested action does not match file content: " .. tostring(node.type))
 	  end
@@ -80,7 +81,7 @@ function actions.save(node, request, sputnik)
 	  file:seek("set");
 	  local data = file:read("*all")
 
-	  request.params.content = string.format("%q", data)
+	  request.params.content = data --string.format("%q", data)
 	  request.params.file_type = type
 	  request.params.file_name = tostring(name)
 	  request.params.file_size = tostring(size)

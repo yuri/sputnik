@@ -45,7 +45,7 @@ function LuaInflator:deflate(inflated_node)
    local buffer = ""
    for k,v in pairs(inflated_node) do
       if k~="__index" then
-         buffer = buffer.."\n "..k.."= "..self.versium:longquote(tostring(v))
+         buffer = buffer.."\n "..k.."= "..string.format("%q", tostring(v))
       end
    end
    return buffer

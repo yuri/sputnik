@@ -2,7 +2,7 @@ module(..., package.seeall)
 
 NODE = {
  actions= [=[png = "binaryfile.png"]=],
- prototype= [=[@BinaryFile]=],
+ prototype= [=[@Binary_File]=],
  file_name= [=[sputnik-logo.png]=],
  title= [=[The Sputnik Logo]=],
  file_size= [=[3782]=],

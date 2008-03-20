@@ -3,7 +3,7 @@ module(..., package.seeall)
 NODE = {
  actions= [=[png = "binaryfile.png"]=],
  file_type= [=[image/png]=],
- prototype= [=[@BinaryFile]=],
+ prototype= [=[@Binary_File]=],
  file_size= [=[309]=],
  file_name= [=[sputnik-icon.png]=],
  title= [=[Browser "favicon"]=],

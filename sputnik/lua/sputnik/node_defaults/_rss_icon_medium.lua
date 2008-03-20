@@ -2,7 +2,7 @@ module(..., package.seeall)
 
 NODE = {
  file_size= [=[1737]=],
- prototype= [=[@BinaryFile]=],
+ prototype= [=[@Binary_File]=],
  file_name= [=[feed-icon-28x28.png]=],
  title= [=[RSS icon 28x28]=],
  actions= [=[png = "binaryfile.png"]=],

@@ -86,6 +86,9 @@ function actions.save(node, request, sputnik)
    local size = info.filesize
    local file = info.file
 
+   -- Clear out the file_upload parameter
+   request.params.file_update = nil
+
    -- Check to see if we're editing fields, rather than uploading
    -- a new file by checking filename and filesize.
 

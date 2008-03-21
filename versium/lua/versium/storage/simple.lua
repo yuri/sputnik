@@ -199,10 +199,8 @@ function SimpleVersiumStorage:save_version(id, data, author, comment, extra, tim
    _write_file(node_path.."/"..new_version_id, data)
    -- generate and save the new index
    local t = os.date("*t")
-   print(timestamp)
    timestamp = timestamp or string.format("%02d-%02d-%02d %02d:%02d:%02d", 
                                           t.year, t.month, t.day, t.hour, t.min, t.sec)
-   print(timestamp)
    local extra_buffer = ""
    for k,v in pairs(extra or {}) do
       extra_buffer = extra_buffer.."\n "..k.."     = "..self.versium:longquote(v)..","

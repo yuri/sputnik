@@ -336,6 +336,72 @@ function Sputnik:hash_field_name(field_name, token)
    return "field_"..md5.sumhexa(field_name..token..self.config.SECRET_CODE)
 end
 
+------------------------------------------------------------------
+-- Generates a unique numeric or hashed identifier using sputnik's
+-- default storage repository as the shared state.
+--
+-- @param sputnik the sputnik instance to use when generating
+-- @param namespace a namespace idenfier string ["sputnik"]
+-- @param type the type of uid to generate ("hash" or "number") ["number"]
+-- @return uid a unique identifier for the given namespace
+
+function Sputnik:get_uid(namespace, type)
+   -- Initialize the default values
+   namespace = namespace or "sputnik"
+   type = type or "number"
+
+   -- Generate the values we'll use in the initial hash
+   local memory = collectgarbage("count")
+   local time = os.time() + os.clock()
+   local hash = md5.sumhexa(namespace .. memory .. time)
+
+   -- Create and store a node
+   local node_name = "_uid:" .. namespace
+   local node = self:get_node(node_name)
+   node = self:activate_node(node)
+   node:save("Sputnik-UID", hash)
+
+   -- Retrieve the node history 
+   local history = self:get_history(node_name)
+   local history_id
+
+   -- Find our specific hash in the history
+   for i=1,#history do
+	  if history[i].comment == hash then
+		 -- This is our node, it will likely be the first entry
+		 -- So add it to the total number of entries
+		 history_id = #history + (i - 1)
+		 break
+	  end
+   end
+
+   assert(history_id)
+   if type == "number" then
+	  return history_id
+   else
+	  return md5.sumhexa(namespace .. memory .. time .. history_id)
+   end
+end
+
+------------------------------------------------------------------
+-- Generates a new node name by calling string.format on the 
+-- given string with a UID as the argument.
+--
+-- @param sputnik the sputnik instance to use when generating
+-- @param namespace a namespace idenfier string ["sputnik"]
+-- @param type the type of uid to generate ("hash" or "number") ["number"]
+-- @param format the format to be used when constructing the new name
+-- @usage gen_name(sputnik, "forums", "number", "forums/general/%d")
+-- could generate the string "forums/general/42" depending on the
+-- state of the system.  This name will be unique to the namespace
+-- "forums".
+-- @return uid a unique identifier for the given namespace
+
+function Sputnik:gen_name(namespace, type, format)
+   local uid = self:get_uid(namespace, type)
+   return format:format(uid)
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Pre-processes CGI parameters and does authentication.
 ---------------------------------------------------------------------------------------------------

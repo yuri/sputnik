@@ -203,7 +203,7 @@ function SmartNode:update(new_values, fields)
    assert(fields)
    -- First, update the versium node with the new values (only those that are listed in fields!)
    for key, value in pairs(new_values) do
-      if fields[key] then
+      if fields[key] and not fields[key].virtual then
          self._vnode[key] = value
       end
    end

@@ -1,8 +1,10 @@
----------------------------------------------------------------------------------------------------
--- Provides an implementation of versium storage using the local file system.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- Provides an implementation of versium storage using the local file system
+-- as the storage medium.
+-----------------------------------------------------------------------------
 
 module(..., package.seeall)
+
 require("lfs")
 local luaenv = require("versium.luaenv")
 

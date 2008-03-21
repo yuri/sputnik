@@ -1,6 +1,8 @@
----------------------------------------------------------------------------------------------------
--- Provides a virtual implementation of versium storage using Lua tables.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- Provides an implementation of non-persistent versium storage using Lua
+-- tables that reside in memory.  This storage driver is provided primarily
+-- for testing purposes.
+-----------------------------------------------------------------------------
 
 module(..., package.seeall)
 

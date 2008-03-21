@@ -4,8 +4,10 @@ require("versium")
 local v
 do
 	local options = {}
-	options.storage = "versium.storage.virtual"
-	options.params = {}
+	options.storage = "versium.storage.sqlite3"
+	options.params = {
+		connect = {os.tmpname()},
+	}
 
 	v = assert(versium.Versium:new(options))
 end

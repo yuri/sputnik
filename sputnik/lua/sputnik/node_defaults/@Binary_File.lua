@@ -1,7 +1,5 @@
 module(..., package.seeall)
 
-NOCREATE = true
-
 NODE = {
    title = [=[A prototype for binary files]=],
    content = [=[This content is never displayed]=],

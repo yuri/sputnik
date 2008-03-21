@@ -25,7 +25,7 @@ local function get_salted_hash(time, salt, password)
    return md5.sumhexa(time .. salt .. password)
 end
 
-local function user_token(user, salt)
+local function user_token(user, salt, hash)
    return md5.sumhexa(user .. salt .. "Sputnik")
 end
 
@@ -90,12 +90,13 @@ function Simple:authenticate(user, password)
    local entry = users[user]
 
    if entry and entry.hash == get_salted_hash(entry.time, self.salt, password) then
-      return user, user_token(user, self.salt)
+      return user, user_token(user, self.salt, entry.hash)
    elseif self:user_exists(user) or (self.noauto and user ~= "Admin") then
       return nil
    else
       self:add_user(user, password)
-      return user, user_token(user, self.salt)
+      users = load_users(self.sputnik, self.node)
+      return user, user_token(user, self.salt, users[user].hash)
    end
 end
 
@@ -108,7 +109,10 @@ end
 -- @return user the name of the authenticated user
 
 function Simple:validate_token(user, token)
-   if self:user_exists(user) and user_token(user, self.salt) == token then
+   local users = load_users(self.sputnik, self.node)
+   local entry = users[user]
+
+   if self:user_exists(user) and user_token(user, self.salt, entry.hash) == token then
       return user
    else
       return nil

@@ -68,9 +68,8 @@ function Sputnik:init(initial_config)
 
       
    -- setup authentication
-   
-   local auth_mod = require(self.config.AUTHENTICATION_MODULE or "sputnik.authentication.simple")
-   self.auth = auth_mod.make_authenticator(self, self.config.AUTHENTICATION_MODULE_PARAMS)
+   local auth_mod = require(self.config.AUTH_MODULE or "sputnik.auth.simple")
+   self.auth = auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
    
    -- setup wrappers
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      
@@ -391,7 +390,7 @@ function Sputnik:translate_request (request)
       request.user = nil
    elseif (request.params.user or ""):len() > 0 then
       self.logger:debug("knock knock: "..request.params.user)
-      request.user, request.auth_token = self.auth.check_password(request.params.user, request.params.password)
+      request.user, request.auth_token = self.auth:authenticate(request.params.user, request.params.password)
       if not request.user then
          request.auth_message = "INCORRECT_PASSWORD"
       else
@@ -401,7 +400,7 @@ function Sputnik:translate_request (request)
       local cookie = request.cookies[self.cookie_name] or ""
       local user_from_cookie, auth_token = sputnik.util.split(cookie, "|")
       if user_from_cookie then
-         request.user = self.auth.check_token(user_from_cookie, auth_token)
+         request.user = self.auth:validate_token(user_from_cookie, auth_token)
          if request.user then
             request.auth_token = auth_token
          end

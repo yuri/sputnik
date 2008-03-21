@@ -9,8 +9,6 @@ NODE = {
 show = "binaryfile.show"
 save = "binaryfile.save"
 download = "binaryfile.download"
-raw = download
-raw_content = download
 ]=],
 
    fields = [=[

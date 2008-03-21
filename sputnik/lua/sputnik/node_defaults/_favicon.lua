@@ -1,7 +1,7 @@
 module(..., package.seeall)
 
 NODE = {
- actions= [=[png = "binaryfile.png"]=],
+ actions= [=[png = "binaryfile.mimetype"]=],
  file_type= [=[image/png]=],
  prototype= [=[@Binary_File]=],
  file_size= [=[309]=],

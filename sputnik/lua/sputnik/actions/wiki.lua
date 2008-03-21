@@ -136,7 +136,6 @@ function actions.save(node, request, sputnik)
    end
 end
 
-
 ---------------------------------------------------------------------------------------------------
 -- Same as "show_content" but updates the node with values in parameters before displaying it 
 -- (would be used by both AHAH preview and server-side preview).  Note that this action is, 

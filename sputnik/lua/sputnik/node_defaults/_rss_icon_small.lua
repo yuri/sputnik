@@ -5,7 +5,7 @@ NODE = {
  prototype= [=[@Binary_File]=],
  file_name= [=[feed-icon-12x12.png]=],
  title= [=[RSS icon (12x12)]=],
- actions= [=[png = "binaryfile.png"]=],
+ actions= [=[png = "binaryfile.mimetype"]=],
  file_type= [=[image/png]=],
 }
 

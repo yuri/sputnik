@@ -68,7 +68,7 @@ Storage = {}
 -- @param params         the parameters to pass to the implementation.
 -- @return               a new versium object.
 -----------------------------------------------------------------------------
-function Storage:new(params, versium)
+function Storage:new(params, versiumObject)
   	-- Params table accepts the following:
 	-- prefix - A string that will be prepended to table names
 	-- connect - A list that is passed to the luasql connection function

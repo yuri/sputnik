@@ -68,8 +68,8 @@ function Sputnik:init(initial_config)
 
       
    -- setup authentication
-   local auth_mod = require(self.config.AUTHENTICATION_MODULE or "sputnik.authentication.simple")
-   self.auth = auth_mod.new(self, self.config.AUTHENTICATION_MODULE_PARAMS)
+   local auth_mod = require(self.config.AUTH_MODULE or "sputnik.auth.simple")
+   self.auth = auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
    
    -- setup wrappers
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      

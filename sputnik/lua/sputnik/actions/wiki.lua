@@ -437,7 +437,7 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Shows HTML for the standard Edit field.
 ---------------------------------------------------------------------------------------------------
-function actions.edit (node, request, sputnik)
+function actions.edit (node, request, sputnik, edit_ui_field)
    -- select the parameters that should be copied
    local fields = {}
    for field, field_params in pairs(node.fields) do
@@ -475,9 +475,16 @@ function actions.edit (node, request, sputnik)
    local post_timestamp = os.time()
    local post_token = sputnik.auth:timestamp_token(post_timestamp)
    
-   sputnik.logger:debug(node.edit_ui..login_spec..honeypots)
+   
+   if request.user == "Admin" then -- add a more sophisticated test here later
+      edit_ui_field = edit_ui_field or "admin_edit_ui"
+   else
+      edit_ui_field = edit_ui_field or "edit_ui"
+   end 
+
+   sputnik.logger:debug(node[edit_ui_field]..login_spec..honeypots)
    local html_for_fields, field_list = html_forms.make_html_form{
-                                          field_spec = node[edit_ui_field or "edit_ui"]..login_spec..honeypots, 
+                                          field_spec = node[edit_ui_field]..login_spec..honeypots, 
                                           templates  = node.templates, 
                                           translator = node.translator,
                                           values     = fields,

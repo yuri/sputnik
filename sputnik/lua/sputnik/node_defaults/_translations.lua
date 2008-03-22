@@ -263,6 +263,11 @@ EDIT_FORM_EDIT_UI = {
    ru    = "Редактирование",
 }
 
+EDIT_FORM_ADMIN_EDIT_UI = {
+   en_US = "Admin Edit UI",
+   ru    = "Редактирование для админа",
+}
+
 -- A label for the section of the form where the user will edit the page content
 EDIT_FORM_CONTENT_HDR = {
    en_US = "Page Content",

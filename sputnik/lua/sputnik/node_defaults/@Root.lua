@@ -16,6 +16,7 @@ prototype       = {0.6  }
 permissions     = {0.7, proto="concat"}
 content         = {0.8  }
 edit_ui         = {0.9, proto="concat"}
+admin_edit_ui   = {0.91, proto="concat"}
 
 -- "virtual" fields (never saved) ------------------------
 version         = {virtual=true}
@@ -57,6 +58,25 @@ title           = {1.2, "text_field"}
 show_advanced   = {2.0, "show_advanced", no_label=true}
 category        = {2.1, "text_field", advanced=true}
 prototype       = {2.2, "text_field", advanced=true}
+--- the content of the page ----------------------------
+content_hdr     = {3.0, "header"}
+content         = {3.1, "big_textarea", rows=27, 
+                                        no_label=true}
+--- info about the edit --------------------------------
+edit_info_hdr   = {4.0, "header"} 
+minor           = {4.1, "checkbox", value=false}
+summary         = {4.2, "textarea", rows=3}
+
+]],
+admin_edit_ui = [[
+-------------------------- basic fields ----------------
+page_params_hdr = {1.0, "header"}
+page_name       = {1.1, "readonly_text"}
+title           = {1.2, "text_field"}
+-------------------------- advanced fields -------------
+show_advanced   = {2.0, "show_advanced", no_label=true}
+category        = {2.1, "text_field", advanced=true}
+prototype       = {2.2, "text_field", advanced=true}
 templates       = {2.3, "text_field", advanced=true}
 translations    = {2.31, "text_field", advanced=true}
 permissions     = {2.4, "textarea", advanced=true, rows=3}
@@ -64,6 +84,7 @@ actions         = {2.5, "textarea", advanced=true, rows=3}
 config          = {2.6, "textarea", advanced=true, rows=3}
 fields          = {2.7, "textarea", advanced=true, rows=3}
 edit_ui         = {2.8, "textarea", advanced=true, rows=3}
+admin_edit_ui   = {2.9, "textarea", advanced=true, rows=3}
 --- the content of the page ----------------------------
 content_hdr     = {3.0, "header"}
 content         = {3.1, "big_textarea", rows=27, 

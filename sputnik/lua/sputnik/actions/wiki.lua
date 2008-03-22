@@ -106,7 +106,7 @@ function actions.post(node, request, sputnik)
             else 
                err_msg"YOU_MUST_BE_LOGGED_IN"
             end
-         elseif not node.check_permissions(request.user, action) then
+         elseif not node:check_permissions(request.user, action) then
             err_msg"ACTION_NOT_ALLOWED"
          end
 
@@ -440,7 +440,7 @@ end
 function actions.edit (node, request, sputnik, etc)
    etc = etc or {} -- additional parameters
    -- check if the user is even allowed to edit
-   if (not node.check_permissions(request.user, request.action)) 
+   if (not node:check_permissions(request.user, request.action)) 
        or (node._id==sputnik.config.ROOT_PROTOTYPE and request.user~="Admin") then
       local message = etc.message_if_not_allowed
       if request.action == "edit" then
@@ -561,7 +561,7 @@ end
 -- actions.raw, this method only returns the _content_ of the node, not its metadata).
 ---------------------------------------------------------------------------------------------------
 function actions.raw_content(node, request, sputnik)
-   if node.check_permissions(request.user, request.action) then
+   if node:check_permissions(request.user, request.action) then
       return node._vnode.content, "text/plain"
    else
       return "-- Access to raw content not allowed", "text/plain"
@@ -572,7 +572,7 @@ end
 -- Shows the underlying string representation of the node as plain text.
 ---------------------------------------------------------------------------------------------------
 function actions.raw(node, request, sputnik)
-   if node.check_permissions(request.user, request.action) then
+   if node:check_permissions(request.user, request.action) then
       return node._vnode._raw or "No source available.", "text/plain"
    else
       return "-- Access to raw content not allowed", "text/plain"

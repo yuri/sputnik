@@ -168,7 +168,7 @@ function Sputnik:activate_node(node, params)
    end
    
    -- create a function to check permissions ---------------------------
-   node.check_permissions = function(user, action)
+   node.check_permissions = function(self, user, action)
       local state = true
       local all = true -- just a constant          
       local function set(id, some_action, value)

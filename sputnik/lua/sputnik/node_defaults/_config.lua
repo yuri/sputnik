@@ -40,6 +40,17 @@ IMAGES = {
    rss_medium  = NICE_URL .. "_rss_icon_medium.png",
 }
 
+
+--- Configure the acceptable mime types for file uploads
+
+MIME_TYPES = {
+   ["image/png"] = "png",
+   ["image/jpeg"] = "jpg",
+   ["image/gif"] = "gif",
+   ["application/pdf"] = "pdf",
+   ["text/plain"] = "txt",
+}
+
 --- changes the language of the wiki interface
 
 INTERFACE_LANGUAGE = "en"

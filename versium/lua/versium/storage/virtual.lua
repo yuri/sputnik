@@ -1,104 +1,30 @@
 -----------------------------------------------------------------------------
--- Provides an implementation of versium storage using the local file system
--- as the storage medium.
+-- Provides an implementation of non-persistent versium storage using Lua
+-- tables that reside in memory.  This storage driver is provided primarily
+-- for testing purposes.
 -----------------------------------------------------------------------------
 
 module(..., package.seeall)
 
-require("lfs")
-local luaenv = require("versium.luaenv")
-
--- A template used for generating the index file.
-INDEX_TEMPLATE=[[add_version{
- version   = %s,
- timestamp = %s,
- author    = %s,
- comment   = %s,%s
-}
-]]
+VirtualVersiumStorage = {}
 
 ---------------------------------------------------------------------------------------------------
--- Opens a file "safely" (i.e., with error messages).
--- 
--- @param path           the file path.
--- @param mode           the access mode ("r", "w", "a", etc.)
--- @return               a file handle.
----------------------------------------------------------------------------------------------------
-local function _open_file(path, mode, strict)
-   assert(path)
-   local f = io.open(path, mode)
-   if (not f) and strict then
-      versium.storage_error("File Versium: Can't open file: %s in mode %s", path, (mode or "r"))
-   end
-   return f
-end
-
----------------------------------------------------------------------------------------------------
--- Writes data to a file (to be replaced with atomic write).
--- 
--- @param path           the file path.
--- @param data           data to be written to the file.
--- @return               nothing
----------------------------------------------------------------------------------------------------
-local function _write_file(path, data)
-   assert(path)
-   assert(data)
-   local f = _open_file(path, "w", true)
-   f:write(data)
-   f:close()
-end
-
----------------------------------------------------------------------------------------------------
--- An auxiliary function for reading the content of a file.
--- 
--- @param path           the file path.
--- @return               the data read from the file as a string.
----------------------------------------------------------------------------------------------------
-local function _read_file(path)
-   assert(path)
-   local f = _open_file(path, "r", true)
-   local data = f:read("*all")
-   f:close()
-   return data
-end
-
----------------------------------------------------------------------------------------------------
--- Reads data from a file without complaining if the file doesn't exist.
--- 
--- @param path           the file path.
--- @return               the data read from the file or "" if the file doesn't exist.
----------------------------------------------------------------------------------------------------
-local function _read_file_if_exists(path)
-   assert(path)
-   local f = _open_file(path, "r", false)
-   if f then
-      local data = f:read("*all")
-      f:close()
-      return data
-   else
-      return ""
-   end
-end
-
-SimpleVersiumStorage = {}
-
----------------------------------------------------------------------------------------------------
--- Instantiates a new SimpleVersiumStorage object.
+-- Instantiates a new VirtualVersiumStorage object.
 -- 
 -- @param impl           the implementation module.
 -- @param params         the parameters to pass to the implementation.
 -- @return               a new versium object.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage:new(params, versium)
-   local dir = params.dir
-   local obj = {dir=dir, node_table={}, versium=versium}
+function VirtualVersiumStorage:new(params, versium)
+   local obj = {}
    setmetatable(obj, self)
    self.__index = self
-   for x in lfs.dir(dir) do
-      if x:len() > 2 then
-         obj.node_table[x] = 1
-      end
-   end
+
+   -- Establish the table used for node storage
+   obj.store = {
+      nodes = {},
+      index = {},
+   }
    return obj 
 end
 
@@ -109,7 +35,7 @@ end
 -- @param version        the desired version of the node (defaults to current).
 -- @return               the node as table with its content in node.data.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage:get_node(id, version)
+function VirtualVersiumStorage:get_node(id, version)
    local history = self:get_node_history(id) or {}
    if not history or #history == 0 then
       versium.storage_error(versium.errors.NODE_DOES_NOT_EXIST, tostring(id))
@@ -122,7 +48,7 @@ function SimpleVersiumStorage:get_node(id, version)
    end
    assert(node.version) -- should come from history
    node.id = id
-   node.data = _read_file(self.dir.."/"..id.."/"..node.version)
+   node.data = self.store.nodes[id][node.version]
    return node
 end
 
@@ -131,7 +57,7 @@ end
 --
 -- @return               the stub of the node as a table.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage:get_stub(id)
+function VirtualVersiumStorage:get_stub(id)
    return {
       version = "000000",
       data = "",
@@ -145,9 +71,9 @@ end
 -- @param id             an id of an node.
 -- @return               true or false.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage:node_exists(id)
+function VirtualVersiumStorage:node_exists(id)
    assert(id)
-   return self.node_table[id] ~= nil
+   return self.store.nodes[id] ~= nil
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -157,7 +83,7 @@ end
 -- @param id             an id of an node.
 -- @return               the metadata for the latest version or nil.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage:get_node_info(id)
+function VirtualVersiumStorage:get_node_info(id)
    assert(id)
    return self:get_node_history(id)[1]
 end
@@ -167,9 +93,9 @@ end
 -- 
 -- @return               a list of IDs.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage:get_node_ids()
+function VirtualVersiumStorage:get_node_ids()
    local ids = {} 
-   for id, _ in pairs(self.node_table) do
+   for id, _ in pairs(self.store.nodes) do
       ids[#ids+1] = id
    end
    return ids
@@ -185,35 +111,34 @@ end
 -- @param extra          any extra metadata (optional).
 -- @return               the version id of the new node.
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage:save_version(id, data, author, comment, extra, timestamp)
+function VirtualVersiumStorage:save_version(id, data, author, comment, extra, timestamp)
    assert(id)
    assert(data)
    assert(author)
-   local node_path = self.dir.."/"..id
-   -- create a directory if necessary
-   if not self:node_exists(id) then
-      lfs.mkdir(node_path)
-      self.node_table[id] = 1
-   end
    -- load history, figure out what the new revision ID would be, write data to file
    local history, raw_history = self:get_node_history(id)
    local new_version_id = string.format("%06d", #history + 1)
-   _write_file(node_path.."/"..new_version_id, data)
+
+   if not self.store.nodes[id] then
+      self.store.nodes[id] = {}
+      self.store.index[id] = {}
+   end
+
+   self.store.nodes[id][new_version_id] = data
+
    -- generate and save the new index
    local t = os.date("*t")
    timestamp = timestamp or string.format("%02d-%02d-%02d %02d:%02d:%02d", 
                                           t.year, t.month, t.day, t.hour, t.min, t.sec)
-   local extra_buffer = ""
-   for k,v in pairs(extra or {}) do
-      extra_buffer = extra_buffer.."\n "..k.."     = "..self.versium:longquote(v)..","
-   end                                
-   local new_history = string.format(INDEX_TEMPLATE, 
-                                     self.versium:longquote(new_version_id),
-                                     self.versium:longquote(timestamp),
-                                     self.versium:longquote(author), 
-                                     self.versium:longquote(comment),
-                                     extra_buffer) 
-   _write_file(self.dir.."/"..id.."/index", new_history..raw_history)
+
+   -- store the history in the index table by inserting it at the beginning
+   table.insert(self.store.index[id], 1, {
+      id = id,
+      version = new_version_id,
+      timestamp = timestamp,
+      author = author,
+      comment = comment,
+   })
 
    return new_version_id
 end
@@ -228,21 +153,14 @@ end
 -- @return               two values: 
 --                           (1) a list of tables representing the versions (the list will be empty
 --                               if the node doesn't exist)
---                           (2) the raw prepresentation of nodes history (as lua code).
 ---------------------------------------------------------------------------------------------------
-function SimpleVersiumStorage:get_node_history(id, prefix)
+function VirtualVersiumStorage:get_node_history(id, prefix)
    assert(id)
-   local raw_history = _read_file_if_exists(self.dir.."/"..id.."/index")
-   local all_versions = {}
-   luaenv.make_sandbox{add_version = function (values)
-                                        table.insert(all_versions, values)
-                                     end 
-                       }.do_lua(raw_history)
-   return all_versions, raw_history
+   return self.store.index[id] or {}
 end
 
 ---------------------------------------------------------------------------------------------------
--- Creates a new SimpleVersiumStorage object.
+-- Creates a new VirtualVersiumStorage object.
 -- 
 -- @param params         the parameters to pass to the implementation.
 -- @param versium        a generic versium instance.
@@ -250,5 +168,7 @@ end
 ---------------------------------------------------------------------------------------------------
 
 function open(params, versium)
-   return SimpleVersiumStorage:new(params, versium)
+   return VirtualVersiumStorage:new(params, versium)
 end
+
+-- vim:ts=3 ss=3 sw=3 expandtab

@@ -95,10 +95,9 @@ function actions.post(node, request, sputnik)
             err_msg"MISSING_POST_TOKEN"
          elseif not request.params.post_timestamp then
             err_msg"MISSING_POST_TIME_STAMP"
-         elseif (sputnik.auth.hours_since_ce(sputnik.auth.now())
-                 -sputnik.auth.hours_since_ce(request.params.post_timestamp)) > 3 then
+         elseif (os.time() - tonumber(request.params.post_timestamp)) > (3 * 60) then
             err_msg"YOUR_POST_TOKEN_HAS_EXPIRED"
-         elseif sputnik.auth.get_token_for_timestamp(request.params.post_timestamp)
+         elseif sputnik.auth:timestamp_token(request.params.post_timestamp)
                  ~=request.params.post_token then
             err_msg"YOUR_POST_TOKEN_IS_INVALID"
          elseif not request.user then
@@ -110,6 +109,8 @@ function actions.post(node, request, sputnik)
          elseif not node.check_permissions(request.user, action) then
             err_msg"ACTION_NOT_ALLOWED"
          end
+
+         -- TODO: Add a human readable error message here
          return node.actions[action](node, request, sputnik)
       end
    end 
@@ -134,7 +135,6 @@ function actions.save(node, request, sputnik)
       return new_node.actions.show(new_node, request, sputnik)
    end
 end
-
 
 ---------------------------------------------------------------------------------------------------
 -- Same as "show_content" but updates the node with values in parameters before displaying it 
@@ -223,7 +223,7 @@ function actions.history(node, request, sputnik)
                       },
       do_revisions  = function()
                            for i, edit in ipairs(history) do
-                              if (not request.params.recent_users_only) or sputnik.auth.is_recent(edit.author) then
+                              if (not request.params.recent_users_only) or sputnik.auth:user_is_recent(edit.author) then
                                  cosmo.yield{
                                     version_link = node.links:show{ version = edit.version },
                                     version      = edit.version,
@@ -280,7 +280,7 @@ function actions.complete_history(node, request, sputnik)
                       },
       do_revisions  = function()
                          for i, edit in ipairs(edits) do
-                            if (not request.params.recent_users_only) or sputnik.auth.is_recent(edit.author) then
+                            if (not request.params.recent_users_only) or sputnik.auth:user_is_recent(edit.author) then
                                local is_minor = (edit.minor or ""):len() > 0
                                cosmo.yield{
                                     version_link = edit.node.links:show{ version = edit.version },
@@ -332,9 +332,9 @@ function actions.rss(node, request, sputnik)
       items   = function()
                    for i, edit in ipairs(edits) do
                       edit.node = edit.node or node
-                      if (not request.params.recent_users_only) or sputnik.auth.is_recent(edit.author) then
+                      if (not request.params.recent_users_only) or sputnik.auth:user_is_recent(edit.author) then
                          sputnik.logger:debug("recent_users_only="..(request.params.recent_users_only or "nil")) 
-                         sputnik.logger:debug("user recent?"..tostring(sputnik.auth.is_recent(node.author)))
+                         sputnik.logger:debug("user recent?"..tostring(sputnik.auth:user_is_recent(node.author)))
                          cosmo.yield{
                             link        = "http://" .. sputnik.config.DOMAIN ..
                                           sputnik:escape_url(
@@ -472,8 +472,8 @@ function actions.edit (node, request, sputnik)
       fields[field_name] = ""
    end
 
-   local post_timestamp = sputnik.auth.now()
-   local post_token = sputnik.auth.get_token_for_timestamp(post_timestamp)
+   local post_timestamp = os.time()
+   local post_token = sputnik.auth:timestamp_token(post_timestamp)
    
    sputnik.logger:debug(node.edit_ui..login_spec..honeypots)
    local html_for_fields, field_list = html_forms.make_html_form{
@@ -627,8 +627,8 @@ function actions.show_login_form(node, request, sputnik)
    if (request.params.user and request.user) then -- we've just logged in the user
       return node.actions.show(node, request, sputnik)
    end
-   local post_timestamp = sputnik.auth.now()
-   local post_token = sputnik.auth.get_token_for_timestamp(post_timestamp)   
+   local post_timestamp = os.time()
+   local post_token = sputnik.auth:timestamp_token(post_timestamp)   
    local html_for_fields, field_list = html_forms.make_html_form{
                                           field_spec = [[
                                                            please_login = {4.0, "note"}
@@ -730,3 +730,4 @@ function wrappers.default(node, request, sputnik)
    }, "text/html"
 end
 
+-- vim:ts=3 ss=3 sw=3 expandtab

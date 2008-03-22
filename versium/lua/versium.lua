@@ -83,7 +83,7 @@ end
 ---------------------------------------------------------------------------------------------------
 function Versium:get_node_info(id)
    assert(id and id:len() > 0)
-   return self.storage:node_info(self:escape_id(id))
+   return self.storage:get_node_info(self:escape_id(id))
 end
 
 ---------------------------------------------------------------------------------------------------

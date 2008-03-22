@@ -561,14 +561,22 @@ end
 -- actions.raw, this method only returns the _content_ of the node, not its metadata).
 ---------------------------------------------------------------------------------------------------
 function actions.raw_content(node, request, sputnik)
-   return node.content, "text/plain"
+   if node.check_permissions(request.user, request.action) then
+      return node._vnode.content, "text/plain"
+   else
+      return "-- Access to raw content not allowed", "text/plain"
+   end
 end
 
 ---------------------------------------------------------------------------------------------------
 -- Shows the underlying string representation of the node as plain text.
 ---------------------------------------------------------------------------------------------------
 function actions.raw(node, request, sputnik)
-   return node._vnode._raw or "No source available.", "text/plain"
+   if node.check_permissions(request.user, request.action) then
+      return node._vnode._raw or "No source available.", "text/plain"
+   else
+      return "-- Access to raw content not allowed", "text/plain"
+   end
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -639,6 +647,29 @@ function actions.action_not_found(node, request, sputnik)
                                                actions = node._vnode.actions
                                             }
                      }
+   return node.wrappers.default(node, request, sputnik)
+end
+
+
+---------------------------------------------------------------------------------------------------
+-- Shows the list of registered users
+---------------------------------------------------------------------------------------------------
+function actions.show_users(node, request, sputnik)
+
+   local TEMPLATE = [[
+   <table><thead><td>username</td><td>registration time</td></thead>
+   $do_users[=[<tr><td><a $link>$username</a></td><td>$formatted_time</td></tr>
+   ]=]
+   </table>
+   ]]
+
+   local users = {}
+   for username, record in pairs(node.content.USERS) do
+      table.insert(users, {username=username, link=sputnik:make_link(username), time=record.time, formatted_time=os.date("%c", record.time)})
+   end
+   table.sort(users, function(x,y) return x.time > y.time end)
+
+   node.inner_html = cosmo.f(TEMPLATE) {do_users = users}
    return node.wrappers.default(node, request, sputnik)
 end
 

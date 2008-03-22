@@ -602,7 +602,7 @@ function cgilua_run()
          cgilua.cookies.set(cookie_name, cookie.value, cookie)
       end,
       write = function(self, more_content)
-         content = content..more_content
+         content = content..tostring(more_content or "")
       end,
    }
 

@@ -437,7 +437,22 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Shows HTML for the standard Edit field.
 ---------------------------------------------------------------------------------------------------
-function actions.edit (node, request, sputnik, edit_ui_field)
+function actions.edit (node, request, sputnik, etc)
+   etc = etc or {} -- additional parameters
+   -- check if the user is even allowed to edit
+   if (not node.check_permissions(request.user, request.action)) 
+       or (node._id==sputnik.config.ROOT_PROTOTYPE and request.user~="Admin") then
+      local message = etc.message_if_not_allowed
+      if request.action == "edit" then
+         message = message or "NOT_ALLOWED_TO_EDIT"
+      else
+         message = message or "ACTION_NOT_ALLOWED"
+      end
+      node:post_error(node.translator.translate_key(message))
+      node.inner_html = ""
+      return node.wrappers.default(node, request, sputnik)
+   end
+
    -- select the parameters that should be copied
    local fields = {}
    for field, field_params in pairs(node.fields) do
@@ -475,7 +490,7 @@ function actions.edit (node, request, sputnik, edit_ui_field)
    local post_timestamp = os.time()
    local post_token = sputnik.auth:timestamp_token(post_timestamp)
    
-   
+   local edit_ui_field = etc.edit_ui_field
    if request.user == "Admin" then -- add a more sophisticated test here later
       edit_ui_field = edit_ui_field or "admin_edit_ui"
    else

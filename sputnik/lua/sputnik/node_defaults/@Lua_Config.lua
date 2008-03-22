@@ -5,7 +5,9 @@ NODE = {
    fields = [[content.activate = "lua"]],
    permissions = [[
       deny(all, "save")
+      deny(all, "edit")
       allow("Admin", "save")
+      allow("Admin", "edit")
    ]],
    category="_prototypes",
    actions=[[show_content="wiki.show_content_as_lua_code"]],

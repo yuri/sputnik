@@ -87,7 +87,13 @@ TOOLTIP_FOR_SEARCH = {
 
 -- A note to the user that they are not allowed to perform the action
 ACTION_NOT_ALLOWED = {
-   en_US = "You do not have permissions to perform this action",
+   en_US = "Sorry, you do not have permissions to perform this action",
+}
+
+-- A message to tell the user they are not allowed to edit the node
+NOT_ALLOWED_TO_EDIT = {
+   en_US = "Sorry, you are not allowed to edit this node.",
+   ru = "К сожалению Вы не имеете разрешение на редактирование этой страницы"
 }
 
 -- A messaging saying that this action doesn't work for this page

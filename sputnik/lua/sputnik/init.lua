@@ -494,7 +494,7 @@ function Sputnik:run(request, response)
    local content, content_type = action_function(node, request, self)
    assert(content)
    self.logger:info(self.cookie_name.."=".. ((request.user or "").."|"..(request.auth_token or "")))
-   response.headers["Content-type"] = content_type or "text/html"
+   response.headers["Content-Type"] = content_type or "text/html"
    
    -- If we have any custom HTML headers, add them to the response
    for header,value in pairs(node.headers) do
@@ -611,10 +611,10 @@ function cgilua_run()
    if not success then 
       cgilua.put(err) 
    else
-      SAPI.Response.contenttype(response.headers["Content-type"] or "text/html")
+      SAPI.Response.contenttype(response.headers["Content-Type"] or "text/html")
       -- Output any other headers that have been added to this request
       for header,value in pairs(response.headers) do
-         if header ~= "Content-type" then
+         if header ~= "Content-Type" then
             SAPI.Response.header(header, value)
          end
       end

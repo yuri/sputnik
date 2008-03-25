@@ -134,7 +134,7 @@ function Simple:user_is_recent(user)
       local now = os.time()
       local min = now - self.recent
 
-      return (entry.time > min)
+      return (tonumber(entry.time) > min)
    else
       return false
    end

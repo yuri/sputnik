@@ -23,7 +23,12 @@ function Sandbox:do_lua(lua_code)
    local f, err = loadstring(lua_code)      -- load the code into a function
    if f then 
       setfenv(f, self.values or {})         -- set a restricted environment
-      self.returned_value, err = pcall(f)   -- run it
+      local ok, result = pcall(f)           -- run it
+      if ok then 
+         self.returned_value = result 
+      else
+         err = result
+      end
    end
      
    if err then                              -- check if something went wrong

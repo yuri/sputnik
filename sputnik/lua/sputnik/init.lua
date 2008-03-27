@@ -2,7 +2,7 @@ module(..., package.seeall)
 
 require("md5")
 require("cosmo")
-require("versium.smart.repository")
+require("saci")
 require("versium.luaenv")
 require("sputnik")
 require("sputnik.actions.wiki")
@@ -47,7 +47,8 @@ function Sputnik:init(initial_config)
    self.dirify = function(self, text) return dirify(text) end
 
    -- setup the repository -- do this before loading user configuration
-   self.repo = versium.smart.repository.Repository:new(initial_config)
+   self.repo = saci.new(initial_config)
+   assert(self.repo)
    self.repo.logger = self.logger 
 
    -- WARNING ------------------------------------------------------------------------
@@ -56,8 +57,12 @@ function Sputnik:init(initial_config)
    -- the config values can no longer be trusted.
    
    self.config = initial_config
-   initial_config = nil -- just to keep us honest    
-   for k,v in pairs(self:get_node(self.config.CONFIG_PAGE_NAME).content) do
+   initial_config = nil -- just to keep us honest
+
+   local config_node = self:get_node(self.config.CONFIG_PAGE_NAME)
+   assert(config_node, "Failed to retrieve the config node "..tostring(self.config.CONFIG_PAGE_NAME))
+   assert(type(config_node)=="table")
+   for k,v in pairs(config_node.content) do
       self.config[k] = v
    end
 
@@ -125,7 +130,7 @@ function Sputnik:make_link(node_name, action, params, anchor)
 end
 
 ---------------------------------------------------------------------------------------------------
---- Does a bit of extra activation beyond what versium's smart repository does.
+--- Does a bit of extra activation beyond what SACI does.
 ---------------------------------------------------------------------------------------------------
 function Sputnik:activate_node(node, params)
 

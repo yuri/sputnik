@@ -1,0 +1,23 @@
+-- Package metadata
+package = 'SACI'
+version = '8.01.01-0'
+description = {
+  summary = 'A storage system',
+  detailed = [[
+  ]],
+  license = 'MIT/X11',
+  homepage = 'http://sputnik.freewisdom.org/en/Versium',
+  maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+}
+
+-- Dependency information
+dependencies = {
+  'cosmo >= 7.12.26',
+  'luafilesystem >= 1.3'
+}
+
+-- Build rules
+source = {
+  url = 'http://sputnik.freewisdom.org/files/versium-7.12.26.tar.gz',
+  dir = 'versium',
+}

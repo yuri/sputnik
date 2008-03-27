@@ -44,6 +44,7 @@ DOCUMENTATION
          ;;
       "i" ) #give installation directory
          LUA_INSTALLATION=${OPTARG%/};
+         ROCKS_DIR=$LUA_INSTALLATION/rocks
          echo "Use specified $LUA_INSTALLATION as installation directory"
          ;;
       "r" ) #give Rocks dir

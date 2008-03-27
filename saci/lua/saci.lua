@@ -5,32 +5,39 @@
 module(..., package.seeall)
 
 require("versium")
-require("versium.smart.smartnode")
+local node = require("saci.node")
 
-Repository = {}
+local Repository = {}
+local Repository_mt = {__metatable={}, __index=Repository}
 
 ---------------------------------------------------------------------------------------------------
 -- Creates a new instance of Repository.
 -- 
--- @param initial_config the bootstrapping config table.
+-- @param config         the bootstrapping config table.
 -- @return               an instance of "Repository".
 ---------------------------------------------------------------------------------------------------
-function Repository:new(initial_config)
-   local repo = {}
-   setmetatable(repo, self)
-   self.__index = self
+function new(config)
 
+   local repo = setmetatable({}, Repository_mt)
+   repo.config = config
    repo.versium = versium.Versium:new{
-       storage = initial_config.VERSIUM_STORAGE_MODULE 
-                 or "versium.storage.simple",
-       params = initial_config.VERSIUM_PARAMS
+       storage = config.VERSIUM_STORAGE_MODULE or "versium.storage.simple",
+       params = config.VERSIUM_PARAMS
    }
-   setmetatable(self, repo.versium)
-   repo.versium.__index = repo.versium
-   repo.config = initial_config
-   repo.config.__index = repo.config
    return repo
 end
+
+-----------------------------------------------------------------------------
+-- Returns true if the node exists and false otherwise.
+-- 
+-- @param id             an id of an node.
+-- @return               true or false.
+-----------------------------------------------------------------------------
+
+function Repository:node_exists(id)
+   return self.versium:node_exists(id)
+end
+
 
 ---------------------------------------------------------------------------------------------------
 -- Retrieves a node transformed it into a "smart node".  This method overrides versium's get_node().
@@ -69,7 +76,7 @@ function Repository:get_node(id, version, mode)
    end
    versium_node = self.versium:inflate(versium_node)
    assert(versium_node._version)
-   return versium.smart.smartnode.SmartNode:new(versium_node, self, self.config.ROOT_PROTOTYPE, mode)
+   return node.new(versium_node, self, self.config.ROOT_PROTOTYPE, mode)
 end
 
 ---------------------------------------------------------------------------------------------------

@@ -728,7 +728,7 @@ wrappers = {}
 ---------------------------------------------------------------------------------------------------
 function wrappers.default(node, request, sputnik) 
 
-   local is_old = request.params.version and (node._version.id ~= node.latest.version)
+   local is_old = request.params.version and node:is_old()
 
    return cosmo.f(node.templates.MAIN){  
       site_title       = sputnik.config.SITE_TITLE or "",

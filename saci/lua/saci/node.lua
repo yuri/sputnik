@@ -5,41 +5,46 @@
 module(..., package.seeall)
 require("versium.luaenv")
 
-SmartNode = {}
+local Activators = {}
+Activators.lua = function(value, repo)
+   local mt = setmetatable({__index=repo.config}, repo.config)   
+   local config = setmetatable({}, mt)
+   
+   return versium.luaenv.make_sandbox(config).do_lua(value)
+end
+Activators.node_list = function(value, repo)
+   local nodes = {}
+   for line in (value or ""):gmatch("[^%s]+") do
+      table.insert(nodes, line)
+   end
+   return nodes
+end
 
----------------------------------------------------------------------------------------------------
--- Creates a new instance of SmartNode
+local SmartNode = {}
+local SmartNode_mt = { __index = SmartNode}
+
+-----------------------------------------------------------------------------
+-- Creates a new instance of SmartNode.  This is the only function this
+-- module exposes and the only one you should be using directly.  Returns an
+-- instance which has methods to do more fun stuff.
 -- 
 -- @param versium_node   an inflated versium node.
 -- @repository           the repository to which this SmartNode belongs.
 -- @return               an instance of "SputnikRepository".
----------------------------------------------------------------------------------------------------
-function SmartNode:new(versium_node, repository, root_prototype_id, mode)
+-----------------------------------------------------------------------------
+function new(versium_node, repository, root_prototype_id, mode)
    assert(versium_node)
    assert(versium_node._version)
    assert(repository)
-
-   -- We start with a versium node, which already has a metatable that we want to kee.
+   -- We start with a versium node, which already has a metatable that we want to keep.
    -- But we also want the new node to have SmartNode as its metatable. So, we set 
    -- SmartNode as the metatable of versium_node's metatable.
-   setmetatable(getmetatable(versium_node), self)
-   self.__index = self
-
-   self.activators = {}
-   self.activators.lua = function(value, helpers) 
-      return versium.luaenv.make_sandbox(helpers.config).do_lua(value)
-   end
-   self.activators.node_list = function(value, helpers)
-      local nodes = {}
-      for line in (value or ""):gmatch("[^%s]+") do
-         table.insert(nodes, line)
-      end
-      return nodes
-   end
+   setmetatable(getmetatable(versium_node), SmartNode_mt)
 
    -- Then we make a new node with versium_node as it's metatable.  We can do this using
    -- SmartNode's "wrap" method.  After that we can access the original node as node._vnode.
    local node = versium_node:wrap("_vnode")
+   assert(node._vnode)
 
    -- Now set the repository and the root prototype
    node.repository = repository
@@ -56,8 +61,8 @@ function SmartNode:new(versium_node, repository, root_prototype_id, mode)
    if not (repository.suppress_inheritance or repository.suppress_activation or mode=="basic") then
       node:activate()
    end
-   
-   node.latest = node:get_history()[1]   
+
+   assert(node._vnode)   
    return node
 end
 
@@ -180,12 +185,7 @@ function SmartNode:activate()
 
    for field, fieldinfo in pairs(fields) do
       if fieldinfo.activate then
-         local helper = {
-            config = {},
-            repository = self.repository,
-         }
-         setmetatable(helper.config, self.repository.config)
-         self[field] = self.activators[fieldinfo.activate](self[field], helper)
+         self[field] = Activators[fieldinfo.activate](self[field], self.repository)
       end
    end
    return self
@@ -210,7 +210,7 @@ function SmartNode:update(new_values, fields)
    -- Now make a new node, being careful to not get into recursive metatables
    local vnode = self._vnode
    setmetatable(self._inactive, {}) -- to avoid recursive metatables
-   local new_smart_node = SmartNode:new(vnode, self.repository, self.repository.config.ROOT_PROTOTYPE)
+   local new_smart_node = new(vnode, self.repository, self.repository.config.ROOT_PROTOTYPE)
    -- Now make the current node a copy of the new one (copy the fields and the metatable
    for k,v in pairs(new_smart_node) do
       self[k] = v
@@ -239,5 +239,21 @@ end
 function SmartNode:save(author, comment, extra)
    assert(author)
    self.repository:save_node(self, author, comment, extra)
+end
+
+-----------------------------------------------------------------------------
+-- Tells us whether this is ann outdated version of the node.
+-- 
+-- @return               true if the node is outdated, false if it's the most
+--                       recent version _or_ the node has no history.
+-----------------------------------------------------------------------------
+function SmartNode:is_old()
+   assert(self._vnode)
+   local history = self:get_history()
+   if #history == 0 then 
+      return false 
+   else
+      return history[1].version~=self._version.id
+   end
 end
 

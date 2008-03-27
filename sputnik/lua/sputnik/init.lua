@@ -3,7 +3,6 @@ module(..., package.seeall)
 require("md5")
 require("cosmo")
 require("saci")
-require("versium.luaenv")
 require("sputnik")
 require("sputnik.actions.wiki")
 require("sputnik.i18n")
@@ -40,7 +39,6 @@ function Sputnik:init(initial_config)
          error = function(self, level, message) end,
       }
    end
-   versium.luaenv.logger = self.logger
 
    --- Turns a string into something that can be used as a node name.
    local dirify = initial_config.DIRIFY_FN or sputnik.util.dirify
@@ -189,7 +187,7 @@ function Sputnik:activate_node(node, params)
       local function deny(some_user, some_action)
          set(some_user, some_action, false)
       end
-      versium.luaenv.make_sandbox{all = all, allow = allow, deny = deny}.do_lua(node.permissions or "")
+      saci.sandbox.new{all = all, allow = allow, deny = deny}:do_lua(node.permissions or "")
       return state
    end     
    
@@ -325,13 +323,6 @@ end
 function Sputnik.get_node_names(self, args)
    local node_ids = self.repo.versium:get_node_ids(args) -- reaching deep
    return node_ids
-end
-
----------------------------------------------------------------------------------------------------
--- Parses safely Lua code in a string and use it as table.
----------------------------------------------------------------------------------------------------
-function Sputnik.make_sandbox(self, env)
-   return versium.luaenv.make_sandbox(env)
 end
 
 ---------------------------------------------------------------------------------------------------

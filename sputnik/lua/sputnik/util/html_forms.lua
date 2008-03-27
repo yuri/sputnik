@@ -1,11 +1,12 @@
 module(..., package.seeall)
-require("versium.luaenv")
+
+require("saci.sandbox")
 
 function make_html_form(form_params)
    local fields = {}
    local just_field_names = {}
-   local sandbox = versium.luaenv.make_sandbox()
-   sandbox.do_lua(form_params.field_spec) -- [[         user         = {5.1, "text_field"}]])
+   local sandbox = saci.sandbox.new()
+   sandbox:do_lua(form_params.field_spec) -- [[         user         = {5.1, "text_field"}]])
    --local field_table = versium.luaenv.make_sandbox().do_lua(form_params.field_spec)
    for name, spec in pairs(sandbox.values) do
       spec.name = name

@@ -4,25 +4,22 @@
 
 module("versium", package.seeall)
 require("versium.util")
-Versium = {}
+
+local Versium = {}
+local Versium_mt = {__metatable = {}, __index = Versium}
 
 ---------------------------------------------------------------------------------------------------
--- Instantiates a new versium object.
+-- Instantiates a new Versium object.
 -- 
 -- @param args           the arguments (with the name implementation module as args.storage and the
 --                       the parameters to pass to the implementation module as args.params).
 -- @return               a new versium object.
 ---------------------------------------------------------------------------------------------------
-function Versium:new(args)
-   local obj = {}
-   setmetatable(obj, self)
-   self.__index = self
+function new(args)
+   local obj = setmetatable({}, Versium_mt)
+
    local storage_mod = require(args.storage or "versium.storage.simple")
    obj.storage = storage_mod.open(args.params, obj)
-
-   local inflator_mod = require(args.inflator or "versium.inflators.lua")
-   obj.inflator = inflator_mod.make_inflator(args.params, obj)
-
    return obj 
 end
 

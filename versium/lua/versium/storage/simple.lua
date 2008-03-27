@@ -6,7 +6,6 @@
 module(..., package.seeall)
 
 require("lfs")
-local luaenv = require("versium.luaenv")
 
 -- A template used for generating the index file.
 INDEX_TEMPLATE=[[add_version{
@@ -234,10 +233,14 @@ function SimpleVersiumStorage:get_node_history(id, prefix)
    assert(id)
    local raw_history = _read_file_if_exists(self.dir.."/"..id.."/index")
    local all_versions = {}
-   luaenv.make_sandbox{add_version = function (values)
-                                        table.insert(all_versions, values)
-                                     end 
-                       }.do_lua(raw_history)
+   local f = loadstring(raw_history)
+   local environment = {
+      add_version = function (values)
+                       table.insert(all_versions, values)
+                    end 
+   }
+   setfenv(f, environment)
+   f()
    return all_versions, raw_history
 end
 

@@ -3,14 +3,18 @@
 ---------------------------------------------------------------------------------------------------
 
 module(..., package.seeall)
-require("versium.luaenv")
+require("saci.sandbox")
 
 local Activators = {}
 Activators.lua = function(value, repo)
+   assert(repo.config.BASE_URL)
    local mt = setmetatable({__index=repo.config}, repo.config)   
    local config = setmetatable({}, mt)
-   
-   return versium.luaenv.make_sandbox(config).do_lua(value)
+   assert(config.BASE_URL)
+   local sandbox = saci.sandbox.new(config)
+   assert(sandbox.values.BASE_URL)
+   sandbox.logger = repo.logger
+   return sandbox:do_lua(value)
 end
 Activators.node_list = function(value, repo)
    local nodes = {}
@@ -153,7 +157,7 @@ function SmartNode:apply_inheritance()
    end
 
    local tmp_fields = concat(prototype.fields, self.fields)
-   local fields, err = versium.luaenv.make_sandbox{}.do_lua(tmp_fields)
+   local fields, err = saci.sandbox.new{}:do_lua(tmp_fields)
 
    for field_name, field in pairs(fields) do
       field.name = field_name
@@ -178,7 +182,7 @@ end
 -- Turns string parameters into Lua functions and tables, making them callable.
 ---------------------------------------------------------------------------------------------------
 function SmartNode:activate() 
-   local fields, err = versium.luaenv.make_sandbox{}.do_lua(self.fields)
+   local fields, err = saci.sandbox.new{}:do_lua(self.fields)
    if not fields then
       error(err)
    end

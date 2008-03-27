@@ -5,8 +5,8 @@
 module(..., package.seeall)
 
 require("versium")
-local node = require("saci.node")
-
+require("saci.node")
+require("saci.lua_inflator")
 local Repository = {}
 local Repository_mt = {__metatable={}, __index=Repository}
 
@@ -20,10 +20,13 @@ function new(config)
 
    local repo = setmetatable({}, Repository_mt)
    repo.config = config
-   repo.versium = versium.Versium:new{
+   local versium_params = config.VERSIUM_PARAMS
+   repo.versium = versium.new{
        storage = config.VERSIUM_STORAGE_MODULE or "versium.storage.simple",
        params = config.VERSIUM_PARAMS
    }
+   repo.versium.inflator = saci.lua_inflator.new(config.VERSIUM_PARAMS, repo.versium)
+
    return repo
 end
 
@@ -76,7 +79,7 @@ function Repository:get_node(id, version, mode)
    end
    versium_node = self.versium:inflate(versium_node)
    assert(versium_node._version)
-   return node.new(versium_node, self, self.config.ROOT_PROTOTYPE, mode)
+   return saci.node.new(versium_node, self, self.config.ROOT_PROTOTYPE, mode)
 end
 
 ---------------------------------------------------------------------------------------------------

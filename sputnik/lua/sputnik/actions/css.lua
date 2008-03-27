@@ -8,14 +8,15 @@ end
 
 actions.fancy_css = function(page, params, sputnik)
    require"colors"
-   local data, e = sputnik:make_sandbox{
+   require"saci.sandbox"
+   local data, e = saci.sandbox.new{
                       string = string,
                       table  = table,
                       colors = colors,
                       ipairs = ipairs,
                       unpack = unpack,
                       config = page.config,
-                   }.do_lua(page.content)
+                   }:do_lua(page.content)
    if e then 
       return error(e)
    else

@@ -1,21 +1,12 @@
-package    = 'Versium'
+package    = 'SACI'
 versions   = {
    {'8.03.28', 'March 28, 2008', 'separated SACI into its own rock'},
 }
-summary    = 'A versioned storage API for Lua'
+summary    = 'A Crazy Storage System for Lua'
 maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
 
 detailed   = [[
-     Versium is a simple abstract API over several storage solutions, all of 
-     which provide access to a collection of versioned documents or "nodes".
-     Nodes carry Lua byte-string data as their payload, but no assumptions
-     are made about its content.  The client interacts with versium through
-     the "versium" module, which then delegates most of the work to a 
-     specific storage implementation (specified at the initialization time).
-     Two storage implementations are included with this rock: "simple" which
-     stores nodes and their histories on the file system and "virtual" which
-     stores them in memory.  Other implementations (e.g., using subversion or
-     a database) are provided as separate rocks.
+     SACI is weird
 ]]
 
 license    = 'MIT/X11'
@@ -24,16 +15,16 @@ homepage   = 'http://sputnik.freewisdom.org/en/Versium'
 favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
 download   = 'http://sputnik.freewisdom.org/files/versium-$version.tar.gz'
 --download   = "/tmp/versium-$version.tar.gz"
---push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
 --push       = "cp %s /tmp/"
-logo       = 'versium.png'
+logo       = 'saci.png'
 keywords   = 'lua, versioned storage, file system, sql, database'
 rss        = homepage.."releases.rss"
 --------------------------------------------------------------------------------
 
 dependencies = [[
   'cosmo >= 7.12.26',
-  'luafilesystem >= 1.3'
+  'versium >= 8.03.28',
 ]]
 
 TOC = {
@@ -41,10 +32,8 @@ TOC = {
    --{ "Installation", markdown(Installation) },
    --{ "Using Colors", markdown(include("docs/howto.md")) },
    { "Contact",      "Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions."},
-   { "LuaDoc",       make_luadoc{"versium.lua"} },
+   { "LuaDoc",       make_luadoc{"saci.lua", "saci/node.lua"} },
    { "License",      markdown(include("LICENSE.txt")) }
-
-
 }
 -------------------------------------------------------------------------------
 

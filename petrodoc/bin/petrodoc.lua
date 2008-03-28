@@ -2,12 +2,12 @@ require"luarocks.require"
 require"luarocks.pack"
 require"luarocks.build"
 require"luarocks.make_manifest"
+require"luadoc"
 require"lfs"
 require"markdown"
 require"cosmo"
-require "logging.file"
+require"logging.file"
 taglet = require"luadoc.taglet.standard"
-
 
 ---------------------------------------------------------------------------------------------------
 -- The main HTML template
@@ -134,7 +134,7 @@ description = {
    detailed   = [===[$detailed]===],
    license    =  "$license",
    homepage   = "$homepage",
-   maintainer = "$maintainer ($email)",
+   maintainer = "$maintainer",
 }
 dependencies = {
 $dependencies}
@@ -159,9 +159,12 @@ BUILD_TEMPLATE = [[
 -- Generates LuaDoc
 ---------------------------------------------------------------------------------------------------
 
-function luadoc(modules)
+function make_luadoc(modules)
    lfs.chdir("lua")
-   taglet.logger = logging.file("luadoc.log")
+   local logger = logging.file("luadoc.log")
+   taglet.logger = logger
+   luadoc.logger = logger
+   assert(taglet.logger)
    taglet.options = {}
    local doc = taglet.start(modules)
    lfs.chdir("..")
@@ -240,6 +243,7 @@ end
 function petrodoc(name, spec, revision, server)
 
    function fill_and_save(path, content)
+      print(path)
       local f = io.open(path, "w")
       f:write(cosmo.fill(content, spec))
       f:close()
@@ -289,8 +293,8 @@ function petrodoc(name, spec, revision, server)
    spec.revision = revision
    spec.download_filled = cosmo.fill(spec.download, spec)
 
-   fill_and_save(name.."/docs/index.html", HTML_TEMPLATE)
-   fill_and_save(name.."/docs/releases.rss", RSS)
+   fill_and_save(name.."/doc/index.html", HTML_TEMPLATE)
+   fill_and_save(name.."/doc/releases.rss", RSS)
 
    -- make a release
    local released_rock_dir = name.."-"..spec.last_version
@@ -298,13 +302,14 @@ function petrodoc(name, spec, revision, server)
    os.execute("tar czvpf "..released_rock_dir..".tar.gz "..released_rock_dir)
 
    -- publish it
-   if server then 
-      os.execute("scp "..released_rock_dir..".tar.gz "..server)
-   end
+   --if spec.push then
+   --   os.execute(string.format(spec.push, released_rock_dir..".tar.gz"))
+   --end
 
    -- make the rockspec
    local rockspec = released_rock_dir.."-"..revision..".rockspec"
    fill_and_save(rockspec, ROCKSPEC_TEMPLATE)
+   print(rockspec)
 
    -- pack the rock
    luarocks.pack.run(rockspec)
@@ -324,6 +329,6 @@ if not petrofunc then error(err) end
 local spec = getfenv(petrofunc())
 lfs.chdir(cwd)
 
-petrodoc(rock, spec, arg[2] or "0", arg[3])
+petrodoc(rock, spec, arg[2] or "0")
 
 

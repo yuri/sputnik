@@ -570,6 +570,14 @@ function Sputnik:wsapi_run(wsapi_env)
       response = wsapi.response.new()
       response:write(error_message)
    end
+
+   -- Change the HTTP status code to 302 is a location header is set
+   if response.headers["Location"] then
+      if response.status < 300 then
+         response.status = 302
+      end
+   end
+
    return response:finish()
 end
 

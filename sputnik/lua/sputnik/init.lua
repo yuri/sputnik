@@ -228,6 +228,7 @@ function Sputnik:prime_node(node)
    -- Table/Function that allow the developer to add custom HTML response headers
    node.headers = {}
    node.add_header = function(self, header, value) self.headers[header] = value end
+   node.redirect = function(self, url) self.headers["Location"] = url end
    return node
 end  
 
@@ -607,10 +608,15 @@ function cgilua_run()
    if not success then 
       cgilua.put(err) 
    else
+      -- Send a redirect header is one is set
+      if response.headers["Location"] then
+         SAPI.Response.redirect(response.headers["Location"])
+      end
+
       SAPI.Response.contenttype(response.headers["Content-Type"] or "text/html")
       -- Output any other headers that have been added to this request
       for header,value in pairs(response.headers) do
-         if header ~= "Content-Type" then
+         if header ~= "Content-Type" and header ~= "Location" then
             SAPI.Response.header(header, value)
          end
       end

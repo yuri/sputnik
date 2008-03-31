@@ -8,7 +8,7 @@ require("saci.sandbox")
 local Activators = {}
 Activators.lua = function(value, repo)
    assert(repo.config.BASE_URL)
-   local mt = setmetatable({__index=repo.config}, repo.config)   
+   local mt = {__index = repo.config}
    local config = setmetatable({}, mt)
    assert(config.BASE_URL)
    local sandbox = saci.sandbox.new(config)

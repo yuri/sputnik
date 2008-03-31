@@ -6,8 +6,25 @@ local Sandbox_mt = {__metatable = {}, __index = Sandbox}
 
 function new(initial_values)
    local sandbox = setmetatable({}, Sandbox_mt)
-   local value_mt = setmetatable({__index=initial_values}, initial_values)
-   sandbox.values = setmetatable({}, value_mt)
+
+   -- Create a table that allows us to define private functions
+   -- while still pulling values from the initial_values table
+   local private = setmetatable({}, {__index = initial_values})
+   -- Now link the tables together to create the values table
+   sandbox.values = setmetatable({}, {__index = private})
+
+   -- Define a function that allow us to reset the protected environment
+   -- from within a sandbox
+   do
+      local tbl = sandbox.values
+      local pairs = pairs
+      function private.reset()
+         for k,v in pairs(tbl) do
+            tbl[k] = nil
+         end
+      end
+   end
+
    sandbox.returned_value = nil
    return sandbox
 end

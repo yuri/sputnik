@@ -586,7 +586,7 @@ end
 -- Handles a request coming from CGILua
 ---------------------------------------------------------------------------------------------------
 
-function cgilua_run()
+function Sputnik:cgilua_run()
 
    require'cgilua'
    require'cgilua.cookies'

@@ -61,9 +61,9 @@ end
 function actions.save(node, request, sputnik)
 	local info = request.params.file_upload
 	local type = info["content-type"]
-	local name = info.filename
-	local size = info.filesize
-	local file = info.file
+	local name = info.name
+	local size = info.size
+	local file = info.contents
 
 	-- Clear out the file_upload parameter
 	request.params.file_update = nil
@@ -71,11 +71,10 @@ function actions.save(node, request, sputnik)
 	-- Check to see if we're editing fields, rather than uploading
 	-- a new file by checking filename and filesize.
 
-	if name:match("%S") and size > 0 then
+	if name and name:match("%S") and size > 0 then
 		-- A file was uploaded 
 
-		file:seek("set");
-		request.params.content = file:read("*all")
+		request.params.content = info.contents
 		request.params.file_type = type
 		request.params.file_name = tostring(name)
 		request.params.file_size = tostring(size)

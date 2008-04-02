@@ -497,11 +497,13 @@ function Sputnik:run(request, response)
       local node_name = request.node_name
       for pattern,prototype in pairs(self.config.PROTOTYPE_PATTERNS) do
          if node_name:find(pattern) then
-            self:update_node_with_params(node, {prototype = prototype})
+            request.params.prototype = prototype;
             break
          end
       end
-   elseif request.params.prototype then 
+   end
+
+   if request.params.prototype then 
       self:update_node_with_params(node, {prototype = request.params.prototype})
    end
 

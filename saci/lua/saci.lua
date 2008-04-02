@@ -68,7 +68,7 @@ function Repository:get_node(id, version, mode)
       if status then
          local default = self.versium:deflate(page_module.NODE)
 		 -- Only create the default node if the CREATE_DEFAULT flag is set
-         if not page_module.CREATE_DEFAULT then
+         if page_module.CREATE_DEFAULT then
              self.versium:save_version(id, default, "Sputnik", "the default version")
              versium_node = self.versium:get_node(id, version)
          else

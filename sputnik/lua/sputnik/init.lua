@@ -11,16 +11,25 @@ require("sputnik.util")
 ---------------------------------------------------------------------------------------------------
 -- THE SPUTNIK CLASS  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 ---------------------------------------------------------------------------------------------------
-Sputnik = {}
+local Sputnik = {}
+local Sputnik_mt = {__metatable = {}, __index = Sputnik}
 
 ---------------------------------------------------------------------------------------------------
 -- Creates a new instance of Sputnik.
 ---------------------------------------------------------------------------------------------------
-function Sputnik:new(initial_config)
-   local obj = {}
-   setmetatable(obj, self)
-   self.__index = self
-   obj:init(initial_config)
+function new(config)
+   -- Set up default configuration variables
+   config = config or {}
+   config.ROOT_PROTOTYPE = config.ROOT_PROTOTYPE or "@Root"
+   config.SECRET_CODE = config.SECRET_CODE or "23489701982370894172309847123"
+   config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "_config"
+   config.PASS_PAGE_NAME = config.PASS_PAGE_NAME or "_passwords"
+   -- config.LOGGER = config.LOGGER or "file"
+   -- config.LOGGER_PARAMS = config.LOGGER_PARAMS or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
+
+   -- Create and return the new initialized Sputnik instance
+   local obj = setmetatable({}, Sputnik_mt)
+   obj:init(config)
    return obj
 end
 
@@ -228,6 +237,7 @@ function Sputnik:prime_node(node)
    -- Table/Function that allow the developer to add custom HTML response headers
    node.headers = {}
    node.add_header = function(self, header, value) self.headers[header] = value end
+   node.redirect = function(self, url) self.headers["Location"] = url end
    return node
 end  
 
@@ -506,29 +516,22 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Handles a request, throwing errors if something goes wrong.
 ---------------------------------------------------------------------------------------------------
-function unprotected_run(request, response)
-   SPUTNIK_CONFIG.ROOT_PROTOTYPE   = SPUTNIK_CONFIG.ROOT_PROTOTYPE   or "@Root"
-   SPUTNIK_CONFIG.SECRET_CODE      = SPUTNIK_CONFIG.SECRET_CODE      or "23489701982370894172309847123"
-   SPUTNIK_CONFIG.CONFIG_PAGE_NAME = SPUTNIK_CONFIG.CONFIG_PAGE_NAME or "_config"
-   SPUTNIK_CONFIG.PASS_PAGE_NAME   = SPUTNIK_CONFIG.PASS_PAGE_NAME   or "_passwords"
-   --SPUTNIK_CONFIG.LOGGER           = SPUTNIK_CONFIG.LOGGER           or "file"
-   --SPUTNIK_CONFIG.LOGGER_PARAMS    = SPUTNIK_CONFIG.LOGGER_PARAMS    or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
-
-   sputnik.Sputnik:new(SPUTNIK_CONFIG):run(request, response)
+function Sputnik:unprotected_run(request, response)
+   return self:run(request, response)
 end
 
 
 ---------------------------------------------------------------------------------------------------
 -- Handles a request safely.
 ---------------------------------------------------------------------------------------------------
-function protected_run(request, response)
+function Sputnik:protected_run(request, response)
    local function mypcall(fn, ...)
       local params = {...} -- this is to keep the inner function from being confused
       return xpcall(function()  return fn(unpack(params)) end,
                     function(err) return {err, require("debug").traceback()} end )
    end  
 
-   local success, err = mypcall(unprotected_run, request, response)
+   local success, err = mypcall(self.unprotected_run, self, request, response)
    if success then
       return success
    else
@@ -550,14 +553,11 @@ function protected_run(request, response)
    end
 end
 
-
-
-
 ---------------------------------------------------------------------------------------------------
 -- Handles a request coming from WSAPI
 ---------------------------------------------------------------------------------------------------
 
-function wsapi_run(wsapi_env)
+function Sputnik:wsapi_run(wsapi_env)
 
    _G.format = string.format -- to work around a bug in wsapi.response
 
@@ -565,11 +565,19 @@ function wsapi_run(wsapi_env)
    local request = wsapi.request.new(wsapi_env)
    require("wsapi.response")
    local response = wsapi.response.new()
-   local success, error_message = protected_run(request, response)
+   local success, error_message = self:protected_run(request, response)
    if not success then
       response = wsapi.response.new()
       response:write(error_message)
    end
+
+   -- Change the HTTP status code to 302 is a location header is set
+   if response.headers["Location"] then
+      if response.status < 300 then
+         response.status = 302
+      end
+   end
+
    return response:finish()
 end
 
@@ -578,7 +586,7 @@ end
 -- Handles a request coming from CGILua
 ---------------------------------------------------------------------------------------------------
 
-function cgilua_run()
+function Sputnik:cgilua_run()
 
    require'cgilua'
    require'cgilua.cookies'
@@ -602,15 +610,20 @@ function cgilua_run()
       end,
    }
 
-   success, err = sputnik.protected_run(request, response)
+   success, err = self:protected_run(request, response)
 
    if not success then 
       cgilua.put(err) 
    else
+      -- Send a redirect header is one is set
+      if response.headers["Location"] then
+         SAPI.Response.redirect(response.headers["Location"])
+      end
+
       SAPI.Response.contenttype(response.headers["Content-Type"] or "text/html")
       -- Output any other headers that have been added to this request
       for header,value in pairs(response.headers) do
-         if header ~= "Content-Type" then
+         if header ~= "Content-Type" and header ~= "Location" then
             SAPI.Response.header(header, value)
          end
       end

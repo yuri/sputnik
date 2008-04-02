@@ -218,23 +218,10 @@ function Sputnik:get_node(node_name, version, mode)
       node.title = temp_title
       node._vnode.title = temp_title
    end
-
-   -- If the node returned was a stub, try to apply a prototype, if set in the
-   -- config table
-   if stub and self.config.PROTOTYPE_PATTERNS then
-      for pattern,prototype in pairs(self.config.PROTOTYPE_PATTERNS) do
-         if node_name:match(pattern) then
-            self:update_node_with_params(node, {prototype = prototype})
-            self:activate_node(node)
-            break
-         end
-      end
-   end
-
    if mode~="basic" then
       self:prime_node(node)
    end
-   return node
+   return node, stub
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -502,10 +489,22 @@ function Sputnik:run(request, response)
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
 
-   local node = self:get_node(request.node_name, request.params.version)
-   if request.params.prototype then 
+   local node, stub = self:get_node(request.node_name, request.params.version)
+  
+   if stub then
+      -- If an empty stub was returned, check the PROTOTYPE_PATTERNS table to see
+      -- if we should apply a prototype
+      local node_name = request.node_name
+      for pattern,prototype in pairs(self.config.PROTOTYPE_PATTERNS) do
+         if node_name:find(pattern) then
+            self:update_node_with_params(node, {prototype = prototype})
+            break
+         end
+      end
+   elseif request.params.prototype then 
       self:update_node_with_params(node, {prototype = request.params.prototype})
    end
+
    node = self:activate_node(node, request)
 
    local action_function = node.actions[request.action or "show"]

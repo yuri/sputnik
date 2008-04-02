@@ -1,0 +1,22 @@
+-- Package metadata
+package = 'Versium-Wikistorage-Import'
+version = '8.01.01-0'
+description = {
+  summary = "Code for importing old Sputnik's (pre 2008) data into Versium",
+  detailed = [[
+  ]],
+  license = 'MIT/X11',
+  homepage = 'http://sputnik.freewisdom.org/',
+  maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+}
+
+-- Dependency information
+dependencies = {
+  'luafilesystem >= 1.3'
+}
+
+-- Build rules
+source = {
+  url = 'http://sputnik.freewisdom.org/',
+  dir = 'versium',
+}

@@ -210,13 +210,27 @@ end
 -- Returns the node with this name (without additional activation).
 ---------------------------------------------------------------------------------------------------
 function Sputnik:get_node(node_name, version, mode)
-   local node = self.repo:get_node(node_name, version, mode)
+   local node, stub = self.repo:get_node(node_name, version, mode)
+   
    node.name = node_name
    if not node.title then
       local temp_title = string.gsub(node.name, "_", " ")
       node.title = temp_title
       node._vnode.title = temp_title
    end
+
+   -- If the node returned was a stub, try to apply a prototype, if set in the
+   -- config table
+   if stub and self.config.PROTOTYPE_PATTERNS then
+      for pattern,prototype in pairs(self.config.PROTOTYPE_PATTERNS) do
+         if node_name:match(pattern) then
+            self:update_node_with_params(node, {prototype = prototype})
+            self:activate_node(node)
+            break
+         end
+      end
+   end
+
    if mode~="basic" then
       self:prime_node(node)
    end

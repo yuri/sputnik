@@ -47,8 +47,10 @@ end
 --
 -- @param id             the id of the desired node.
 -- @param version        the desired version of the node (defaults to latest).
--- @return               a table representing the fields of the node, with the metadata and the 
+-- @return               (1) a table representing the fields of the node, with the metadata and the 
 --                       string representatoin pushed into the metatable.
+--                       (2) the boolean value 'true' if the node returned was a stub, otherwise
+--                       nil.
 ---------------------------------------------------------------------------------------------------
 
 --require"sputnik.installer.initial_pages"
@@ -60,6 +62,7 @@ function Repository:get_node(id, version, mode)
       self.logger:debug(version)
    end
    local versium_node = self.versium:get_node(id, version) 
+   local stub
    if not versium_node then
       local status, page_module = pcall(require, "sputnik.node_defaults."..id)
       if status then
@@ -76,11 +79,12 @@ function Repository:get_node(id, version, mode)
          end
       else 
          versium_node = self.versium:get_stub(id)
+		 stub = true
       end
    end
    versium_node = self.versium:inflate(versium_node)
    assert(versium_node._version)
-   return saci.node.new(versium_node, self, self.config.ROOT_PROTOTYPE, mode)
+   return saci.node.new(versium_node, self, self.config.ROOT_PROTOTYPE, mode), stub
 end
 
 ---------------------------------------------------------------------------------------------------

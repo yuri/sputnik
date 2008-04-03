@@ -87,7 +87,7 @@ em                 {                                                            
 strong             {                                                                      font-weight: bold                           }
 th                 {                                                                      font-weight: bold;                          }
 a.local            {                                   padding:  auto   3px  auto  auto;  background: none transparent scroll repeat 0% 0%; }
-a                  { background: url(http://media.freewisdom.org/tmp/link-icon_external_09.png) no-repeat right 50%;                  }
+a                  { }
 a.help             { background: none transparent scroll repeat 0% 0%; font-size: 6pt; }
 
 span.preview       { margin:  auto   5px  10px  auto;  padding:   5px   5px   5px   5px;                                              }

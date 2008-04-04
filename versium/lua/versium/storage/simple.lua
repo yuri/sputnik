@@ -9,10 +9,10 @@ require("lfs")
 
 -- A template used for generating the index file.
 INDEX_TEMPLATE=[[add_version{
- version   = %s,
- timestamp = %s,
- author    = %s,
- comment   = %s,%s
+ version   = %q,
+ timestamp = %q,
+ author    = %q,
+ comment   = %q,%s
 }
 ]]
 
@@ -204,14 +204,11 @@ function SimpleVersiumStorage:save_version(id, data, author, comment, extra, tim
                                           t.year, t.month, t.day, t.hour, t.min, t.sec)
    local extra_buffer = ""
    for k,v in pairs(extra or {}) do
-      extra_buffer = extra_buffer.."\n "..k.."     = "..self.versium:longquote(v)..","
+      extra_buffer = extra_buffer..string.format("\n [%q] = %q, ", k, v)
    end                                
    local new_history = string.format(INDEX_TEMPLATE, 
-                                     self.versium:longquote(new_version_id),
-                                     self.versium:longquote(timestamp),
-                                     self.versium:longquote(author), 
-                                     self.versium:longquote(comment),
-                                     extra_buffer) 
+                                     new_version_id, timestamp, author, 
+                                     comment, extra_buffer) 
    _write_file(self.dir.."/"..id.."/index", new_history..raw_history)
 
    return new_version_id

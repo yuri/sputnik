@@ -529,8 +529,10 @@ end
 -- Shows HTML of diff between two versions of the node.
 ---------------------------------------------------------------------------------------------------
 function actions.diff(node, request, sputnik)
+   local other_node = sputnik:get_node(node._vnode._id, request.params.other)
+
    local diff = ""
-   for field, tokens in pairs(node:diff(request.params.other)) do
+   for field, tokens in pairs(node:diff(other_node)) do
       diff = diff.."\n\n<h2>"..field.."</h2>\n\n"
       local diff_buffer = ""
       for i, token in ipairs(tokens) do
@@ -545,14 +547,13 @@ function actions.diff(node, request, sputnik)
       end
       diff = diff.."<pre><code>"..diff_buffer.."</code></pre>\n"
    end
-   local other_node = sputnik:get_node(node._vnode._id, request.params.other)
    node.inner_html  = cosmo.f(node.templates.DIFF){  
                          version1 = request.params.version,
                          link1    = node.links:show{version=request.params.version},
-                         author1  = node.author,
+                         author1  = node._version.author,
                          version2 = request.params.other,
                          link2    = node.links:show{version=request.params.other},
-                         author2  = other_node.author,
+                         author2  = other_node._version.author,
                          diff     = diff, 
                       }
    return node.wrappers.default(node, request, sputnik)

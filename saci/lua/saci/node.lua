@@ -225,21 +225,44 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Returns a diff between this version of the node and some other one.
 --
--- @param other          the other version id.
+-- @param another_node   some other node
 -- @return               diff as a table of tokens.
 ---------------------------------------------------------------------------------------------------
-function SmartNode:diff(other)
-   return self.repository.versium:smart_diff(self._vnode._id, self._vnode._version.id, other)
+function SmartNode:diff(another_node)
+   local difftab  = {}
+   for i, field in ipairs(self:get_ordered_field_names()) do
+      if (self._vnode[field] or "") ~= (another_node._vnode[field] or "") then
+         difftab[field] = versium.util.diff(tostring(self._vnode[field]), 
+                                       tostring(another_node._vnode[field]))
+      end
+   end
+   return difftab
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- Returns the list of fields for this node, ordered according to their
+-- weights.
+-- 
+-- @return               A table of fields.
+-----------------------------------------------------------------------------
+function SmartNode:get_ordered_field_names()
+   local ordered_fields = {}
+   for k,v in pairs(self.fields) do
+      table.insert(ordered_fields, k)
+   end
+   table.sort(ordered_fields, function(a,b) return (self.fields[a][1] or 0) < (self.fields[b][1] or 0) end)
+   return ordered_fields
+end
+
+
+-----------------------------------------------------------------------------
 -- Saves the node (using the data that's already in the node).
 -- 
 -- @param author         the author associated with the edit.
 -- @param comment        a comment for the edit (optional).
 -- @param extra          extra params (optional).
 -- @return               nothing.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function SmartNode:save(author, comment, extra)
    assert(author)
    self.repository:save_node(self, author, comment, extra)

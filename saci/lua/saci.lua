@@ -6,7 +6,6 @@ module(..., package.seeall)
 
 require("versium")
 require("saci.node")
-require("saci.lua_inflator")
 local Repository = {}
 local Repository_mt = {__metatable={}, __index=Repository}
 
@@ -25,7 +24,6 @@ function new(config)
        storage = config.VERSIUM_STORAGE_MODULE or "versium.storage.simple",
        params = config.VERSIUM_PARAMS
    }
-   repo.versium.inflator = saci.lua_inflator.new(config.VERSIUM_PARAMS, repo.versium)
 
    return repo
 end
@@ -39,6 +37,53 @@ end
 
 function Repository:node_exists(id)
    return self.versium:node_exists(id)
+end
+
+
+-----------------------------------------------------------------------------
+-- Inflates a versium node, turning it into a Lua table.
+--
+-- @param node           The node to be "inflated" (represented as a versium
+--                       node object).
+-- @return               A table representing the fields of the node, with
+--                       the metadata and the string representation pushed
+--                       into the metatable.
+-----------------------------------------------------------------------------
+function Repository:inflate(node)
+
+   local object = saci.sandbox.new():do_lua(node.data)
+   assert(object, "the inflator should give us a table unless something went very wrong")
+   local meta = {
+      _version = {
+         id        = node.version,
+         timestamp = node.timestamp,
+         author    = node.author,
+         comment   = node.comment,
+         extra     = node.extra,
+      },
+      _raw = node.data,
+      _id  = node.id,
+   }
+   meta.__index = meta
+   setmetatable(object, meta)
+   return object
+end
+
+-----------------------------------------------------------------------------
+-- Turns a node represented as a Lua table into a string representation which
+-- could later be inflated again.
+--
+-- @param node           A versium node as a table.
+-- @return               The string representation of the versium node.
+-----------------------------------------------------------------------------
+function Repository:deflate(node)
+   local buffer = ""
+   for k,v in pairs(node) do
+      if k~="__index" then
+         buffer = buffer.."\n "..k.."= "..string.format("%q", tostring(v))
+      end
+   end
+   return buffer
 end
 
 
@@ -66,7 +111,7 @@ function Repository:get_node(id, version, mode)
    if not versium_node then
       local status, page_module = pcall(require, "sputnik.node_defaults."..id)
       if status then
-         local default = self.versium:deflate(page_module.NODE)
+         local default = self:deflate(page_module.NODE)
 		 -- Only create the default node if the CREATE_DEFAULT flag is set
          if page_module.CREATE_DEFAULT then
              self.versium:save_version(id, default, "Sputnik", "the default version")
@@ -82,7 +127,7 @@ function Repository:get_node(id, version, mode)
 		 stub = true
       end
    end
-   versium_node = self.versium:inflate(versium_node)
+   versium_node = self:inflate(versium_node)
    assert(versium_node._version)
    return saci.node.new(versium_node, self, self.config.ROOT_PROTOTYPE, mode), stub
 end
@@ -98,7 +143,7 @@ end
 ---------------------------------------------------------------------------------------------------
 function Repository:save_node(node, author, comment, extra)
    assert(node._id)
-   self.versium:save_version(node._id, self.versium:deflate(node._vnode), author, comment, extra)
+   self.versium:save_version(node._id, self:deflate(node._vnode), author, comment, extra)
 end
 
 ---------------------------------------------------------------------------------------------------

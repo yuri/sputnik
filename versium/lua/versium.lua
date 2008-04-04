@@ -1,8 +1,10 @@
+module(..., package.seeall)
+
 ---------------------------------------------------------------------------------------------------
 -- <b>Implements core Versium functionality</b> (just versioned storage).                        --
 ---------------------------------------------------------------------------------------------------
 
-module("versium", package.seeall)
+
 require("versium.util")
 
 local Versium = {}
@@ -138,99 +140,7 @@ function Versium:get_node_history (id, prefix)
    return self.storage:get_node_history(self:escape_id(id), prefix)
 end
 
----------------------------------------------------------------------------------------------------
--- Inflates an node, turning it into a Lua table.  How the string representation of the node's 
--- payload is turned into a Lua table depends on which "inflator" module is being used.
---
--- @param node           The node to be "inflated" (represented as a versium node object).
--- @param param          Parameters to be passed on to the inflator.
--- @return               A table representing the fields of the node, with the metadata and the 
---                       string representation pushed into the metatable.
----------------------------------------------------------------------------------------------------
-function Versium:inflate(node, param)
-   local object = self.inflator:inflate(node.data)
-   assert(object, "the inflator should give us a table unless something went very wrong")
-   local meta = {
-      _version = {
-         id        = node.version,
-         timestamp = node.timestamp,
-         author    = node.author,
-         comment   = node.comment,
-         extra     = node.extra,
-      },
-      _raw = node.data,
-      _id  = node.id,
-   }
-   meta.__index = meta
-   setmetatable(object, meta)
-   return object
-end
 
----------------------------------------------------------------------------------------------------
--- Turns a node represented as a Lua table into a string representation which could later be 
--- inflated again.
---
--- @param node           A node as a table.
--- @return               The string representation of the node.
----------------------------------------------------------------------------------------------------
-function Versium:deflate(node)
-   return self.inflator:deflate(node)
-end
-
----------------------------------------------------------------------------------------------------
--- Diff the raw string representation of two revisions of the node.
---
--- @param id             the node id.
--- @param v1             the "old" revision id.
--- @param v2             the "new" revision id.
--- @return               a list of annotated tokens.
----------------------------------------------------------------------------------------------------
-function Versium:diff(id, v1, v2)
-   assert(id and id:len() > 0)
-   return versium.util.diff(self:get_node(id, v1).data, self:get_node(id, v2).data)
-end
-
----------------------------------------------------------------------------------------------------
--- Diff inflated representations of two revisions of the node, field-by-field.
---
--- @param id             the node id.
--- @param v1             the "old" revision id.
--- @param v2             the "new" revision id.
--- @return               a table of lists of annotated tokens, keyed by field name.
----------------------------------------------------------------------------------------------------
-function Versium:smart_diff(id, v1, v2)
-   assert(id and id:len() > 0)
-   local node1 = self:inflate(self:get_node(id, v1))
-   local node2 = self:inflate(self:get_node(id, v2))
-   local difftab  = {}
-   for field, value in pairs(node1) do
-      if (node1[field] or "") ~= (node2[field] or "") then
-         difftab[field] = versium.util.diff(tostring(node1[field]), tostring(node2[field]))
-      end
-   end
-   return difftab
-end
-
----------------------------------------------------------------------------------------------------
--- Quotes an arbitrary string by putting [=[ with enough ==='s around it.
---
--- @param text           the text to be long-quoted.
--- @return               long-quoted text.
----------------------------------------------------------------------------------------------------
-function Versium:longquote(text)
-   assert(text)
-   text = text or ""
-   local max_eqs = ""
-   string.gsub(text, "%[(=*)%[",
-               function(match)
-                  if max_eqs:len() < match:len() then
-                     max_eqs = match
-                  end
-               end
-            )
-   local eqs = max_eqs.."="
-   return string.format("[%s[%s]%s]", eqs, text, eqs)
-end
 
 ---------------------------------------------------------------------------------------------------
 -- Escapes a node id to make it safe for use as a file name.

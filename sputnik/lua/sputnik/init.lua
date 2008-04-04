@@ -553,9 +553,10 @@ function Sputnik:protected_run(request, response)
       local message = "Sputnik ran but failed due to an unexpected error." -- ::LOCALIZE::
 
       -- catch some common errors
-      local dummy, path = string.match(err[1], "Versium storage error: (.*) Can't open file: (.*) in mode w") 
-      if path and path:sub(1, SPUTNIK_CONFIG.VERSIUM_PARAMS.dir:len()) == SPUTNIK_CONFIG.VERSIUM_PARAMS.dir then
-         message = "Versium's data directory ("..SPUTNIK_CONFIG.VERSIUM_PARAMS.dir
+      local dummy, path = string.match(err[1], "Versium storage error: (.*) Can't open file: (.*) in mode w")
+      local dir = self.config.VERSIUM_PARAMS.dir
+      if path and path:sub(1, dir:len()) == dir then
+         message = "Versium's data directory ("..dir
                    ..") is not writable.<br/> Please fix directory permissions." -- ::LOCALIZE::
       end
 

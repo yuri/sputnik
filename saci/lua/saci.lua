@@ -1,30 +1,30 @@
----------------------------------------------------------------------------------------------------
--- Defines a "Smart Repository": a collection of versium nodes with inheritance.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- Defines a class for a document-to-table mapper on top of Versium.
+--
+--
+-- (c) 2007, 2008  Yuri Takhteyev (yuri@freewisdom.org)
+-- License: MIT/X, see http://sputnik.freewisdom.org/en/License
+-----------------------------------------------------------------------------
 
 module(..., package.seeall)
 
 require("versium")
 require("saci.node")
-local Repository = {}
-local Repository_mt = {__metatable={}, __index=Repository}
+local Saci = {}
+local Saci_mt = {__metatable={}, __index=Saci}
 
----------------------------------------------------------------------------------------------------
--- Creates a new instance of Repository.
+-----------------------------------------------------------------------------
+-- Creates a new instance of Saci.
 -- 
 -- @param config         the bootstrapping config table.
--- @return               an instance of "Repository".
----------------------------------------------------------------------------------------------------
+-- @return               an instance of "Saci".
+-----------------------------------------------------------------------------
 function new(config)
-
-   local repo = setmetatable({}, Repository_mt)
+   local repo = setmetatable({}, Saci_mt)
    repo.config = config
-   local versium_params = config.VERSIUM_PARAMS
-   repo.versium = versium.new{
-       storage = config.VERSIUM_STORAGE_MODULE or "versium.storage.simple",
-       params = config.VERSIUM_PARAMS
-   }
-
+   local versium_module_name = config.VERSIUM_STORAGE_MODULE or "versium.filedir"
+   local versium_module = require(versium_module_name)
+   repo.versium = versium_module.new(config.VERSIUM_PARAMS)
    return repo
 end
 
@@ -35,7 +35,7 @@ end
 -- @return               true or false.
 -----------------------------------------------------------------------------
 
-function Repository:node_exists(id)
+function Saci:node_exists(id)
    return self.versium:node_exists(id)
 end
 
@@ -49,23 +49,23 @@ end
 --                       the metadata and the string representation pushed
 --                       into the metatable.
 -----------------------------------------------------------------------------
-function Repository:inflate(node)
-
-   local object = saci.sandbox.new():do_lua(node.data)
-   assert(object, "the inflator should give us a table unless something went very wrong")
-   local meta = {
+function Saci:inflate(data, metadata, id)
+   assert(data); assert(metadata); assert(id)
+   local object = saci.sandbox.new():do_lua(data)
+   assert(object, "the sandbox should give us a table")
+   local mt = {
       _version = {
-         id        = node.version,
-         timestamp = node.timestamp,
-         author    = node.author,
-         comment   = node.comment,
-         extra     = node.extra,
+         id        = metadata.version,
+         timestamp = metadata.timestamp,
+         author    = metadata.author,
+         comment   = metadata.comment,
+         extra     = metadata.extra,
       },
-      _raw = node.data,
-      _id  = node.id,
+      _raw = data,
+      _id  = id,
    }
-   meta.__index = meta
-   setmetatable(object, meta)
+   mt.__index = mt
+   setmetatable(object, mt)
    return object
 end
 
@@ -76,7 +76,7 @@ end
 -- @param node           A versium node as a table.
 -- @return               The string representation of the versium node.
 -----------------------------------------------------------------------------
-function Repository:deflate(node)
+function Saci:deflate(node)
    local buffer = ""
    for k,v in pairs(node) do
       if k~="__index" then
@@ -87,52 +87,37 @@ function Repository:deflate(node)
 end
 
 
----------------------------------------------------------------------------------------------------
--- Retrieves a node transformed it into a "smart node".  This method overrides versium's get_node().
+-----------------------------------------------------------------------------
+-- Retrieves data from Versium and creates a Saci node from it.  If Versium
+-- returns nil then Saci will check if it has a method get_fallback_node()
+-- (which must be set by the client) and will use it to retrieve a fallback
+-- node if it is defined.  If not, it will just return nil.
 --
 -- @param id             the id of the desired node.
 -- @param version        the desired version of the node (defaults to latest).
--- @return               (1) a table representing the fields of the node, with the metadata and the 
---                       string representatoin pushed into the metatable.
---                       (2) the boolean value 'true' if the node returned was a stub, otherwise
---                       nil.
----------------------------------------------------------------------------------------------------
+-- @return               (1) a newly created instance of saci.node.Node,
+--                       (2) 'true' if the node returned is a stub (nil
+--                           otherwise).
+-----------------------------------------------------------------------------
 
---require"sputnik.installer.initial_pages"
-
-function Repository:get_node(id, version, mode)
+function Saci:get_node(id, version)
    assert(id)
-   if self.logger then 
-      self.logger:debug(id)
-      self.logger:debug(version)
+   local data, metadata = self.versium:get_node(id, version)
+   if data then
+      return self:make_node(data, metadata, id)
+   elseif self.get_fallback_node then
+      return self:get_fallback_node(id, version)
+   else
+      return nil
    end
-   local versium_node = self.versium:get_node(id, version) 
-   local stub
-   if not versium_node then
-      local status, page_module = pcall(require, "sputnik.node_defaults."..id)
-      if status then
-         local default = self:deflate(page_module.NODE)
-		 -- Only create the default node if the CREATE_DEFAULT flag is set
-         if page_module.CREATE_DEFAULT then
-             self.versium:save_version(id, default, "Sputnik", "the default version")
-             versium_node = self.versium:get_node(id, version)
-         else
-             -- Otherwise, create a stub and set the data
-             -- This page won't be saved until it's explicitly edited and saved
-             versium_node = self.versium:get_stub(id)
-             versium_node.data = default
-         end
-      else 
-         versium_node = self.versium:get_stub(id)
-		 stub = true
-      end
-   end
-   versium_node = self:inflate(versium_node)
-   assert(versium_node._version)
-   return saci.node.new(versium_node, self, self.config.ROOT_PROTOTYPE, mode), stub
 end
 
----------------------------------------------------------------------------------------------------
+function Saci:make_node(data, metadata, id)
+   return saci.node.new{data=data, metadata=metadata, id=id, repository=self,
+                        root_prototype_id=self.config.ROOT_PROTOTYPE}   
+end
+
+-----------------------------------------------------------------------------
 -- Saves a node.
 --
 -- @param node           the node to be saved.
@@ -140,22 +125,25 @@ end
 -- @param comment        a comment associated with this change (optional).
 -- @param extra          extra params (optional).
 -- @return               nothing
----------------------------------------------------------------------------------------------------
-function Repository:save_node(node, author, comment, extra)
-   assert(node._id)
-   self.versium:save_version(node._id, self:deflate(node._vnode), author, comment, extra)
+-----------------------------------------------------------------------------
+function Saci:save_node(node, author, comment, extra)
+   assert(node.id)
+   self.versium:save_version(node.id, self:deflate(node.raw_values), author,
+                             comment, extra)
 end
 
----------------------------------------------------------------------------------------------------
--- Returns the history of edits to the node.
+-----------------------------------------------------------------------------
+-- Returns the history of edits to the node, optionally filtered by time
+-- prefix (e.g., "2007-12") and/or capped at a certain number.
 --
 -- @param id             the id of the node.
--- @param prefix         an optional date prefix (e.g., "2007-12").
+-- @param prefix         [optional] a date prefix (e.g., "2007-12").
+-- @param limit          [optional] a maxium number of records to return.
 -- @return               history as a table.
----------------------------------------------------------------------------------------------------
-function Repository:get_node_history(id, prefix)
+-----------------------------------------------------------------------------
+function Saci:get_node_history(id, prefix, limit)
    assert(id)
-   local versium_history = self.versium:get_node_history(id, prefix)
+   local versium_history = self.versium:get_node_history(id, prefix, limit)
    for i,v in ipairs(versium_history) do
       v.get_node = function() self:get_node(id, v.version) end
    end

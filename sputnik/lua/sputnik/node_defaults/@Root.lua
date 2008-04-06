@@ -8,10 +8,8 @@ title           = {0.1  }
 category        = {0.2  }
 actions         = {0.3, proto="concat", activate="lua"}
 config          = {0.4, proto="concat" }
-templates       = {0.5, proto="concat", 
-                        activate="node_list"}
-translations    = {0.51, proto="concat", 
-                        activate="node_list"}
+templates       = {0.5, proto="concat", activate="list"}
+translations    = {0.51, proto="concat", activate="list"}
 prototype       = {0.6  }
 permissions     = {0.7, proto="concat"}
 content         = {0.8  }

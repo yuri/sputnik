@@ -491,7 +491,7 @@ function Sputnik:run(request, response)
 
    local node, stub = self:get_node(request.node_name, request.params.version)
   
-   if stub then
+   if stub and self.config.PROTOTYPE_PATTERNS then
       -- If an empty stub was returned, check the PROTOTYPE_PATTERNS table to see
       -- if we should apply a prototype
       local node_name = request.node_name

@@ -8,7 +8,6 @@
 
 module(..., package.seeall)
 
-require("versium")
 require("saci.node")
 local Saci = {}
 local Saci_mt = {__metatable={}, __index=Saci}

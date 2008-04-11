@@ -58,6 +58,46 @@ function new(params)
    return new_versium 
 end
 
+
+
+--x--------------------------------------------------------------------------
+-- Returns the raw history of the node from the given directory.
+------------------------------------------------------------------------------
+local function get_raw_history(dir, id)
+   local path = dir.."/"..util.fs_escape_id(id).."/index"
+   local raw_history = util.read_file_if_exists(path)
+   return raw_history
+end
+
+--x--------------------------------------------------------------------------
+-- Parses raw history file into a table, filters by timestamp prefix.
+-----------------------------------------------------------------------------
+local function parse_history(raw_history, prefix, limit)
+   local all_versions = {}
+   local more
+   prefix = "" --prefix or ""
+   local preflen = prefix:len()
+   local counter = 0
+   local f = loadstring(raw_history)
+   local environment = {
+      add_version = function (values)
+                       if values.timestamp:sub(1, preflen) == prefix then
+                          if counter == limit then
+                             more = true
+                          else 
+                             table.insert(all_versions, values)
+                             counter = counter + 1
+                          end
+                       end
+                    end 
+   }
+   setfenv(f, environment)
+   f()
+   return all_versions
+end
+
+
+
 -----------------------------------------------------------------------------
 -- Returns the data stored in the node as a string and a table representing
 -- the node's metadata.  Returns nil if the node doesn't exist.  Throws an
@@ -171,7 +211,7 @@ function FileDirVersium:save_version(id, data, author, comment, extra, timestamp
    end
    -- load history, figure out the new revision ID, write data to file
    local raw_history = get_raw_history(self.dir, id)
-   local history = parse_raw_history(raw_history)
+   local history = parse_history(raw_history)
    local new_version_id = string.format("%06d", #history + 1)
    util.write_file(node_path.."/"..new_version_id, data, id)
    -- generate and save the new index
@@ -188,42 +228,6 @@ function FileDirVersium:save_version(id, data, author, comment, extra, timestamp
    util.write_file(self.dir.."/"..util.fs_escape_id(id).."/index", new_history..raw_history, id)
 
    return new_version_id
-end
-
---x--------------------------------------------------------------------------
--- Returns the raw history of the node from the given directory.
-------------------------------------------------------------------------------
-local function get_raw_history(dir, id)
-   local path = dir.."/"..util.fs_escape_id(id).."/index"
-   local raw_history = util.read_file_if_exists(path)
-   return raw_history
-end
-
---x--------------------------------------------------------------------------
--- Parses raw history file into a table, filters by timestamp prefix.
------------------------------------------------------------------------------
-local function parse_history(raw_history, prefix, limit)
-   local all_versions = {}
-   local more
-   prefix = "" --prefix or ""
-   local preflen = prefix:len()
-   local counter = 0
-   local f = loadstring(raw_history)
-   local environment = {
-      add_version = function (values)
-                       if values.timestamp:sub(1, preflen) == prefix then
-                          if counter == limit then
-                             more = true
-                          else 
-                             table.insert(all_versions, values)
-                             counter = counter + 1
-                          end
-                       end
-                    end 
-   }
-   setfenv(f, environment)
-   f()
-   return all_versions
 end
 
 -----------------------------------------------------------------------------

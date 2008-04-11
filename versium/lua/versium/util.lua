@@ -212,7 +212,7 @@ end
 function read_file_if_exists(path)
    assert(path)
    local status, f = pcall(io.open, path)
-   if status then
+   if status and f then
       local data = f:read("*all")
       f:close()
       return data

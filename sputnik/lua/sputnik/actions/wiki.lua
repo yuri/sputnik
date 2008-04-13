@@ -422,7 +422,7 @@ function actions.show_sitemap_xml(node, request, sputnik)
                 end
                 cosmo.yield{
                    url = "http://"..sputnik.config.DOMAIN..url,
-                   lastmod = sputnik:get_node(name)._version.timestamp.."T"..sputnik.config.SERVER_TZ,
+                   lastmod = sputnik:get_node(name).metadata.timestamp.."T"..sputnik.config.SERVER_TZ,
                    changefreq = "weekly",
                    priority = priority
                 }
@@ -459,7 +459,7 @@ function actions.edit (node, request, sputnik, etc)
    local fields = {}
    for field, field_params in pairs(node.fields) do
       if not field_params.virtual then
-         fields[field] = sputnik:escape(request.params[field] or node._vnode[field])
+         fields[field] = sputnik:escape(request.params[field] or node.raw_values[field])
       end
    end
    fields.page_name = sputnik:dirify(node.name)  -- node name cannot be changed
@@ -529,8 +529,10 @@ end
 -- Shows HTML of diff between two versions of the node.
 ---------------------------------------------------------------------------------------------------
 function actions.diff(node, request, sputnik)
+   local other_node = sputnik:get_node(node.id, request.params.other)
+
    local diff = ""
-   for field, tokens in pairs(node:diff(request.params.other)) do
+   for field, tokens in pairs(node:diff(other_node)) do
       diff = diff.."\n\n<h2>"..field.."</h2>\n\n"
       local diff_buffer = ""
       for i, token in ipairs(tokens) do
@@ -545,14 +547,13 @@ function actions.diff(node, request, sputnik)
       end
       diff = diff.."<pre><code>"..diff_buffer.."</code></pre>\n"
    end
-   local other_node = sputnik:get_node(node._vnode._id, request.params.other)
    node.inner_html  = cosmo.f(node.templates.DIFF){  
                          version1 = request.params.version,
                          link1    = node.links:show{version=request.params.version},
-                         author1  = node.author,
+                         author1  = node.metadata.author,
                          version2 = request.params.other,
                          link2    = node.links:show{version=request.params.other},
-                         author2  = other_node.author,
+                         author2  = other_node.metadata.author,
                          diff     = diff, 
                       }
    return node.wrappers.default(node, request, sputnik)
@@ -564,7 +565,7 @@ end
 ---------------------------------------------------------------------------------------------------
 function actions.raw_content(node, request, sputnik)
    if node:check_permissions(request.user, request.action) then
-      return node._vnode.content, "text/plain"
+      return node.raw_values.content, "text/plain"
    else
       return "-- Access to raw content not allowed", "text/plain"
    end
@@ -575,7 +576,7 @@ end
 ---------------------------------------------------------------------------------------------------
 function actions.raw(node, request, sputnik)
    if node:check_permissions(request.user, request.action) then
-      return node._vnode._raw or "No source available.", "text/plain"
+      return node.data or "No source available.", "text/plain"
    else
       return "-- Access to raw content not allowed", "text/plain"
    end
@@ -604,12 +605,12 @@ end
 function actions.show_content_as_lua_code(node, request, sputnik)
 
    local DOLLAR_REPLACEMENT = "$<span></span>"
-   local escaped = sputnik:escape(node._inactive.content)
+   local escaped = sputnik:escape(node.raw_values.content)
    escaped = escaped:gsub("%$", DOLLAR_REPLACEMENT)
    escaped = escaped:gsub(" ", "&nbsp;")
    escaped = string.gsub(escaped, "(%-%-[^\n]*)", 
                          function (comment) return "<font color='gray'>"..comment.."</font>" end)
-   local f, errors = loadstring(node._inactive.content)
+   local f, errors = loadstring(node.raw_values.content)
    if errors then
       local reg_exp = "^.+%]%:(%d+)%:"
       error_line_num = string.match(errors, reg_exp)
@@ -645,8 +646,8 @@ function actions.action_not_found(node, request, sputnik)
                         title             = node.title,
                         url               = node.urls:show(),
                         action            = request.action,
-                        if_custom_actions = cosmo.c(node._vnode.actions and node._vnode.actions:len() > 0){
-                                               actions = node._vnode.actions
+                        if_custom_actions = cosmo.c(node.raw_values.actions and node.raw_values.actions:len() > 0){
+                                               actions = node.raw_values.actions
                                             }
                      }
    return node.wrappers.default(node, request, sputnik)
@@ -745,7 +746,7 @@ function wrappers.default(node, request, sputnik)
       if_old_version   = cosmo.c(is_old){
                             version      = request.params.version,
                          },
-      if_logged_in     = cosmo.c(request.user){  
+      if_logged_in     = cosmo.c(request.user){
                             user         = request.user,
                             logout_link  = node.links:show{logout="1"} 
                          },

@@ -3,7 +3,6 @@ module(..., package.seeall)
 require("md5")
 require("cosmo")
 require("saci")
-require("sputnik")
 require("sputnik.actions.wiki")
 require("sputnik.i18n")
 require("sputnik.util")
@@ -24,8 +23,8 @@ function new(config)
    config.SECRET_CODE = config.SECRET_CODE or "23489701982370894172309847123"
    config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "_config"
    config.PASS_PAGE_NAME = config.PASS_PAGE_NAME or "_passwords"
-   -- config.LOGGER = config.LOGGER or "file"
-   -- config.LOGGER_PARAMS = config.LOGGER_PARAMS or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
+   --config.LOGGER = config.LOGGER or "file"
+   --config.LOGGER_PARAMS = config.LOGGER_PARAMS or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
 
    -- Create and return the new initialized Sputnik instance
    local obj = setmetatable({}, Sputnik_mt)
@@ -55,6 +54,23 @@ function Sputnik:init(initial_config)
 
    -- setup the repository -- do this before loading user configuration
    self.repo = saci.new(initial_config)
+
+   self.repo.get_fallback_node = function(repo, id)
+      local status, page_module = pcall(require, "sputnik.node_defaults."..id)
+      if status then
+         local data = self.repo:deflate(page_module.NODE)
+         local node = self.repo:make_node(data, {}, id)
+         assert(node)
+         if page_module.CREATE_DEFAULT then
+            node:save()
+            node = self.repo:get_node(id)
+         end
+         return node
+      else
+         return self.repo:make_node("", {}, id), true -- set stub=true
+      end
+   end
+
    assert(self.repo)
    self.repo.logger = self.logger 
 
@@ -209,14 +225,14 @@ end
 ---------------------------------------------------------------------------------------------------
 -- Returns the node with this name (without additional activation).
 ---------------------------------------------------------------------------------------------------
-function Sputnik:get_node(node_name, version, mode)
-   local node, stub = self.repo:get_node(node_name, version, mode)
+function Sputnik:get_node(id, version, mode)
+   local node, stub = self.repo:get_node(id, version)
    
-   node.name = node_name
+   node.name = id
    if not node.title then
       local temp_title = string.gsub(node.name, "_", " ")
       node.title = temp_title
-      node._vnode.title = temp_title
+      node.raw_values.title = temp_title
    end
    if mode~="basic" then
       self:prime_node(node)
@@ -495,7 +511,7 @@ function Sputnik:run(request, response)
       -- If an empty stub was returned, check the PROTOTYPE_PATTERNS table to see
       -- if we should apply a prototype
       local node_name = request.node_name
-      for pattern,prototype in pairs(self.config.PROTOTYPE_PATTERNS) do
+      for pattern,prototype in pairs(self.config.PROTOTYPE_PATTERNS or {}) do
          if node_name:find(pattern) then
             request.params.prototype = prototype;
             break
@@ -553,9 +569,10 @@ function Sputnik:protected_run(request, response)
       local message = "Sputnik ran but failed due to an unexpected error." -- ::LOCALIZE::
 
       -- catch some common errors
-      local dummy, path = string.match(err[1], "Versium storage error: (.*) Can't open file: (.*) in mode w") 
-      if path and path:sub(1, SPUTNIK_CONFIG.VERSIUM_PARAMS.dir:len()) == SPUTNIK_CONFIG.VERSIUM_PARAMS.dir then
-         message = "Versium's data directory ("..SPUTNIK_CONFIG.VERSIUM_PARAMS.dir
+      local dummy, path = string.match(err[1], "Versium storage error: (.*) Can't open file: (.*) in mode w")
+      local dir = self.config.VERSIUM_PARAMS.dir
+      if path and path:sub(1, dir:len()) == dir then
+         message = "Versium's data directory ("..dir
                    ..") is not writable.<br/> Please fix directory permissions." -- ::LOCALIZE::
       end
 

@@ -23,12 +23,11 @@ NAVIGATION = {
    {id="_readme", title="_",  
      {id="_readme"},
      {id="_config"},
- 	  {id="_navigation"},
- 	  {id="_colors"},
- 	  {id="_layout"},
- 	  {id="_fonts"},
- 	  {id="_templates"},
- 	  {id="_translations"},
+ 	 {id="_navigation"},
+ 	 {id="_colors"},
+ 	 {id="_layout"},
+ 	 {id="_templates"},
+ 	 {id="_translations"},
  	} 
 }
 ]============]

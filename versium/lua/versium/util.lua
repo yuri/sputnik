@@ -4,6 +4,8 @@
 
 module(..., package.seeall)
 
+local errors = require"versium.errors"
+
 ---------------------------------------------------------------------------------------------------
 -- Splits a string into tokens for diffing.
 --
@@ -144,4 +146,79 @@ function diff(t2, t1)
    end
    return diff
 end
+
+---------------------------------------------------------------------------------------------------
+-- Escapes a node id to make it safe for use as a file name.
+-- 
+-- @param id             a node id.
+-- @return               an escaped node id.
+---------------------------------------------------------------------------------------------------
+function fs_escape_id(id)
+   assert(id and id:len() > 0)
+   return id:gsub("%%", "%%25"):gsub(":", "%%3A"):gsub("/", "%%2F")
+end
+
+
+---------------------------------------------------------------------------------------------------
+-- Un-escapes a node id. (See escape_id().)
+-- 
+-- @param id             an escaped node id.
+-- @return               the original node id.
+---------------------------------------------------------------------------------------------------
+function fs_unescape_id(id)
+   assert(id and id:len() > 0)
+   return id:gsub("%%2F", "/"):gsub("%%3A", ":"):gsub("%%25", "%%")
+end
+
+---------------------------------------------------------------------------------------------------
+-- Writes data to a file (to be replaced with atomic write).
+-- 
+-- @param path           the file path.
+-- @param data           data to be written to the file.
+-- @return               nothing
+---------------------------------------------------------------------------------------------------
+function write_file(path, data, node)
+   assert(path)
+   assert(data)
+   local f, err = io.open(path, "w")
+   assert(f, errors.could_not_save(node, err))
+   f:write(data)
+   f:close()
+end
+
+-----------------------------------------------------------------------------
+-- An auxiliary function for reading the content of a file.  (Throws an a 
+-- Versium-specific error if something goes wrong.)
+-- 
+-- @param path           the file path.
+-- @return               the data read from the file as a string.
+-----------------------------------------------------------------------------
+function read_file(path, node)
+   assert(path)
+   local f, err = io.open(path)
+   assert(f, errors.could_not_read(node, err))
+   local data = f:read("*all")
+   f:close()
+   return data
+end
+
+-----------------------------------------------------------------------------
+-- Reads data from a file without complaining if the file doesn't exist.
+-- 
+-- @param path           the file path.
+-- @return               the data read from the file or just "" if the file 
+--                       doesn't exist.
+-----------------------------------------------------------------------------
+function read_file_if_exists(path)
+   assert(path)
+   local status, f = pcall(io.open, path)
+   if status and f then
+      local data = f:read("*all")
+      f:close()
+      return data
+   else
+      return ""
+   end
+end
+
 

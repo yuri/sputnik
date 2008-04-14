@@ -525,13 +525,45 @@ function Sputnik:run(request, response)
 
    node = self:activate_node(node, request)
 
-   local action_function = node.actions[request.action or "show"]
+   local action = request.action or "show"
+   local action_function = node.actions[action]
                            or sputnik.actions.wiki.actions.action_not_found
+
+   -- Determine if there are any hooks to be called for this action, on this node
+   -- by checking the node.action_hooks table
+   if node.action_hooks and node.action_hooks[action] then
+      local hooks = node.action_hooks[action].before
+      if hooks then
+         for idx, hook in ipairs(hooks) do
+            local mod_name, dot_action = sputnik.util.split(hook, "%.")
+            local mod = require("sputnik.actions." .. mod_name)
+            if mod and mod.actions and mod.actions[dot_action] then
+               pcall(mod.actions[dot_action], node, request, sputnik)
+            end
+         end
+      end
+   end
 
    local content, content_type = action_function(node, request, self)
    assert(content)
    self.logger:info(self.cookie_name.."=".. ((request.user or "").."|"..(request.auth_token or "")))
    response.headers["Content-Type"] = content_type or "text/html"
+
+   -- Handle any action hooks at this point, with no digging for post actions
+   -- If you want to hook a post action, you need to iterate the parameters 
+   -- to determine which action is actually being called
+   if node.action_hooks and node.action_hooks[action] then
+      local hooks = node.action_hooks[action].after
+      if hooks then
+         for idx, hook in ipairs(hooks) do
+            local mod_name, dot_action = sputnik.util.split(hook, "%.")
+            local mod = require("sputnik.actions." .. mod_name)
+            if mod and mod.actions and mod.actions[dot_action] then
+               pcall(mod.actions[dot_action], node, request, sputnik)
+            end
+         end
+      end
+   end
    
    -- If we have any custom HTML headers, add them to the response
    for header,value in pairs(node.headers) do

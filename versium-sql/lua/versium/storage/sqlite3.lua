@@ -120,8 +120,8 @@ function new(params)
 		GET_NODE_LATEST = string.format("SELECT n.id,n.data,n.version FROM %s as n NATURAL JOIN %s WHERE n.id = %%s;", obj.tables.node, obj.tables.node_index),
 		GET_VERSION = string.format("SELECT max(version) as version FROM %s WHERE id = %%s;", obj.tables.node),
 		GET_NODES = string.format("SELECT id FROM %s ORDER BY id;", obj.tables.node_index),
-		GET_NODES_PREFIX_LIMIT = string.format("SELECT id FROM %s WHERE n.id LIKE %%s ORDER BY id LIMIT %%s;", obj.tables.node_index),
-      GET_NODES_PREFIX = string.format("SELECT id FROM %s WHERE n.id LIKE %%s ORDER BY id;", obj.tables.node_index),
+		GET_NODES_PREFIX_LIMIT = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id LIMIT %%s;", obj.tables.node_index),
+      GET_NODES_PREFIX = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id;", obj.tables.node_index),
       GET_NODES_LIMIT = string.format("SELECT id FROM %s ORDER BY id LIMIT %%s;", obj.tables.node_index),
       NODE_EXISTS = string.format("SELECT DISTINCT id FROM %s WHERE id = %%s;", obj.tables.node),
 		INSERT_NODE = string.format("INSERT INTO %s (id,version,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s, %%s);", obj.tables.node),
@@ -235,7 +235,7 @@ function SQLite3Versium:get_node_ids(prefix, limit)
       cmd = prepare(self.queries.GET_NODES)
    end
 
-	local cur = self.con:execute(cmd)
+	local cur = assert(self.con:execute(cmd))
 	local row = cur:fetch({}, "a")
 
 	while row do

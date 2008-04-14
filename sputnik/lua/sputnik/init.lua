@@ -57,6 +57,13 @@ function Sputnik:init(initial_config)
 
    self.repo.get_fallback_node = function(repo, id)
       local status, page_module = pcall(require, "sputnik.node_defaults."..id)
+
+      if not status then
+         -- Attempt to escape the node_id using basic filesystem rules
+         local esc_id = id:gsub("%%", "%%25"):gsub(":", "%%3A"):gsub("/", "%%2F")
+         status, page_module = pcall(require, "sputnik.node_defaults."..esc_id)
+      end
+
       if status then
          local data = self.repo:deflate(page_module.NODE)
          local node = self.repo:make_node(data, {}, id)

@@ -348,8 +348,8 @@ end
 -- Returns a list of all node ids.
 ---------------------------------------------------------------------------------------------------
 function Sputnik.get_node_names(self, args)
-   local prefix = args and args.prefix or ""
-   local limit = args and args.limit or ""
+   local prefix = args and args.prefix or nil
+   local limit = args and args.limit or nil
    local node_ids = self.repo.versium:get_node_ids(prefix, limit) -- reaching deep
    return node_ids
 end

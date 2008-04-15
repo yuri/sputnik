@@ -38,8 +38,7 @@ function Saci:node_exists(id)
    return self.versium:node_exists(id)
 end
 
-
------------------------------------------------------------------------------
+----------------------------------------------------------------------------
 -- Inflates a versium node, turning it into a Lua table.
 --
 -- @param node           The node to be "inflated" (represented as a versium
@@ -109,6 +108,22 @@ function Saci:get_node(id, version)
    else
       return nil
    end
+end
+
+-----------------------------------------------------------------------------
+-- Returns the most recent version identifier for a given node
+--
+-- @param id             the id of the desired node
+-- @return               the version tag for the latest version of the node
+-----------------------------------------------------------------------------
+function Saci:get_version(id)
+	assert(id)
+	local data = self.versium:get_node_info(id)
+	if data then
+		return data.version
+	else
+		return nil
+	end
 end
 
 function Saci:make_node(data, metadata, id)

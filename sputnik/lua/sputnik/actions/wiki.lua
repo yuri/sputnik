@@ -775,6 +775,9 @@ function wrappers.default(node, request, sputnik)
       site_rss_link    = sputnik:pseudo_node(sputnik.config.HISTORY_PAGE).links:rss(),
       node_rss_link    = node.links:rss(),
       -- urls are just urls
+      make_url         = function(args)
+         return sputnik:make_url(unpack(args))
+      end,
       base_url         = sputnik.config.BASE_URL, -- for mods
       nice_url         = sputnik.config.NICE_URL, -- for mods
       logo_url         = sputnik.config.IMAGES.logo,

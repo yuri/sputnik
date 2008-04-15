@@ -59,7 +59,7 @@ category        = {2.1, "text_field", advanced=true}
 prototype       = {2.2, "text_field", advanced=true}
 --- the content of the page ----------------------------
 content_hdr     = {3.0, "header"}
-content         = {3.1, "big_textarea", rows=27, 
+content         = {3.1, "editor", rows=15, 
                                         no_label=true}
 --- info about the edit --------------------------------
 edit_info_hdr   = {4.0, "header"} 
@@ -86,7 +86,7 @@ edit_ui         = {2.8, "textarea", advanced=true, rows=3}
 admin_edit_ui   = {2.9, "textarea", advanced=true, rows=3}
 --- the content of the page ----------------------------
 content_hdr     = {3.0, "header"}
-content         = {3.1, "big_textarea", rows=27, 
+content         = {3.1, "editor", rows=27, 
                                         no_label=true}
 --- info about the edit --------------------------------
 edit_info_hdr   = {4.0, "header"} 

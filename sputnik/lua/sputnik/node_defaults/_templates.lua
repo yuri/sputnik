@@ -23,9 +23,19 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   <title>$site_title: $title</title>
   $do_stylesheets[[<link type="text/css" rel="stylesheet" href="$url" />
   ]]
+  <link type="text/css" rel="stylesheet" href="$make_url{"markitup/css/simple", "css"}" />
+  <link type="text/css" rel="stylesheet" href="$make_url{"markitup/css/markdown", "css"}" />
   <link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_node)" $node_rss_link/>
+  <script type="text/javascript" src="$make_url{"jquery", "js"}"></script>
+  <script type="text/javascript" src="$make_url{"markitup/js/markitup", "js"}"></script>
+  <script type="text/javascript" src="$make_url{"markitup/js/markdown", "js"}"></script>
+  <script type="text/javascript" >
+  $(document).ready(function() {
+	  $("textarea.editor").markItUp(mySettings);
+  });
+  </script>
  </head>
 
  <body>
@@ -274,6 +284,7 @@ EDIT_FORM_HIDDEN        = [[<input type="hidden" class="hidden" value="$value" n
 EDIT_FORM_READONLY_TEXT = [[<input type="text" value="$value" name="$name" class="readonly" readonly="readonly" />]]
 EDIT_FORM_PASSWORD      = [[<input type="password" value="$value" name="$name" size="20"></input>]]
 EDIT_FORM_TEXTAREA      = [[<textarea class="small" name="$name" rows="$rows">$value</textarea>]]
+EDIT_FORM_EDITOR        = [[<textarea class="editor" name="$name" rows="$rows">$value</textarea>]]
 EDIT_FORM_BIG_TEXTAREA  = [[<textarea name="$name" id="main_text_area" rows="$rows">$value</textarea><br/>
                             <a href="#" onclick="expandTextArea(); return false;">expand</a>]]
 EDIT_FORM_CHECKBOX      = [[<input class="checkbox" style="border:1px solid black" 

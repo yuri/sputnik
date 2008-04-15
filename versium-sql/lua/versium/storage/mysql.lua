@@ -124,7 +124,7 @@ function new(params)
       GET_NODES_PREFIX = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id;", obj.tables.node_index),
       GET_NODES_LIMIT = string.format("SELECT id FROM %s ORDER BY id LIMIT %%s;", obj.tables.node_index),
       NODE_EXISTS = string.format("SELECT DISTINCT id FROM %s WHERE id = %%s;", obj.tables.node),
-		INSERT_NODE = string.format("INSERT INTO %s (id,version,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s, %%s);", obj.tables.node),
+		INSERT_NODE = string.format("INSERT INTO %s (id,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s);", obj.tables.node),
 		INSERT_INDEX = string.format("INSERT INTO %s (id, version) VALUES (%%s, %%s);", obj.tables.node_index),
 		UPDATE_INDEX = string.format("UPDATE %s SET version=%%s WHERE id = %%s;", obj.tables.node_index),
 		GET_METADATA = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s ORDER BY timestamp;", obj.tables.node),
@@ -270,22 +270,21 @@ function MySQLVersium:save_version(id, data, author, comment, extra, timestamp)
    data = data:gsub("\\", "\\\\")
 
 	-- Store the new node in the 'nodes' table
-	local cmd = prepare(self.queries.INSERT_NODE, id, version, author, comment, timestamp, data)
+	local cmd = prepare(self.queries.INSERT_NODE, id, author, comment, timestamp, data)
 	assert(self.con:execute(cmd), out)
 
    local cur,err = assert(self.con:execute("SELECT LAST_INSERT_ID();"))
-   local version = assert(cur:fetch("*a"))
+   local version = tonumber(assert(cur:fetch("*a")))
    cur:close()
-	
+
 	-- Update the index table to the newest revision
-	if new then
+	if version == 1 then
 		local cmd = prepare(self.queries.INSERT_INDEX, id, version)
-		local cur,err = self.con:execute(cmd)
+		local cur = assert(self.con:execute(cmd))
 		assert(cur, err)
 	else
 		local cmd = prepare(self.queries.UPDATE_INDEX, version, id) 
-		local cur,err = self.con:execute(cmd)
-		assert(cur, err)
+		local cur = assert(self.con:execute(cmd))
 	end
 
 	-- Return the new version number

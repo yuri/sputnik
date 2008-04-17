@@ -60,7 +60,7 @@ function Sputnik:init(initial_config)
 
       if not status then
          -- Attempt to escape the node_id using basic filesystem rules
-         local esc_id = id:gsub("%%", "%%25"):gsub(":", "%%3A"):gsub("/", "%%2F")
+         local esc_id = id:gsub("%%", "%%25"):gsub(":", "%%3A"):gsub("/", ".")
          status, page_module = pcall(require, "sputnik.node_defaults."..esc_id)
       end
 

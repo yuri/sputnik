@@ -2,7 +2,7 @@ module(..., package.seeall)
 
 NODE = {
 
- prototype= "@JS",
+ prototype= "@JavaScript",
  title= "Markitup - JQuery Editor Component",
 }
 

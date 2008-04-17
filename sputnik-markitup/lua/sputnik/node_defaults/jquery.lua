@@ -1,7 +1,7 @@
 module(..., package.seeall)
 
 NODE = {
- prototype= "@JS",
+ prototype= "@JavaScript",
  title= "JQuery",
 }
 

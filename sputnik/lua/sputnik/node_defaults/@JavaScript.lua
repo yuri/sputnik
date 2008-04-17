@@ -1,6 +1,6 @@
 module(..., package.seeall)
 NODE = {
-   title="@JS (Prototype for Javascript Pages)",
+   title="@JavaScript (Prototype for Javascript Pages)",
    prototype="@Text_Config",
    category="_prototypes",
    actions=[[js="javascript.js"]],

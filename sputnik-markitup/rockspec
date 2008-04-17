@@ -1,0 +1,26 @@
+-- Package metadata
+package = 'Sputnik-MarkItUp'
+version = '8.02.20-0'
+description = {
+  summary = 'One day',
+  detailed = [[
+...
+  ]],
+  license = 'MIT/X11',
+  homepage = 'http://sputnik.freewisdom.org/',  
+}
+
+-- Dependency information
+dependencies = {
+  'versium >= 7.12.26',
+  'colors >= 7.12.26',
+  'markdown >= 0.18',
+  'md5 >= 1.1',
+}
+
+-- Build rules
+source = {
+  url = 'http://sputnik.freewisdom.org/files/sputnik-8.02.20.zip',
+  dir = 'sputnik',
+}
+

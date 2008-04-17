@@ -1,6 +1,7 @@
 
 module(..., package.seeall)
-sorttable = require"sputnik.javascript.sorttable"
+local sorttable = require"sputnik.javascript.sorttable"
+local wiki = require"sputnik.actions.wiki"
 
 local TEMPLATE = [===[
 
@@ -99,9 +100,10 @@ end
 --local wiki = require("sputnik.actions.wiki")
 
 actions.save_new = function(node, request, sputnik)
-   new_node = sputnik.get_node("Tickets/Foo")
-   sputnik:update_node_with_params(node, {prototype = "@Ticket"})
-   new_node = sputnik:activate_node(new_node, request)
+   local new_id = string.format("Tickets/%06d", sputnik:get_uid("Tickets"))
+   local new_node = sputnik:get_node(new_id)
+   sputnik:update_node_with_params(new_node, {prototype = "@Ticket"})
+   --new_node = sputnik:activate_node(new_node, request)
    request.params.prototype="@Ticket"
    return wiki.actions.save(new_node, request, sputnik)
 end

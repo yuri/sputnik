@@ -100,13 +100,32 @@ end
 
 function Saci:get_node(id, version)
    assert(id)
+
+   -- first check if the id has a slash.  if so, identify the parent, and ask
+   -- it about the child.
+   local parent_id, rest = string.match(id, "^([^/]+)/(.+)$")
+   if parent_id then
+      local parent = self:get_node(parent_id)
+      if parent then
+         local node = parent:get_child(rest)
+         if node then
+            return node
+         end
+      end
+   end
+
+   -- ok, either we've got an atomic node, or the parent doesn't exist, or
+   -- the parent didn't give us anything.  proceed to the normal method.
    local data, metadata = self.versium:get_node(id, version)
    if data then
       return self:make_node(data, metadata, id)
-   elseif self.get_fallback_node then
-      return self:get_fallback_node(id, version)
-   else
-      return nil
+   end
+
+   -- no luck, check if we have a fallback function
+   if self.get_fallback_node then
+      local prototype = nil
+      local node, stub = self:get_fallback_node(id, version)
+      return node, stub
    end
 end
 

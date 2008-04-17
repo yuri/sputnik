@@ -55,7 +55,7 @@ function Sputnik:init(initial_config)
    -- setup the repository -- do this before loading user configuration
    self.repo = saci.new(initial_config)
 
-   self.repo.get_fallback_node = function(repo, id)
+   self.repo.get_fallback_node = function(repo, id, version)
       local status, page_module = pcall(require, "sputnik.node_defaults."..id)
 
       if not status then

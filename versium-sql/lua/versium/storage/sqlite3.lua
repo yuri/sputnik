@@ -127,7 +127,8 @@ function new(params)
 		INSERT_NODE = string.format("INSERT INTO %s (id,version,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s, %%s);", obj.tables.node),
 		INSERT_INDEX = string.format("INSERT INTO %s (id, version) VALUES (%%s, %%s);", obj.tables.node_index),
 		UPDATE_INDEX = string.format("UPDATE %s SET version=%%s WHERE id = %%s;", obj.tables.node_index),
-		GET_METADATA = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s ORDER BY timestamp;", obj.tables.node),
+      GET_METADATA_VERSION = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s and version = %%s;", obj.tables.node),
+		GET_METADATA_ALL = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s ORDER BY timestamp;", obj.tables.node),
 		GET_METADATA_LATEST = string.format("SELECT n.id,n.version,timestamp,author,comment FROM %s as n NATURAL JOIN %s WHERE id = %%s ORDER BY timestamp;", obj.tables.node, obj.tables.node_index),
 	}
 
@@ -168,8 +169,20 @@ function SQLite3Versium:get_node(id, version)
       return nil
    end
 
+   -- Query the metadata
+   local cmd
+   if version then
+      cmd = prepare(self.queries.GET_METADATA_VERSION, id, version)
+   else
+      cmd = prepare(self.queries.GET_METADATA_LATEST, id)
+   end
+
+	local cur = assert(self.con:execute(cmd))
+	local metadata = cur:fetch({}, "a")
+	cur:close()
+
 	assert(row.data)
-	return row.data, self:get_node_info(id, version)
+	return row.data, metadata
 end
 
 -----------------------------------------------------------------------------
@@ -319,7 +332,7 @@ function SQLite3Versium:get_node_history(id, prefix)
 	local history = {}
 
 	-- Pull the history of the given node
-	local cmd = prepare(self.queries.GET_METADATA, id)
+	local cmd = prepare(self.queries.GET_METADATA_ALL, id)
 	local cur = self.con:execute(cmd)
 	local row = cur:fetch({}, "a")
 

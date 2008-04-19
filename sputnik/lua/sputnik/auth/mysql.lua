@@ -22,7 +22,6 @@ local function user_token(user, salt, hash)
    return md5.sumhexa(user .. salt .. "Sputnik")
 end
 
-
 local schemas = {}
 schemas.user = [[
 CREATE TABLE IF NOT EXISTS %s ( 
@@ -125,6 +124,7 @@ function new(sputnik, params)
       ADD_USER = string.format("INSERT INTO %s (username, password) VALUES (%%s, %%s);", obj.tables.user),
       ADD_META = string.format("INSERT INTO %s (username, name, value) VALUES (%%s, %%s, %%s);", obj.tables.metadata),
       DEL_META = string.format("DELETE FROM %s WHERE username = %%s;", obj.tables.metadata),
+      SET_META = string.format("INSERT INTO %s (username, name, value) VALUES (%%s, %%s, %%s) ON DUPLICATE KEY UPDATE value = %%s;", obj.tables.metadata),
 	}
 
 	return obj 
@@ -221,14 +221,14 @@ end
 function Auth:user_is_recent(user)
    local cmd = prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
-   local row = cur:fetch("*a")
+   local time = cur:fetch("*a")
    cur:close()
 
-   if row and row.creation_time then
+   if time then
       local now = os.time()
       local min = now - self.recent
 
-      return (tonumber(row.creation_time) > min)
+      return (tonumber(time) > min)
    else
       return false
    end
@@ -270,5 +270,32 @@ function Auth:add_user(user, password, metadata)
       assert(res == 1)
    end
 end
-  
+
+-----------------------------------------------------------------------------
+-- Retrieves a piece of metadata for a specific user
+--
+-- @param user           the username to query
+-- @param key            the metadata key to query
+-- @return data          the value of the metadata or nil
+function Auth:get_metadata(user, key)
+   local cmd = prepare(self.queries.GET_META, user, key)
+   local cur = self.con:execute(cmd)
+   local data = cur:fetch("*a")
+   cur:close()
+
+   return data
+end
+
+-----------------------------------------------------------------------------
+-- Sets a piece of metadata for a specific user
+--
+-- @param user           the username to alter
+-- @param key            the metadata key to set
+-- @param value          the value to set
+function Auth:set_metadata(user, key, value)
+   -- Determine if the metadata currently exists
+   local cmd = prepare(self.queries.SET_META, user, key, value, value)
+   assert(self.con:execute(cmd))
+end
+
 -- vim:ts=3 ss=3 sw=3 expandtab

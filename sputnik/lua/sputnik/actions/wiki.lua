@@ -95,7 +95,7 @@ function actions.post(node, request, sputnik)
             err_msg"MISSING_POST_TOKEN"
          elseif not request.params.post_timestamp then
             err_msg"MISSING_POST_TIME_STAMP"
-         elseif (os.time() - tonumber(request.params.post_timestamp)) > (3 * 60) then
+         elseif (os.time() - tonumber(request.params.post_timestamp)) > (15 * 60) then
             err_msg"YOUR_POST_TOKEN_HAS_EXPIRED"
          elseif sputnik.auth:timestamp_token(request.params.post_timestamp)
                  ~=request.params.post_token then
@@ -188,6 +188,12 @@ end
 function actions.show(node, request, sputnik)
    request.is_indexable = true
    node.inner_html = node.actions.show_content(node, request, sputnik)
+   return node.wrappers.default(node, request, sputnik)
+end
+
+function actions.cancel(node, request, sputnik)
+   -- Cancel the editing of this node
+   node:redirect(node.name)
    return node.wrappers.default(node, request, sputnik)
 end
 
@@ -441,6 +447,7 @@ end
 ---------------------------------------------------------------------------------------------------
 function actions.edit (node, request, sputnik, etc)
    etc = etc or {} -- additional parameters
+
    -- check if the user is even allowed to edit
    local admin = sputnik.auth:get_metadata(request.user, "is_admin")
    if (not node:check_permissions(request.user, request.action)) 
@@ -456,6 +463,17 @@ function actions.edit (node, request, sputnik, etc)
       return node.wrappers.default(node, request, sputnik)
    end
 
+   -- Add the scripts and stylesheets
+   node:add_stylesheet("/css/markitup/simple.css", "screen")
+   node:add_stylesheet("/css/markitup/markdown.css", "screen")
+   node:add_javascript("/js/jquery.js")
+   node:add_javascript("/js/markitup.js")
+   node:add_javascript("/js/markdown.js")
+   node:add_javascript(nil, [[
+   $(document).ready(function() {
+      $(".editor").markItUp(mySettings);
+   });]])
+
    -- select the parameters that should be copied
    local fields = {}
    for field, field_params in pairs(node.fields) do
@@ -469,16 +487,6 @@ function actions.edit (node, request, sputnik, etc)
    fields.minor=nil
    fields.summary= request.params.summary or ""
 
-   login_spec = [[
-         please_login = {5.0, "note"}
-         user         = {5.1, "text_field"}
-         password     = {5.2, "password"}      
-   ]]
-
-   if request.user then
-      login_spec = ""
-   end 
-   
    local honeypots = "" 
    math.randomseed(os.time())
    for i=0, (sputnik.config.NUM_HONEYPOTS_IN_FORMS or 0) do
@@ -501,9 +509,9 @@ function actions.edit (node, request, sputnik, etc)
       edit_ui_field = edit_ui_field or "edit_ui"
    end 
 
-   sputnik.logger:debug(node[edit_ui_field]..login_spec..honeypots)
+   sputnik.logger:debug(node[edit_ui_field]..honeypots)
    local html_for_fields, field_list = html_forms.make_html_form{
-                                          field_spec = node[edit_ui_field]..login_spec..honeypots, 
+                                          field_spec = node[edit_ui_field]..honeypots, 
                                           templates  = node.templates, 
                                           translator = node.translator,
                                           values     = fields,
@@ -683,7 +691,8 @@ end
 ---------------------------------------------------------------------------------------------------
 function actions.show_login_form(node, request, sputnik)
    if (request.params.user and request.user) then -- we've just logged in the user
-      return node.actions.show(node, request, sputnik)
+      node:redirect(sputnik:make_url(node.name, prev))
+      return node.wrappers.default(node, request, sputnik)
    end
    local post_timestamp = os.time()
    local post_token = sputnik.auth:timestamp_token(post_timestamp)   
@@ -708,6 +717,7 @@ function actions.show_login_form(node, request, sputnik)
                         post_token      = post_token,
                         post_timestamp  = post_timestamp,
                         action_url      = sputnik.config.BASE_URL,
+                        register_link   = sputnik:make_url("register")
                      }
    return node.wrappers.default(node, request, sputnik)
 end
@@ -738,22 +748,17 @@ function wrappers.default(node, request, sputnik)
    return cosmo.f(node.templates.MAIN){  
       site_title       = sputnik.config.SITE_TITLE or "",
       title            = node.title,
-      do_stylesheets   = function()
-                            for i, url in ipairs(sputnik.config.STYLESHEETS) do
-                               cosmo.yield {url=url}
-                            end
-                         end,
-      nav_bar          = get_nav_bar(node, sputnik),
       if_no_index      = cosmo.c((not request.is_indexable) or is_old){},
       if_old_version   = cosmo.c(is_old){
                             version      = request.params.version,
                          },
       if_logged_in     = cosmo.c(request.user){
                             user         = request.user,
-                            logout_link  = node.links:show{logout="1"} 
+                            logout_link  = sputnik:make_link(node.name, request.params.action, {logout="1"}) 
                          },
       if_not_logged_in = cosmo.c(not request.user){
-                            login_link   = node.links:login{next_action=request.params.action},
+                            login_link = sputnik:make_link(node.name, "login", {prev = request.params.action}),
+                            register_link = sputnik:make_link("register")
                          },
       if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){
                             base_url    = sputnik.config.BASE_URL,
@@ -770,6 +775,70 @@ function wrappers.default(node, request, sputnik)
                             end
                          end,
  
+
+      -- Navigation bar
+      do_navbar = function()
+         local nav = sputnik:get_node("_navigation")
+         if nav and nav.content and nav.content.NAVIGATION then
+            local nav = nav.content.NAVIGATION
+            for i=#nav,1,-1 do
+               local v = nav[i]
+               local active = false;
+               if v.patterns then
+                  for idx,pattern in ipairs(v.patterns) do
+                     if node.name:match(pattern) then
+                        active = true
+                        break
+                     end
+                  end
+               end
+               -- url, title, patterns
+               cosmo.yield{
+                  class = active and "active" or "inactive",
+                  title = v.title,
+                  url = v.url,
+               }
+            end
+         end
+      end,
+      do_stylesheets = function()
+         for idx,entry in ipairs(node.stylesheets) do
+            if entry.href then
+               cosmo.yield{
+                  href = entry.href,
+                  media = entry.media or "screen",
+               }
+            end
+         end
+      end,
+      do_stylesheets_src = function()
+         for idx,entry in ipairs(node.stylesheets) do
+            if entry.src then
+               cosmo.yield{
+                  src = entry.src,
+                  media = entry.media or "screen",
+               }
+            end
+         end
+      end,
+      do_javascript_link = function()
+         for idx,entry in ipairs(node.javascript) do
+            if entry.href then
+               cosmo.yield{
+                  href = entry.href,
+               }
+            end
+         end
+      end,
+      do_javascript_src = function()
+         for idx,entry in ipairs(node.javascript) do
+            if entry.src then
+               cosmo.yield{
+                  src = entry.src,
+               }
+            end
+         end
+      end,
       -- "links" include "href="
       show_link        = node.links:show(),
       edit_link        = node.links:edit{version = request.params.version},

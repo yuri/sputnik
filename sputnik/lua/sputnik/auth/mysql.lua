@@ -138,6 +138,7 @@ end
 -- @return exists whether or not the username exists in the system
 
 function Auth:user_exists(username)
+   username:lower()
    local cmd = prepare(self.queries.USER_EXISTS, username)
    local cur = self.con:execute(cmd)
    local row = cur:fetch("*a")
@@ -160,28 +161,35 @@ end
 ------------------------------------------------------------------
 -- Attempt to authenticate a given user with a given password
 --
--- @param user the username to authenticate
+-- @param username the username to authenticate
 -- @param password the raw password to authenticate with
 -- @return user the name of the authenticated user
 -- @return token a hashed token for the user
-function Auth:authenticate(user, password)
-   if not self:user_exists(user) then
+function Auth:authenticate(username, password)
+   username = username:lower()
+   if not self:user_exists(username) then
       return nil
    end
 
-   local cmd = prepare(self.queries.GET_META, user, "creation_time")
+   local cmd = prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
    local time = cur:fetch("*a")
    cur:close()
 
    local hash = get_salted_hash(time, self.salt, password)
-   local cmd = prepare(self.queries.USER_AUTH, user, hash)
+   local cmd = prepare(self.queries.USER_AUTH, username, hash)
    local cur = self.con:execute(cmd)
    local row = cur:fetch("*a")
    cur:close()
 
+   -- Get the display name for this user
+   local cmd = prepare(self.queries.GET_META, username, "display")
+   local cur = self.con:execute(cmd)
+   local display = cur:fetch("*a")
+   cur:close()
+
    if row and (tonumber(row) == 1) then
-      return user, user_token(user, self.salt, hash)
+      return display, user_token(username, self.salt, hash)
    else
       return nil
    end
@@ -191,20 +199,27 @@ end
 -- Validate an existing authentication token.  This is used for 
 -- allowing authentication via cookies
 --
--- @param user the username the token belong to
+-- @param username the username the token belong to
 -- @param token the actual token hash
 -- @return user the name of the authenticated user
 
-function Auth:validate_token(user, token)
-   local cmd = prepare(self.queries.USER_PWHASH, user)
+function Auth:validate_token(username, token)
+   username = username:lower()
+   local cmd = prepare(self.queries.USER_PWHASH, username)
    local cur = self.con:execute(cmd)
    local row = cur:fetch("*a")
    cur:close()
    
    if row then
-      local hash = user_token(user, self.salt, row.password)
+      local hash = user_token(username, self.salt, row.password)
       if token == hash then
-         return user
+         -- Get the display name for this user
+         local cmd = prepare(self.queries.GET_META, username, "display")
+         local cur = self.con:execute(cmd)
+         local display = cur:fetch("*a")
+         cur:close()
+
+         return display
       end
    end
 
@@ -214,11 +229,12 @@ end
 ------------------------------------------------------------------
 -- Returns whether or not a given user is a new user, defined
 -- by the "recent" configuration parameter.
--- @param user the username to query
+-- @param username the username to query
 -- @return isRecent a boolean value indicating if the user's 
 -- account was created in the specified time frame
 
-function Auth:user_is_recent(user)
+function Auth:user_is_recent(username)
+   username = username:lower()
    local cmd = prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
    local time = cur:fetch("*a")
@@ -237,35 +253,39 @@ end
 ------------------------------------------------------------------
 -- Adds a user/password pair to the password file
 --
--- @param user the username to add
+-- @param username the username to add
 -- @param password the raw password
 -- @param metadata any metadata to be stored
 -- @return success a boolean value indicating if the add was 
 -- successful.
 -- @return err an error message if the add was not successful
-function Auth:add_user(user, password, metadata)
+function Auth:add_user(username, password, metadata)
    local now = os.time()
   
-   if self:user_exists(user) then
+   if self:user_exists(username) then
       return false, "That user already exists"
    end
 
    local pwhash = get_salted_hash(now, self.salt, password)
    metadata = metadata or {}
    metadata.creation_time = now
+   metadata.display = username
+
+   -- Store the username as lowercase in the auth table
+   username = username:lower()
 
    -- Add the user to the user table
-   local cmd = prepare(self.queries.ADD_USER, user, pwhash)
+   local cmd = prepare(self.queries.ADD_USER, username, pwhash)
    local res = self.con:execute(cmd)
    assert(res == 1)
 
    -- Delete any existing metadata
-   local cmd = prepare(self.queries.DEL_META, user)
+   local cmd = prepare(self.queries.DEL_META, username)
    local res = self.con:execute(cmd)
 
    -- Add any metadata to the table
    for key,value in pairs(metadata) do
-      local cmd = prepare(self.queries.ADD_META, user, key, value)
+      local cmd = prepare(self.queries.ADD_META, username, key, value)
       local res = self.con:execute(cmd)
       assert(res == 1)
    end
@@ -274,11 +294,11 @@ end
 -----------------------------------------------------------------------------
 -- Retrieves a piece of metadata for a specific user
 --
--- @param user           the username to query
+-- @param username       the username to query
 -- @param key            the metadata key to query
 -- @return data          the value of the metadata or nil
-function Auth:get_metadata(user, key)
-   local cmd = prepare(self.queries.GET_META, user, key)
+function Auth:get_metadata(username, key)
+   local cmd = prepare(self.queries.GET_META, username, key)
    local cur = self.con:execute(cmd)
    local data = cur:fetch("*a")
    cur:close()
@@ -289,12 +309,12 @@ end
 -----------------------------------------------------------------------------
 -- Sets a piece of metadata for a specific user
 --
--- @param user           the username to alter
+-- @param username       the username to alter
 -- @param key            the metadata key to set
 -- @param value          the value to set
-function Auth:set_metadata(user, key, value)
+function Auth:set_metadata(username, key, value)
    -- Determine if the metadata currently exists
-   local cmd = prepare(self.queries.SET_META, user, key, value, value)
+   local cmd = prepare(self.queries.SET_META, username, key, value, value)
    assert(self.con:execute(cmd))
 end
 

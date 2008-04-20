@@ -298,6 +298,8 @@ end
 -- @param key            the metadata key to query
 -- @return data          the value of the metadata or nil
 function Auth:get_metadata(username, key)
+   if type(username) ~= "string" then return nil end
+
    local cmd = prepare(self.queries.GET_META, username, key)
    local cur = assert(self.con:execute(cmd))
    local data = cur:fetch("*a")
@@ -313,6 +315,8 @@ end
 -- @param key            the metadata key to set
 -- @param value          the value to set
 function Auth:set_metadata(username, key, value)
+   if type(username) ~= "string" then return nil end
+
    -- Determine if the metadata currently exists
    local cmd = prepare(self.queries.SET_META, username, key, value, value)
    assert(self.con:execute(cmd))

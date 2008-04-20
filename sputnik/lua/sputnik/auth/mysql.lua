@@ -299,7 +299,7 @@ end
 -- @return data          the value of the metadata or nil
 function Auth:get_metadata(username, key)
    local cmd = prepare(self.queries.GET_META, username, key)
-   local cur = self.con:execute(cmd)
+   local cur = assert(self.con:execute(cmd))
    local data = cur:fetch("*a")
    cur:close()
 

@@ -4,11 +4,10 @@ NODE = {
    title="@Lua_Config (Prototype for Lua Config Files)",
    fields = [[content.activate = "lua"]],
    permissions = [[
-      deny(all, "save")
-      deny(all, "edit")
-      allow("Admin", "save")
-      allow("Admin", "edit")
-   ]],
+deny(all_users, all_actions)
+allow(Admin, all_actions)
+allow(all_users, "login")
+]],
    category="_prototypes",
    actions=[[show_content="wiki.show_content_as_lua_code"]],
 }

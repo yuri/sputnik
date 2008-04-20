@@ -5,9 +5,10 @@ NODE = {
    category="_prototypes",
    actions=[[show = "wiki.code"]],
    permissions = [[
-      deny(all, "save")
-      allow("Admin", "save")
-   ]],
+deny(all_users, all_actions)
+allow(Admin, all_actions)
+allow(all_users, "login")
+]],
 }
 NODE.content=[===[
 The content of this page is ignored but it's fields are inherited by 

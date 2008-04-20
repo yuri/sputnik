@@ -196,24 +196,70 @@ function Sputnik:activate_node(node, params)
    end
    
    -- create a function to check permissions ---------------------------
-   node.check_permissions = function(self, user, action)
-      local state = true
-      local all = true -- just a constant          
-      local function set(id, some_action, value)
-         if (some_action == action) then
-            if (type(id)=="string" and id==user) or id==true then 
-               state = value
-            end
+   node.check_permissions = function(node, user, action)
+      local all_users = {}
+      local all_actions = {}
+      local has_permission = true
+
+      -- This function handles toggling the actual allow state
+      local function set(suser, saction, svalue)
+         local is_user, is_action
+
+         -- Resolve the user side of the permission
+         if type(suser) == "function" then
+            is_user = suser(user, self.auth)
+         else
+            is_user = (suser == user) or (suser == all_users)
          end
-      end         
-      local function allow(some_user, some_action) 
-         set(some_user, some_action, true)
+
+         -- Resolve the action
+         if type(saction) == "function" then
+            is_action = saction(action)
+         else
+            is_action = (saction == action) or (saction == all_actions)
+         end
+
+         if is_user and is_action then
+            has_permission = svalue
+         end
       end
-      local function deny(some_user, some_action)
-         set(some_user, some_action, false)
+
+      local function allow(suser, saction) 
+         set(suser, saction, true)
       end
-      saci.sandbox.new{all = all, allow = allow, deny = deny}:do_lua(node.permissions or "")
-      return state
+      local function deny(suser, saction)
+         set(suser, saction, false)
+      end
+      if node.permissions then
+         local sandbox = {
+            all_users = all_users,
+            all_actions = all_actions,
+            allow = function(suser, saction)
+               set(suser, saction, true)
+            end,
+            deny = function(suser, saction)
+               set(suser, saction, false)
+            end,
+            Authenticated = function(user, auth)
+               return user ~= nil
+            end,
+            Anonymous = function(user, auth)
+               return user == nil
+            end,
+            Admin = function(user, auth)
+               if user then
+                  return auth:get_metadata(user, "IsAdmin") == "true"
+               else
+                  return false
+               end
+            end,
+         }
+         local func = assert(loadstring(node.permissions))
+         setfenv(func, sandbox)
+         local succ,err = assert(pcall(func))
+      end
+
+      return has_permission
    end     
    
    -- set wrappers -----------------------------------------------------
@@ -527,44 +573,58 @@ function Sputnik:run(request, response)
 
    local action = request.action or "show"
    local action_function = node.actions[action]
-                           or sputnik.actions.wiki.actions.action_not_found
 
-   -- Determine if there are any hooks to be called for this action, on this node
-   -- by checking the node.action_hooks table
-   if node.action_hooks and node.action_hooks[action] then
-      local hooks = node.action_hooks[action].before
-      if hooks then
-         for idx, hook in ipairs(hooks) do
-            local mod_name, dot_action = sputnik.util.split(hook, "%.")
-            local mod = require("sputnik.actions." .. mod_name)
-            if mod and mod.actions and mod.actions[dot_action] then
-               pcall(mod.actions[dot_action], node, request, sputnik)
+   local content, content_type
+
+   if not action_function then
+      content,content_type = sputnik.actions.wiki.actions.action_not_found(node, request, self)
+   else
+      -- Check permissions on the node, for the given action
+      if node:check_permissions(request.user, action) then
+         -- Determine if there are any hooks to be called for this action, on this node
+         -- by checking the node.action_hooks table
+         if node.action_hooks and node.action_hooks[action] then
+            local hooks = node.action_hooks[action].before
+            if hooks then
+               for idx, hook in ipairs(hooks) do
+                  local mod_name, dot_action = sputnik.util.split(hook, "%.")
+                  local mod = require("sputnik.actions." .. mod_name)
+                  if mod and mod.actions and mod.actions[dot_action] then
+                     pcall(mod.actions[dot_action], node, request, sputnik)
+                  end
+               end
             end
          end
+
+         content, content_type = action_function(node, request, self)
+         self.logger:info(self.cookie_name.."=".. ((request.user or "").."|"..(request.auth_token or "")))
+
+         -- Handle any action hooks at this point, with no digging for post actions
+         -- If you want to hook a post action, you need to iterate the parameters 
+         -- to determine which action is actually being called
+         if node.action_hooks and node.action_hooks[action] then
+            local hooks = node.action_hooks[action].after
+            if hooks then
+               for idx, hook in ipairs(hooks) do
+                  local mod_name, dot_action = sputnik.util.split(hook, "%.")
+                  local mod = require("sputnik.actions." .. mod_name)
+                  if mod and mod.actions and mod.actions[dot_action] then
+                     pcall(mod.actions[dot_action], node, request, sputnik)
+                  end
+               end
+            end
+         end
+      else
+         -- The user did not have permission, so give a message stating this
+         node:post_error("Sorry, that action is not allowed")
+         node.inner_html = ""
+         content, content_type = node.wrappers.default(node, request, self)
       end
    end
 
-   local content, content_type = action_function(node, request, self)
    assert(content)
-   self.logger:info(self.cookie_name.."=".. ((request.user or "").."|"..(request.auth_token or "")))
    response.headers["Content-Type"] = content_type or "text/html"
 
-   -- Handle any action hooks at this point, with no digging for post actions
-   -- If you want to hook a post action, you need to iterate the parameters 
-   -- to determine which action is actually being called
-   if node.action_hooks and node.action_hooks[action] then
-      local hooks = node.action_hooks[action].after
-      if hooks then
-         for idx, hook in ipairs(hooks) do
-            local mod_name, dot_action = sputnik.util.split(hook, "%.")
-            local mod = require("sputnik.actions." .. mod_name)
-            if mod and mod.actions and mod.actions[dot_action] then
-               pcall(mod.actions[dot_action], node, request, sputnik)
-            end
-         end
-      end
-   end
-   
    -- If we have any custom HTML headers, add them to the response
    for header,value in pairs(node.headers) do
       response.headers[header] = value

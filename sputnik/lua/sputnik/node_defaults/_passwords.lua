@@ -5,11 +5,10 @@ NODE = {
    category="_special_pages",
    prototype="@Lua_Config",
    permissions=[[
-      deny(all, "raw")
-      allow("Admin", "raw")
-      deny(all, "raw_content")
-      allow("Admin", "raw_content")
-   ]],
+deny(all_users, all_actions)
+allow(Admin, all_actions)
+allow(all_users, "login")
+]],
    actions = [[
       show="wiki.show_users"
    ]]

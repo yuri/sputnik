@@ -1,3 +1,4 @@
+module(..., package.seeall)
 
 function parseargs(s)
   local arg = {}
@@ -51,12 +52,13 @@ end
 XSSFilter = {}
 
 ALLOWED_TAGS = {
+   "p",
    "ul", "ol", "li", "dl", "dt", "dd",
    "br", "em", "strong", "i", "b",
    "blockquote",
    "pre", "code",
    "acronym", "abbr", "cite", "dfn", "tt", "del", "ins", "kbd", "strike", "sub", "sup", "var",
-   "table", "tr", "th", "thead", "td", "caption", "tbody", "tfoot", 
+   "table", "tr", "th", "thead", "td", "caption", "tbody", "tfoot",
 
    a = {
       name = ".",
@@ -79,17 +81,18 @@ GENERIC_ATTRIBUTES = {
    title = "."
 }
 
+local XSSFilter = {}
+local XSSFilter_mt = {__metatable = {}, __index = XSSFilter}
 
-function XSSFilter:new(args)
-   args = args or {}
-   local obj = {}
-   setmetatable(obj, self)
-   self.__index = self
+
+function new(args)
+   local obj = setmetatable({}, XSSFilter_mt)
    obj:init(args)
    return obj
 end
 
 function XSSFilter:init(args)
+   args = args or {}
    self.allowed_tags = args.allowed_tags or ALLOWED_TAGS
    for i,v in ipairs(self.allowed_tags) do
       self.allowed_tags[v] = self.allowed_tags[v] or {}
@@ -137,7 +140,7 @@ function XSSFilter:filter(html)
    return buffer   
 end
 
-xssf = XSSFilter:new()
+--[=[xssf = XSSFilter:new()
 
 print(xssf:filter[[
 
@@ -160,4 +163,4 @@ examples.getStateName</methodName>
       </methodCall>
 
 
-]])
+]])]=]

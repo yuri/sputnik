@@ -1,6 +1,7 @@
 module(..., package.seeall)
 
 require("markdown")
+require("xssfilter")
 
 local split = require("sputnik.util").split
 local WIKI_LINK = [[<a $link>$title</a>]]
@@ -34,7 +35,8 @@ function new(sputnik)
                            buffer = buffer..line
                         end
                      end 
-                     return markdown(buffer)
+                     xss_filter = xssfilter.new()
+                     return xss_filter:filter(markdown(buffer))
                   end
    }
 end

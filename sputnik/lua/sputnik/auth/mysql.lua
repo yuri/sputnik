@@ -123,7 +123,6 @@ function new(sputnik, params)
       GET_META = string.format("SELECT value from %s WHERE username = %%s and name = %%s;", obj.tables.metadata),
       ADD_USER = string.format("INSERT INTO %s (username, password) VALUES (%%s, %%s);", obj.tables.user),
       ADD_META = string.format("INSERT INTO %s (username, name, value) VALUES (%%s, %%s, %%s);", obj.tables.metadata),
-      DEL_META = string.format("DELETE FROM %s WHERE username = %%s;", obj.tables.metadata),
       SET_META = string.format("INSERT INTO %s (username, name, value) VALUES (%%s, %%s, %%s) ON DUPLICATE KEY UPDATE value = %%s;", obj.tables.metadata),
 	}
 
@@ -278,10 +277,6 @@ function Auth:add_user(username, password, metadata)
    local cmd = prepare(self.queries.ADD_USER, username, pwhash)
    local res = self.con:execute(cmd)
    assert(res == 1)
-
-   -- Delete any existing metadata
-   local cmd = prepare(self.queries.DEL_META, username)
-   local res = self.con:execute(cmd)
 
    -- Add any metadata to the table
    for key,value in pairs(metadata) do

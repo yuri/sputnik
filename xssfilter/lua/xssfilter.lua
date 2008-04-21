@@ -48,18 +48,6 @@ ALLOWED_TAGS = {
    img = {
       src = "http://",
    },
-   -- Allow "object" if the it's type is "image/svg+xml" (not that this could
-   -- be overriden by setting "filter.allowed_tags.object = false"
-   object = {
-      data = "http://",
-      _test = function(tag)
-         if tag.xarg.type=="image/svg+xml" then
-            return true
-         else
-            return false, "only 'image/svg+xml' is allowed for 'type'"
-         end
-      end
-   },
    -- Style is allowed on "span" as long as the string "url" does not occur
    -- in the value
    span = {
@@ -69,6 +57,24 @@ ALLOWED_TAGS = {
             return true
          else
             return nil, "'url' not allowed in the value of 'style'"
+         end
+      end
+   }
+}
+
+-----------------------------------------------------------------------------
+-- Extra tags (disabled by default), allow then at your own risk.
+-----------------------------------------------------------------------------
+EXTRA_TAGS = {
+   -- Allow "object" if the it's type is "image/svg+xml" (not that this could
+   -- be overriden by setting "filter.allowed_tags.object = false"
+   object = {
+      data = "http://",
+      _test = function(tag)
+         if tag.xarg.type=="image/svg+xml" then
+            return true
+         else
+            return false, "only 'image/svg+xml' is allowed for 'type'"
          end
       end
    }

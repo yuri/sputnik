@@ -34,9 +34,14 @@ function new(sputnik)
                         else
                            buffer = buffer..line
                         end
-                     end 
-                     xss_filter = xssfilter.new()
-                     return xss_filter:filter(markdown(buffer))
+                     end
+                     local xss_filter = xssfilter.new()
+                     local html, message = xss_filter:filter(markdown(buffer))
+                     if html then
+                        return html
+                     elseif message then
+                        return "<pre>"..message.."</pre>"
+                     end
                   end
    }
 end

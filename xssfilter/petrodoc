@@ -22,10 +22,10 @@ license    = 'MIT/X11'
 homepage   = 'http://sputnik.freewisdom.org/lib/xssfilter/'
 favicon    = 'http://sputnik.freewisdom.org/lib/xssfilter/xssfilter-shortcut.png'
 download   = 'http://sputnik.freewisdom.org/files/xssfilter-$version.tar.gz'
-download   = "/tmp/xssfilter-$version.tar.gz"
---push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
-push       = "cp %s /tmp/"
-logo       = 'xssfilter.png'
+--download   = "/tmp/xssfilter-$version.tar.gz"
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+--push       = "cp %s /tmp/"
+logo       = 'http://sputnik.freewisdom.org/lib/xssfilter/xssfilter.png'
 keywords   = 'lua, xss'
 rss        = homepage.."releases.rss"
 --------------------------------------------------------------------------------
@@ -33,10 +33,29 @@ rss        = homepage.."releases.rss"
 dependencies = [[
 ]]
 
+Installation = [[
+  XSSFilter consists of a single module file (colors.lua).  Here is a list of recent
+  releases:
+
+  <ul>
+  $do_versions[=[<li><a href="$url">$package-$version</a> - $comment ($date) </li> ]=]
+  </ul>
+
+  It installs like any other single-file Lua module: just put it somewhere in
+  your Lua path.  
+
+  You can also install XSSFilter as a LuaRock from the repository at 
+  http://sputnik.freewisdom.org/rocks/earth/:
+
+    luarocks install --from http://sputnik.freewisdom.org/rocks/earth xssfilter
+]]
+
+
+
 TOC = {
    { "Overview",     "<p>"..detailed.."</p>" },
-   --{ "Installation", markdown(Installation) },
-   --{ "Using Colors", markdown(include("docs/howto.md")) },
+   { "Installation", markdown(Installation) },
+   { "Using XSSFilter", markdown(include("doc/howto.txt")) },
    { "Contact",      "Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions."},
    { "LuaDoc",       make_luadoc{"xssfilter.lua"} },
    { "License",      markdown(include("LICENSE.txt")) }

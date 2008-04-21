@@ -193,7 +193,6 @@ end
 --x--------------------------------------------------------------------------
 -- An auxiliary function to match a value against a list of patterns.
 -----------------------------------------------------------------------------
-
 local function find_match(value, patterns)
    patterns = patterns or {}
    if type(patterns) == "string" then patterns = {patterns} end
@@ -276,10 +275,10 @@ function XSSFilter:get_replacement(tag, message)
    return buffer.."]</code>"
 end
 
------------------------------------------------------------------------------
+--x--------------------------------------------------------------------------
 -- A simple test function.
 -----------------------------------------------------------------------------
-function test()
+local function test()
    local xssf = new()
 
    print(xssf:filter[[

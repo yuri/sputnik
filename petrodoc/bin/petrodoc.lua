@@ -296,15 +296,23 @@ function petrodoc(name, spec, revision, server)
    fill_and_save(name.."/doc/index.html", HTML_TEMPLATE)
    fill_and_save(name.."/doc/releases.rss", RSS)
 
+   -- make a rockspec
+   fill_and_save(name.."/rockspec", ROCKSPEC_TEMPLATE)
+
    -- make a release
    local released_rock_dir = name.."-"..spec.last_version
    os.execute("cp -r "..name.." "..released_rock_dir)
    os.execute("tar czvpf "..released_rock_dir..".tar.gz "..released_rock_dir)
 
    -- publish it
-   --if spec.push then
-   --   os.execute(string.format(spec.push, released_rock_dir..".tar.gz"))
-   --end
+   if spec.push then
+      os.execute(string.format(spec.push, released_rock_dir..".tar.gz"))
+   end
+
+   -- make a rockspec for the release
+   local rockspec = released_rock_dir.."-"..revision..".rockspec"
+   fill_and_save(rockspec, ROCKSPEC_TEMPLATE)
+   print(rockspec)
 
    -- make the rockspec
    local rockspec = released_rock_dir.."-"..revision..".rockspec"

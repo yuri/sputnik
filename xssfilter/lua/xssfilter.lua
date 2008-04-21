@@ -31,6 +31,7 @@ ALLOWED_TAGS = {
    -- Simple tags allowed without any attributes other than those listed in
    -- GENERIC_ATTRIBUTES
    "p",
+   "h1", "h2", "h3", "h4", "h5", "h6",
    "ul", "ol", "li", "dl", "dt", "dd",
    "br", "em", "strong", "i", "b",
    "blockquote",

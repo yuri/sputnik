@@ -1,0 +1,49 @@
+package    = 'XSSFilter'
+versions   = {
+   {'8.04.20', 'April 20, 2008', 'first public version'},
+}
+summary    = 'A filter to prevernt cross-site scripting (XSS) attacks'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+     XSSFilter is a module for filtering out unsafe tags from (X)HTML.
+     To avoid having second-guessing how different clients handle strange
+     HTML input, the filter assumes that the input is subset of valid XML
+     and returns nil if the input doesn't parse. If the input does parse,
+     we then traverse the tree and check each element and its attributes
+     against a configuration table, replacing anything that's not allowed
+     with a message.  There is a default configuration table that shoots
+     for a balance between security and features, but the client can either
+     supply their own or modify the default.
+]]
+
+license    = 'MIT/X11'
+
+homepage   = 'http://sputnik.freewisdom.org/lib/xssfilter/'
+favicon    = 'http://sputnik.freewisdom.org/lib/xssfilter/xssfilter-shortcut.png'
+download   = 'http://sputnik.freewisdom.org/files/xssfilter-$version.tar.gz'
+download   = "/tmp/xssfilter-$version.tar.gz"
+--push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+push       = "cp %s /tmp/"
+logo       = 'xssfilter.png'
+keywords   = 'lua, xss'
+rss        = homepage.."releases.rss"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+]]
+
+TOC = {
+   { "Overview",     "<p>"..detailed.."</p>" },
+   --{ "Installation", markdown(Installation) },
+   --{ "Using Colors", markdown(include("docs/howto.md")) },
+   { "Contact",      "Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions."},
+   { "LuaDoc",       make_luadoc{"xssfilter.lua"} },
+   { "License",      markdown(include("LICENSE.txt")) }
+
+
+}
+-------------------------------------------------------------------------------
+
+
+

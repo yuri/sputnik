@@ -103,7 +103,7 @@ function Saci:get_node(id, version)
 
    -- first check if the id has a slash.  if so, identify the parent, and ask
    -- it about the child.
-   local parent_id, rest = string.match(id, "^([^/]+)/(.+)$")
+   local parent_id, rest = string.match(id, "^(.+)/(.-)$")
    if parent_id then
       local parent = self:get_node(parent_id)
       if parent then

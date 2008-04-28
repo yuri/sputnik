@@ -242,6 +242,18 @@ end
 
 function petrodoc(name, spec, revision, server)
 
+   -- fill in the default values
+   spec.homepage = spec.homepage or ""
+   spec.favicon  = spec.favicon or ''
+   spec.download = spec.download or ''
+   spec.push     = spec.push or '#'
+   spec.logo     = spec.logo or ''
+   spec.keywords = spec.keywords or ''
+   spec.rss      = spec.rss or ''
+   spec.dependencies = spec.dependencies or ''
+   spec.TOC      = spec.TOC or {}
+
+   -- an auxiliary function to build file paths
    function fill_and_save(path, content)
       print(path)
       local f = io.open(path, "w")
@@ -293,8 +305,12 @@ function petrodoc(name, spec, revision, server)
    spec.revision = revision
    spec.download_filled = cosmo.fill(spec.download, spec)
 
-   fill_and_save(name.."/doc/index.html", HTML_TEMPLATE)
-   fill_and_save(name.."/doc/releases.rss", RSS)
+   if #spec.TOC > 0 then
+      fill_and_save(name.."/doc/index.html", HTML_TEMPLATE)
+   end
+   if spec.rss:len() > 0 then
+      fill_and_save(name.."/doc/releases.rss", RSS)
+   end
 
    -- make a rockspec
    fill_and_save(name.."/rockspec", ROCKSPEC_TEMPLATE)
@@ -305,7 +321,7 @@ function petrodoc(name, spec, revision, server)
    os.execute("tar czvpf "..released_rock_dir..".tar.gz "..released_rock_dir)
 
    -- publish it
-   if spec.push then
+   if spec.push:len() > 0 then
       os.execute(string.format(spec.push, released_rock_dir..".tar.gz"))
    end
 
@@ -319,11 +335,13 @@ function petrodoc(name, spec, revision, server)
    fill_and_save(rockspec, ROCKSPEC_TEMPLATE)
    print(rockspec)
 
-   -- pack the rock
-   luarocks.pack.run(rockspec)
-   luarocks.build.run(rockspec)
-   luarocks.make_manifest.run()
-   luarocks.pack.run(name, spec.last_version.."-"..revision)   
+   if spec.download:len() > 0 then
+      -- pack the rock
+      luarocks.pack.run(rockspec)
+      luarocks.build.run(rockspec)
+      luarocks.make_manifest.run()
+      luarocks.pack.run(name, spec.last_version.."-"..revision)
+   end
 
 end
 

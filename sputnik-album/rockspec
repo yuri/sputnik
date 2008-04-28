@@ -1,0 +1,27 @@
+package = "Sputnik-Album"
+version = "cvs-0"
+source = {
+   url = "",
+}
+description = {
+   summary    = "A photo album plugin for Sputnik",
+   detailed   = [===[ This is a simple photo album plugin for sputnik designed as a proof of concept. ]===],
+   license    =  "MIT/X11",
+   homepage   = "",
+   maintainer = "Yuri Takhteyev",
+}
+dependencies = {
+}
+build = {
+  type = "none",
+  install = {
+     lua = {        ["sputnik-album.lua.sputnik.actions.album"] = "lua/sputnik-album/lua/sputnik/actions/album.lua",
+
+        ["sputnik-album.lua.sputnik.node_defaults._templates_for_album"] = "lua/sputnik-album/lua/sputnik/node_defaults/_templates_for_album.lua",
+        ["sputnik-album.lua.sputnik.node_defaults.Demo_Album"] = "lua/sputnik-album/lua/sputnik/node_defaults/Demo_Album.lua",
+
+
+     }
+  }
+}
+

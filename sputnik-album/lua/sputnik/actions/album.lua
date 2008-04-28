@@ -17,8 +17,7 @@ actions.mixed_album = function(node, params, sputnik)
    end
 
    node.inner_html = cosmo.f(node.templates.MIXED_ALBUM){
-                        before     = node.markup.transform(node.content.before or ""),
-                        after      = node.markup.transform(node.content.after or ""),
+                        before     = node.markup.transform(node.description or ""),
                         do_photos  = function() 
                                         local width, dwidth, height
                                         local y = 2
@@ -40,8 +39,8 @@ actions.mixed_album = function(node, params, sputnik)
                                                     height     = pixify(height*photo.size + 8*(photo.size-1)),
                                                     left       = pixify(2 + (width + dwidth) * (i-1)),
                                                     top        = pixify(y),
-                                                    link_base  = node.content.link_base,
-                                                    thumb_base = node.content.thumb_base,
+                                                    link_base  = node.album_config.link_base,
+                                                    thumb_base = node.album_config.thumb_base,
                                                     suffix     = photo.size>1 and string.format("%dx", photo.size) or "",
                                                     thumb_dir  = photo.size==1 and album or "oddsize",
                                                     album      = album,

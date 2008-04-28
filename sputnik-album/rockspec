@@ -15,10 +15,17 @@ dependencies = {
 build = {
   type = "none",
   install = {
-     lua = {        ["sputnik-album.lua.sputnik.actions.album"] = "lua/sputnik-album/lua/sputnik/actions/album.lua",
+     lua = {
+        ["sputnik-album.lua.sputnik.actions.album"] = "lua/sputnik-album/lua/sputnik/actions/album.lua",
 
         ["sputnik-album.lua.sputnik.node_defaults._templates_for_album"] = "lua/sputnik-album/lua/sputnik/node_defaults/_templates_for_album.lua",
+        ["sputnik-album.lua.sputnik.node_defaults._translations_for_album"] = "lua/sputnik-album/lua/sputnik/node_defaults/_translations_for_album.lua",
         ["sputnik-album.lua.sputnik.node_defaults.Demo_Album"] = "lua/sputnik-album/lua/sputnik/node_defaults/Demo_Album.lua",
+
+
+
+
+        ["sputnik-album.lua.sputnik.node_defaults.@Album"] = "lua/sputnik-album/lua/sputnik/node_defaults/@Album.lua",
 
 
      }

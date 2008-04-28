@@ -1,13 +1,10 @@
 module(..., package.seeall)
 NODE = {
    title="Forte de Copacabana (a demo album)",
-   prototype="@Album",
+   prototype="@Album"
 }
 
-NODE.content = [=========[
-
-before = [===[ 
-
+NODE.description = [[ 
 Right between Ipanema and Copabana there is a small
 peninsular, with a small fortress known as Forte de Copabana.  It's
 often closed and when open charges admission, so it's not a road you
@@ -15,14 +12,16 @@ would take if walking from Copacabana to Ipanema.  Two weeks ago,
 however, we were passing by, it was open, so we went in.  The fortress
 itself is a typical early 20th century fortification, much like the
 ones in Vladivostok, actually.  But the views of Copacabana from it
-are quite nice.  
+are quite nice.
+]]
 
-]===]
 
-
-after = ""
+NODE.album_config = [[
 thumb_base = "http://media.freewisdom.org/freewisdom/albums"
 link_base = "http://www.freewisdom.org/en/all/albums"
+]]
+
+NODE.content = [===[
 
 rows = { { {id="2007-03-03-forte/20070303_008_0325"},
            {id="2007-03-03-forte/20070303_014_5087"},
@@ -61,4 +60,4 @@ rows = { { {id="2007-03-03-forte/20070303_008_0325"},
          }
     }
 
-]=========]
+]===]

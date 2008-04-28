@@ -29,7 +29,6 @@ class='local'>
  </center>
 </div>
 
-$after
 ]====]
 
 SINGLE_PHOTO = [[

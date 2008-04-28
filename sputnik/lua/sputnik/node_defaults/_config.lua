@@ -73,6 +73,7 @@ DEFAULT_TEMPLATE_SET      = "_templates"
 DEFAULT_NAVIGATION_BAR    = "_navigation"
 TRANSLATIONS_PAGE         = "_translations"
 HISTORY_PAGE              = "_history"
+VERSION                   = "'Earth' from the git repository"
 ]=============]
 
 

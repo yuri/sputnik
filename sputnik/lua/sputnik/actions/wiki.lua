@@ -715,7 +715,7 @@ end
 -- Shows the version of sputnik.
 ---------------------------------------------------------------------------------------------------
 function actions.sputnik_version(node, request, sputnik)
-   node.inner_html = sputnik.config.VERSION or "<no version information>"
+   node.inner_html = sputnik.config.VERSION or "&lt;no version information&gt;"
    return node.wrappers.default(node, request, sputnik)
 end
 

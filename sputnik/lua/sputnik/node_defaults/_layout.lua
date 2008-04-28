@@ -118,6 +118,6 @@ ins                {                                                            
 
 .history_dates     {                                                                      font-size: 80%;                             }
 .error_message     { margin:  15px  15px  15px  15px;  padding:  15px  15px  15px  15px;                                              } 
-
+.teaser            { font-size: 120%; font-weight:bold }
 ]===]
 

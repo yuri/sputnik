@@ -96,6 +96,7 @@ INPUT.small_submit    {                          background: $FORM_BG_SUBMIT;   
 
 .error_message        {                                                            BORDER:        2px solid  red;          }
 .content .preview     {                                                            BORDER:        3px dashed $NAV_BAR;     }
+.teaser { font-size: 120%; font-weight:bold }
 ]]
 ]===]
 

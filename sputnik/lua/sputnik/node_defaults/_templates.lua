@@ -39,7 +39,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
             title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>]]    
     $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
     $if_not_logged_in[[<A $login_link>_(LOGIN)</a>]]
-    <a $site_rss_link><img src="$rss_medium_url" id="rss_icon" title="RSS for edits to this wiki" alt="Small RSS Icon" /></a>
+    <a $site_rss_link><img src="$rss_medium_url" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)" alt="_(LARGE_RSS_ICON)" /></a>
    </div>
    
    <div id="logo">
@@ -60,7 +60,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
           | <a $history_link> _(HISTORY)   </a>
           | <a $node_rss_link>
              <img src="$rss_small_url" class="rss_icon"
-                  title="RSS for edits to this node" alt="Small RSS Icon" />
+                  title="_(RSS_FOR_EDITS_TO_THIS_NODE)" alt="_(SMALL_RSS_ICON)" />
             </a>
       </span>
 

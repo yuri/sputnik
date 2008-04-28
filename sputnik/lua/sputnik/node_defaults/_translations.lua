@@ -437,4 +437,24 @@ INCORRECT_PASSWORD = {
    en_US = "Logging incorrect"
 }
 
+RSS_FOR_EDITS_TO_THIS_WIKI = {
+   en_US = "RSS for edits to this wiki",
+   ru    = "RSS-лента изменение этой вики",
+}
+
+RSS_FOR_EDITS_TO_THIS_NODE = {
+   en_US = "RSS for edits to this node",
+   ru    = "RSS-лента изменение этой станицы",
+}
+
+LARGE_RSS_ICON = { 
+   en_US = "Large RSS Icon",
+   ru    = "Большой значок RSS"
+}
+
+SMALL_RSS_ICON = { 
+   en_US = "Small RSS Icon",
+   ru    = "Maленький значок RSS"
+}
+
 ]=============]

@@ -13,6 +13,8 @@ permissions = [=[
 allow(all_users, "jpg")
 allow(all_users, "gif")
 allow(all_users, "png")
+allow(all_users, "zip")
+allow(Admin, all_actions)
 ]=],
    fields = [=[
 file_description = {1.31}
@@ -32,7 +34,7 @@ file_copyright = {1.32, "text_field"}
    admin_edit_ui = [=[
 content_hdr = nil
 content = nil
-ffile_upload = {1.30, "file"}
+file_upload = {1.30, "file"}
 file_description = {1.31, "text_field"}
 file_copyright = {1.32, "text_field"}
 file_name = {1.33, "text_field", advanced = true}

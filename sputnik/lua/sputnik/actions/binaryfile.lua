@@ -105,6 +105,9 @@ function actions.save(node, request, sputnik)
 		else
 			request.try_again = true
 		end
+	else
+		node:post_error("Did not receive a file in the request")
+		request.try_again = true
 	end
 
 	-- Was something incomplete?

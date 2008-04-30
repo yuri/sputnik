@@ -19,6 +19,9 @@ NODE.content=[===[
 --The content of this page is ignored but it's fields are inherited by 
 --some of the other pages of this wiki.
 ]===]
+NODE.edit_ui=[[
+content.div_class = "editlua"
+]]
 NODE.admin_edit_ui=[[
-content         = {3.1, "lua_editor", rows=15, no_label=true}
+content.div_class = "editlua"
 ]]

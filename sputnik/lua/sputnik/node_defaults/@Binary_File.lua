@@ -14,6 +14,10 @@ allow(all_users, "jpg")
 allow(all_users, "gif")
 allow(all_users, "png")
 allow(all_users, "zip")
+allow(all_users, "tga")
+allow(all_users, "pdf")
+allow(all_users, "txt")
+allow(all_users, "dmg")
 allow(Admin, all_actions)
 ]=],
    fields = [=[

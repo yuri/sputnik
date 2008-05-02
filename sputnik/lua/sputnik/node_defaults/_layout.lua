@@ -215,5 +215,33 @@ ins                {                                  text-decoration: none  }
                     padding:  15px  15px  15px  15px;                        } 
 .teaser            {                                  font-size: 120%; 
                                                       font-weight:bold       }
+
+#breadcrumb {
+	padding: 0 0 0 0;
+	margin: 0 0 0 0;
+    float      :left; 
+}
+#breadcrumb ul {
+	list-style: none;
+}
+#breadcrumb li {
+	margin: 0;
+	padding: 0 0 0 0;
+	display: inline;
+}
+#breadcrumb a {
+	margin-right: .5em;
+	background: none;
+	text-decoration: none;
+	font-family: serif;
+}
+#breadcrumb .first {
+	margin-left: 0;
+	padding-left: 0;
+}
+#breadcrumb .last {
+	background: none;
+}
+
 ]===]
 

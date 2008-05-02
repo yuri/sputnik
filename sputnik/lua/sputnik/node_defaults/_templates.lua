@@ -67,6 +67,12 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]><!--this just marks the page as "main" -->
      <div class="yui-b" id='page'>
 
+      <div id="breadcrumb">
+       <ul>
+        $do_breadcrumb[[<li class="$class"><a $link>$title</a></li>]],[[<li class="$class">▹ <a $link>$title</a></li>]]
+       </ul>
+      </div>
+
       <span class="toolbar">
        $if_can_edit[[
        <a $edit_link title="_(EDIT)"> 
@@ -84,7 +90,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
        </a>
        ]]
       </span>
-
+      <br/>
       <h1 class="title">
         $if_title_icon[[<img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/> ]]
         <a $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]

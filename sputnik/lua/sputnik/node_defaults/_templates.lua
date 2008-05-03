@@ -313,8 +313,8 @@ EDIT_FORM_TEXT_FIELD    = [[<input type="text" value="$value" name="$name"/>]]
 EDIT_FORM_HIDDEN        = [[<input type="hidden" class="hidden" value="$value" name="$name"/>]]
 EDIT_FORM_READONLY_TEXT = [[<input type="text" value="$value" name="$name" class="readonly" readonly="readonly" />]]
 EDIT_FORM_PASSWORD      = [[<input type="password" value="$value" name="$name" size="20"></input>]]
-EDIT_FORM_TEXTAREA      = [[<textarea class="small" name="$name" cols="70" rows="$rows">$value</textarea>]]
-EDIT_FORM_EDITOR        = [[<textarea class="editor resizeable" name="$name" cols="100" rows="$rows">$value</textarea>]]
+EDIT_FORM_TEXTAREA      = [[<textarea class="small resizeable" name="$name" cols="70" rows="$rows">$value</textarea>]]
+EDIT_FORM_EDITOR        = [[<textarea class="resizeable" name="$name" cols="100" rows="$rows">$value</textarea>]]
 EDIT_FORM_BIG_TEXTAREA  = [[<textarea class="editor resizeable" name="$name" id="main_text_area" cols="100" rows="$rows">$value</textarea><br/>
                             <a href="#" onclick="expandTextArea(); return false;">expand</a>]]
 EDIT_FORM_CHECKBOX      = [[<input class="checkbox" style="border:1px solid black" 

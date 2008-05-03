@@ -596,7 +596,7 @@ function actions.edit (node, request, sputnik, etc)
    --$(document).ready(function() {
    --   $(".editor").markItUp(mySettings);
    --});]])
-   --node:add_javascript("/jquery-textarearesizer.js")
+   node:add_javascript(sputnik:make_url("jquery/textarearesizer.js"))
    --node:add_javascript("/editpage.js")
 
    -- select the parameters that should be copied

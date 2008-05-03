@@ -198,10 +198,10 @@ input.small_submit {margin:   auto   0em  auto   1px;
 input.diff_radio   {margin:    0em   0em   0em   0em; 
                     padding:   0em   0em   0em   0em;                        }
 textarea           {margin:   auto  auto   5px  auto; 
-                    padding:   4px   2px   1px   2px;  width: 100%;
+                    padding:   4px   2px   1px   2px; width: 100%;
                                                       font-family: monospace;}
-textarea.small     {margin:   auto  auto  auto 200px; display: block;
-                                                       width: 500px;         }
+textarea.small     {margin:   auto  auto  .5em 200px; display: block;
+                                                      width: 500px;          }
 #more_fields       {margin:   auto  auto  auto 200px; 
                     padding:  auto  auto  auto 200px; display: block;        }
 input.hidden       {                                  display: none;         }
@@ -241,6 +241,25 @@ ins                {                                  text-decoration: none  }
 }
 #breadcrumb .last {
 	background: none;
+}
+
+textarea.resizeable {
+	display:block;
+	margin-bottom:0pt;
+	height: 20%;
+}
+
+div.grippie {
+	background:#F3F3F3 url($make_url{node="sputnik/grippie.png"}) no-repeat scroll center 2px;
+	border-color:#DDDDDD;
+	border-style:solid;
+	border-width:0pt 1px 1px;
+	cursor:s-resize;
+	height:6px;
+	overflow:hidden;
+	margin-bottom: 10px;
+    width: 70px;
+    margin-left: 500px;
 }
 
 ]===]

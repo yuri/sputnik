@@ -36,7 +36,7 @@ $(document).ready(function() {
 				}, 500);
 			});
 
-		/*$('textarea.resizeable:not(.editor)').TextAreaResizer();*/
+		$('textarea.resizeable:not(.editor)').TextAreaResizer();
 
 		$("span.ctrigger").click(function () {
 				var selector = "#" + this.id.substring(8);

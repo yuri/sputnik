@@ -79,6 +79,7 @@ function make_html_form(form_params)
       field.anchor = name
       field.html = ""
       field.div_class = field.div_class or ""
+      field.tab_index = i
 
       if not (field.value == false) then
          field.value = field.value or form_params.values[name]

@@ -17,6 +17,7 @@ capabilities = {
    can_save = true,
    has_history = true,
    is_persistent = true,
+   get_nodes_prefix = true,
 }
 
 -----------------------------------------------------------------------------
@@ -119,10 +120,11 @@ function new(params)
 		GET_NODE_VERSION = string.format("SELECT id,data,version from %s WHERE id = %%s and version = %%s;", obj.tables.node),
 		GET_NODE_LATEST = string.format("SELECT n.id,n.data,n.version FROM %s as n NATURAL JOIN %s WHERE n.id = %%s;", obj.tables.node, obj.tables.node_index),
 		GET_VERSION = string.format("SELECT max(version) as version FROM %s WHERE id = %%s;", obj.tables.node),
-		GET_NODES = string.format("SELECT id FROM %s ORDER BY id;", obj.tables.node_index),
-		GET_NODES_PREFIX_LIMIT = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id LIMIT %%s;", obj.tables.node_index),
-      GET_NODES_PREFIX = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id;", obj.tables.node_index),
-      GET_NODES_LIMIT = string.format("SELECT id FROM %s ORDER BY id LIMIT %%s;", obj.tables.node_index),
+      GET_NODES_PREFIX = string.format("SELECT n.* FROM %s as n NATURAL JOIN %s WHERE n.id LIKE %%s;", obj.tables.node, obj.tables.node_index),
+		GET_NODE_IDS = string.format("SELECT id FROM %s ORDER BY id;", obj.tables.node_index),
+		GET_NODE_IDS_PREFIX_LIMIT = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id LIMIT %%s;", obj.tables.node_index),
+      GET_NODE_IDS_PREFIX = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id;", obj.tables.node_index),
+      GET_NODE_IDS_LIMIT = string.format("SELECT id FROM %s ORDER BY id LIMIT %%s;", obj.tables.node_index),
       NODE_EXISTS = string.format("SELECT DISTINCT id FROM %s WHERE id = %%s;", obj.tables.node),
 		INSERT_NODE = string.format("INSERT INTO %s (id,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s);", obj.tables.node),
 		INSERT_INDEX = string.format("INSERT INTO %s (id, version) VALUES (%%s, %%s);", obj.tables.node_index),
@@ -238,14 +240,14 @@ function MySQLVersium:get_node_ids(prefix, limit)
    local cmd
    if prefix and limit then
       prefix = prefix .. "%"
-      cmd = prepare(self.queries.GET_NODES_PREFIX_LIMIT, prefix, limit)
+      cmd = prepare(self.queries.GET_NODE_IDS_PREFIX_LIMIT, prefix, limit)
    elseif prefix then
       prefix = prefix .. "%"
-      cmd = prepare(self.queries.GET_NODES_PREFIX, prefix)
+      cmd = prepare(self.queries.GET_NODE_IDS_PREFIX, prefix)
    elseif limit then
-      cmd = prepare(self.queries.GET_NODES_LIMIT, limit)
+      cmd = prepare(self.queries.GET_NODE_IDS_LIMIT, limit)
    else
-      cmd = prepare(self.queries.GET_NODES)
+      cmd = prepare(self.queries.GET_NODE_IDS)
    end
 
 	local cur = assert(self.con:execute(cmd))
@@ -333,6 +335,39 @@ function MySQLVersium:get_node_history(id, prefix)
 	cur:close()
 
 	return history
+end
+
+-----------------------------------------------------------------------------
+-- Returns the data and metadata for multiple nodes, using a single database
+-- query.  This is used to optimize specific types of pages where the system
+-- may need to pull many nodes at once.  Returns an empty table if there are
+-- no nodes matching the prefix.
+--
+-- @param prefix          the prefix to query
+-- @return                (1) a table containing the data for each node,
+--                        indexed by node name.
+--                        (2) a table containing the metadata for each node,
+--                        indexed by node name.
+-----------------------------------------------------------------------------
+function MySQLVersium:get_nodes_prefix(prefix)
+   assert(prefix)
+
+   local data,metadata = {}, {}
+   
+   local cmd = prepare(self.queries.GET_NODES_PREFIX, prefix .. "%")
+   local cur = self.con:execute(cmd)
+   local row = cur:fetch({}, "a")
+
+   while row do
+      data[row.id] = row.data
+      row.data = nil
+      metadata[row.id] = row
+      row = cur:fetch({}, "a")
+   end
+
+	cur:close()
+
+	return data, metadata
 end
 
 -- vim:ts=3 ss=3 sw=3 expandtab

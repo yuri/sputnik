@@ -148,3 +148,38 @@ function Saci:get_node_history(id, prefix, limit)
    end
    return versium_history
 end
+
+-----------------------------------------------------------------------------
+-- Retrieves multiple data nodes from Versium and retuns Saci nodes created
+-- from them.  If Versium returns an empty table, then Saci will also return
+-- an empty table.  This function always returns the most recent version of 
+-- each node
+--
+-- @param prefix         the desired node prefix
+-- @return               a table containing the returned Saci nodes, indexed
+--                       by node name.
+-----------------------------------------------------------------------------
+function Saci:get_nodes_prefix(prefix)
+   -- Only allow this when the versium repository has the get_nodes_prefix
+   -- capability
+   if not self.versium.capabilities.get_nodes_prefix then
+      return {}
+   end
+
+   assert(prefix)
+
+   -- Fetch the data and metadata from versium, for the given prefix
+   local data, metadata = self.versium:get_nodes_prefix(prefix)
+   local nodes = {}
+
+   if next(data) then
+      -- There are some nodes to process, so process them
+      for id in pairs(data) do
+         nodes[id] = self:make_node(data[id], metadata[id], id)
+      end
+   end
+
+   return nodes
+end
+
+-- vim:ts=3 ss=3 sw=3 expandtab

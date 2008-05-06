@@ -38,7 +38,7 @@ ALLOWED_TAGS = {
    "pre", "code",
    "acronym", "abbr", "cite", "dfn", "tt", "del", "ins", "kbd", "strike",
    "sub", "sup", "var",
-   "table", "tr", "th", "thead", "td", "caption", "tbody", "tfoot",
+   "table", "tr", "thead", "caption", "tbody", "tfoot",
    "big", "center", "right", "left",
    "hr",
 
@@ -62,6 +62,15 @@ ALLOWED_TAGS = {
             return nil, "'url' not allowed in the value of 'style'"
          end
       end
+   },
+   -- Enable the colspan/rowspan attributes for table elements
+   th = {
+	   colspan = ".",
+	   rowspan = ".",
+   },
+   td = {
+	   colspan = ".",
+	   rowspan = ".",
    }
 }
 

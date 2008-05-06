@@ -45,7 +45,7 @@ ALLOWED_TAGS = {
    -- For "a" tag allow "name" and "href", and limit href to three protocols.
    a = {
       name = ".",
-      href= {"^http://", "^https://", "^ftp://", "^/"},
+      href= {"^http://", "^https://", "^ftp://", "^/", "#"},
    },
    -- For "img" tag allow only "src" and limit it to http.
    img = {

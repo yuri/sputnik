@@ -16,7 +16,11 @@ function make_html_form(form_params)
    table.sort(fields, function(x,y) return x[1] < y[1] end) -- sort by the first value (position)
    
    local form_decorators = {
-      checkbox = function(field) field.if_checked = cosmo.c(field.value){}; end,
+      checkbox = function(field)
+                    local isset = field.value
+                    if type(isset)=="string" then isset = isset:len() > 0 end
+                    field.if_checked = cosmo.c(isset){}; 
+                 end,
       header   = function(field) field.no_label = true; end,
       note     = function(field) field.no_label = true; end,
       textarea = function(field) 

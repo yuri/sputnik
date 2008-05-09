@@ -1,5 +1,6 @@
 ---------------------------------------------------------------------------------------------------
 -- Provides support for color manipulation in HSL color space.
+-- (rgb_to_hsl() implementation was contributed by Markus Fleck-Graffe.)
 ---------------------------------------------------------------------------------------------------
 
 module(..., package.seeall)
@@ -41,18 +42,60 @@ function hsl_to_rgb(h, s, L)
    return _h2rgb(m1, m2, h+1/3), _h2rgb(m1, m2, h), _h2rgb(m1, m2, h-1/3)
 end
 
+---------------------------------------------------------------------------------------------------
+-- Converts an RGB triplet to HSL.
+-- (see http://easyrgb.com)
+-- 
+-- @param r              red (0.0-1.0)
+-- @param g              green (0.0-1.0)
+-- @param b              blue (0.0-1.0)
+-- @return               corresponding H, S and L components
+---------------------------------------------------------------------------------------------------
+
+function rgb_to_hsl(r, g, b)
+   --r, g, b = r/255, g/255, b/255
+   local min = math.min(r, g, b)
+   local max = math.max(r, g, b)
+   local delta = max - min
+
+   local h, s, l = 0, 0, ((min+max)/2)
+
+   if l > 0 and l < 0.5 then s = delta/(max+min) end
+   if l >= 0.5 and l < 1 then s = delta/(2-max-min) end
+
+   if delta > 0 then
+      if max == r and max ~= g then h = h + (g-b)/delta end
+      if max == g and max ~= b then h = h + 2 + (b-r)/delta end
+      if max == b and max ~= r then h = h + 4 + (r-g)/delta end
+      h = h / 6;
+   end
+
+   if h < 0 then h = h + 1 end
+   if h > 1 then h = h - 1 end
+
+   return h * 360, s, l
+end
+
+function rgb_string_to_hsl(rgb)
+   return rgb_to_hsl(tonumber(rgb:sub(2,3), 16)/256, 
+                     tonumber(rgb:sub(4,5), 16)/256,
+                     tonumber(rgb:sub(6,7), 16)/256)
+end
 
 Color = {}
 
 ---------------------------------------------------------------------------------------------------
 -- Instantiates a new "color".
 --
--- @param H              hue (0-360)
+-- @param H              hue (0-360) _or_ an RGB string ("#930219")
 -- @param S              saturation (0.0-1.0)
 -- @param L              lightness (0.0-1.0)
 -- @return               an instance of Color
 ---------------------------------------------------------------------------------------------------
-function Color:new(H, S, L) 
+function Color:new(H, S, L)
+   if type(H) == "string" and H:sub(1,1)=="#" and H:len() == 7 then
+      H, S, L = rgb_string_to_hsl(H)
+   end
    local obj = {H = H, S = S, L = L}
    setmetatable(obj, self)		
    self.__index = self
@@ -72,7 +115,7 @@ function Color:to_rgb()
    local rgb = {hsl_to_rgb(self.H, self.S, self.L)}
    local buffer = "#"
    for i,v in ipairs(rgb) do
-	  buffer = buffer..string.format("%02x",math.floor(v*255))
+	  buffer = buffer..string.format("%02x",math.floor(v*256+0.5))
    end
    return buffer
 end

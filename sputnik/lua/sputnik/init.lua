@@ -248,7 +248,7 @@ function Sputnik:activate_node(node, params)
             end,
             Admin = function(user, auth)
                if user then
-                  return auth:get_metadata(user, "IsAdmin") == "true"
+                  return auth:get_metadata(user, "is_admin") == "true"
                else
                   return false
                end

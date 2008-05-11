@@ -7,6 +7,7 @@ NODE = {
 deny(all_users, all_actions)
 allow(Admin, all_actions)
 allow(all_users, "login")
+allow(all_users, "logout")
 ]],
    category="_prototypes",
    actions=[[show_content="wiki.show_content_as_lua_code"]],

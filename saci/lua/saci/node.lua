@@ -24,12 +24,9 @@ local Activators = {}
 -----------------------------------------------------------------------------
 
 Activators.lua = function(value, repo) 
-   assert(repo.config.BASE_URL)
    local mt = {__index = repo.config}
    local config = setmetatable({}, mt)
-   assert(config.BASE_URL)
    local sandbox = saci.sandbox.new(config)
-   assert(sandbox.values.BASE_URL)
    sandbox.logger = repo.logger
    return sandbox:do_lua(value)
 end

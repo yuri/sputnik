@@ -92,7 +92,7 @@ function new(params)
 
 	-- Try to connect to the given database
   	local env = luasql.mysql()
-	local con = env:connect(unpack(params.connect))
+	local con = env:connect(unpack(params))
 
 	if not con then
 	   errors.could_not_initialize("Could not connect to MySQL database")

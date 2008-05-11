@@ -85,13 +85,14 @@ local SQLite3Versium_mt = {__metatable = {}, __index = SQLite3Versium}
 -- @return               a new versium object.
 -----------------------------------------------------------------------------
 function new(params)
-  	-- Params table accepts the following:
-	-- prefix - A string that will be prepended to table names
-	-- connect - A list that is passed to the luasql connection function
+   -- The ordered items in the params table are passed to the luasql
+   -- connection function. Additionally, the following named params are
+   -- accepted:
+	--   prefix - A string that will be prepended to table names
 
 	-- Try to connect to the given database
   	local env = luasql.sqlite3()
-	local con = env:connect(unpack(params.connect))
+	local con = env:connect(unpack(params))
 
 	if not con then
 	   errors.could_not_initialize("Could not connect to SQLite3 database")

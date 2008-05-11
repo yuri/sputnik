@@ -1,8 +1,8 @@
 -- Package metadata
-package = 'Versium SQL'
+package = 'Versium SQLite3'
 version = 'cvs-1'
 description = {
-  summary = 'SQLite and MySQL backends for Versium',
+  summary = 'SQLite3 backends for Versium',
   detailed = [[
   ]],
   license = 'MIT/X11',
@@ -13,7 +13,6 @@ description = {
 -- Dependency information
 dependencies = {
   'luasql-sqlite3 >= 2.2',
-  'luasql-mysql >= 2.2'
 }
 
 -- Build rules

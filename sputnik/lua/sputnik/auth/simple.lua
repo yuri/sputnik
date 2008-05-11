@@ -113,7 +113,7 @@ function Simple:validate_token(username, token)
 
    if self:user_exists(username) then
       if user_token(username, self.salt, entry.hash) == token then
-         return true
+         return entry.display
       else
          return false, errors.wrong_password(username)
       end
@@ -166,6 +166,9 @@ function Simple:add_user(username, password, metadata)
    metadata.display = username
    metadata.hash = get_salted_hash(now, self.salt, password)
    username = username:lower()
+   if username == "admin" then
+      metadata.is_admin = "true"
+   end
 
    users[username] = metadata
 

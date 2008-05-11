@@ -442,7 +442,7 @@ end
 function actions.edit (node, request, sputnik, etc)
    etc = etc or {} -- additional parameters
    -- check if the user is even allowed to edit
-   local admin = sputnik.auth:get_metadata(request.user, "IsAdmin")
+   local admin = sputnik.auth:get_metadata(request.user, "is_admin")
    if (not node:check_permissions(request.user, request.action)) 
        or (node._id==sputnik.config.ROOT_PROTOTYPE and admin == "true") then
       local message = etc.message_if_not_allowed
@@ -494,7 +494,7 @@ function actions.edit (node, request, sputnik, etc)
    local post_token = sputnik.auth:timestamp_token(post_timestamp)
    
    local edit_ui_field = etc.edit_ui_field
-   local admin = sputnik.auth:get_metadata(request.user, "IsAdmin")
+   local admin = sputnik.auth:get_metadata(request.user, "is_admin")
    if admin == "true" then
       edit_ui_field = edit_ui_field or "admin_edit_ui"
    else

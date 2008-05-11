@@ -1,0 +1,11 @@
+-- Package metadata
+package = 'Sputnik Examples'
+version = 'cvs-0'
+description = {
+  summary = 'Examples / Tests for Sputnik',
+  detailed = '',
+  license = 'MIT/X11',
+  homepage = 'http://sputnik.freewisdom.org/en/Examples',
+  maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+}
+

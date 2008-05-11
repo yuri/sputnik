@@ -49,11 +49,11 @@ function test_auth(args)
    assert(auth:get_metadata(username, "is_admin")==nil)
 
    -- Now create an admin
-   auth:add_user(admin_username, "admin_pw", {is_admin="yes"})
+   auth:add_user(admin_username, "admin_pw", {is_admin="true"})
    assert(auth:user_exists(admin_username))
    local display, admin_token = auth:authenticate(admin_username, "admin_pw")
    assert(display==admin_username)
-   assert(auth:get_metadata(admin_username, "is_admin")=="yes")
+   assert(auth:get_metadata(admin_username, "is_admin")=="true")
 
 end
 

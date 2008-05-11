@@ -164,7 +164,7 @@ end
 function Auth:authenticate(username, password)
    username = username:lower()
    if not self:user_exists(username) then
-      return nil, errors.could_not_authenticate_no_such_user(username)
+      return nil, errors.no_such_user(username)
    end
 
    local cmd = prepare(self.queries.GET_META, username, "creation_time")

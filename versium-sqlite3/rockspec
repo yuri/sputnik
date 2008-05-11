@@ -1,0 +1,22 @@
+-- Package metadata
+package = 'Versium SQL'
+version = 'cvs-1'
+description = {
+  summary = 'SQLite and MySQL backends for Versium',
+  detailed = [[
+  ]],
+  license = 'MIT/X11',
+  homepage = 'http://sputnik.freewisdom.org/en/SQL_Storage',
+  maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+}
+
+-- Dependency information
+dependencies = {
+  'luasql-sqlite3 >= 2.2',
+  'luasql-mysql >= 2.2'
+}
+
+-- Build rules
+source = {
+
+}

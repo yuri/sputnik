@@ -1,16 +1,12 @@
-module(..., package.seeall)
+module(..., package.seeall) --sputnik.authentication.simple
 
---[[--------------------------------------------------------------
---  sputnik.authentication.simple
---
---  This is the reference implementation for an authentication
---  module.  It implements all of the core functionality that
---  sputnik will expect from a drop-in-replacement
---------------------------------------------------------------]]--
+-----------------------------------------------------------------------------
+-- This is the reference implementation for an authentication module,
+-- implementing all of the core functionality that Sputnik will expect from
+-- a drop-in-replacement
+-----------------------------------------------------------------------------
 
-local PASSWORD_TEMPLATE = [=[USERS = {}
-$do_users[[USERS["$user"]={hash="$hash", time="$time"}
-]]]=]
+local errors = require("sputnik.auth.errors")
 
 local Simple = {}
 local Simple_mt = {__metatable = {}, __index = Simple}
@@ -18,7 +14,7 @@ local Simple_mt = {__metatable = {}, __index = Simple}
 -- Utility functions
 local function load_users(sputnik, name)
    local node = sputnik:get_node(name)
-   return node.content.USERS
+   return node.content.USERS, node.raw_values.content
 end
 
 local function get_salted_hash(time, salt, password)
@@ -29,14 +25,13 @@ local function user_token(user, salt, hash)
    return md5.sumhexa(user .. salt .. "Sputnik")
 end
 
-------------------------------------------------------------------
--- Creates a new instance of the authentication module for use
--- in sputnik
+-----------------------------------------------------------------------------
+-- Creates a new instance of the authentication module for use in Sputnik
 --
--- @param sputnik the sputnik instance to use for storage
--- @param params a table of configuration paramaters.  The
--- requirements of this table depend on the specific module
--- implementation.
+-- @param sputnik        a sputnik instance to use for storage .
+-- @param params         a table of configuration paramaters (the actual set
+--                       of parameters is implementation-specific.
+-----------------------------------------------------------------------------
 function new(sputnik, params)
    -- Set up default parameters
    params = params or {}
@@ -62,6 +57,7 @@ end
 -- @return exists whether or not the username exists in the system
 
 function Simple:user_exists(username)
+   username=username:lower()
    local users = load_users(self.sputnik, self.node)
    return type(users[username]) == "table"
 end
@@ -85,18 +81,20 @@ end
 -- @return user the name of the authenticated user
 -- @return token a hashed token for the user
 
-function Simple:authenticate(user, password)
+function Simple:authenticate(username, password)
+   username = username:lower()
    local users = load_users(self.sputnik, self.node)
-   local entry = users[user]
+   local entry = users[username]
 
-   if entry and entry.hash == get_salted_hash(entry.time, self.salt, password) then
-      return user, user_token(user, self.salt, entry.hash)
-   elseif self:user_exists(user) or (self.noauto and user ~= "Admin") then
-      return nil
+   if entry then
+      local hash = get_salted_hash(entry.creation_time, self.salt, password)
+      if hash == entry.hash then 
+         return entry.display, user_token(username, self.salt, entry.hash)
+      else
+         return nil, errors.wrong_password(username)
+      end
    else
-      self:add_user(user, password)
-      users = load_users(self.sputnik, self.node)
-      return user, user_token(user, self.salt, users[user].hash)
+      return nil, errors.no_such_user(username)
    end
 end
 
@@ -108,14 +106,19 @@ end
 -- @param token the actual token hash
 -- @return user the name of the authenticated user
 
-function Simple:validate_token(user, token)
+function Simple:validate_token(username, token)
+   username = username:lower()
    local users = load_users(self.sputnik, self.node)
-   local entry = users[user]
+   local entry = users[username]
 
-   if self:user_exists(user) and user_token(user, self.salt, entry.hash) == token then
-      return user
+   if self:user_exists(username) then
+      if user_token(username, self.salt, entry.hash) == token then
+         return true
+      else
+         return false, errors.wrong_password(username)
+      end
    else
-      return nil
+      return false, errors.no_such_user(username)
    end
 end
 
@@ -126,9 +129,10 @@ end
 -- @return isRecent a boolean value indicating if the user's 
 -- account was created in the specified time frame
 
-function Simple:user_is_recent(user)
+function Simple:user_is_recent(username)
+   username = username:lower()
    local users = load_users(self.sputnik, self.node)
-   local entry = users[user]
+   local entry = users[username]
 
    if entry then
       local now = os.time()
@@ -136,7 +140,7 @@ function Simple:user_is_recent(user)
 
       return (tonumber(entry.time) > min)
    else
-      return false
+      return nil, errors.no_such_user(username)
    end
 end
 
@@ -148,36 +152,53 @@ end
 -- @return success a boolean value indicating if the add was 
 -- successful.
 -- @return err an error message if the add was not successful
-function Simple:add_user(user, password)
+function Simple:add_user(username, password, metadata)
+
    local now = os.time()
-   local users = load_users(self.sputnik, self.node)
+   local users, raw_users = load_users(self.sputnik, self.node)
   
-   if self:user_exists(user) then
-      return false, "That user already exists"
+   if self:user_exists(username) then
+      return nil, user_already_exist(username)
    end
 
-   users[user] = {
-      hash = get_salted_hash(now, self.salt, password),
-      time = now,
-   }
+   metadata = metadata or {}
+   metadata.creation_time = now
+   metadata.display = username
+   metadata.hash = get_salted_hash(now, self.salt, password)
+   username = username:lower()
+
+   users[username] = metadata
+
+   local user_as_string = string.format("USERS[%q]={", username)
+   for k,v in pairs(metadata) do
+      user_as_string = user_as_string..string.format(" %s=%q,", k, v)
+   end
+   user_as_string = user_as_string.."}"
 
    local password_node = self.sputnik:get_node(self.node)
+
    local params = {
-      content = cosmo.f(PASSWORD_TEMPLATE){
-         do_users = function()
-            for user,entry in pairs(users) do
-               cosmo.yield{
-                  user = user,
-                  hash = entry.hash,
-                  time = entry.time,
-               }
-            end
-         end
-      }
+      content = (raw_users or "USERS={}\n").."\n"..user_as_string,
    }
    password_node = self.sputnik:update_node_with_params(password_node, params)
-   password_node:save(user, "Added new user: " .. user, {minor="yes"})
+   password_node:save(username, "Added new user: " .. username, {minor="yes"})
    return true
+end
+
+-----------------------------------------------------------------------------
+-- Retrieves a piece of metadata for a specific user
+--
+-- @param username       the username to query
+-- @param key            the metadata key to query
+-- @return data          the value of the metadata or nil
+function Simple:get_metadata(username, key)
+   username=username:lower()
+   local users = load_users(self.sputnik, self.node)
+   if users[username] then 
+      return users[username][key]
+   else
+      return errors.no_such_user(username)
+   end
 end
   
 -- vim:ts=3 ss=3 sw=3 expandtab

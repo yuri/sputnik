@@ -1,14 +1,11 @@
-module(..., package.seeall)
+module(..., package.seeall) --  sputnik.authentication.mysql
 
---[[--------------------------------------------------------------------------
---  sputnik.authentication.mysql
---
--- This is an implementation of an advanced authentication module for 
--- sputnik.  It provides the standard authentication api using a mysql
--- backend, but also provides a mechanism for assigning users to groups.
--------------------------------------------------------------------------]]--
+-----------------------------------------------------------------------------
+-- Implements Sputnik's authentication API using a MySQL database.
+-----------------------------------------------------------------------------
 
 require("luasql.mysql")
+local errors = require("sputnik.auth.errors")
 
 local Auth = {}
 local Auth_mt = {__metatable = {}, __index = Auth}
@@ -74,9 +71,9 @@ end
 -----------------------------------------------------------------------------
 -- Creates a new instance of the authentication module for use in sputnik
 --
--- @param sputnik the sputnik instance ties to this specific instance
--- @param params a table of configuration paramaters.  The below code shows
--- the possible accepted parameters
+-- @param sputnik        the sputnik instance ties to this specific instance
+-- @param params         a table of configuration paramaters.  The below code
+--                       shows the possible accepted parameters
 -----------------------------------------------------------------------------
 function new(sputnik, params)
   	-- Params table accepts the following:
@@ -86,9 +83,9 @@ function new(sputnik, params)
 
    -- Try to connect to the given database
   	local env = luasql.mysql()
-	local con = env:connect(unpack(params.connect))
+	local con = env:connect(unpack(params))
 
-	assert(con, "Could not connect to MySQL database")
+	assert(con, errors.initialization_error("Could not connect to MySQL database"))
 
    params.prefix = params.prefix or "auth_"
    params.salt = params.salt or sputnik.config.SECRET_CODE
@@ -137,7 +134,7 @@ end
 -- @return exists whether or not the username exists in the system
 
 function Auth:user_exists(username)
-   username:lower()
+   username = username:lower()
    local cmd = prepare(self.queries.USER_EXISTS, username)
    local cur = self.con:execute(cmd)
    local row = cur:fetch("*a")
@@ -167,7 +164,7 @@ end
 function Auth:authenticate(username, password)
    username = username:lower()
    if not self:user_exists(username) then
-      return nil
+      return nil, errors.could_not_authenticate_no_such_user(username)
    end
 
    local cmd = prepare(self.queries.GET_META, username, "creation_time")
@@ -190,7 +187,7 @@ function Auth:authenticate(username, password)
    if row and (tonumber(row) == 1) then
       return display, user_token(username, self.salt, hash)
    else
-      return nil
+      return nil, errors.wrong_password(username)
    end
 end
 
@@ -222,7 +219,7 @@ function Auth:validate_token(username, token)
       end
    end
 
-   return nil
+   return nil, "Invalid token or no such user"
 end
 
 ------------------------------------------------------------------
@@ -262,7 +259,7 @@ function Auth:add_user(username, password, metadata)
    local now = os.time()
   
    if self:user_exists(username) then
-      return false, "That user already exists"
+      return nil, errors.user_already_exists(username)
    end
 
    local pwhash = get_salted_hash(now, self.salt, password)
@@ -284,6 +281,7 @@ function Auth:add_user(username, password, metadata)
       local res = self.con:execute(cmd)
       assert(res == 1)
    end
+   return true
 end
 
 -----------------------------------------------------------------------------

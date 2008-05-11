@@ -453,7 +453,7 @@ function Sputnik:translate_request (request)
       end
       for name in string.gmatch(request.params.post_fields, "[%a_]+") do 
          self.logger:debug(name)
-         new_params[name] = request.params[self:hash_field_name(name, request.params.post_token)]
+         new_params[name] = request.params[self:hash_field_name(name, request.params.post_token)] or ""
          --self.logger:debug(new_params[name])
       end
       new_params.p = request.params.p

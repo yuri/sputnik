@@ -1,0 +1,50 @@
+## Basic Usage
+
+    require("xssfilter")
+    local xss_filter = xssfilter.new()
+    
+    local html, message = xss_filter:filter(my_unsafe_html)
+    if html then
+       return html
+    elseif message then
+       return "<pre>"..message.."</pre>"
+    end
+
+## Advanced Usage
+
+XSSFilter two table to decide what tags to allow and what tags to remove.
+Those tables can be parsed as first and second parameter to new() and default to
+xssfilter.ALLOWED_TAGS and xssfilter.GENERIC_ATTRIBUTES respectively. 
+
+The first table allows two types of entries: 
+
+1. Simply entering the name of the tag as string, allows this tag to be used 
+    but without any attributes, except for those attributes listed in
+    GENERIC_ATTRIBUTES and allowed for _all_ tags.
+2. Alternatively, the tag can be entered as a table, keyed with the tag
+    name, which can specify what attributes the tag can have, specifying for
+    each attribute the pattern with which its values must start (use "." to allow _any_ values).  
+    Additionally, _test can be set to a function that does a more complex
+    evaluation of whether the tag's attributes should be allowed.
+
+The second table specifies which attributes are allowed for _all_ tags.
+
+So, to allow just tags "foo" and "bar", we can do this:
+
+    local xss_filter = xssfilter.new({"foo", "bar"})
+
+Or, to allow "foo" attribute for any tag, provided that its value starts with "bar":
+
+    local xss_filter = xssfilter.new(nil, {foo = "bar"})
+
+We can also modify "allowed_tags" after creating the filter:
+
+    local xss_filter = xssfilter.new()
+    xss_filter.allowed_tags.a.href="." -- allows href attribute of <a> to take any value
+    xss_filter.allowed_tags.a.onClick="." -- allows <a> tags to have "onClick" attribute, with any value
+
+Or, we could restrict it instead:
+
+    xss_filter.allowed_tags.a.href="http://mydomain" -- allows only links to files on this site.
+
+

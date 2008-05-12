@@ -101,6 +101,17 @@ function Sputnik:init(initial_config)
    self.markup_module = require(self.config.MARKUP_MODULE or "sputnik.markup.markdown")
    self.markup = self.markup_module.new(self)
 
+   -- setup cache
+   if self.config.CACHE_MODULE then
+      local cache_mod = require(self.config.CACHE_MODULE)
+      self.cache = cache_mod.new(self, self.config.CACHE_MODULE_PARAMS)
+   else
+      self.cache = {
+         add = function() end,
+         del = function() end,
+         get = function() end,
+      }
+   end
       
    -- setup authentication
    local auth_mod = require(self.config.AUTH_MODULE or "sputnik.authentication.simple")

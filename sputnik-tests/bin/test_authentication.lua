@@ -58,11 +58,11 @@ function test_auth(args)
 end
 
 test_auth{
-   module = 'sputnik.auth.mysql',
+   module = 'sputnik.authentication.mysql',
    params = {"sputnik_auth", "sputnik", "letmein", "localhost"},
 }
 
 test_auth{
-   module = 'sputnik.auth.simple',
+   module = 'sputnik.authentication.simple',
    --params = {"sputnik_auth", "sputnik", "letmein", "localhost"},
 }

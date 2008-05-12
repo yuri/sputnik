@@ -1,0 +1,21 @@
+-- Package metadata
+package = 'Sputnik Auth MySQL'
+version = 'cvs1'
+description = {
+  summary = 'A MySQL authentication module for Sputnik',
+  detailed = [[
+  ]],
+  license = 'MIT/X11',
+  homepage = 'http://sputnik.freewisdom.org/en/Authentication',  
+}
+
+-- Dependency information
+dependencies = {
+  'sputnik == cvs1',
+  'luasql-mysql'
+}
+
+-- Build rules
+source = {
+}
+

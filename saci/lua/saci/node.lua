@@ -301,3 +301,15 @@ function Node:is_old()
    end
 end
 
+
+-----------------------------------------------------------------------------
+-- Returns a child node, if they are defined.
+-- 
+-- @param id             child's id.
+-- @return               an instance of Node or nil.
+-----------------------------------------------------------------------------
+function Node:get_child(id)
+   if self.child_defaults and self.child_defaults[id] then
+      return self.repository:make_node(self.child_defaults[id], {}, self.id.."/"..id)
+   end
+end

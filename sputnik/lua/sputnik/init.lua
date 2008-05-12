@@ -55,8 +55,15 @@ function Sputnik:init(initial_config)
    -- setup the repository -- do this before loading user configuration
    self.repo = saci.new(initial_config)
 
-   self.repo.get_fallback_node = function(repo, id)
+   self.repo.get_fallback_node = function(repo, id, version)
       local status, page_module = pcall(require, "sputnik.node_defaults."..id)
+
+      if not status then
+         -- Attempt to escape the node_id using basic filesystem rules
+         local esc_id = id:gsub("%%", "%%25"):gsub(":", "%%3A"):gsub("/", ".")
+         status, page_module = pcall(require, "sputnik.node_defaults."..esc_id)
+      end
+
       if status then
          local data = self.repo:deflate(page_module.NODE)
          local node = self.repo:make_node(data, {}, id)
@@ -394,7 +401,9 @@ end
 -- Returns a list of all node ids.
 ---------------------------------------------------------------------------------------------------
 function Sputnik.get_node_names(self, args)
-   local node_ids = self.repo.versium:get_node_ids(args) -- reaching deep
+   local prefix = args and args.prefix or nil
+   local limit = args and args.limit or nil
+   local node_ids = self.repo.versium:get_node_ids(prefix, limit) -- reaching deep
    return node_ids
 end
 
@@ -553,7 +562,7 @@ function Sputnik:run(request, response)
 
    local node, stub = self:get_node(request.node_name, request.params.version)
   
-   if stub then
+   if stub and self.config.PROTOTYPE_PATTERNS then
       -- If an empty stub was returned, check the PROTOTYPE_PATTERNS table to see
       -- if we should apply a prototype
       local node_name = request.node_name

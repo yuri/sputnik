@@ -60,36 +60,39 @@ end
 
 function actions.save(node, request, sputnik)
 	local info = request.params.file_upload
-	local type = info["content-type"]
-	local name = info.name
-	local size = info.size
-	local file = info.contents
 
-	-- Clear out the file_upload parameter
-	request.params.file_update = nil
+	if info then
+		local type = info["content-type"]
+		local name = info.name
+		local size = info.size
+		local file = info.contents
 
-	-- Check to see if we're editing fields, rather than uploading
-	-- a new file by checking filename and filesize.
+		-- Clear out the file_upload parameter
+		request.params.file_update = nil
 
-	if name and name:match("%S") and size > 0 then
-		-- A file was uploaded 
+		-- Check to see if we're editing fields, rather than uploading
+		-- a new file by checking filename and filesize.
 
-		request.params.content = info.contents
-		request.params.file_type = type
-		request.params.file_name = tostring(name)
-		request.params.file_size = tostring(size)
+		if name and name:match("%S") and size > 0 then
+			-- A file was uploaded 
 
-		-- Set the correct action
-		local ext = sputnik.config.MIME_TYPES[type]
+			request.params.content = info.contents
+			request.params.file_type = type
+			request.params.file_name = tostring(name)
+			request.params.file_size = tostring(size)
 
-		if not ext then
-			node:post_error("The file you uploaded did not match a known file type: " .. tostring(type))
-			request.try_again = true
+			-- Set the correct action
+			local ext = sputnik.config.MIME_TYPES[type]
+
+			if not ext then
+				node:post_error("The file you uploaded did not match a known file type: " .. tostring(type))
+				request.try_again = true
+			else
+				request.params.actions = string.format([[%s = "binaryfile.mimetype"]], ext, ext)
+			end
 		else
-			request.params.actions = string.format([[%s = "binaryfile.mimetype"]], ext, ext)
+			request.try_again = true
 		end
-	else
-		request.try_again = true
 	end
 
 	-- Was something incomplete?

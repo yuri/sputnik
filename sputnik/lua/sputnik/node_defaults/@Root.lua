@@ -16,6 +16,7 @@ permissions     = {0.7, proto="concat"}
 content         = {0.8  }
 edit_ui         = {0.9, proto="concat"}
 admin_edit_ui   = {0.91, proto="concat"}
+child_defaults  = {0.92, proto="concat", activate="lua"}
 
 -- "virtual" fields (never saved) ------------------------
 version         = {virtual=true}
@@ -54,12 +55,12 @@ page_params_hdr = {1.0, "header"}
 page_name       = {1.1, "readonly_text"}
 title           = {1.2, "text_field"}
 -------------------------- advanced fields -------------
-show_advanced   = {2.0, "show_advanced", no_label=true}
-category        = {2.1, "text_field", advanced=true}
-prototype       = {2.2, "text_field", advanced=true}
+--show_advanced   = {2.0, "show_advanced", no_label=true}
+--category        = {2.1, "text_field", advanced=true}
+--prototype       = {2.2, "text_field", advanced=true}
 --- the content of the page ----------------------------
 content_hdr     = {3.0, "header"}
-content         = {3.1, "big_textarea", rows=27, 
+content         = {3.1, "editor", rows=15, 
                                         no_label=true}
 --- info about the edit --------------------------------
 edit_info_hdr   = {4.0, "header"} 
@@ -86,7 +87,7 @@ edit_ui         = {2.8, "textarea", advanced=true, rows=3}
 admin_edit_ui   = {2.9, "textarea", advanced=true, rows=3}
 --- the content of the page ----------------------------
 content_hdr     = {3.0, "header"}
-content         = {3.1, "big_textarea", rows=27, 
+content         = {3.1, "editor", rows=27, 
                                         no_label=true}
 --- info about the edit --------------------------------
 edit_info_hdr   = {4.0, "header"} 

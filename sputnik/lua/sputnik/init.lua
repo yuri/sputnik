@@ -32,6 +32,13 @@ function new(config)
    return obj
 end
 
+function new_wsapi_run_fn(config)
+   local my_sputnik = new(config)
+   return  function (...)
+     return my_sputnik:wsapi_run(...)
+   end
+end
+
 ---------------------------------------------------------------------------------------------------
 -- Initializes a the new Sputnik instance.
 ---------------------------------------------------------------------------------------------------

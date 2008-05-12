@@ -21,21 +21,23 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]
   <title>$site_title: $title</title>
-  $do_stylesheets[[<link type="text/css" rel="stylesheet" href="$url" />
-  ]]
-  <link type="text/css" rel="stylesheet" href="$make_url{"markitup/css/simple", "css"}" />
-  <link type="text/css" rel="stylesheet" href="$make_url{"markitup/css/markdown", "css"}" />
+  $do_stylesheets[[
+
+  <link type="text/css" rel="stylesheet" href="$href" media="$media"/>]]
+  $do_stylesheets_src[[
+
+  <style type="text/css" media="$media">$src</style>]]
+  $do_javascript_link[[
+
+  <script type="text/javascript" src="$href"></script>]]
+  $do_javascript_src[[
+
+  <script type="text/javascript">$src
+  </script>]] 
+
   <link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_node)" $node_rss_link/>
-  <script type="text/javascript" src="$make_url{"jquery", "js"}"></script>
-  <script type="text/javascript" src="$make_url{"markitup/js/markitup", "js"}"></script>
-  <script type="text/javascript" src="$make_url{"markitup/js/markdown", "js"}"></script>
-  <script type="text/javascript" >
-  $(document).ready(function() {
-	  $("textarea.editor").markItUp(mySettings);
-  });
-  </script>
  </head>
 
  <body>

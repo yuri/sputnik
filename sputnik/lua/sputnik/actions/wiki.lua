@@ -743,6 +743,10 @@ wrappers = {}
 ---------------------------------------------------------------------------------------------------
 function wrappers.default(node, request, sputnik) 
 
+   for i, url in ipairs(sputnik.config.STYLESHEETS) do
+      node:add_stylesheet(url, "screen")
+   end
+
    local is_old = request.params.version and node:is_old()
 
    return cosmo.f(node.templates.MAIN){  
@@ -776,7 +780,8 @@ function wrappers.default(node, request, sputnik)
                          end,
  
 
-      -- Navigation bar
+      -- Navigation bar (two solutions for now, until we figure out how to unify them)
+      nav_bar = get_nav_bar(node, sputnik),
       do_navbar = function()
          local nav = sputnik:get_node("_navigation")
          if nav and nav.content and nav.content.NAVIGATION then

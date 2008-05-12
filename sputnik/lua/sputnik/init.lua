@@ -153,7 +153,7 @@ function Sputnik:make_link(node_name, action, params, anchor)
    self.logger:debug("Creating a link to "..node_name)
    if not self.repo:node_exists(self:dirify(node_name)) then
       css_class="no_such_node"
-      url = self:make_url(node_name, action, params, achnor) --"edit", params, anchor)
+      url = self:make_url(node_name, action, params, anchor) --"edit", params, anchor)
       self.logger:debug("No such node, will link to .edit")
    end
    return string.format("href='%s' class='%s'", url, css_class)
@@ -308,6 +308,28 @@ function Sputnik:prime_node(node)
    node.headers = {}
    node.add_header = function(self, header, value) self.headers[header] = value end
    node.redirect = function(self, url) self.headers["Location"] = url end
+
+   node.stylesheets = {}
+   node.javascript = {}
+   function node:add_stylesheet(href, media, src)
+      media = media or "screen"
+      -- Scan the current table to ensure there are no duplicates
+      for k,v in ipairs(self.stylesheets) do
+         if href == v.href and media == v.media and src == v.src then
+            return
+         end
+      end
+      table.insert(self.stylesheets, {href = href, src = src, media = media})
+   end
+   function node:add_javascript(href, src)
+      -- Scan the current table to ensure there are no duplicates
+      for k,v in ipairs(self.stylesheets) do
+         if href == v.href and src == v.src then
+            return
+         end
+      end
+      table.insert(self.javascript, {href = href, src = src})
+   end
    return node
 end  
 
@@ -696,6 +718,7 @@ function Sputnik:wsapi_run(wsapi_env)
 
    require("wsapi.request")
    local request = wsapi.request.new(wsapi_env)
+   request.wsapi_env = wsapi_env
    require("wsapi.response")
    local response = wsapi.response.new()
    local success, error_message = self:protected_run(request, response)

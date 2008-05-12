@@ -5,6 +5,7 @@ NODE = {
    prototype="@Lua_Config",
    actions=[[css="css.fancy_css"]],
    fields = [[content.activate = nil]],
+   permissions=[[allow(all_users, "css")]],
 }
 
 NODE.content = [===[

@@ -1,7 +1,7 @@
 module(..., package.seeall)
 
 require"lfs"
-require"versium"
+require"versium.filedir"
 local wikistorage = require"versium.importers.wikistorage"
 
 template = [[
@@ -9,7 +9,7 @@ title = %q
 content = %q
 ]]
 
-function import(source_dir, versium_params, password_file)
+function import(source_dir, dest_dir, password_file)
 
    -- if password_file is supplied then we'll only import edits from users in it
    local approved_users  
@@ -20,7 +20,7 @@ function import(source_dir, versium_params, password_file)
    local wikifilestorage = require("versium.importers.wikifilestorage").open(source_dir)
    local storage  = wikistorage.open(wikifilestorage)
    
-   local vers = versium.new{params=versium_params}
+   local vers = versium.filedir.new{dir=dest_dir}
 
    for node in lfs.dir(source_dir) do
       print("============= "..node.." =========================")

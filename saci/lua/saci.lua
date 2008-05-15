@@ -43,7 +43,8 @@ function Saci:node_exists(id)
 end
 
 --[--------------------------------------------------------------------------
--- Prepares a Lua value for serialization into a stored saci node
+-- Prepares a Lua value for serialization into a stored saci node.  This
+-- function will only output boolean, numeric, and number values.
 --
 -- @param data           The data to be serialized
 -- @return               The string representation of the data
@@ -53,7 +54,7 @@ local function serialize(data)
 	if data_type == "boolean" or data_type == "number" then
 		return tostring(data)
 	elseif data_type ~= "string" then
-		return string.format("%q", tostring(data))
+      return string.format("nil -- Could not serialize '%s'", tostring(data))
 	end
 
 	-- if the string contains any newlines, find a version of long quotes that will work

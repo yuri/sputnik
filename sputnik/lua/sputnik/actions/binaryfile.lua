@@ -1,12 +1,14 @@
 module(..., package.seeall)
 
+local base64 = require("base64")
+
 actions = {}
 
 function actions.mimetype(node, request, sputnik)
 	local type = node.file_type
 	local ext = sputnik.config.MIME_TYPES[type]
 	if ext == request.action then
-		return node.content, type
+		return base64.decode(node.content), type
 	else
 		node:post_error("Requested action does not match file content: " .. tostring(node.type))
 		return node.wrappers.default(node, request, sputnik)
@@ -55,7 +57,7 @@ function actions.download(node, request, sputnik)
 	local mime = node.file_type
 	-- Set the Content-disposition header, and suggest a filename
 	node:add_header("Content-Disposition", "attachment; filename=\""..node.file_name.."\"")
-	return node.content, mime
+	return base64.decode(node.content), mime
 end
 
 function actions.save(node, request, sputnik)
@@ -76,7 +78,7 @@ function actions.save(node, request, sputnik)
 		if name and name:match("%S") and size > 0 then
 			-- A file was uploaded 
 
-			request.params.content = info.contents
+			request.params.content = base64.encode(info.contents)
 			request.params.file_type = type
 			request.params.file_name = tostring(name)
 			request.params.file_size = tostring(size)

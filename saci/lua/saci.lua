@@ -42,6 +42,67 @@ function Saci:node_exists(id)
    return self.versium:node_exists(id)
 end
 
+----------------------------------------------------------------------------
+-- Inflates a versium node, turning it into a Lua table.
+--
+-- @param node           The node to be "inflated" (represented as a versium
+--                       node object).
+-- @return               A table representing the fields of the node, with
+--                       the metadata and the string representation pushed
+--                       into the metatable.
+-----------------------------------------------------------------------------
+function Saci:inflate(data, metadata, id)
+   assert(data); assert(metadata); assert(id)
+   local object = saci.sandbox.new():do_lua(data)
+   assert(object, "the sandbox should give us a table")
+   local mt = {
+      _version = {
+         id        = metadata.version,
+         timestamp = metadata.timestamp,
+         author    = metadata.author,
+         comment   = metadata.comment,
+         extra     = metadata.extra,
+      },
+      _raw = data,
+      _id  = id,
+   }
+   mt.__index = mt
+   setmetatable(object, mt)
+   return object
+end
+
+--[--------------------------------------------------------------------------
+-- Prepares a Lua value for serialization into a stored saci node
+--
+-- @param data           The data to be serialized
+-- @return               The string representation of the data
+-----------------------------------------------------------------------------
+local function serialize(data)
+	local data_type = type(data)
+	if data_type == "boolean" or data_type == "number" then
+		return tostring(data)
+	elseif data_type ~= "string" then
+		return string.format("%q", tostring(data))
+	end
+
+	-- if the string contains any newlines, find a version of long quotes that will work
+	if data:find("\n") then
+		local count = 0
+		local open = string.format("[%s[", string.rep("=", count))
+		local close = string.format("]%s]", string.rep("=", count))
+
+		while data:find(open, nil, true) or data:find(close, nil, true) do
+			open = string.format("[%s[", string.rep("=", count))
+			close = string.format("]%s]", string.rep("=", count))
+			count = count + 1
+		end
+
+		return string.format("%s%s%s", open, data, close)
+	else
+		return string.format("%q", data)
+	end
+end
+
 -----------------------------------------------------------------------------
 -- Turns a node represented as a Lua table into a string representation which
 -- could later be inflated again.
@@ -51,11 +112,21 @@ end
 -----------------------------------------------------------------------------
 function Saci:deflate(node)
    local buffer = ""
+   local keysort = {}
+
+   -- Sort the keys of the node so output is consistent
    for k,v in pairs(node) do
-      if k~="__index" then
-         buffer = buffer.."\n "..k.."= "..string.format("%q", tostring(v))
+      if k ~= "__index" then
+         table.insert(keysort, k)
       end
    end
+   table.sort(keysort)
+
+   for idx,key in ipairs(keysort) do
+      local value = serialize(node[key])
+      buffer = string.format("%s\n%s = %s", buffer, key, value)
+   end
+
    return buffer
 end
 

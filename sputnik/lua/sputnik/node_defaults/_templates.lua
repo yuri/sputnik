@@ -321,8 +321,8 @@ EDIT_FORM_CHECKBOX      = [[<input class="checkbox" style="border:1px solid blac
                                    type="checkbox" name="$name" value="yes"
                                    $if_checked[=[checked="checked"]=] /><br/>]]
 
-EDIT_FORM_SELECT        = [[<select name="$name">
-                               $do_options[===[<option $if_selected[=[selected="yes"]=]>$option</option>]===]
+EDIT_FORM_SELECT        = [[<select name="$name" tabindex="$tab_index">
+                               $do_options[===[<option value="$value" $if_selected[=[selected="yes"]=]>$display</option>]===]
                             </select>]]
 EDIT_FORM_SHOW_ADVANCED = [[<a id="more_fields" href="#" class="local" onclick="toggleElements('advanced_field')">
                              <div id="toggle_advanced_fields">_(SHOW_ADVANCED_OPTIONS)</div></a>]]

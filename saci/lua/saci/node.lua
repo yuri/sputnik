@@ -121,71 +121,88 @@ function Node:tostring()
 end
 
 -----------------------------------------------------------------------------
+-- Inheritance rules: functions that determine what the node's value should
+-- be based on it's prototype's value and it's own "raw" value.
+-----------------------------------------------------------------------------
+
+local inheritance_rules = {}
+
+-- Concatenates the inherited value and own value, inserting an "\n" between
+-- them.  Basically, this is what we need to be able to concatenate two
+-- chunks of Lua code.
+function inheritance_rules.concat(proto_value, own_value)
+   local buf = ""
+   if proto_value and proto_value:len() > 0 then
+      buf = proto_value
+   end
+   if own_value and own_value:len() > 0 then
+      if buf:len() > 0 then
+         buf = buf.."\n"..own_value
+      else
+         buf = own_value
+      end
+   end
+   return buf
+end
+
+-- A simpler inheritance rule that only uses the prototype's value if own
+-- value is not defined.
+function inheritance_rules.fallback(proto_value, own_value)
+   return own_value or proto_value
+end
+
+inheritance_rules.default = inheritance_rules.fallback -- set a default
+
+-----------------------------------------------------------------------------
 -- Applies inheritance form page's prototype.  The inherited values are
 -- stored in self.inherited_values.
 -----------------------------------------------------------------------------
 function Node:apply_inheritance()
-
-   -- If this is the ultimate prototype, then there is no further.
    assert(self.root_prototype_id)
    assert(self.id)
+
+   -- If this node is itself the root prototype, then there is nothing else
+   -- to do.
    if self.id == self.root_prototype_id then
       self.inherited_values = self.raw_values
       return
    end
-   if (self.raw_values.prototype or ""):len() == 0 then
-      self.raw_values.prototype = nil
+   if self.raw_values.prototype == "" then
+      self.raw_values.prototype = nil  -- to make it easier to test for it
    end
-
    local prototype_id = self.raw_values.prototype or self.root_prototype_id
+
+   -- Get the values for the prototype.
    local proto_values = self.repository:get_node(prototype_id).inherited_values
    assert(proto_values.fields, "The prototype node must define fields")
  
-   -- Apply inheritance from the prototype, using the information in the 'fields' field to decide 
-   -- how to handle each field.  Note that we use this page's "fields" table rather than the fields
-   -- table from the prototype. However, the "fields" field itself must _always_ be inherited as a 
+   -- Apply inheritance from the prototype, using the information in the
+   -- 'fields' field to decide how to handle each field.  
+
+   -- First, we need to figure out what those fields are.  We use
+   -- this node's own "fields" table rather than the fields table from the
+   -- prototype and the value for fields must _always_ be inherited as a 
    -- matter of bootstrapping.
    
-   -- An auxilary function to concat field values.  Note that it inserts an extra "\n" between the values, 
-   -- to make sure that we can contatenate stretches of Lua code.
-   local function concat(x,y, verbose)
-      if verbose then 
-         print ("1<<"..(x or "-")..">>")
-         print ("2<<"..(y or "-")..">>")
-         print ("=<<"..(x or "") .. "\n" .. (y or "")..">>")
-      end
-      local buf = ""
-      if x and x:len() > 0 then
-         buf = x
-      end
-      if y and y:len() > 0 then
-         if buf:len() > 0 then
-            buf = buf.."\n"..y
-         else
-            buf = y
-         end
-      end
-      return buf
-   end
-
-   local tmp_fields = concat(proto_values.fields, self.raw_values.fields)
+   local tmp_fields = inheritance_rules.concat(proto_values.fields,
+                                               self.raw_values.fields)
    assert(tmp_fields)
    local fields, err = saci.sandbox.new{}:do_lua(tmp_fields)
    assert(fields, err)
 
+   -- Now do the actual inheritance.  This means going through all fields
+   -- and applying each of them the "inheritance rule" specified by the
+   -- "proto" attribute.
    for field_name, field in pairs(fields) do
       field.name = field_name
       if field.proto then
-         if field.proto == "concat" then
-            self.inherited_values[field.name] =
-               concat(proto_values[field.name], self.raw_values[field.name])    
-         elseif field.proto == "fallback" then
-            self.inherited_values[field.name] = 
-               self.raw_values[field.name] or proto_values[field.name]
-         end
+         local inheritance_fn = inheritance_rules[field.proto]
+                                or inheritance_rules.default
+         self.inherited_values[field.name] = inheritance_fn(
+                                                proto_values[field.name], 
+                                                self.raw_values[field.name])   
       end
    end
-
 end
 
 

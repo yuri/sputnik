@@ -50,11 +50,21 @@ function make_html_form(form_params)
                  end,
       select   = function(field)
                     field.do_options = function()
-                       for i, option in ipairs(field.options) do
-                           cosmo.yield{
-                              option=option,
-                              if_selected = cosmo.c(option==field.value){}
-                           }
+                       for idx,entry in ipairs(field.options) do
+                          local display, value
+                          if type(entry) == "table" then
+                             display = entry.display
+                             value = entry.value or display
+                          else
+                             display = entry
+                             value = entry
+                          end
+
+                          cosmo.yield{
+                             display = display,
+                             value = value,
+                             if_selected = cosmo.c(value == field.value){}
+                          }
                        end
                     end
                  end,

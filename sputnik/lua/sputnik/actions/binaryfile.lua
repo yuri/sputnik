@@ -94,10 +94,10 @@ function actions.save(node, request, sputnik)
 			-- Set the correct action
 			local ext = sputnik.config.MIME_TYPES[type]
 
-			if not ext then
+			if not ext and sputnik.auth:get_metadata(request.user, "is_admin") ~= "true" then
 				node:post_error("The file you uploaded did not match a known file type: " .. tostring(type))
 				request.try_again = true
-			else
+			elseif ext then
 				request.params.actions = string.format([[%s = "binaryfile.mimetype"]], ext, ext)
 			end
 		else

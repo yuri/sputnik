@@ -18,6 +18,7 @@ allow(all_users, "tga")
 allow(all_users, "pdf")
 allow(all_users, "txt")
 allow(all_users, "dmg")
+allow(all_users, "download")
 allow(Admin, all_actions)
 ]=],
    fields = [=[

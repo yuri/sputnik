@@ -100,6 +100,8 @@ function actions.save(node, request, sputnik)
 			elseif ext then
 				request.params.actions = string.format([[%s = "binaryfile.mimetype"]], ext, ext)
 			end
+		elseif node.content:match("%S") then
+			-- Do nothing
 		else
 			request.try_again = true
 		end

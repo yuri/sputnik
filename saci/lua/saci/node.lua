@@ -23,10 +23,8 @@ local Activators = {}
 -- @return               the environment created by running the code.
 -----------------------------------------------------------------------------
 
-Activators.lua = function(value, repo) 
-   local mt = {__index = repo.config}
-   local config = setmetatable({}, mt)
-   local sandbox = saci.sandbox.new(config)
+Activators.lua = function(value, repo)
+   local sandbox = saci.sandbox.new(repo.sandbox_values)
    sandbox.logger = repo.logger
    return sandbox:do_lua(value)
 end
@@ -66,7 +64,6 @@ local Node_mt = {
 -- 
 -- @param args           a table arguments, including the following fields:
 --                       args.data (the raw data for the node, required),
---                       args.metadata (the metadata for the node, required),
 --                       args.id (the id of the node, required),
 --                       args.repository (the saci instance, required)
 --
@@ -77,15 +74,11 @@ function new(args)
    local node = setmetatable({raw_values={}, inherited_values={}, active_values={}}, Node_mt)
 
    assert(args.data)
-   assert(args.metadata)
    assert(args.id)
    node.data = args.data
-   node.metadata = args.metadata
    node.id = args.id
    assert(args.repository)
-   assert(args.root_prototype_id)
    node.repository = args.repository
-   node.root_prototype_id = args.root_prototype_id
 
    node.raw_values = saci.sandbox.new():do_lua(args.data)
    assert(node.raw_values, "the sandbox should give us a table")
@@ -158,19 +151,18 @@ inheritance_rules.default = inheritance_rules.fallback -- set a default
 -- stored in self.inherited_values.
 -----------------------------------------------------------------------------
 function Node:apply_inheritance()
-   assert(self.root_prototype_id)
-   assert(self.id)
 
+   assert(self.id)
    -- If this node is itself the root prototype, then there is nothing else
    -- to do.
-   if self.id == self.root_prototype_id then
+   if self.id == self.repository.root_prototype_id then
       self.inherited_values = self.raw_values
       return
    end
    if self.raw_values.prototype == "" then
       self.raw_values.prototype = nil  -- to make it easier to test for it
    end
-   local prototype_id = self.raw_values.prototype or self.root_prototype_id
+   local prototype_id = self.raw_values.prototype or self.repository.root_prototype_id
 
    -- Get the values for the prototype.
    local proto_values = self.repository:get_node(prototype_id).inherited_values
@@ -301,23 +293,6 @@ function Node:save(author, comment, extra)
    assert(author)
    self.repository:save_node(self, author, comment, extra)
 end
-
------------------------------------------------------------------------------
--- Tells us whether this is ann outdated version of the node.
--- 
--- @return               true if the node is outdated, false if it's the most
---                       recent version _or_ the node has no history.
------------------------------------------------------------------------------
-function Node:is_old()
-   assert(self.id)
-   local history = self:get_history()
-   if #history == 0 then 
-      return false 
-   else
-      return history[1].version~=self.metadata.version
-   end
-end
-
 
 -----------------------------------------------------------------------------
 -- Returns a child node, if they are defined.

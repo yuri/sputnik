@@ -42,19 +42,21 @@ local FileDirVersium_mt = {__metatable={}, __index=FileDirVersium}
 -- Instantiates a new FileDirVersium object that represents a connection to
 -- a storage system.  This is the only function that this module exports.
 -- 
--- @param params         a table of parameters (we'll be using param.dir as
---                       the storage directory).
+-- @param params         a table of params (we expect to find as the first
+--                       entry the path to the directory where we'll be
+--                       storing the data.
 -- @return               a new versium object.
 -----------------------------------------------------------------------------
 function new(params)
-   assert(params.dir, "parameter 'dir' is required")
-   local new_versium = {dir=params.dir, node_table={}}
+   assert(params[1], "the first parameter is required")
+   local new_versium = {dir=params[1], node_table={}}
    local new_versium = setmetatable(new_versium, FileDirVersium_mt)
-   for x in lfs.dir(params.dir) do
+   for x in lfs.dir(new_versium.dir) do
       if x:len() > 2 then
          new_versium.node_table[util.fs_unescape_id(x)] = 1
       end
    end
+   assert(new_versium:get_node("_passwords"))
    return new_versium 
 end
 
@@ -105,11 +107,9 @@ end
 --
 -- @param id             a node id.
 -- @param version        [optional] the desired version of the node (defaults
---                       to current).
+--                       to latest).
 -- @return               a byte-string representing the data stored in the
 --                       node or nil if the node could not be loaded or nil.
--- @return               a table representing the metadata, including the
---                       following fields (see get_node_history()) or nil.
 -- @see get_node_history
 -----------------------------------------------------------------------------
 function FileDirVersium:get_node(id, version)
@@ -117,21 +117,12 @@ function FileDirVersium:get_node(id, version)
    if not self:node_exists(id) then
       return nil
    end
-   local history = self:get_node_history(id) or {}
-   assert(#history > 0, "History should have at least one item in it")
-
-   local metadata
-   if version and tonumber(version) then
-      -- version N is listed as N-latest
-      metadata = history[#history-tonumber(version)+1]
-   else
-      metadata = history[1] -- i.e., the _latest_ version
-   end
+   local metadata = self:get_node_info(id, version)
    assert(metadata.version) -- should come from history
    local path = self.dir.."/"..util.fs_escape_id(id).."/"..metadata.version
    local data = util.read_file(path, id)
    assert(data)
-   return data, metadata
+   return data
 end
 
 -----------------------------------------------------------------------------
@@ -149,13 +140,23 @@ end
 -- as get_node_history(id)[1] in case of this implementation.
 -- 
 -- @param id             a node id.
+-- @param version        [optional] the desired version of the node (defaults
+--                       to latest).
 -- @return               the metadata for the latest version (see 
 --                       get_node_history()).
 -- @see get_node_history
 -----------------------------------------------------------------------------
-function FileDirVersium:get_node_info(id)
+function FileDirVersium:get_node_info(id, version)
    assert(id)
-   return self:get_node_history(id)[1]
+   local history = self:get_node_history(id) or {}
+   assert(#history > 0, "History should have at least one item in it")
+
+   if version and tonumber(version) then
+      -- version N is listed as N-latest
+      return history[#history-tonumber(version)+1]
+   else
+      return history[1] -- i.e., the _latest_ version
+   end
 end
 
 -----------------------------------------------------------------------------

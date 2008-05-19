@@ -60,7 +60,13 @@ function Sputnik:init(initial_config)
    self.dirify = function(self, text) return dirify(text) end
 
    -- setup the repository -- do this before loading user configuration
-   self.repo = saci.new(initial_config)
+   self.saci = saci.new(initial_config.VERSIUM_STORAGE_MODULE or "versium.filedir",
+                        initial_config.VERSIUM_PARAMS,
+                        initial_config.ROOT_PROTOTYPE)
+   self.saci.sandbox_values = setmetatable({}, {__index = initial_config})
+   assert(self.saci)
+   assert(self.saci.root_prototype_id)
+   self.repo = self.saci -- for backwards compatibility
 
    self.repo.get_fallback_node = function(repo, id, version)
       local status, page_module = pcall(require, "sputnik.node_defaults."..id)
@@ -73,7 +79,7 @@ function Sputnik:init(initial_config)
 
       if status then
          local data = self.repo:deflate(page_module.NODE)
-         local node = self.repo:make_node(data, {}, id)
+         local node = self.repo:make_node(data, id)
          assert(node)
          if page_module.CREATE_DEFAULT then
             node:save()
@@ -81,7 +87,7 @@ function Sputnik:init(initial_config)
          end
          return node
       else
-         return self.repo:make_node("", {}, id), true -- set stub=true
+         return self.repo:make_node("", id), true -- set stub=true
       end
    end
 

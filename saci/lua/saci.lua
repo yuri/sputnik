@@ -15,15 +15,20 @@ local Saci_mt = {__metatable={}, __index=Saci}
 -----------------------------------------------------------------------------
 -- Creates a new instance of Saci.
 -- 
--- @param config         the bootstrapping config table.
+-- @param module_name    versium module name to use for storage.
+-- @param versium_params parameters to use when creating the storage module
+--                       instance.
+-- @param root_prototype [optional] the id of the node to be used as the root
+--                       prototype (defaults to "@Root").
 -- @return               an instance of "Saci".
 -----------------------------------------------------------------------------
-function new(config)
+function new(module_name, versium_params, root_prototype_id)
    local repo = setmetatable({}, Saci_mt)
-   repo.config = config
-   local versium_module_name = config.VERSIUM_STORAGE_MODULE or "versium.filedir"
-   local versium_module = require(versium_module_name)
-   repo.versium = versium_module.new(config.VERSIUM_PARAMS)
+   repo.root_prototype_id = root_prototype_id or "@Root"
+   assert(module_name)
+   module_name = module_name
+   local versium_module = require(module_name)
+   repo.versium = versium_module.new(versium_params)
    return repo
 end
 
@@ -33,38 +38,8 @@ end
 -- @param id             an id of an node.
 -- @return               true or false.
 -----------------------------------------------------------------------------
-
 function Saci:node_exists(id)
    return self.versium:node_exists(id)
-end
-
-----------------------------------------------------------------------------
--- Inflates a versium node, turning it into a Lua table.
---
--- @param node           The node to be "inflated" (represented as a versium
---                       node object).
--- @return               A table representing the fields of the node, with
---                       the metadata and the string representation pushed
---                       into the metatable.
------------------------------------------------------------------------------
-function Saci:inflate(data, metadata, id)
-   assert(data); assert(metadata); assert(id)
-   local object = saci.sandbox.new():do_lua(data)
-   assert(object, "the sandbox should give us a table")
-   local mt = {
-      _version = {
-         id        = metadata.version,
-         timestamp = metadata.timestamp,
-         author    = metadata.author,
-         comment   = metadata.comment,
-         extra     = metadata.extra,
-      },
-      _raw = data,
-      _id  = id,
-   }
-   mt.__index = mt
-   setmetatable(object, mt)
-   return object
 end
 
 -----------------------------------------------------------------------------
@@ -84,7 +59,6 @@ function Saci:deflate(node)
    return buffer
 end
 
-
 -----------------------------------------------------------------------------
 -- Retrieves data from Versium and creates a Saci node from it.  If Versium
 -- returns nil then Saci will check if it has a method get_fallback_node()
@@ -97,9 +71,9 @@ end
 --                       (2) 'true' if the node returned is a stub (nil
 --                           otherwise).
 -----------------------------------------------------------------------------
-
 function Saci:get_node(id, version)
    assert(id)
+   assert(type(id)=="string")
 
    -- first check if the id has a slash.  if so, identify the parent, and ask
    -- it about the child.
@@ -116,9 +90,9 @@ function Saci:get_node(id, version)
 
    -- ok, either we've got an atomic node, or the parent doesn't exist, or
    -- the parent didn't give us anything.  proceed to the normal method.
-   local data, metadata = self.versium:get_node(id, version)
+   local data = self.versium:get_node(id, version)
    if data then
-      return self:make_node(data, metadata, id)
+      return self:make_node(data, id)
    end
 
    -- no luck, check if we have a fallback function
@@ -130,40 +104,28 @@ function Saci:get_node(id, version)
 end
 
 -----------------------------------------------------------------------------
--- Returns the most recent version identifier for a given node
+-- Returns revision information for the specified version of the node with a
+-- given id, or for the latest version.
 --
 -- @param id             the id of the desired node
--- @return               the version tag for the latest version of the node
+-- @param version        [optional] the id of the revision that we want to
+--                       know about (defaults to latest version).
+-- @return               a table with revision metadata, just like versium's
+--                       get_node_info()
 -----------------------------------------------------------------------------
-function Saci:get_version(id)
-	assert(id)
-	local data = self.versium:get_node_info(id)
-	if data then
-		return data.version
-	else
-		return nil
-	end
+function Saci:get_node_info(id, version)
+   return self.versium:get_node_info(id, version)
 end
 
 -----------------------------------------------------------------------------
--- Returns the most recent version identifier for a given node
+-- Creates a node from a data string.
 --
+-- @param data           data for the node
 -- @param id             the id of the desired node
 -- @return               the version tag for the latest version of the node
 -----------------------------------------------------------------------------
-function Saci:get_version(id)
-	assert(id)
-	local data = self.versium:get_node_info(id)
-	if data then
-		return data.version
-	else
-		return nil
-	end
-end
-
-function Saci:make_node(data, metadata, id)
-   return saci.node.new{data=data, metadata=metadata, id=id, repository=self,
-                        root_prototype_id=self.config.ROOT_PROTOTYPE}   
+function Saci:make_node(data, id)
+   return saci.node.new{data=data, id=id, repository=self}   
 end
 
 -----------------------------------------------------------------------------
@@ -218,14 +180,14 @@ function Saci:get_nodes_prefix(prefix)
 
    assert(prefix)
 
-   -- Fetch the data and metadata from versium, for the given prefix
-   local data, metadata = self.versium:get_nodes_prefix(prefix)
+   -- Fetch the data from versium, for the given prefix
+   local data = self.versium:get_nodes_prefix(prefix)
    local nodes = {}
 
    if next(data) then
       -- There are some nodes to process, so process them
       for id in pairs(data) do
-         nodes[id] = self:make_node(data[id], metadata[id], id)
+         nodes[id] = self:make_node(data[id], id)
       end
    end
 

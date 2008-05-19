@@ -428,7 +428,7 @@ function actions.show_sitemap_xml(node, request, sputnik)
                 end
                 cosmo.yield{
                    url = "http://"..sputnik.config.DOMAIN..url,
-                   lastmod = sputnik:get_node(name).metadata.timestamp.."T"..sputnik.config.SERVER_TZ,
+                   lastmod = sputnik:get_node_info(name).timestamp.."T"..sputnik.config.SERVER_TZ,
                    changefreq = "weekly",
                    priority = priority
                 }
@@ -539,10 +539,12 @@ end
 -- Shows HTML of diff between two versions of the node.
 ---------------------------------------------------------------------------------------------------
 function actions.diff(node, request, sputnik)
-   local other_node = sputnik:get_node(node.id, request.params.other)
+   local other_node_info = sputnik.saci:get_node_info(node.id, request.params.other)
+   local other_node_data = sputnik.saci:get_node(node.id, request.params.other)
+   local this_node_info  = sputnik.saci:get_node_info(node.id, request.params.version)
 
    local diff = ""
-   for field, tokens in pairs(node:diff(other_node)) do
+   for field, tokens in pairs(node:diff(other_node_data)) do
       diff = diff.."\n\n<h2>"..field.."</h2>\n\n"
       local diff_buffer = ""
       for i, token in ipairs(tokens) do
@@ -560,10 +562,10 @@ function actions.diff(node, request, sputnik)
    node.inner_html  = cosmo.f(node.templates.DIFF){  
                          version1 = request.params.version,
                          link1    = node.links:show{version=request.params.version},
-                         author1  = node.metadata.author,
+                         author1  = this_node_info.author,
                          version2 = request.params.other,
                          link2    = node.links:show{version=request.params.other},
-                         author2  = other_node.metadata.author,
+                         author2  = other_node_info.author,
                          diff     = diff, 
                       }
    return node.wrappers.default(node, request, sputnik)
@@ -747,7 +749,8 @@ function wrappers.default(node, request, sputnik)
       node:add_stylesheet(url, "screen")
    end
 
-   local is_old = request.params.version and node:is_old()
+   local is_old = request.params.version
+                  and sputnik.saci:get_node_info(node.id).version ~= request.params.version
 
    return cosmo.f(node.templates.MAIN){  
       site_title       = sputnik.config.SITE_TITLE or "",

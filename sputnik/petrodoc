@@ -1,13 +1,12 @@
 package    = 'Sputnik'
 versions   = {
+   {'8.05.24', 'May 24, 2008', 'test release of Earth Sputnik'},
    {'8.03.08', 'March 8, 2008', 'moved to petrodoc, plus some bug fixes'},
    {'8.02.16', 'Feb. 16, 2008', 'made Sputnik to work with Xavante out of the box'},
    {'8.02.14', 'Feb. 8, 2008', "fixed a bunch of small bugs"},
 }
 summary    = 'A wiki and a framework for wiki-like applications'
-author     = 'Yuri Takhteyev'
-maintainer = author
-email      = 'yuri@freewisdom.org'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
 
 detailed   = [[
      Sputnik is a wiki written in Lua. It is also a platform for building a range of wiki-like 
@@ -31,24 +30,19 @@ detailed   = [[
 ]]
 
 license    = 'MIT/X11'
-
-homepage   = 'http://sputnik.freewisdom.org/colors/'
-favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
 download   = 'http://sputnik.freewisdom.org/files/sputnik-$version.tar.gz'
-
-logo       = ''
-keywords   = ''
-rss        = homepage.."releases.rss"
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
 --------------------------------------------------------------------------------
 
 dependencies = [[
-  'versium >= 7.12.26',
-  'colors >= 7.12.26',
+  'saci >= 8.05.24',
+  'xssfilter >= 8.04.20',
+  'colors >= 8.02.23',
   'markdown >= 0.18',
   'md5 >= 1.1',
+  'wsapi >= 1.0',
 ]]
 
-TOC = {}
 -------------------------------------------------------------------------------
 
 

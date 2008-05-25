@@ -2,7 +2,7 @@
 <html>
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta name="description" content="Versium: A versioned storage API"/>
+  <meta name="description" content="Versium: A versioned storage API for Lua"/>
   <meta name="keywords" content="lua, versioned storage, file system, sql, database"/>
   <link rel="shortcut icon" href="http://media.freewisdom.org/etc/sputnik-icon.png"/>
   <link rel="alternate" type="application/rss+xml" title="New releases of Versium" href='http://sputnik.freewisdom.org/en/Versiumreleases.rss'/>
@@ -45,9 +45,9 @@
  <div id="header">
   <a name="top"></a>
   <img border=0 alt="Versium logo" src="versium.png"/>
-  <p>A versioned storage API</p>
+  <p>A versioned storage API for Lua</p>
   <p>
-   <a name="toc"></a><a href="#Overview">Overview</a> &middot; <a href="#Contact">Contact</a> &middot; <a href="#LuaDoc">LuaDoc</a> &middot; <a href="#License">License</a>
+   <a name="toc"></a><a href="#Overview">Overview</a> &middot; <a href="#Contact">Contact</a> &middot; <a href="#License">License</a>
   </p>
  </div>
  
@@ -68,165 +68,6 @@
 
 <a name="Contact"></a><h1>Contact<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>
 Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions.
-
-
-<a name="LuaDoc"></a><h1>LuaDoc<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>
- <table style="width:100%" class="function_list">
-   <tr>
-   <td colspan=2 style='background: #dddddd;'>
-    <h2>versium</h2>
-    <p><b>Implements core Versium functionality</b> (just versioned storage).                        -- </p>
-    
-   </td>
-  </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>new()</b></td>
-	<td class="summary" >Instantiates a new Versium object.
-     <dl>
-      <dt><color="green"><b>args</b></font>: <dd>the arguments (with the name implementation module as args.storage and the the parameters to pass to the implementation module as args.params).</dd></dt>
-     </dl>
-     Returns: <font color="purple">a new versium object. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:get_node()</b></td>
-	<td class="summary" >Returns a table representing the node with a given id.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>the id of the desired node.</dd></dt><dt><color="green"><b>version</b></font>: <dd>the desired version of the node (defaults to latest).</dd></dt>
-     </dl>
-     Returns: <font color="purple">the node as a table with its data in node.data. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:get_stub()</b></td>
-	<td class="summary" >Returns a table representing a node that doesn't actually exist yet.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>the id of the desired node.</dd></dt>
-     </dl>
-     Returns: <font color="purple">the node stub as a string. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:node_exists()</b></td>
-	<td class="summary" >Returns true if the node exists and false otherwise.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>an id of an node.</dd></dt>
-     </dl>
-     Returns: <font color="purple">true or false. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:get_node_info()</b></td>
-	<td class="summary" >Returns a table with the metadata for the latest version of the node, same as get_history(id)[1] but potentially cheaper.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>an id of an node.</dd></dt>
-     </dl>
-     Returns: <font color="purple">the metadata for the latest version or nil. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:get_node_ids()</b></td>
-	<td class="summary" >Lists ids for all existing nodes.
-     <dl>
-      <dt><color="green"><b>args</b></font>: <dd><b>Implements core Versium functionality</b> (just versioned storage).                        -- </dd></dt><dt><color="green"><b>args.prefix</b></font>: <dd>a prefix to be used for filtering nodes</dd></dt>
-     </dl>
-     Returns: <font color="purple">a list of IDs. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:save_version()</b></td>
-	<td class="summary" >Saves a new version of the node (or throws an error).
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>the id of the node (required).</dd></dt><dt><color="green"><b>data</b></font>: <dd>the value to save (required, but "" is ok).</dd></dt><dt><color="green"><b>author</b></font>: <dd>the user name to be associated with the change (required).</dd></dt><dt><color="green"><b>comment</b></font>: <dd>the change comment (optional).</dd></dt><dt><color="green"><b>extra</b></font>: <dd>any extra metadata (optional, depends on the storage module).</dd></dt><dt><color="green"><b>timestamp</b></font>: <dd>the timestamp to use when saving the revision (optional).</dd></dt>
-     </dl>
-     Returns: <font color="purple">the version of ID of the new node. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:get_node_history()</b></td>
-	<td class="summary" >Returns the history of the node as a list of tables, each representing a revision of the node (with fields like version, author, comment, and extra).
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>the id of the node.</dd></dt><dt><color="green"><b>prefix</b></font>: <dd>time prefix (e.g., "2007-12", optional).</dd></dt>
-     </dl>
-     Returns: <font color="purple">a list of tables representing the versions (the list will be empty if the node doesn't exist). </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:inflate()</b></td>
-	<td class="summary" >Inflates an node, turning it into a Lua table.
-     <dl>
-      <dt><color="green"><b>node</b></font>: <dd>The node to be "inflated" (represented as a versium node object).</dd></dt><dt><color="green"><b>param</b></font>: <dd>Parameters to be passed on to the inflator.</dd></dt>
-     </dl>
-     Returns: <font color="purple">A table representing the fields of the node, with the metadata and the string representation pushed into the metatable. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:deflate()</b></td>
-	<td class="summary" >Turns a node represented as a Lua table into a string representation which could later be inflated again.
-     <dl>
-      <dt><color="green"><b>node</b></font>: <dd>A node as a table.</dd></dt>
-     </dl>
-     Returns: <font color="purple">The string representation of the node. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:diff()</b></td>
-	<td class="summary" >Diff the raw string representation of two revisions of the node.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>the node id.</dd></dt><dt><color="green"><b>v1</b></font>: <dd>the "old" revision id.</dd></dt><dt><color="green"><b>v2</b></font>: <dd>the "new" revision id.</dd></dt>
-     </dl>
-     Returns: <font color="purple">a list of annotated tokens. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:smart_diff()</b></td>
-	<td class="summary" >Diff inflated representations of two revisions of the node, field-by-field.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>the node id.</dd></dt><dt><color="green"><b>v1</b></font>: <dd>the "old" revision id.</dd></dt><dt><color="green"><b>v2</b></font>: <dd>the "new" revision id.</dd></dt>
-     </dl>
-     Returns: <font color="purple">a table of lists of annotated tokens, keyed by field name. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:longquote()</b></td>
-	<td class="summary" >Quotes an arbitrary string by putting [=[ with enough ==='s around it.
-     <dl>
-      <dt><color="green"><b>text</b></font>: <dd>the text to be long-quoted.</dd></dt>
-     </dl>
-     Returns: <font color="purple">long-quoted text. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:escape_id()</b></td>
-	<td class="summary" >Escapes a node id to make it safe for use as a file name.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>a node id.</dd></dt>
-     </dl>
-     Returns: <font color="purple">an escaped node id. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Versium:unescape_id()</b></td>
-	<td class="summary" >Un-escapes a node id.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>an escaped node id.</dd></dt>
-     </dl>
-     Returns: <font color="purple">the original node id. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>storage_error()</b></td>
-	<td class="summary" >Throws an error coming from a storage module.
-     <dl>
-      <dt><color="green"><b>error_message</b></font>: <dd>the error message.</dd></dt><dt><color="green"><b>...</b></font>: <dd>error-specific additional parameters.</dd></dt>
-     </dl>
-     Returns: <font color="purple">nothing (an error will be thrown). </color>
-    </td>
-   </tr>
-  
- 
- </table>
-
 
 
 <a name="License"></a><h1>License<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>

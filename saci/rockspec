@@ -1,23 +1,31 @@
--- Package metadata
-package = 'SACI'
-version = '8.01.01-0'
-description = {
-  summary = 'A storage system',
-  detailed = [[
-  ]],
-  license = 'MIT/X11',
-  homepage = 'http://sputnik.freewisdom.org/en/Versium',
-  maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
-}
-
--- Dependency information
-dependencies = {
-  'cosmo >= 7.12.26',
-  'luafilesystem >= 1.3'
-}
-
--- Build rules
+package = "SACI"
+version = "8.05.24-0"
 source = {
-  url = 'http://sputnik.freewisdom.org/files/versium-7.12.26.tar.gz',
-  dir = 'versium',
+   url = "http://sputnik.freewisdom.org/files/saci-8.05.24.tar.gz",
 }
+description = {
+   summary    = "Saci is a document-oriented hierarchical storage system",
+   detailed   = [===[    A document-to-object mapper for Lua.
+]===],
+   license    =  "MIT/X11",
+   homepage   = "http://sputnik.freewisdom.org/en/Saci",
+   maintainer = "Yuri Takhteyev (yuri@freewisdom.org)",
+}
+dependencies = {
+  'cosmo >= 7.12.24',
+  'versium >= 8.05.24',
+}
+build = {
+  type = "none",
+  install = {
+     lua = {
+        ["saci"] = "lua/saci.lua",
+        ["saci.node"] = "lua/saci/node.lua",
+
+        ["saci.sandbox"] = "lua/saci/sandbox.lua",
+
+
+     }
+  }
+}
+

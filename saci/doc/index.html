@@ -2,10 +2,10 @@
 <html>
  <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta name="description" content="SACI: A Crazy Storage System for Lua"/>
+  <meta name="description" content="SACI: Saci is a document-oriented hierarchical storage system"/>
   <meta name="keywords" content="lua, versioned storage, file system, sql, database"/>
   <link rel="shortcut icon" href="http://media.freewisdom.org/etc/sputnik-icon.png"/>
-  <link rel="alternate" type="application/rss+xml" title="New releases of SACI" href='http://sputnik.freewisdom.org/en/Versiumreleases.rss'/>
+  <link rel="alternate" type="application/rss+xml" title="New releases of SACI" href='http://sputnik.freewisdom.org/en/Sacireleases.rss'/>
   <title>SACI</title>
   <style type="text/css">
     body { color:#000; background:#fff; }
@@ -45,169 +45,20 @@
  <div id="header">
   <a name="top"></a>
   <img border=0 alt="SACI logo" src="saci.png"/>
-  <p>A Crazy Storage System for Lua</p>
+  <p>Saci is a document-oriented hierarchical storage system</p>
   <p>
-   <a name="toc"></a><a href="#Overview">Overview</a> &middot; <a href="#Contact">Contact</a> &middot; <a href="#LuaDoc">LuaDoc</a> &middot; <a href="#License">License</a>
+   <a name="toc"></a><a href="#Overview">Overview</a> &middot; <a href="#Contact">Contact</a> &middot; <a href="#License">License</a>
   </p>
  </div>
  
 
 <a name="Overview"></a><h1>Overview<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>
-<p>     SACI is weird
+<p>    A document-to-object mapper for Lua.
 </p>
 
 
 <a name="Contact"></a><h1>Contact<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>
 Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions.
-
-
-<a name="LuaDoc"></a><h1>LuaDoc<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>
- <table style="width:100%" class="function_list">
-   <tr>
-   <td colspan=2 style='background: #dddddd;'>
-    <h2>saci</h2>
-    <p>Defines a "Smart Repository": a collection of versium nodes with inheritance. </p>
-    
-   </td>
-  </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>new()</b></td>
-	<td class="summary" >Creates a new instance of Repository.
-     <dl>
-      <dt><color="green"><b>config</b></font>: <dd>the bootstrapping config table.</dd></dt>
-     </dl>
-     Returns: <font color="purple">an instance of "Repository". </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Repository:node_exists()</b></td>
-	<td class="summary" >Returns true if the node exists and false otherwise.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>an id of an node.</dd></dt>
-     </dl>
-     Returns: <font color="purple">true or false. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Repository:save_node()</b></td>
-	<td class="summary" >Saves a node.
-     <dl>
-      <dt><color="green"><b>node</b></font>: <dd>the node to be saved.</dd></dt><dt><color="green"><b>author</b></font>: <dd>the .user name associated with the change (required).</dd></dt><dt><color="green"><b>comment</b></font>: <dd>a comment associated with this change (optional).</dd></dt><dt><color="green"><b>extra</b></font>: <dd>extra params (optional).</dd></dt>
-     </dl>
-     Returns: <font color="purple">nothing </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>Repository:get_node_history()</b></td>
-	<td class="summary" >Returns the history of edits to the node.
-     <dl>
-      <dt><color="green"><b>id</b></font>: <dd>the id of the node.</dd></dt><dt><color="green"><b>prefix</b></font>: <dd>an optional date prefix (e.g., "2007-12").</dd></dt>
-     </dl>
-     Returns: <font color="purple">history as a table. </color>
-    </td>
-   </tr>
-  
-   <tr>
-   <td colspan=2 style='background: #dddddd;'>
-    <h2>saci.node</h2>
-    <p><b>A fancy version of a Versium node that supports inheritance and field activation.</b> </p>
-    
-   </td>
-  </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>new()</b></td>
-	<td class="summary" >Creates a new instance of SmartNode.
-     <dl>
-      <dt><color="green"><b>versium_node</b></font>: <dd>an inflated versium node.</dd></dt><dt><color="green"><b>repository</b></font>: <dd><b>A fancy version of a Versium node that supports inheritance and field activation.</b> </dd></dt><dt><color="green"><b>root_prototype_id</b></font>: <dd><b>A fancy version of a Versium node that supports inheritance and field activation.</b> </dd></dt><dt><color="green"><b>mode</b></font>: <dd><b>A fancy version of a Versium node that supports inheritance and field activation.</b> </dd></dt>
-     </dl>
-     Returns: <font color="purple">an instance of "SputnikRepository". </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:get_history()</b></td>
-	<td class="summary" >Returns the edits to the node.
-     <dl>
-      <dt><color="green"><b>prefix</b></font>: <dd>an optional date prefix (e.g., "2007-12").</dd></dt>
-     </dl>
-     Returns: <font color="purple">edits as a table. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:wrap()</b></td>
-	<td class="summary" >Makes a new table with this node as its metatable.
-     <dl>
-      <dt><color="green"><b>field_name_for_old_table</b></font>: <dd>the name of a field through which the original node would be accessible (optional). </dd></dt>
-     </dl>
-     Returns: 
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:tostring()</b></td>
-	<td class="summary" >Returns the node as a string (used for debugging).
-     <dl>
-      
-     </dl>
-     Returns: 
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:apply_inheritance()</b></td>
-	<td class="summary" >Applies inheritance form page's prototype.
-     <dl>
-      
-     </dl>
-     Returns: <font color="purple">self. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:activate()</b></td>
-	<td class="summary" >Turns string parameters into Lua functions and tables, making them callable.
-     <dl>
-      
-     </dl>
-     Returns: 
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:update()</b></td>
-	<td class="summary" >Updates the node with values.
-     <dl>
-      <dt><color="green"><b>new_values</b></font>: <dd>a table of new values (keyed by field name).</dd></dt><dt><color="green"><b>fields</b></font>: <dd>a table keyed by field name to allow us to filter the new values.</dd></dt>
-     </dl>
-     Returns: <font color="purple">nothing. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:diff()</b></td>
-	<td class="summary" >Returns a diff between this version of the node and some other one.
-     <dl>
-      <dt><color="green"><b>other</b></font>: <dd>the other version id.</dd></dt>
-     </dl>
-     Returns: <font color="purple">diff as a table of tokens. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:save()</b></td>
-	<td class="summary" >Saves the node (using the data that's already in the node).
-     <dl>
-      <dt><color="green"><b>author</b></font>: <dd>the author associated with the edit.</dd></dt><dt><color="green"><b>comment</b></font>: <dd>a comment for the edit (optional).</dd></dt><dt><color="green"><b>extra</b></font>: <dd>extra params (optional).</dd></dt>
-     </dl>
-     Returns: <font color="purple">nothing. </color>
-    </td>
-   </tr>
-     <tr>
-	<td class="name" width="300px" style="vertical-align: top;"><b>SmartNode:is_old()</b></td>
-	<td class="summary" >Tells us whether this is ann outdated version of the node.
-     <dl>
-      
-     </dl>
-     Returns: <font color="purple">true if the node is outdated, false if it's the most recent version _or_ the node has no history. </color>
-    </td>
-   </tr>
-  
- 
- </table>
-
 
 
 <a name="License"></a><h1>License<sup class="return"><a class="return" href="#top">&uarr;</a></sup></h1>

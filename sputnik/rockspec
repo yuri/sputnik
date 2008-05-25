@@ -1,10 +1,11 @@
--- Package metadata
-package = 'Sputnik'
-version = '8.02.20-0'
+package = "Sputnik"
+version = "8.05.24-0"
+source = {
+   url = "http://sputnik.freewisdom.org/files/sputnik-8.05.24.tar.gz",
+}
 description = {
-  summary = 'A wiki and a framework for wiki-like applications',
-  detailed = [[
-     Sputnik is a wiki written in Lua. It is also a platform for building a range of wiki-like 
+   summary    = "A wiki and a framework for wiki-like applications",
+   detailed   = [===[     Sputnik is a wiki written in Lua. It is also a platform for building a range of wiki-like 
      applications, drawing on Lua's strengths as an extension language.
 
      Out of the box Sputnik behaves like a wiki with all the standard wiki features: editable 
@@ -22,22 +23,73 @@ description = {
      mbox-formatted messages, XML, etc.) While by default the page is displayed as if it carried 
      Markdown-formatted text, the way the page is viewed (or edited, or saved, etc.) can be 
      overriden on a per-page basis by over-riding or adding "actions". 
-  ]],
-  license = 'MIT/X11',
-  homepage = 'http://sputnik.freewisdom.org/',  
+]===],
+   license    =  "MIT/X11",
+   homepage   = "",
+   maintainer = "Yuri Takhteyev (yuri@freewisdom.org)",
 }
-
--- Dependency information
 dependencies = {
-  'versium >= 7.12.26',
+  'saci >= 8.05.24',
+  'xssfilter >= 8.04.20',
   'colors >= 7.12.26',
   'markdown >= 0.18',
   'md5 >= 1.1',
+  'wsapi > 1.0',
 }
+build = {
+  type = "none",
+  install = {
+     lua = {        ["sputnik.actions.wiki"] = "lua/sputnik/actions/wiki.lua",
+        ["sputnik.actions.css"] = "lua/sputnik/actions/css.lua",
+        ["sputnik.actions.javascript"] = "lua/sputnik/actions/javascript.lua",
 
--- Build rules
-source = {
-  url = 'http://sputnik.freewisdom.org/files/sputnik-8.02.20.zip',
-  dir = 'sputnik',
+        ["sputnik.actions.binaryfile"] = "lua/sputnik/actions/binaryfile.lua",
+
+        ["sputnik.util.date_selector"] = "lua/sputnik/util/date_selector.lua",
+        ["sputnik.util.html_forms"] = "lua/sputnik/util/html_forms.lua",
+
+        ["sputnik.util.calendar"] = "lua/sputnik/util/calendar.lua",
+
+        ["sputnik.i18n"] = "lua/sputnik/i18n.lua",
+        ["sputnik.markup.markdown"] = "lua/sputnik/markup/markdown.lua",
+        ["sputnik.markup.init"] = "lua/sputnik/markup/init.lua",
+
+        ["sputnik.init"] = "lua/sputnik/init.lua",
+        ["sputnik.util"] = "lua/sputnik/util.lua",
+
+        ["sputnik.node_defaults._translations"] = "lua/sputnik/node_defaults/_translations.lua",
+        ["sputnik.node_defaults._rss_icon_medium"] = "lua/sputnik/node_defaults/_rss_icon_medium.lua",
+        ["sputnik.node_defaults.@Text_Config"] = "lua/sputnik/node_defaults/@Text_Config.lua",
+        ["sputnik.node_defaults._layout"] = "lua/sputnik/node_defaults/_layout.lua",
+        ["sputnik.node_defaults._readme"] = "lua/sputnik/node_defaults/_readme.lua",
+        ["sputnik.node_defaults.Home_Page"] = "lua/sputnik/node_defaults/Home_Page.lua",
+        ["sputnik.node_defaults._config"] = "lua/sputnik/node_defaults/_config.lua",
+        ["sputnik.node_defaults._sputnik"] = "lua/sputnik/node_defaults/_sputnik.lua",
+        ["sputnik.node_defaults._rss_icon_small"] = "lua/sputnik/node_defaults/_rss_icon_small.lua",
+        ["sputnik.node_defaults._passwords"] = "lua/sputnik/node_defaults/_passwords.lua",
+        ["sputnik.node_defaults._templates"] = "lua/sputnik/node_defaults/_templates.lua",
+        ["sputnik.node_defaults.@JavaScript"] = "lua/sputnik/node_defaults/@JavaScript.lua",
+        ["sputnik.node_defaults.@Lua_Config"] = "lua/sputnik/node_defaults/@Lua_Config.lua",
+        ["sputnik.node_defaults._navigation"] = "lua/sputnik/node_defaults/_navigation.lua",
+        ["sputnik.node_defaults.jquery"] = "lua/sputnik/node_defaults/jquery.lua",
+        ["sputnik.node_defaults._yui_reset"] = "lua/sputnik/node_defaults/_yui_reset.lua",
+        ["sputnik.node_defaults._history"] = "lua/sputnik/node_defaults/_history.lua",
+        ["sputnik.node_defaults._edits_by_recent_users"] = "lua/sputnik/node_defaults/_edits_by_recent_users.lua",
+        ["sputnik.node_defaults._sitemap"] = "lua/sputnik/node_defaults/_sitemap.lua",
+        ["sputnik.node_defaults.@Root"] = "lua/sputnik/node_defaults/@Root.lua",
+        ["sputnik.node_defaults._favicon"] = "lua/sputnik/node_defaults/_favicon.lua",
+        ["sputnik.node_defaults.@CSS"] = "lua/sputnik/node_defaults/@CSS.lua",
+        ["sputnik.node_defaults.@Binary_File"] = "lua/sputnik/node_defaults/@Binary_File.lua",
+
+        ["sputnik.node_defaults._logo"] = "lua/sputnik/node_defaults/_logo.lua",
+        ["sputnik.node_defaults._colors"] = "lua/sputnik/node_defaults/_colors.lua",
+
+        ["sputnik.auth.errors"] = "lua/sputnik/auth/errors.lua",
+
+        ["sputnik.authentication.simple"] = "lua/sputnik/authentication/simple.lua",
+
+
+     }
+  }
 }
 

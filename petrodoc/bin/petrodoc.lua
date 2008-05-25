@@ -2,12 +2,12 @@ require"luarocks.require"
 require"luarocks.pack"
 require"luarocks.build"
 require"luarocks.make_manifest"
-require"luadoc"
+pcall("require", "luadoc")
 require"lfs"
 require"markdown"
 require"cosmo"
-require"logging.file"
-taglet = require"luadoc.taglet.standard"
+logging = pcall("require", "logging.file")
+taglet = pcall("require", "luadoc.taglet.standard")
 
 ---------------------------------------------------------------------------------------------------
 -- The main HTML template
@@ -160,8 +160,11 @@ BUILD_TEMPLATE = [[
 ---------------------------------------------------------------------------------------------------
 
 function make_luadoc(modules)
+   if not luadoc then
+      return "Luadoc is not installed"
+   end
    lfs.chdir("lua")
-   local logger = logging.file("luadoc.log")
+   local logger = logging("luadoc.log")
    taglet.logger = logger
    luadoc.logger = logger
    assert(taglet.logger)

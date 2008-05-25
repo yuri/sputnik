@@ -8,7 +8,13 @@ repository = {
   ['versium'] = {},
   ['medialike'] = {},
   ['sputnik-luausers'] = {},
-  ['xssfilter'] = {}
+  ['xssfilter'] = {},
+  ['saci'] = {}
 }
 
-repository['xssfilter']['8.04.20-0']={ {arch='all'}, {arch='src'}, {arch='rockspec'} }
+
+repository['xssfilter']['8.04.20-0'] = {{arch='rockspec'}}
+repository['colors']['8.02.23-0']    = {{arch='rockspec'}}
+repository['sputnik']['8.05.24-0']   = {{arch='rockspec'}}
+repository['saci']['8.05.24-0']      = {{arch='rockspec'}}
+repository['versium']['8.05.24-0']   = {{arch='rockspec'}}

@@ -56,7 +56,6 @@ function new(params)
          new_versium.node_table[util.fs_unescape_id(x)] = 1
       end
    end
-   assert(new_versium:get_node("_passwords"))
    return new_versium 
 end
 

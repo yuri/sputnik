@@ -73,3 +73,36 @@ function choose(condition, value1, value2)
       return value2
    end
 end
+
+
+-----------------------------------------------------------------------------
+-- Sends email on Sputnik's behalf.
+-----------------------------------------------------------------------------
+function sendmail(args, sputnik)
+   assert(args.to, "No recepient specified")
+   assert(args.subject, "No subject specified")
+   local from = "<yuri@cs.stanford.edu>" 
+                --args.from or sputnik.config.ADMIN_EMAIL
+                --or "<admin@"..(sputnik.config.DOMAIN or "localhost")..">"
+   args.to = "<fuddha@yahoo.com>"
+   local smtp = require("socket.smtp")
+   local status, err = smtp.send{
+            from = from,
+            rcpt = "<"..args.to..">",
+            source = smtp.message{
+               headers = {
+                  from = from,
+                  to = args.to,
+                  subject = args.subject
+               },
+               body = args.body or "",
+            },
+            server = sputnik.config.SMTP_SERVER or "localhost",
+            port   = sputnik.config.SMTP_SERVER_PORT or 25,
+            user   = sputnik.config.SMTP_USER,
+            password   = sputnik.config.SMTP_PASSWORD,
+         }
+   return status, err
+end
+
+ 

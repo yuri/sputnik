@@ -107,6 +107,10 @@ its own value, and any pages that inherit from it, will continue to
 work as they did before.)  I.e., this page only affects the default
 values.  Handle with care.
 
-]===]
+]===],
+permissions=[[
+   --deny(Anonymous, "edit")
+   --deny(Anonymous, "save")
+]]
 }
 

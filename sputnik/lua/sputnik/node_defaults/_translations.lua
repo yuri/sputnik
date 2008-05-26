@@ -20,8 +20,8 @@ FALLBACKS = {
 -----------------------------------------------------------------------------
 
 -- The login link
-LOGIN = {
-   en_US = "Login",
+LOGIN_OR_REGISTER = {
+   en_US = "<a $login_link>Login</a> or <a $register_link>register</a>",
    ru    = "Войти",     
    pt_BR = "Entrar",
 }
@@ -45,6 +45,12 @@ EDIT = {
    en_US = "Edit",
    ru    = "Редактировать",     
    pt_BR = "Editar",
+}
+
+-- A note telling the user that they need to enter captcha because they are not logged in.
+
+ANONYMOUS_USERS_MUST_ENTER_CAPTCHA = {
+   en_US = "Anonymous users must enter <a href='http://en.wikipedia.org/wiki/Captcha'>captcha</a> below."
 }
 
 -- The link to the history of changes for the page
@@ -456,5 +462,36 @@ SMALL_RSS_ICON = {
    en_US = "Small RSS Icon",
    ru    = "Maленький значок RSS"
 }
+
+I_AGREE_TO_TERMS_OF_SERVICE = {
+   en_US = "I have read to and agree to the <a href='$url'>Terms of Service</a><br />"
+}
+
+-- Subject for the account activation email
+ACCOUNT_ACTIVATION = {
+   en_US = "Account activation"
+}
+
+ACTIVATION_MESSAGE_BODY = {
+   en_US = [[
+In order to activate your account at $site_name, please click the following link.
+If the link isn't click-able, please copy and paste the URL into your web browser.
+You will be asked to confirm the registered information.
+
+$activation_link
+
+Thank you!
+]]
+}
+
+ERROR_SENDING_ACTIVATION_EMAIL = {
+   en_US = "Sorry, there was a problem sending your activation email."
+}
+
+ACTIVATION_MESSAGE_SENT = {
+   en_US = [[ An activation message was sent to your email address.  
+              Please check your email use the link in the message to activate your account.]]
+}
+
 
 ]=============]

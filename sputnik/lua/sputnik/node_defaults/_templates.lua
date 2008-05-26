@@ -50,7 +50,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      <input class="small_submit" type="submit" name="Search" value="_(SEARCH)" 
             title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>]]    
     $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
-    $if_not_logged_in[[<A $login_link>_(LOGIN)</a>]]
+    $if_not_logged_in[[_(LOGIN_OR_REGISTER)</a>]]
     <a $site_rss_link><img src="$rss_medium_url" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)" alt="_(LARGE_RSS_ICON)" /></a>
    </div>
    
@@ -383,6 +383,26 @@ ACTION_NOT_FOUND = [===[
   ]]
 </div>
 ]===]
+
+REGISTRATION = [===[
+<h3>Create new account</h3>
+<form class="register" method="post" enctype="multipart/form-data" action="$action_url">
+ <input class="hidden" type="hidden" name="p" value="$node_name.$action"/>
+ <input class="hidden" type="hidden" name="post_token" value="$post_token"/>
+ <input class="hidden" type="hidden" name="post_timestamp" value="$post_timestamp"/>
+ <input class="hidden" type="hidden" name="post_fields" value="$post_fields"/>
+ $html_for_fields
+ $captcha
+ <div class="submit">
+ <button class="submit positive" type="submit" accesskey="s" name="action_submit">Register</button>
+ </div>
+</form> 
+]===]
+
+CONSENT_TO_TERMS_OF_SERVICE = [[
+   <input style="margin: 0 10px 0 20px; width: auto; display: inline;" target="_blank" type="checkbox" name="r_read_tos" />
+   _(I_AGREE_TO_TERMS_OF_SERVICE)
+]]
 
 ]=====]
 

@@ -125,6 +125,13 @@ function Sputnik:init(initial_config)
          get = function() end,
       }
    end
+
+   -- setup captcha
+
+   if self.config.CAPTCHA_MODULE then
+      local captcha_mod = require(self.config.CAPTCHA_MODULE)
+      self.captcha = captcha_mod.new(self.config.CAPTCHA_PARAMS)
+   end
       
    -- setup authentication
    local auth_mod = require(self.config.AUTH_MODULE or "sputnik.authentication.simple")
@@ -275,7 +282,7 @@ function Sputnik:activate_node(node, params)
                return user ~= nil
             end,
             Anonymous = function(user, auth)
-               return user == nil
+               return not user
             end,
             Admin = function(user, auth)
                if user then
@@ -524,6 +531,14 @@ end
 function Sputnik:gen_name(namespace, type, format)
    local uid = self:get_uid(namespace, type)
    return format:format(uid)
+end
+
+
+-----------------------------------------------------------------------------
+-- Sends email on Sputnik's behalf.
+-----------------------------------------------------------------------------
+function Sputnik:sendmail(args)
+   return sputnik.util.sendmail(args, self)
 end
 
 ---------------------------------------------------------------------------------------------------

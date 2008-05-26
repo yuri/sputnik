@@ -70,6 +70,20 @@ actions = {}
 --     first the POST actions - those are a bit trickier
 ---------------------------------------------------------------------------------------------------
 
+function check_post_parameters(node, request, sputnik)
+   local token = request.params.post_token
+   local timestamp = request.params.post_timestamp
+   if not token then return false, "MISSING_POST_TOKEN"
+   elseif not timestamp then return false, "MISSING_POST_TIME_STAMP"
+   elseif (os.time()-tonumber(timestamp)) > (15 * 60) then 
+      return false, "YOUR_POST_TOKEN_HAS_EXPIRED"
+   elseif  sputnik.auth:timestamp_token(timestamp) ~= token then 
+      return false, "YOUR_POST_TOKEN_IS_INVALID"
+   else
+      return true
+   end
+end
+
 ---------------------------------------------------------------------------------------------------
 -- All "post" requests are routed through the same action ("post"). The reason for this is that we 
 -- localize button labels, and their values are not predictable for this reason. Instead, we _name_ 
@@ -88,29 +102,29 @@ function actions.post(node, request, sputnik)
             request.try_again = "true"
             node:post_error(node.translator.translate_key(err_code))
          end
-         sputnik.logger:debug(action)
-         sputnik.logger:debug(request.params.post_token)
-         sputnik.logger:debug(request.params.post_timestamp)
-         if not request.params.post_token then
-            err_msg"MISSING_POST_TOKEN"
-         elseif not request.params.post_timestamp then
-            err_msg"MISSING_POST_TIME_STAMP"
-         elseif (os.time() - tonumber(request.params.post_timestamp)) > (15 * 60) then
-            err_msg"YOUR_POST_TOKEN_HAS_EXPIRED"
-         elseif sputnik.auth:timestamp_token(request.params.post_timestamp)
-                 ~=request.params.post_token then
-            err_msg"YOUR_POST_TOKEN_IS_INVALID"
-         elseif not request.user then
-            if request.auth_message then
-               err_msg(request.auth_message)
-            else 
-               err_msg"YOU_MUST_BE_LOGGED_IN"
-            end
-         elseif not node:check_permissions(request.user, action) then
-            err_msg"ACTION_NOT_ALLOWED"
+         --sputnik.logger:debug(action)
+         --sputnik.logger:debug(request.params.post_token)
+         --sputnik.logger:debug(request.params.post_timestamp)
+
+         -- check the validity of the request
+         local ok, err = check_post_parameters(node, request, sputnik)
+         if not ok then
+            err_msg(err)
          end
 
-         -- TODO: Add a human readable error message here
+         -- test captcha, if configured
+         if not request.user and sputnik.captcha then
+            local captcha_ok, err = sputnik.captcha:verify(request.POST, request.wsapi_env.REMOTE_ADDR)
+            if not captcha_ok then
+               err_msg("COULD_NOT_VERIFY_CAPTCHA"..err)
+            end
+         end
+
+         -- check if the user is allowed to do this
+         if not node:check_permissions(request.user, action) then
+            err_msg("ACTION_NOT_ALLOWED")
+         end
+
          return node.actions[action](node, request, sputnik)
       end
    end 
@@ -131,7 +145,11 @@ function actions.save(node, request, sputnik)
    else
       local new_node = sputnik:update_node_with_params(node, request.params)
       new_node = sputnik:activate_node(new_node)
-      new_node:save(request.user, request.params.summary or "", {minor=request.params.minor})
+      local extra = {minor=request.params.minor}
+      if not request.user then
+         extra.ip=request.wsapi_env.REMOTE_ADDR
+      end
+      new_node:save(request.user, request.params.summary or "", extra)
       new_node:redirect(sputnik:make_url(node.name))
       -- Redirect to the node
       return new_node.wrappers.default(new_node, request, sputnik)
@@ -231,6 +249,10 @@ function actions.history(node, request, sputnik)
                       },
       do_revisions  = function()
                            for i, edit in ipairs(history) do
+                              local author_display = edit.author or ""
+                              if author_display == "" then
+                                 author_display = edit.ip or "Anonymous"
+                              end
                               if (not request.params.recent_users_only) or sputnik.auth:user_is_recent(edit.author) then
                                  cosmo.yield{
                                     version_link = node.links:show{ version = edit.version },
@@ -238,8 +260,8 @@ function actions.history(node, request, sputnik)
                                     timestamp    = edit.timestamp,
                                     if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
                                     title        = node.name,
-                                    author_link  = sputnik:make_link((edit.author or "Anon")),
-                                    author       = edit.author,
+                                    author_link  = sputnik:make_link(author_display),
+                                    author       = author_display,
                                     if_summary   = cosmo.c(edit.comment:len() > 0){ summary = edit.comment },
                                  }
                               end
@@ -519,8 +541,17 @@ function actions.edit (node, request, sputnik, etc)
                                                           return sputnik:hash_field_name(field_name, post_token)
                                                        end
                                        }
+
+   local captcha_html = ""
+   if not request.user and sputnik.captcha then
+      for _, field in ipairs(sputnik.captcha:get_fields()) do
+         table.insert(field_list, field)
+      end
+      captcha_html = node.translator.translate_key("ANONYMOUS_USERS_MUST_ENTER_CAPTCHA")..sputnik.captcha:get_html()
+   end
+
    
-   node.inner_html = cosmo.f(node.templates.EDIT){
+   node.inner_html = captcha_html..cosmo.f(node.templates.EDIT){
                         if_preview      = cosmo.c(request.preview){
                                              preview = request.preview,
                                              summary = fields.summary

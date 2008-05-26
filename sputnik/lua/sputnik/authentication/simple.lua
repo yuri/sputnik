@@ -57,6 +57,7 @@ end
 -- @return exists whether or not the username exists in the system
 
 function Simple:user_exists(username)
+   if type(username) ~= "string" then return false end
    username=username:lower()
    local users = load_users(self.sputnik, self.node)
    return type(users[username]) == "table"
@@ -195,6 +196,7 @@ end
 -- @param key            the metadata key to query
 -- @return data          the value of the metadata or nil
 function Simple:get_metadata(username, key)
+   if not username or username=="" then return {} end
    username=username:lower()
    local users = load_users(self.sputnik, self.node)
    if users[username] then 

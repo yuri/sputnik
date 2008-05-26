@@ -57,7 +57,7 @@ function make_html_form(form_params)
                            }
                        end
                     end
-                 end, 
+                 end,
       honeypot = function(field)
                     field.div_class = field.div_class.." honey"
                     field.label = form_params.translator.translate_key("EDIT_FORM_HONEY")

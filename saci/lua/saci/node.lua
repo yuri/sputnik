@@ -227,10 +227,10 @@ end
 ---------------------------------------------------------------------------------------------------
 function Node:update(new_values, fields)
    assert(new_values)
-   assert(fields)
+   --assert(fields)
    -- First, update the raw values the new values (only those that are listed in fields!)
    for key, value in pairs(new_values) do
-      if fields[key] and not fields[key].virtual then
+      if (not fields) or (fields[key] and not fields[key].virtual) then
          self.raw_values[key] = value
       end
    end
@@ -290,7 +290,7 @@ end
 -- @return               nothing.
 -----------------------------------------------------------------------------
 function Node:save(author, comment, extra)
-   assert(author)
+   author = author or ""
    self.repository:save_node(self, author, comment, extra)
 end
 

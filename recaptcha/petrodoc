@@ -1,0 +1,64 @@
+package    = 'ReCaptcha'
+versions   = {
+   {'8.05.26', 'May 26, 2008', 'the initial release'},
+}
+summary    = 'A Lua interface to reCaptcha.'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+     <a href="http://recaptcha.net/">reCaptcha</a> is a free captcha web service that
+     shows the visitors words from old books helping digitize them. This, 
+     module provides a Lua interface to recaptcha.  You will need to get your
+     own API key from recaptcha.net to use it.
+]]
+
+license    = 'MIT/X11'
+homepage   = 'http://sputnik.freewisdom.org/lib/recaptcha/'
+favicon    = 'http://media.freewisdom.org/etc/recaptcha.ico'
+download   = 'http://sputnik.freewisdom.org/files/recaptcha-$version.tar.gz'
+--download   = "/tmp/versium-$version.tar.gz"
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+--push       = "cp %s /tmp/"
+logo       = 'recaptcha.png'
+keywords   = 'lua, recaptcha, captcha'
+rss        = homepage.."releases.rss"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+  'luasocket >= 2.0'
+]]
+
+--------------------------------------------------------------------------------
+
+Installation = [[
+  The Lua interface Recaptcha to recaptcha consists of a single file (recaptcha.lua) of less
+  than 100 lines, plus a test script (tests/recaptcha.cgi) which is meant to be used with
+  <a href="http://wsapi.luaforge.net">WSAPI</a>.  Here is a list of recent
+  releases:
+
+  <ul>
+  $do_versions[=[<li><a href="$url">$package-$version</a> - $comment ($date) </li> ]=]
+  </ul>
+
+  You can also install it using LuaRocks with
+
+    luarocks install recaptcha
+
+  or:
+
+    luarocks --from=http://sputnik.freewisdom.org/rocks/earth install recaptcha
+
+]]
+
+TOC = {
+   { "Overview",     "<p>"..detailed.."</p>" },
+   { "Installation", markdown(Installation) },
+   { "Using Recaptcha", markdown(include("doc/howto.md")) },
+   { "Contact",      "Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions."},
+   { "LuaDoc",       make_luadoc{"recaptcha.lua"} },
+   { "License",      markdown(include("LICENSE.txt")) }
+}
+-------------------------------------------------------------------------------
+
+
+

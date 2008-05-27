@@ -1,38 +1,27 @@
 package = "ReCaptcha"
-version = "cvs-1"
+version = "8.05.26-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/versium-8.05.24.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/recaptcha-8.05.26.tar.gz",
 }
 description = {
-   summary    = "A versioned storage API for Lua",
-   detailed   = [===[     Versium is a simple abstract API over several storage solutions, all of 
-     which provide access to a collection of versioned documents or "nodes".
-     Nodes carry Lua byte-string data as their payload, but no assumptions
-     are made about its content.  The client interacts with versium through
-     the "versium" module, which then delegates most of the work to a 
-     specific storage implementation (specified at the initialization time).
-     Two storage implementations are included with this rock: "simple" which
-     stores nodes and their histories on the file system and "virtual" which
-     stores them in memory.  Other implementations (e.g., using subversion or
-     a database) are provided as separate rocks.
+   summary    = "A Lua interface to reCaptcha.",
+   detailed   = [===[     <a href="http://recaptcha.net/">reCaptcha</a> is a free captcha web service that
+     shows the visitors words from old books helping digitize them. This, 
+     module provides a Lua interface to recaptcha.  You will need to get your
+     own API key from recaptcha.net to use it.
 ]===],
    license    =  "MIT/X11",
-   homepage   = "http://sputnik.freewisdom.org/en/Versium",
+   homepage   = "http://sputnik.freewisdom.org/lib/recaptcha/",
    maintainer = "Yuri Takhteyev (yuri@freewisdom.org)",
 }
 dependencies = {
-  'luafilesystem >= 1.3'
+  'luasocket >= 2.0'
 }
 build = {
   type = "none",
   install = {
      lua = {
-        ["versium.util"] = "lua/versium/util.lua",
-        ["versium.filedir"] = "lua/versium/filedir.lua",
-        ["versium.virtual"] = "lua/versium/virtual.lua",
-
-        ["versium.errors"] = "lua/versium/errors.lua",
-
+        ["recaptcha"] = "lua/recaptcha.lua",
      }
   }
 }

@@ -6,8 +6,15 @@ pcall("require", "luadoc")
 require"lfs"
 require"markdown"
 require"cosmo"
-logging = pcall("require", "logging.file")
-taglet = pcall("require", "luadoc.taglet.standard")
+
+require"logging"
+require"logging.file"
+
+
+--pcall("require", "luadoc")
+require"luadoc"
+taglet = require"luadoc.taglet.standard"
+
 
 ---------------------------------------------------------------------------------------------------
 -- The main HTML template
@@ -164,7 +171,7 @@ function make_luadoc(modules)
       return "Luadoc is not installed"
    end
    lfs.chdir("lua")
-   local logger = logging("luadoc.log")
+   local logger = logging.file("luadoc.log")
    taglet.logger = logger
    luadoc.logger = logger
    assert(taglet.logger)
@@ -344,6 +351,7 @@ function petrodoc(name, spec, revision, server)
       luarocks.build.run(rockspec)
       luarocks.make_manifest.run()
       luarocks.pack.run(name, spec.last_version.."-"..revision)
+
    end
 
 end

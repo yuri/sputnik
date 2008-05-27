@@ -1,8 +1,26 @@
 module(..., package.seeall)
 
+-----------------------------------------------------------------------------
+-- ReCaptcha (http://recaptcha.net/) is a free captcha web service that
+-- shows the visitors words from old books helping digitize them. This, 
+-- module provides a Lua interface to recaptcha.  You will need to get your
+-- own API key from recaptcha.net to use it.
+--
+-- See http://sputnik.freewisdom.org/lib/recaptcha
+-- License: MIT/X
+-- (c) 2008 Yuri Takhteyev
+-----------------------------------------------------------------------------
+
 local ReCaptcha = {}
 local ReCaptcha_mt = {__metatable = {}, __index = ReCaptcha}
 
+-----------------------------------------------------------------------------
+-- Creates a new ReCaptcha  object.
+--
+-- @param args           a single argument with two fields: the private API
+--                       key and the public API key.
+-- @return               an instance of ReCaptcha.
+----------------------------------------------------------------------------- 
 function new(args)
    local obj = setmetatable({}, ReCaptcha_mt)
    obj.private = args[2]
@@ -10,12 +28,23 @@ function new(args)
    return obj
 end
 
+-----------------------------------------------------------------------------
+-- Returns a table of names of fields posted by the captcha widget.
+--
+-- @return               a table of field names.
+-----------------------------------------------------------------------------
 function ReCaptcha:get_fields()
    return {"recaptcha_challenge_field", "recaptcha_response_field"}
 end
 
-
-function ReCaptcha:get_javascript(options)
+-----------------------------------------------------------------------------
+-- Returns the html block that creates the ReCaptcha widget.
+-- 
+-- @param options        a table of options.
+-- @return               a string containing JavaScript and HTML for
+--                       inclusion in an HTML document.
+-----------------------------------------------------------------------------
+function ReCaptcha:get_html(options)
    options = options or {}
    return string.format([[
       <script>
@@ -26,11 +55,6 @@ function ReCaptcha:get_javascript(options)
       </script>
       <script type="text/javascript" src="http://api.recaptcha.net/challenge?k=%s">
       </script>
-   ]], options.theme or "white", options.lang or "en", self.public)
-end
-
-function ReCaptcha:get_noscript()
-   return string.format([[
       <noscript>
        <iframe src="http://api.recaptcha.net/noscript?k=%s"
                height="300" width="500" frameborder="0"></iframe><br/>
@@ -38,23 +62,17 @@ function ReCaptcha:get_noscript()
        </textarea>
        <input type="hidden" name="recaptcha_response_field" value="manual_challenge">
       </noscript>
-   ]], self.public)
-end
-
-function ReCaptcha:get_html(options)
-   return self:get_javascript(options).."\n"..self:get_noscript(options)
+   ]], options.theme or "white", options.lang or "en", self.public, self.public)
 end
 
 -----------------------------------------------------------------------------
 -- Verifies the captcha.
 -- 
+-- @param params         the table of POST parameters submitted by the client.
 -- @param remote_ip      user's IP address.
--- @param challenge      the challenge string.
--- @param response       user's response.
 -- @return               true if the verification is successful and false
 --                       otherwise.
 -----------------------------------------------------------------------------
-
 function ReCaptcha:verify(params, remote_ip)
    require("socket.http")
    local result, err = socket.http.request(
@@ -71,9 +89,8 @@ function ReCaptcha:verify(params, remote_ip)
          return true
       else
          result, err = string.match(result, "(%w+)\n(.*)")
-         return result and result=="true", err
+         return (result and result=="true"), err
       end
    end
 end
-
 

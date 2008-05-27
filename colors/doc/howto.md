@@ -780,13 +780,22 @@ Unlike lightness and saturdation, hue _loops_: the hue of 360 is actually the sa
 Creating a color in HSL space and converting it to RGB
 
     > require("colors")
-    > c = colors.Color:new(130, .8, 0.3) -- green, pretty saturated, somewhat dark
+    > c = colors.new(130, .8, 0.3) -- green, pretty saturated, somewhat dark
     > =tostring(c)
     #0f8923
 
 <table>
  <tr><td width="100"></td><td width="160" style="background: #0f8923">&nbsp;</td></tr>
 </table>
+
+You can also create this color from it's RGB code:
+
+    > require("colors")
+    > c = colors.new("#0f8923") -- green, pretty saturated, somewhat dark
+    > =tostring(c)
+    #0f8923
+
+The color converts to its RGB representation when forced into a string:
 
     > =c -- convert implicitly
     #0f8923

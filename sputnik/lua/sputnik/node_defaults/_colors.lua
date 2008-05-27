@@ -11,7 +11,7 @@ NODE = {
 NODE.content = [===[
 MAIN_HUE             = 200  -- pick a number between 0 and 360
 STARTING_SATURATION  =  .7  -- pick a number between 0 and 1
-MAIN                 = colors.Color:new(MAIN_HUE, STARTING_SATURATION, .50)
+MAIN                 = colors.new(MAIN_HUE, STARTING_SATURATION, .50)
 
 SECOND, THIRD        = MAIN:neighbors()      -- MAIN:terciary() for more contrast
 THIRD                = SECOND                -- stick with just one color

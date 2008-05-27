@@ -24,7 +24,7 @@ actions.fancy_css = function(page, params, sputnik)
                       config = page.config,
                    }:do_lua(page.content)
    if e then 
-      return error(e)
+      error(e.err)
    else
       return cosmo.fill(data.CSS, data), "text/css"
    end

@@ -493,5 +493,20 @@ ACTIVATION_MESSAGE_SENT = {
               Please check your email use the link in the message to activate your account.]]
 }
 
+EDIT_FORM_R_USERNAME = {
+   en_US = "User name"
+}
+
+EDIT_FORM_R_PASSWORD = {
+   en_US = "Password"
+}
+
+EDIT_FORM_R_CONFIRM = {
+   en_US = "Confirm Password"
+}
+
+SUCCESSFULLY_CREATED_ACCOUNT = {
+   en_US = "Successfully created your new account."
+}
 
 ]=============]

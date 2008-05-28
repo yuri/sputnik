@@ -26,6 +26,14 @@ LOGIN_OR_REGISTER = {
    pt_BR = "Entrar",
 }
 
+-- The login button
+
+LOGIN = {
+   en_US = "Login",
+   ru    = "Войти",     
+   pt_BR = "Entrar",
+}
+
 -- User greeting
 HI_USER = {
    en_US = "Hi, $user!",

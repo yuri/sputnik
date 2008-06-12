@@ -233,6 +233,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 EDIT = [===[
    
       <form method="post" enctype="multipart/form-data" action="$action_url">
+       $captcha
        <script type="text/javascript">
          function toggleElements(class_name) {
             var re = new RegExp('\\b' + "advanced_field" + '\\b');

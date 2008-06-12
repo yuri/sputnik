@@ -551,7 +551,7 @@ function actions.edit (node, request, sputnik, etc)
    end
 
    
-   node.inner_html = captcha_html..cosmo.f(node.templates.EDIT){
+   node.inner_html = cosmo.f(node.templates.EDIT){
                         if_preview      = cosmo.c(request.preview){
                                              preview = request.preview,
                                              summary = fields.summary
@@ -562,6 +562,7 @@ function actions.edit (node, request, sputnik, etc)
                         post_token      = post_token,
                         post_timestamp  = post_timestamp,
                         action_url      = sputnik.config.BASE_URL,
+                        captcha         = captcha_html,
                      }
    return node.wrappers.default(node, request, sputnik)
 end

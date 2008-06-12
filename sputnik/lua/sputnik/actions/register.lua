@@ -13,7 +13,7 @@ local html_forms = require("sputnik.util.html_forms")
 local util = require("sputnik.util")
 
 CONFIRMATION_FORM_SPEC = [[
-   r_password = {1.31, "password"}
+   new_password = {1.31, "password"}
 ]]
 
 actions = {}
@@ -28,21 +28,21 @@ function actions.show_form(node, request, sputnik)
 
    local email_field = ""
    if sputnik.config.REQUIRE_EMAIL_ACTIVATION then
-      email_field = [[r_email = {1.33, "text_field"} ]]
+      email_field = [[new_email = {1.33, "text_field"} ]]
    end
 
    -- prepare the edit form
    local html_for_fields, field_list = html_forms.make_html_form{
       field_spec = [[
-                      r_username = {1.30, "text_field"}
-                      r_password = {1.31, "password"}
-                      r_confirm = {1.32, "password"}
+                      new_username = {1.30, "text_field"}
+                      new_password = {1.31, "password"}
+                      new_password_confirm = {1.32, "password"}
                    ]] .. email_field,
       values     = {
-                      r_username = request.params.r_username or "",
-                      r_password = request.params.r_password or "",
-                      r_confirm = request.params.r_confirm or "",
-                      r_email = request.params.r_email or "",
+                      new_username = request.params.new_username or "",
+                      new_password = request.params.new_password or "",
+                      new_password_confirm = request.params.new_password_confirm or "",
+                      new_email = request.params.new_email or "",
                    },
       templates  = node.templates, 
       translator = node.translator,
@@ -126,36 +126,36 @@ function actions.submit(node, request, sputnik)
       local p = request.params
       -- the form is legit, let's check that username and password are ok
       for message, test in pairs(sputnik.config.USERNAME_RULES or {}) do
-         if not test(request.params.r_username) then 
+         if not test(request.params.new_username) then 
             request.try_again = true
             node:post_error(message)
          end
       end
       for message, test in pairs(sputnik.config.PASSWORD_RULES or {}) do
-         if not test(request.params.r_password) then 
+         if not test(request.params.new_password) then 
             request.try_again = true
             node:post_error(message)
          end
       end
 
       -- check confirmation password
-      if p.r_password ~= p.r_confirm then 
-         err_msg("R_PASSWORD_MUST_MATCH")
+      if p.new_password ~= p.new_password_confirm then 
+         err_msg("TWO_VERSIONS_OF_NEW_PASSWORD_DO_NOT_MATCH")
       end
 
       if sputnik.REQUIRE_EMAIL_CONFIRMATION 
-         and not p.r_email:match("^%S+@%S+$") then 
-            err_msg("R_NOT_VALID_EMAIL")
+         and not p.new_email:match("^%S+@%S+$") then 
+            err_msg("NEW_EMAIL_NOT_VALID")
       end
 
       -- check that the user name is not taken
-      if  sputnik.auth:user_exists(p.r_username) then
-         err_msg("R_USERNAME_EXISTS")
+      if  sputnik.auth:user_exists(p.new_username) then
+         err_msg("USERNAME_TAKEN")
       end
       -- optionally check for TOS acceptance
       if sputnik.config.TERMS_OF_SERVICE
-              and not not request.POST.r_read_tos then
-         err_msg("R_MUST_CONFIRM_TOS")
+              and not not request.POST.read_tos then
+         err_msg("MUST_CONFIRM_TOS")
       end
 
       -- test captcha, if configured
@@ -173,9 +173,9 @@ function actions.submit(node, request, sputnik)
 
    if sputnik.config.REQUIRE_EMAIL_ACTIVATION then
       local ok, err = create_email_activation_ticket{
-            username  = request.params.r_username,
-            email     = request.params.r_email,
-            hash      = md5.sumhexa(request.params.r_password),
+            username  = request.params.new_username,
+            email     = request.params.new_email,
+            hash      = md5.sumhexa(request.params.new_password),
             sputnik   = sputnik,      
             node      = node,
       }
@@ -185,8 +185,8 @@ function actions.submit(node, request, sputnik)
          node:post_error(node.translator.translate_key("ERROR_SENDING_ACTIVATION_EMAIL").." ("..err..")")
       end
    else
-      sputnik.auth:add_user(request.params.r_username, request.params.r_password)
-      request.user, request.auth_token = sputnik.auth:authenticate(request.params.r_username, request.params.r_password)   
+      sputnik.auth:add_user(request.params.new_username, request.params.new_password)
+      request.user, request.auth_token = sputnik.auth:authenticate(request.params.new_username, request.params.new_password)   
       node:post_notice(node.translator.translate_key("SUCCESSFULLY_CREATED_ACCOUNT"))
    end
 
@@ -199,7 +199,7 @@ end
 -----------------------------------------------------------------------------
 function actions.confirm(node, request, sputnik)
    local fields = {}
-   fields.r_password = request.params.r_password or ""
+   fields.new_password = request.params.new_password or ""
 
    local post_timestamp = os.time()
    local post_token = sputnik.auth:timestamp_token(post_timestamp)
@@ -242,7 +242,7 @@ function actions.activate(node, request, sputnik)
       node:post_error(node.translator.translate_key(err_code))
    end
 
-   local password = request.params.r_password or ""
+   local password = request.params.new_password or ""
    local hash = md5.sumhexa(password)
    --local confirm, numtries, email, username = util.split(node.content, "\n")
 
@@ -254,24 +254,24 @@ function actions.activate(node, request, sputnik)
          sputnik:update_node_with_params(node, {numtries = numtries + 1})
          sputnik:activate_node(node)
 
-         err_msg("COULD_NOT_CONFIRM")
+         err_msg("COULD_NOT_CONFIRM_NEW_PASSWORD")
          node:save("Sputnik", "Invalid confirmation attempt")
          return actions.confirm(node, request, sputnik)
       else
-         err_msg("TICKET_INVALID")
-         request.params.r_username = nil
+         err_msg("INVALID_ACTIVATION_TICKET")
+         request.params.new_username = nil
          node.inner_html = nil
          return node.wrappers.default(node, request, sputnik)
       end
    else
       -- Verify first that the account still no longer exists
       if sputnik.auth:user_exists(node.username) then
-         err_msg("R_USERNAME_EXISTS")
+         err_msg("USERNAME_TAKEN")
          return actions.show_form(node, request, sputnik)
       else
          sputnik.auth:add_user(node.username, password, {email = node.email})
          request.user, request.auth_token = sputnik.auth:authenticate(node.username, password)   
-         node:post_notice(node.translator.translate_key("SUCCESSFULLY_ACTIVATED"))
+         node:post_notice(node.translator.translate_key("SUCCESSFULLY_CREATED_ACCOUNT"))
       end
    end
 

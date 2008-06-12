@@ -23,3 +23,6 @@ repository['recaptcha']['8.05.26-0'] = {{arch='rockspec'}}
 repository['colors']['8.05.26-0']    = {{arch='rockspec'}}
 repository['sputnik']['8.06.11-0']   = {{arch='rockspec'}}
 repository['saci']['8.06.11-0']      = {{arch='rockspec'}}
+repository['recaptcha']['8.06.12-0'] = {{arch='rockspec'}}
+repository['sputnik']['8.06.12-0']   = {{arch='rockspec'}}
+

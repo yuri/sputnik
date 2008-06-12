@@ -55,12 +55,6 @@ EDIT = {
    pt_BR = "Editar",
 }
 
--- A note telling the user that they need to enter captcha because they are not logged in.
-
-ANONYMOUS_USERS_MUST_ENTER_CAPTCHA = {
-   en_US = "Anonymous users must enter <a href='http://en.wikipedia.org/wiki/Captcha'>captcha</a> below."
-}
-
 -- The link to the history of changes for the page
 HISTORY = {
    en_US = "History",
@@ -117,13 +111,6 @@ PAGE_DOES_NOT_SUPPORT_ACTION = {
    pt_BR = [[ A página <a $link>$title</a> não suporta a ação <code>.$action</code>. ]],
 }
 
--- A phrase introducing a list of actions that are supported
-THIS_PAGE_DEFINED_THE_FOLLOWING_ACTIONS = {
-   en_US = [[ In addition to the standard actions, this page defines the following:]],
-   ru    = [[ В добавок к стандартным коммандам, эта страница поддерживает следующие:]],
-   pt_BR = [[ Além das ações padrão, esta página define também as seguintes: ]],
-}
-
 -----------------------------------------------------------------------------
 -----  HISTORY VIEW  --------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -160,7 +147,7 @@ DIFF_SELECTED_VERSIONS = {
 }
 
 -----------------------------------------------------------------------------
------  EDITING  -------------------------------------------------------------
+-----  EDITING: BASIC -------------------------------------------------------
 -----------------------------------------------------------------------------
 
 -- A label for the section of the Edit form that sets page parameters
@@ -183,6 +170,44 @@ EDIT_FORM_TITLE = {
    ru    = "Заголовок",
    pt_BR = "Título da Página",
 }
+
+-- A label for the section of the form where the user will edit the page content
+EDIT_FORM_CONTENT_HDR = {
+   en_US = "Page Content",
+   ru    = "Содержание страницы",
+   pt_BR = "Conteúdo da página",
+}
+
+-- A lable for the section of the form that deals with user id, minor parameter and edit summary
+EDIT_FORM_EDIT_INFO_HDR = {
+   en_US = "About this Edit",
+   ru    = "О ваших изменениях",
+   pt_BR = "Sobre esta edição",
+}
+
+-- A label for the "minor" parameter
+EDIT_FORM_MINOR = {
+   en_US = "Minor Edit",
+   ru    = "Ничего серьезного",
+   pt_BR = "Pequena Edição",
+}
+
+-- A label for the "summary" parameter
+EDIT_FORM_SUMMARY = {
+   en_US = "Edit Summary",
+   ru    = "Резюме",
+   pt_BR = "Sumário da Edição",
+}
+
+--- A label for the honeypot field - the user shouldn't type anything in it
+EDIT_FORM_HONEY = {
+   en_US = "Don't put anything here",
+}
+
+
+-----------------------------------------------------------------------------
+-----  EDITING: FILE UPLOAD  ------------------------------------------------
+-----------------------------------------------------------------------------
 
 -- A label for the "file" parameter for file uploads
 EDIT_FORM_FILE_UPLOAD = {
@@ -208,6 +233,10 @@ EDIT_FORM_FILE_DESCRIPTION = {
 EDIT_FORM_FILE_COPYRIGHT = {
 	en_US = "Copyright",
 }
+
+-----------------------------------------------------------------------------
+-----  EDITING: ADMIN -------------------------------------------------------
+-----------------------------------------------------------------------------
 
 -- The link to show fields for "advanced" page parameteters       
 SHOW_ADVANCED_OPTIONS = {
@@ -248,9 +277,8 @@ EDIT_FORM_TEMPLATES = {
 EDIT_FORM_TRANSLATIONS = {
    en_US = "Translations",
    ru    = "Переводы",
-   pt_BR = "Traduçõesy",
+   pt_BR = "Traduções",
 }
-
 
 -- A label for the "permissions" parameter
 EDIT_FORM_PERMISSIONS = {
@@ -288,37 +316,15 @@ EDIT_FORM_ADMIN_EDIT_UI = {
    ru    = "Редактирование для админа",
 }
 
--- A label for the section of the form where the user will edit the page content
-EDIT_FORM_CONTENT_HDR = {
-   en_US = "Page Content",
-   ru    = "Содержание страницы",
-   pt_BR = "Conteúdo da página",
-}
 
--- A lable for the section of the form that deals with user id, minor parameter and edit summary
-EDIT_FORM_EDIT_INFO_HDR = {
-   en_US = "About this Edit",
-   ru    = "О ваших изменениях",
-   pt_BR = "Sobre esta edição",
-}
+-----------------------------------------------------------------------------
+-----  LOGIN  ---------------------------------------------------------------
+-----------------------------------------------------------------------------
 
--- A label for the "minor" parameter
-EDIT_FORM_MINOR = {
-   en_US = "Minor Edit",
-   ru    = "Ничего серьезного",
-   pt_BR = "Pequena Edição",
-}
-
--- A label for the "summary" parameter
-EDIT_FORM_SUMMARY = {
-   en_US = "Edit Summary",
-   ru    = "Резюме",
-   pt_BR = "Sumário da Edição",
-}
-
---- A label for the honeypot field - the user shouldn't type anything in it
-EDIT_FORM_HONEY = {
-   en_US = "Don't put anything here",
+EDIT_FORM_PLEASE_LOGIN = {
+   en_US = "Enter Your Login",
+   ru    = "Влогнитесь",
+   pt_BR = "Entre com seus dados",
 }
 
 -- A label for the "user" field
@@ -335,13 +341,6 @@ EDIT_FORM_PASSWORD = {
    pt_BR = "Senha",
 }
 
-EDIT_FORM_PLEASE_LOGIN = {
-   en_US = "Login or create a new user",
-   ru    = "Влогнитесь или зарегистрируйтесь",
-   pt_BR = "Entre com seus dados ou crie um novo usuário",
-}
-
-
 -- A note to the user that they must be logged in to edit
 YOU_MUST_BE_LOGGED_IN = {
    en_US = "You must be logged in to edit a page!  Try again!",
@@ -349,21 +348,38 @@ YOU_MUST_BE_LOGGED_IN = {
    pt_BR = "Você precisa estar logado para editar uma página. Por favor tente novamente",
 }
 
-MISSING_POST_TOKEN = {
-   en_US = "Post token is missing." 
+-- Wrong password entered
+INCORRECT_PASSWORD = {
+   en_US = "The user name and password didn't match (or no such user)"
 }
 
-MISSING_POST_TIME_STAMP = {
-   en_US = "Missing post time stamp."
-}
+-----------------------------------------------------------------------------
+-----  POST TOKEN ISSUES ----------------------------------------------------
+-----------------------------------------------------------------------------
 
+-- The post token expired.  This may mean that the user had the edit form
+-- for too long, so it may make more sense to say that the edit form expired
+-- rather than the token.
 YOUR_POST_TOKEN_HAS_EXPIRED = {
    en_US = "Your edit form has expired."
 }
 
+-- The following messages shouldn't be shown to a normal user.
+-- It's ok not to translate them, probably.
+
+MISSING_POST_TOKEN = {
+   en_US = "Post token is missing." 
+}
+MISSING_POST_TIME_STAMP = {
+   en_US = "Missing post time stamp."
+}
 YOUR_POST_TOKEN_IS_INVALID = {
    en_US = "Your post token is invalid."
 }
+
+-----------------------------------------------------------------------------
+-----  PREVIEW --------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 -- A phrase saying that the user is previewing unsaved changes, used in the Preview mode.
 PREVIEWING_UNSAVED_CHANGES = {
@@ -424,7 +440,6 @@ BY_AUTHOR2 = { "by $author2",
 -----  CHECKING LUA CODE  ---------------------------------------------------
 -----------------------------------------------------------------------------
 
-
 -- A message saying that a chunk of Lua code parses correctly.
 THIS_LUA_CODE_PARSES_CORRECTLY = {
    en_US = "This Lua code parses correctly.",
@@ -436,7 +451,7 @@ THIS_LUA_CODE_HAS_PROBLEMS = {
 }
 
 -----------------------------------------------------------------------------
------  MISCELLANEOUS  -------------------------------------------------------
+-----  RECENT EDITS  --------------------------------------------------------
 -----------------------------------------------------------------------------
 
 RECENT_EDITS_TO_SITE = {
@@ -445,10 +460,6 @@ RECENT_EDITS_TO_SITE = {
 
 RECENT_EDITS_TO_PAGE = {
    en_US = "Recent edits to $site_title: $title"
-}
-
-INCORRECT_PASSWORD = {
-   en_US = "Logging incorrect"
 }
 
 RSS_FOR_EDITS_TO_THIS_WIKI = {
@@ -471,6 +482,11 @@ SMALL_RSS_ICON = {
    ru    = "Maленький значок RSS"
 }
 
+-----------------------------------------------------------------------------
+-----  REGISTRATION  --------------------------------------------------------
+-----------------------------------------------------------------------------
+
+-- User agrees to terms of service.
 I_AGREE_TO_TERMS_OF_SERVICE = {
    en_US = "I have read to and agree to the <a href='$url'>Terms of Service</a><br />"
 }
@@ -480,6 +496,7 @@ ACCOUNT_ACTIVATION = {
    en_US = "Account activation"
 }
 
+-- The body of the account activation email
 ACTIVATION_MESSAGE_BODY = {
    en_US = [[
 In order to activate your account at $site_name, please click the following link.
@@ -501,20 +518,65 @@ ACTIVATION_MESSAGE_SENT = {
               Please check your email use the link in the message to activate your account.]]
 }
 
-EDIT_FORM_R_USERNAME = {
+
+-- Form label for new user name
+EDIT_FORM_NEW_USERNAME = {
    en_US = "User name"
 }
 
-EDIT_FORM_R_PASSWORD = {
+-- Form label for new password
+EDIT_FORM_NEW_PASSWORD = {
    en_US = "Password"
 }
 
-EDIT_FORM_R_CONFIRM = {
+EDIT_FORM_NEW_EMAIL = {
+   en_US = "Email"
+}
+
+-- Form label for confirming new password
+EDIT_FORM_NEW_PASSWORD_CONFIRM = {
    en_US = "Confirm Password"
+}
+
+TWO_VERSIONS_OF_NEW_PASSWORD_DO_NOT_MATCH = {
+   en_US = "Two version of the new password do not match."
+}
+
+NEW_EMAIL_NOT_VALID = {
+   en_US = "The email you entered is not valid."
+}
+
+USERNAME_TAKEN = {
+   en_US = "This user name is already taken."
 }
 
 SUCCESSFULLY_CREATED_ACCOUNT = {
    en_US = "Successfully created your new account."
 }
+
+
+PLEASE_CONFIRM_PASSWORD = {
+   en_US = "Please confirm new password"
+}
+
+COULD_NOT_CONFIRM_NEW_PASSWORD = {
+   en_US = "The password you entered is different from the one given originally."
+}
+
+
+
+-----------------------------------------------------------------------------
+-----  CAPTCHA  --------------------------------------------------------
+-----------------------------------------------------------------------------
+
+COULD_NOT_VERIFY_CAPTCHA = {
+   en_US = "Could not verify captcha:"
+}
+
+-- A note telling the user that they need to enter captcha because they are not logged in.
+ANONYMOUS_USERS_MUST_ENTER_CAPTCHA = {
+   en_US = "Anonymous users must enter <a href='http://en.wikipedia.org/wiki/Captcha'>captcha</a> below."
+}
+
 
 ]=============]

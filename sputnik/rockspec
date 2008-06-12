@@ -1,7 +1,7 @@
 package = "Sputnik"
-version = "8.06.11-0"
+version = "8.06.12-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/sputnik-8.06.11.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/sputnik-8.06.12.tar.gz",
 }
 description = {
    summary    = "A wiki and a framework for wiki-like applications",

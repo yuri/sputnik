@@ -98,9 +98,9 @@ function actions.post(node, request, sputnik)
    for k,v in pairs(request.params) do
       local action = string.match(k, "^action_(.*)$")
       if action then
-         function err_msg(err_code)
+         function err_msg(err_code, message)
             request.try_again = "true"
-            node:post_error(node.translator.translate_key(err_code))
+            node:post_error(node.translator.translate_key(err_code).. (message or ""))
          end
          --sputnik.logger:debug(action)
          --sputnik.logger:debug(request.params.post_token)
@@ -116,7 +116,7 @@ function actions.post(node, request, sputnik)
          if not request.user and sputnik.captcha then
             local captcha_ok, err = sputnik.captcha:verify(request.POST, request.wsapi_env.REMOTE_ADDR)
             if not captcha_ok then
-               err_msg("COULD_NOT_VERIFY_CAPTCHA"..err)
+               err_msg("COULD_NOT_VERIFY_CAPTCHA", err)
             end
          end
 

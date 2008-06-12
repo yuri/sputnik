@@ -52,7 +52,7 @@ function new(params)
    local new_versium = {dir=params[1], node_table={}}
    local new_versium = setmetatable(new_versium, FileDirVersium_mt)
    for x in lfs.dir(new_versium.dir) do
-      if x:len() > 2 then
+      if not (x=="." or x=="..") then
          new_versium.node_table[util.fs_unescape_id(x)] = 1
       end
    end

@@ -1,5 +1,6 @@
 package    = 'ReCaptcha'
 versions   = {
+   {'8.06.12', 'June 12, 2008', 'ensuring error-less return when post fields are missing'},
    {'8.05.26', 'May 26, 2008', 'the initial release'},
 }
 summary    = 'A Lua interface to reCaptcha.'

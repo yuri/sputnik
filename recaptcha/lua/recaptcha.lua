@@ -75,6 +75,12 @@ end
 -----------------------------------------------------------------------------
 function ReCaptcha:verify(params, remote_ip)
    require("socket.http")
+   if not params.recaptcha_challenge_field then
+      return false, "recaptcha_challenge_field not submitted"
+   elseif not params.recaptcha_response_field then
+      return false, "recaptcha_response_field not submitted"
+   end
+
    local result, err = socket.http.request(
                           "http://api-verify.recaptcha.net/verify",
                           "privatekey="..self.private

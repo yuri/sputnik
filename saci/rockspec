@@ -1,7 +1,7 @@
 package = "SACI"
-version = "8.05.24-0"
+version = "8.06.11-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/saci-8.05.24.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/saci-8.06.11.tar.gz",
 }
 description = {
    summary    = "Saci is a document-oriented hierarchical storage system",

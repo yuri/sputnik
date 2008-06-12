@@ -1,5 +1,6 @@
 package    = 'Sputnik'
 versions   = {
+   {'8.06.11', 'June 11, 2008', 'added the registration system with recaptcha'},
    {'8.05.24', 'May 24, 2008', 'test release of Earth Sputnik'},
    {'8.03.08', 'March 8, 2008', 'moved to petrodoc, plus some bug fixes'},
    {'8.02.16', 'Feb. 16, 2008', 'made Sputnik to work with Xavante out of the box'},

@@ -1,6 +1,7 @@
 package    = 'SACI'
 versions   = {
-   {'8.05.24', 'May 24, 2008', 'Test release of Saci'},
+   {'8.06.11', 'June 11, 2008', 'allowing anonymous revisions'},
+   {'8.05.24', 'May 24, 2008', 'making a test release of Saci'},
 }
 summary    = 'Saci is a document-oriented hierarchical storage system'
 maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'

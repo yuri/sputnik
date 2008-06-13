@@ -287,7 +287,7 @@ function petrodoc(name, spec, revision, server)
                          end
                       end
    if not spec.build then 
-      spec.build = string.format(BUILD_TEMPLATE, make_module_map(name.."/lua", name.."/lua/"))
+      spec.build = string.format(BUILD_TEMPLATE, make_module_map(name.."/lua", name:gsub("%-", "%%-").."/lua/"))
    end
 
    -- generate the documentation page

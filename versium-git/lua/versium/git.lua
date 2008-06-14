@@ -41,7 +41,8 @@ local GitVersium_mt = {__metatable={}, __index=GitVersium}
 -----------------------------------------------------------------------------
 function new(params)
    assert(params[1], "the first parameter is required")
-   local new_versium = {dir=params[1], node_table={}}
+   local new_versium = {dir=params[1], git_command=params.command or "git",
+                        node_table={}}
    local new_versium = setmetatable(new_versium, GitVersium_mt)
    for x in lfs.dir(new_versium.dir) do
       if not (x=="." or x=="..") then
@@ -57,8 +58,8 @@ end
 -----------------------------------------------------------------------------
 function GitVersium:git(...)
    lfs.chdir(self.dir)
-   local command = "git "..table.concat({...}, " ")
-   print(command)
+   local command = self.git_command.." "..table.concat({...}, " ")
+
    local pipe = io.popen(command)
    local result = {}
    return pipe:read("*all")
@@ -178,6 +179,10 @@ function GitVersium:save_version(id, data, author, comment, extra, timestamp)
    local node_path = self.dir.."/"..util.fs_escape_id(id)
    util.write_file(self.dir.."/"..util.fs_escape_id(id), data, id)
 
+   if not self:node_exists(id) then
+      self:git("add", id)
+   end
+
    if comment=="" or comment==nil then
       comment = "(no comment)"
    end
@@ -195,8 +200,14 @@ function GitVersium:save_version(id, data, author, comment, extra, timestamp)
       author = "anonymous" 
    end
    author = author.." <"..author.."@sputnik>"
-   local message = self:git("commit", "-F ", tmp_file, 
-                                                 string.format("--author %q", author), id)
+   local message
+   if self:node_exists(id) then
+      message = self:git("commit", "-F ", tmp_file, 
+                                   string.format("--author %q", author), id)
+   else
+      message = self:git("commit", "-F ", tmp_file, id)
+      new_versium.node_table[id] = 1
+   end
    if message:sub(1,14) == "Created commit" then
       return message:sub(15,22)
    else
@@ -233,7 +244,7 @@ function GitVersium:get_node_history(id, prefix)
    local history_as_lua = "commits = {}\n"
                           ..self:git("log", format, filename)
                           .."\nreturn commits"
-   print(history_as_lua)
+
    local history = loadstring(history_as_lua)()
    local divider="^(.*)%-%-%-extra%-fields%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-(.*)$"
    for i, commit in ipairs(history) do
@@ -241,16 +252,16 @@ function GitVersium:get_node_history(id, prefix)
       local before, after = commit.comment:match(divider)
       if before then
          commit.comment = before
-         print("[[", after)
+
          local f, err=loadstring(after)
-         if err then print(err) end
+         if err then return nil, err end
          setfenv(f, {})
          pcall(f)
          for k,v in pairs(getfenv(f)) do
             commit[k] = v
          end
       end
-      print(commit.comment)
+
       commit.author = commit.author:gsub("@sputnik$", "")
       if commit.author == "anonymous" then
          commit.author = ""

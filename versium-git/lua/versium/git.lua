@@ -206,7 +206,7 @@ function GitVersium:save_version(id, data, author, comment, extra, timestamp)
                                    string.format("--author %q", author), id)
    else
       message = self:git("commit", "-F ", tmp_file, id)
-      new_versium.node_table[id] = 1
+      self.node_table[id] = 1
    end
    if message:sub(1,14) == "Created commit" then
       return message:sub(15,22)

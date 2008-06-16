@@ -66,7 +66,10 @@ function GitVersium:git(...)
    -- note that if the command files, the error will go to the error stream,
    -- we won't see it.  all we'll know is that we will get "" when reading
    -- the output.
-   return io.popen(command):read("*all")
+   local pipe = io.popen(command)
+   local output = pipe:read("*all")
+   pipe:close()
+   return output
 end
 
 -----------------------------------------------------------------------------

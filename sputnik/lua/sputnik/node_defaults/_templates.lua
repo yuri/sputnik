@@ -182,8 +182,8 @@ COMPLETE_HISTORY = [===[
 
 DIFF = [===[
         <ul> 
-         <li><a $link1><ins class='diffmod'>$version1</ins></a>_(BY_AUTHOR1)</li>
-         <li><a $link2><del class='diffmod'>$version2</del></a>_(BY_AUTHOR2)</li>
+         <li><a $link1><ins class='diffmod'>$version1</ins></a> _(BY_AUTHOR1)</li>
+         <li><a $link2><del class='diffmod'>$version2</del></a> _(BY_AUTHOR2)</li>
         </ul>
         $diff
 ]===]

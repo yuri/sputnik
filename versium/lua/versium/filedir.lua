@@ -215,9 +215,7 @@ function FileDirVersium:save_version(id, data, author, comment, extra, timestamp
    local new_version_id = string.format("%06d", #history + 1)
    util.write_file(node_path.."/"..new_version_id, data, id)
    -- generate and save the new index
-   local t = os.date("*t")
-   timestamp = timestamp or string.format("%02d-%02d-%02d %02d:%02d:%02d", 
-                                          t.year, t.month, t.day, t.hour, t.min, t.sec)
+   timestamp = os.date("!%Y-%m-%d %H:%M:%S", timestamp) -- default to current time   
    local extra_buffer = ""
    for k,v in pairs(extra or {}) do
       extra_buffer = extra_buffer..string.format("\n [%q] = %q, ", k, v)
@@ -250,7 +248,6 @@ function FileDirVersium:get_node_history(id, prefix)
 
    local raw_history = get_raw_history(self.dir, id)
    assert(raw_history:len() > 0)
-   local history = parse_history(raw_history, prefix)
-   return history
+   return parse_history(raw_history, prefix)
 end
 

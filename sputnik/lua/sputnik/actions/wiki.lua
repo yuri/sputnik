@@ -1,17 +1,26 @@
+-----------------------------------------------------------------------------
+-- Provides functions for collection of basic actions needed by a Sputnik to
+-- serve as a wiki.
+--
+-- (c) 2007, 2008  Yuri Takhteyev (yuri@freewisdom.org)
+--
+-- License: MIT/X, see http://sputnik.freewisdom.org/en/License
+-----------------------------------------------------------------------------
 module(..., package.seeall)
 
 require("cosmo")
+require("versium.util")
 local util = require("sputnik.util")
 local html_forms = require("sputnik.util.html_forms")
 local date_selector = require("sputnik.util.date_selector")
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Creates the HTML for the navigation bar.
 --
 --  @param node          A node table.
 --  @param sputnik       The Sputnik object.
 --  @return              An HTML string.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function get_nav_bar (node, sputnik)
    assert(node)
    local nav = sputnik:get_node(sputnik.config.DEFAULT_NAVIGATION_BAR).content.NAVIGATION
@@ -61,21 +70,20 @@ function get_nav_bar (node, sputnik)
          }
 end
 
----------------------------------------------------------------------------------------------------
---     Actions
----------------------------------------------------------------------------------------------------
-actions = {}
 
----------------------------------------------------------------------------------------------------
---     first the POST actions - those are a bit trickier
----------------------------------------------------------------------------------------------------
+--x--------------------------------------------------------------------------
+-- Checks the post parameters are OK.
+-----------------------------------------------------------------------------
 
-function check_post_parameters(node, request, sputnik)
+local function check_post_parameters(node, request, sputnik)
    local token = request.params.post_token
    local timestamp = request.params.post_timestamp
-   if not token then return false, "MISSING_POST_TOKEN"
-   elseif not timestamp then return false, "MISSING_POST_TIME_STAMP"
-   elseif (os.time()-tonumber(timestamp)) > (15 * 60) then 
+   local timeout = (sputnik.config.POST_TOKEN_TIMEOUT or 15) * 60
+   if not token then
+      return false, "MISSING_POST_TOKEN"
+   elseif not timestamp then
+      return false, "MISSING_POST_TIME_STAMP"
+   elseif (os.time()-tonumber(timestamp)) > timeout then 
       return false, "YOUR_POST_TOKEN_HAS_EXPIRED"
    elseif  sputnik.auth:timestamp_token(timestamp) ~= token then 
       return false, "YOUR_POST_TOKEN_IS_INVALID"
@@ -84,16 +92,30 @@ function check_post_parameters(node, request, sputnik)
    end
 end
 
----------------------------------------------------------------------------------------------------
--- All "post" requests are routed through the same action ("post"). The reason for this is that we 
--- localize button labels, and their values are not predictable for this reason. Instead, we _name_ 
--- of the button to infer the action. So, to request node.save via post, we actually request
--- node.post&action_save=foo, where foo could be anything.
+
+--=========================================================================--
+--     Actions - this is what this module is all about                     --
+--=========================================================================--
+actions = {}
+
+--=========================================================================--
+-- First the post actions - those are a bit tricker                        --
+--=========================================================================--
+
+-----------------------------------------------------------------------------
+-- Handles all post actions.  All "post" requests are routed through this
+-- action ("post"). The reason for this is that we localize button labels,
+-- and their values are not predictable for this reason. Instead, we we look
+-- at the _name_ the button to infer the action. So, to request node.save via
+-- post, we actually request node.post&action_save=foo, where foo could be
+-- anything.
 --
---  @param request       We'll look for request.params.action_* to figure out what we should be 
---                       actually doing.
---  @return              HTML (whatever is returned by the action that it dispatches to).
----------------------------------------------------------------------------------------------------
+-- @param node
+-- @param request        We'll look for request.params.action_* to figure out
+--                       what we should be actually doing.
+-- @return               HTML (whatever is returned by the action that it
+--                       dispatches to).
+-----------------------------------------------------------------------------
 function actions.post(node, request, sputnik)
    for k,v in pairs(request.params) do
       local action = string.match(k, "^action_(.*)$")
@@ -102,9 +124,6 @@ function actions.post(node, request, sputnik)
             request.try_again = "true"
             node:post_error(node.translator.translate_key(err_code).. (message or ""))
          end
-         --sputnik.logger:debug(action)
-         --sputnik.logger:debug(request.params.post_token)
-         --sputnik.logger:debug(request.params.post_timestamp)
 
          -- check the validity of the request
          local ok, err = check_post_parameters(node, request, sputnik)
@@ -130,16 +149,15 @@ function actions.post(node, request, sputnik)
    end 
 end
 
----------------------------------------------------------------------------------------------------
--- Saves the node submitted as a set of cgi params, then returns its HTML representation.
+-----------------------------------------------------------------------------
+-- Saves/updates the node based on query params, then redirects to the new
+-- version of the node.
 --
---  @param request       request.params fields are used to update the node.
---  @param sputnik       The sputnik table is used to save and reload the node.  
----------------------------------------------------------------------------------------------------
+-- @param node
+-- @param request        request.params fields are used to update the node.
+-- @param sputnik        used to save and reload the node.  
+-----------------------------------------------------------------------------
 function actions.save(node, request, sputnik)
-   for k,v in pairs(request.params) do
-      sputnik.logger:debug("~~ "..k)
-   end
    if request.try_again then
       return node.actions.edit(node, request, sputnik)
    else
@@ -147,96 +165,120 @@ function actions.save(node, request, sputnik)
       new_node = sputnik:activate_node(new_node)
       local extra = {minor=request.params.minor}
       if not request.user then
-         extra.ip=request.wsapi_env.REMOTE_ADDR
+         extra.ip=request.wsapi_env.REMOTE_ADDR -- track IPs for anonymous
       end
       new_node:save(request.user, request.params.summary or "", extra)
-      new_node:redirect(sputnik:make_url(node.name))
-      -- Redirect to the node
+      new_node:redirect(sputnik:make_url(node.name)) -- Redirect to the node
       return new_node.wrappers.default(new_node, request, sputnik)
    end
 end
 
----------------------------------------------------------------------------------------------------
--- Same as "show_content" but updates the node with values in parameters before displaying it 
--- (would be used by both AHAH preview and server-side preview).  Note that this action is, 
--- strictly speaking, idempotent and can be called via GET.  However, it's simpler to put it
--- together with save.
+-----------------------------------------------------------------------------
+-- Updates the node with values in query parameters, then calls show_content.
+-- This has the effect of showing us what the node would look like if we
+-- saved it.  Note that this action is, strictly speaking, idempotent and can
+-- be called via GET.  However, it's simpler to do it with post - for
+-- symmetry with "save".
 --
---  @param request       request.params fields are used to update the node.
---  @param sputnik       The sputnik table is used to reload the node.
----------------------------------------------------------------------------------------------------
+-- @param node
+-- @param request        request.params fields are used to update the node.
+-- @param sputnik        used to access update functionality.
+-----------------------------------------------------------------------------
 function actions.preview_content(node, request, sputnik)
    local new_node = sputnik:update_node_with_params(node, request.params)
    sputnik:activate_node(new_node)
    return new_node.actions.show_content(new_node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
--- Returns HTML showing a preview of the node (based on request.params) and also a form to continue 
--- editing the node (the node is _not_ saved).
+-----------------------------------------------------------------------------
+-- Returns HTML showing a preview of the node (based on request.params) and
+-- also a form to continue editing the node.  (The node is _not_ saved.)
 --
--- @param request       request.params fields are used to update the node.
--- @param sputnik       The sputnik table is used to save and reload the node.  
----------------------------------------------------------------------------------------------------
+-- @param request        request.params fields are used to update the node.
+-- @param sputnik        passed to preview_content().
+-----------------------------------------------------------------------------
 function actions.preview(node, request, sputnik)
    request.preview = actions.preview_content(node, request, sputnik)
    return actions.edit(node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
---     now the GET actions - those should all be idempotent
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- Handles the clicking of the "cancel" button from the edit form.  This
+-- action is idempotent and can be called via GET, but is submitted via POST,
+-- for symmetry with "save".
+--
+-- @param node
+-- @param request        not used.
+-- @param sputnik        not used.
+-----------------------------------------------------------------------------
+function actions.cancel(node, request, sputnik)
+   node:redirect(node.name) -- redirect to "show"
+   return node.wrappers.default(node, request, sputnik)
+end
 
----------------------------------------------------------------------------------------------------
--- Returns just the content of the node, without the navigation bar, the tool bars, etc.
---  
--- @param request       (Not used - all relevant parameters are already in the node)
--- @param sputnik       Used to wikify the node.
----------------------------------------------------------------------------------------------------
+
+--=========================================================================--
+-- Now the GET actions - those should all be idempotent                    --
+--=========================================================================--
+
+-----------------------------------------------------------------------------
+-- Returns just the content of the node, without the navigation bar, the tool
+-- bars, etc.
+-- 
+-- @param node
+-- @param request        not used.
+-- @param sputnik        not used.
+-----------------------------------------------------------------------------
 function actions.show_content(node, request, sputnik)
    return node.markup.transform(node.content or "")
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns the complete HTML for the node.
 --
--- @param request       (Not used - all relevant parameters are already in the node)
--- @param sputnik       
----------------------------------------------------------------------------------------------------
+-- @param node
+-- @param request        passed to show_content.
+-- @param sputnik        passed to show_content.
+-----------------------------------------------------------------------------
 function actions.show(node, request, sputnik)
    request.is_indexable = true
    node.inner_html = node.actions.show_content(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
-function actions.cancel(node, request, sputnik)
-   -- Cancel the editing of this node
-   node:redirect(node.name)
-   return node.wrappers.default(node, request, sputnik)
-end
-
----------------------------------------------------------------------------------------------------
--- Returns history of changes for _all_ nodes, by setting a request.show_complete_history and then 
--- forwarding to actions.history.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- Returns history of changes for _all_ nodes. 
+--
+-- @param node
+-- @param request        not used.
+-- @param sputnik        not used.
+-----------------------------------------------------------------------------
 function actions.complete_history(node, request, sputnik)
    request.show_complete_history = 1
+   -- let the "history" action actually do all the work.
    return node.actions.history(node, request, sputnik)  
 end
 
----------------------------------------------------------------------------------------------------
--- Returns the history of changes by users who created their accounts only recently.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- Returns the history of changes by users who created their accounts only
+-- recently.
+--
+-- @param node
+-- @param request        passed to complete_history().
+-- @param sputnik        passed to complete_history().
+-----------------------------------------------------------------------------
 function actions.edits_by_recent_users(node, request, sputnik)
    request.params.recent_users_only = 1
    return actions.complete_history(node, request, sputnik)  
 end
 
----------------------------------------------------------------------------------------------------
--- Return HTML representing history of this node.
+-----------------------------------------------------------------------------
+-- Returns the history of this node as HTML.
 --
--- @param request       request.params.date is an optional filter.
----------------------------------------------------------------------------------------------------
+-- @param node
+-- @param request        request.params.date is an optional filter.
+-- @param sputnik        used to access history.
+-----------------------------------------------------------------------------
 function actions.history(node, request, sputnik)
    local history = sputnik:get_history(node.name, 200, request.params.date)
    node.inner_html = cosmo.f(node.templates.HISTORY){
@@ -253,16 +295,18 @@ function actions.history(node, request, sputnik)
                               if author_display == "" then
                                  author_display = edit.ip or "Anonymous"
                               end
-                              if (not request.params.recent_users_only) or sputnik.auth:user_is_recent(edit.author) then
+                              if (not request.params.recent_users_only)
+                                  or sputnik.auth:user_is_recent(edit.author) then
                                  cosmo.yield{
                                     version_link = node.links:show{ version = edit.version },
                                     version      = edit.version,
-                                    timestamp    = edit.timestamp,
+                                    date         = versium.util.format_time(edit.timestamp, "%Y/%m/%d"),
+                                    time         = versium.util.format_time(edit.timestamp, "%H:%M GMT"),
                                     if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
                                     title        = node.name,
                                     author_link  = sputnik:make_link(author_display),
                                     author       = author_display,
-                                    if_summary   = cosmo.c(edit.comment:len() > 0){ summary = edit.comment },
+                                    if_summary   = cosmo.c(edit.comment:len() > 0){ summary = util.escape(edit.comment) },
                                  }
                               end
                            end
@@ -274,11 +318,11 @@ function actions.history(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Return HTML representing history of edits to the whole wiki.
 --
 -- @param request       request.params.date is an optional filter.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.complete_history(node, request, sputnik)
    local edits = sputnik:get_complete_history(limit, request.params.date)
 
@@ -339,13 +383,13 @@ function actions.complete_history(node, request, sputnik)
 end
 
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 --     Now all the actions that return XML
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns RSS of recent changes to this node or all nodes.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.rss(node, request, sputnik)
    local title, history
    if request.show_complete_history then
@@ -384,26 +428,26 @@ function actions.rss(node, request, sputnik)
    }, "application/rss+xml"
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns RSS for the whole site.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.complete_history_rss(node, request, sputnik)
    request.show_complete_history = 1
    return actions.rss(node, request, sputnik)  
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns RSS for edits done by recently registered users.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.rss_for_edits_by_recent_users(node, request, sputnik)
    request.show_complete_history = 1
    request.params.recent_users_only = 1
    return actions.rss(node, request, sputnik)  
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns a list of nodes.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.list_nodes(node, request, sputnik)
    local node_names = sputnik:get_node_names()
    table.sort(node_names)
@@ -430,9 +474,9 @@ function actions.list_nodes(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns an XML sitemap for this wiki.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.show_sitemap_xml(node, request, sputnik)
    local node_names = sputnik:get_node_names()
    return cosmo.f(node.templates.SITEMAP_XML){
@@ -460,13 +504,13 @@ function actions.show_sitemap_xml(node, request, sputnik)
    }, "text/xml"
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 --     Now the few remaining things
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows HTML for the standard Edit field.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.edit (node, request, sputnik, etc)
    etc = etc or {} -- additional parameters
 
@@ -567,46 +611,37 @@ function actions.edit (node, request, sputnik, etc)
    return node.wrappers.default(node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows HTML of diff between two versions of the node.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.diff(node, request, sputnik)
-   local other_node_info = sputnik.saci:get_node_info(node.id, request.params.other)
    local other_node_data = sputnik.saci:get_node(node.id, request.params.other)
-   local this_node_info  = sputnik.saci:get_node_info(node.id, request.params.version)
-
    local diff = ""
    for field, tokens in pairs(node:diff(other_node_data)) do
-      diff = diff.."\n\n<h2>"..field.."</h2>\n\n"
-      local diff_buffer = ""
-      for i, token in ipairs(tokens) do
-         token[1] = sputnik:escape(token[1])
-         if token[2] == "in" then
-            diff_buffer = diff_buffer.."<ins>"..token[1].."</ins>"
-         elseif token[2] == "out" then
-            diff_buffer = diff_buffer.."<del>"..token[1].."</del>"
-         else 
-            diff_buffer = diff_buffer..token[1]
-         end
-      end
-      diff = diff.."<pre><code>"..diff_buffer.."</code></pre>\n"
+      diff = diff.."<pre><code>"..tokens:to_html().."</code></pre>\n"
    end
+
+   local other_node_info = sputnik.saci:get_node_info(node.id, request.params.other)
+   local this_node_info  = sputnik.saci:get_node_info(node.id, request.params.version)
    node.inner_html  = cosmo.f(node.templates.DIFF){  
                          version1 = request.params.version,
                          link1    = node.links:show{version=request.params.version},
                          author1  = this_node_info.author,
+                         time1    = this_node_info.timestamp,
                          version2 = request.params.other,
                          link2    = node.links:show{version=request.params.other},
                          author2  = other_node_info.author,
+                         time2    = this_node_info.timestamp,
                          diff     = diff, 
                       }
+   request.is_diff = true
    return node.wrappers.default(node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the raw content of the node with content-type set to text/plain (note that unlike 
 -- actions.raw, this method only returns the _content_ of the node, not its metadata).
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.raw_content(node, request, sputnik)
    if node:check_permissions(request.user, request.action) then
       return node.raw_values.content, "text/plain"
@@ -615,9 +650,9 @@ function actions.raw_content(node, request, sputnik)
    end
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the underlying string representation of the node as plain text.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.raw(node, request, sputnik)
    if node:check_permissions(request.user, request.action) then
       return node.data or "No source available.", "text/plain"
@@ -626,26 +661,26 @@ function actions.raw(node, request, sputnik)
    end
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the _content_ of the node shown as 'code'.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.show_content_as_code(node, request, sputnik)
    local escaped = sputnik:escape(node.content) 
    return "<pre><code>"..escaped.."</code></pre>"
 end
 
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the complete page with it's content shown as 'code'.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.code(node, request, sputnik)
    node.inner_html = actions.show_content_as_code(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the content of the node as Lua code, checking whether it parses.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.show_content_as_lua_code(node, request, sputnik)
 
    local DOLLAR_REPLACEMENT = "$<span></span>"
@@ -682,9 +717,9 @@ function actions.show_content_as_lua_code(node, request, sputnik)
           }
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the HTML for an error message when a non-existent action is requested.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.action_not_found(node, request, sputnik)
    node.inner_html = cosmo.f(node.templates.ACTION_NOT_FOUND){
                         title             = node.title,
@@ -698,9 +733,9 @@ function actions.action_not_found(node, request, sputnik)
 end
 
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the list of registered users
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.show_users(node, request, sputnik)
 
    local TEMPLATE = [[
@@ -720,9 +755,9 @@ function actions.show_users(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows login form.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.show_login_form(node, request, sputnik)
    if (request.params.user and request.user) then -- we've just logged in the user
       node:redirect(sputnik:make_url(node.name, prev))
@@ -757,24 +792,24 @@ function actions.show_login_form(node, request, sputnik)
 end
 
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the version of sputnik.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function actions.sputnik_version(node, request, sputnik)
    node.inner_html = sputnik.config.VERSION or "&lt;no version information&gt;"
    return node.wrappers.default(node, request, sputnik)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Shows the HTML for an error message when a non-existent action is requested.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 wrappers = {}
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Wraps the HTML content in bells and whistles such as the navigation bar, the header, the footer,
 -- etc.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function wrappers.default(node, request, sputnik) 
 
    for i, url in ipairs(sputnik.config.STYLESHEETS) do
@@ -783,6 +818,7 @@ function wrappers.default(node, request, sputnik)
 
    local is_old = request.params.version
                   and sputnik.saci:get_node_info(node.id).version ~= request.params.version
+                  and not request.is_diff
 
    return cosmo.f(node.templates.MAIN){  
       site_title       = sputnik.config.SITE_TITLE or "",

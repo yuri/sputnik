@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
--- Implements Versium API using using git as the backend.
+-- Implements Versium API using git as the backend.
 --
 -- (c) 2007, 2008  Yuri Takhteyev (yuri@freewisdom.org)
 -- License: MIT/X, see http://sputnik.freewisdom.org/en/License
@@ -12,7 +12,7 @@ local util = require("versium.util")
 local errors = require("versium.errors")
 
 -----------------------------------------------------------------------------
--- A table that describes what this versium implementation can and cannot do.
+-- A table that describes what this versium implementation can do.
 -----------------------------------------------------------------------------
 capabilities = {
    can_save = true,
@@ -22,49 +22,52 @@ capabilities = {
 }
 
 -----------------------------------------------------------------------------
--- A table representing the class.
+-- A table representing the class and it's metatable.
 -----------------------------------------------------------------------------
 local GitVersium = {}
-
--- And it's metatable
 local GitVersium_mt = {__metatable={}, __index=GitVersium}
 
-
 -----------------------------------------------------------------------------
--- Instantiates a new GitVersium object that represents a connection to
+-- Instantiates a new GitVersium object that represents access to
 -- a storage system.  This is the only function that this module exports.
 -- 
--- @param params         a table of params (we expect to find as the first
+-- @param params         a table of params; we expect to find as the first
 --                       entry the path to the directory where we'll be
---                       storing the data.
+--                       storing the data, and optionally the command to use
+--                       for calling git (params.git_command).
 -- @return               a new versium object.
 -----------------------------------------------------------------------------
 function new(params)
    assert(params[1], "the first parameter is required")
-   local new_versium = {dir=params[1], git_command=params.command or "git",
-                        node_table={}}
-   local new_versium = setmetatable(new_versium, GitVersium_mt)
-   for x in lfs.dir(new_versium.dir) do
-      if not (x=="." or x=="..") then
-         new_versium.node_table[util.fs_unescape_id(x)] = 1
+   -- Make a table of existing nodes.  Note that since we do this only in the
+   -- beginning and only update it later with nodes that we create, we won't
+   -- pick up any new nodes that were created bypassing this instance.
+   local node_table = {}
+   for filename in lfs.dir(params[1]) do
+      if filename~="." and filename~=".." then
+         node_table[util.fs_unescape_id(filename, {keep_slash=true})] = 1
       end
    end
-   return new_versium 
+   local new_versium = { dir=params[1], node_table=node_table,
+                         git_command=params.command or "git" }
+   return setmetatable(new_versium, GitVersium_mt)
 end
 
-
------------------------------------------------------------------------------
--- Runs a git command.
+--x--------------------------------------------------------------------------
+-- Runs a git command in current directory.
+--
+-- @param ...            Any number of strings, which are concatenated with
+--                       spaces between them and attached to the git command.
+-- @return               The string returned by git on stdout.
 -----------------------------------------------------------------------------
 function GitVersium:git(...)
    lfs.chdir(self.dir)
    local command = self.git_command.." "..table.concat({...}, " ")
-
-   local pipe = io.popen(command)
-   local result = {}
-   return pipe:read("*all")
+   -- note that if the command files, the error will go to the error stream,
+   -- we won't see it.  all we'll know is that we will get "" when reading
+   -- the output.
+   return io.popen(command):read("*all")
 end
-
 
 -----------------------------------------------------------------------------
 -- Returns the data stored in the node as a string and a table representing
@@ -192,7 +195,7 @@ function GitVersium:save_version(id, data, author, comment, extra, timestamp)
          comment = comment..string.format("%s=%q\n", k, v)
       end
    end
-   local tmp_file="/tmp/foo8980980"
+   local tmp_file=os.tmpname()
    util.write_file(tmp_file, comment, id)
 
    -- commit
@@ -252,7 +255,7 @@ function GitVersium:get_node_history(id, prefix)
       local before, after = commit.comment:match(divider)
       if before then
          commit.comment = before
-
+         commit.timestamp = os.date("!%Y-%m-%d %H:%M:%S", commit.timestamp)
          local f, err=loadstring(after)
          if err then return nil, err end
          setfenv(f, {})

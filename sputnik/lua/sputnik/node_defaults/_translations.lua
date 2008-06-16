@@ -131,9 +131,9 @@ CHOOSE_ANOTHER_MONTH = {
 
 -- A phrase introducing the author of the edit
 BY_AUTHOR = {
-   en_US = "by <a $author_link>$author</a>",
-   ru    = "<a $author_link>$author</a>",
-   pt_BR = "por <a $author_link>$author</a>",
+   en_US = "by <a $author_link>$author</a> on $date at $time",
+   ru    = "<a $author_link>$author</a> ($date, $time)",
+   pt_BR = "por <a $author_link>$author</a> ($date, $time)",
 }
 
 -- Diff link in history
@@ -423,16 +423,16 @@ CANCEL = {
 
 -- In diff mode, this is the phrase introducing the user name of the first author
 BY_AUTHOR1 = {
-   en_US = "by $author1",
-   ru    = "(автор: $author1)", 
-   pt_BR = "por $author1",
+   en_US = "by $author1 at $time1",
+   ru    = "(автор: $author1, время: $time1)", 
+   pt_BR = "por $author1 ($time1)",
 }
 
 -- In diff mode, this is the phrase introducing the user name of the second author
 BY_AUTHOR2 = { "by $author2",
-   en_US = "by $author2",
-   ru    = "(автор: $author2)", 
-   pt_BR = "por $author2",
+   en_US = "by $author2  at $time2",
+   ru    = "(автор: $author2, время: $time2)", 
+   pt_BR = "por $author2 ($time2)",
 }
 
 

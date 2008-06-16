@@ -8,6 +8,7 @@
 
 module(..., package.seeall)
 require("saci.sandbox")
+require("diff")
 
 --x--------------------------------------------------------------------------
 -- A table of functions used for "activating" fields, that is turning them
@@ -258,8 +259,8 @@ function Node:diff(another_node)
    local difftab  = {}
    for i, field in ipairs(self:get_ordered_field_names()) do
       if (self.raw_values[field] or "") ~= (another_node.raw_values[field] or "") then
-         difftab[field] = versium.util.diff(tostring(self.raw_values[field]), 
-                                       tostring(another_node.raw_values[field]))
+         difftab[field] = diff.diff(tostring(another_node.raw_values[field]),
+                                    tostring(self.raw_values[field]))
       end
    end
    return difftab

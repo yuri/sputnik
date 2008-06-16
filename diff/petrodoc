@@ -1,6 +1,6 @@
-package    = 'Versium'
+package    = 'Diff'
 versions   = {
-   {'8.06.14', 'June 14, 2008', 'the initial release'},
+   {'8.06.15', 'June 15, 2008', 'the initial release'},
 }
 summary    = 'Diff functions'
 maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
@@ -17,7 +17,7 @@ download   = 'http://sputnik.freewisdom.org/files/diff-$version.tar.gz'
 --download   = "/tmp/versium-$version.tar.gz"
 push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
 --push       = "cp %s /tmp/"
-logo       = 'sputnik.png'
+logo       = 'diff.png'
 keywords   = 'lua, diff'
 rss        = homepage.."releases.rss"
 --------------------------------------------------------------------------------
@@ -25,12 +25,31 @@ rss        = homepage.."releases.rss"
 dependencies = [[
 ]]
 
+Installation = [[
+  The Diff library consists of a single file (diff.lua), plus a test script
+  (tests/basic.lua).  Just put the file somewhere in your Lua path.
+  Here is a list of recent releases:
+
+  <ul>
+  $do_versions[=[<li><a href="$url">$package-$version</a> - $comment ($date) </li> ]=]
+  </ul>
+
+  You can also install it using LuaRocks with
+
+    luarocks install diff
+
+  or:
+
+    luarocks --from=http://sputnik.freewisdom.org/rocks/earth install diff
+
+]]
+
 TOC = {
    { "Overview",     "<p>"..detailed.."</p>" },
-   --{ "Installation", markdown(Installation) },
-   --{ "Using Diff", markdown(include("docs/howto.md")) },
+   { "Installation", markdown(Installation) },
+   { "Using Diff", markdown(include("doc/howto.md")) },
    { "Contact",      "Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions."},
-   --{ "LuaDoc",       make_luadoc{"versium.lua"} },
+   { "LuaDoc",       make_luadoc{"diff.lua"} },
    { "License",      markdown(include("LICENSE.txt")) }
 
 

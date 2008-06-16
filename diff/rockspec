@@ -1,7 +1,7 @@
-package = "Versium"
-version = "8.06.14-0"
+package = "Diff"
+version = "8.06.15-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/diff-8.06.14.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/diff-8.06.15.tar.gz",
 }
 description = {
    summary    = "Diff functions",

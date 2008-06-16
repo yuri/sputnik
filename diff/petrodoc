@@ -1,0 +1,41 @@
+package    = 'Versium'
+versions   = {
+   {'8.06.14', 'June 14, 2008', 'the initial release'},
+}
+summary    = 'Diff functions'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+     This module provides a small collection of functions for diffing text.
+]]
+
+license    = 'MIT/X11'
+
+homepage   = 'http://sputnik.freewisdom.org/lib/diff/'
+favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
+download   = 'http://sputnik.freewisdom.org/files/diff-$version.tar.gz'
+--download   = "/tmp/versium-$version.tar.gz"
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+--push       = "cp %s /tmp/"
+logo       = 'sputnik.png'
+keywords   = 'lua, diff'
+rss        = homepage.."releases.rss"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+]]
+
+TOC = {
+   { "Overview",     "<p>"..detailed.."</p>" },
+   --{ "Installation", markdown(Installation) },
+   --{ "Using Diff", markdown(include("docs/howto.md")) },
+   { "Contact",      "Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions."},
+   --{ "LuaDoc",       make_luadoc{"versium.lua"} },
+   { "License",      markdown(include("LICENSE.txt")) }
+
+
+}
+-------------------------------------------------------------------------------
+
+
+

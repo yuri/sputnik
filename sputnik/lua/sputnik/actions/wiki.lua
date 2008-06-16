@@ -10,6 +10,7 @@ module(..., package.seeall)
 
 require("cosmo")
 require("versium.util")
+local format_time = versium.util.format_time
 local util = require("sputnik.util")
 local html_forms = require("sputnik.util.html_forms")
 local date_selector = require("sputnik.util.date_selector")
@@ -23,7 +24,8 @@ local date_selector = require("sputnik.util.date_selector")
 -----------------------------------------------------------------------------
 function get_nav_bar (node, sputnik)
    assert(node)
-   local nav = sputnik:get_node(sputnik.config.DEFAULT_NAVIGATION_BAR).content.NAVIGATION
+   local nav_node = sputnik:get_node(sputnik.config.DEFAULT_NAVIGATION_BAR)
+   local nav = nav_node.content.NAVIGATION
    local cur_node = sputnik:dirify(node.name)          
 
    for i, section in ipairs(nav) do
@@ -55,27 +57,31 @@ function get_nav_bar (node, sputnik)
    end
 
    return cosmo.f(node.templates.NAV_BAR){  
-            do_sections = function() 
-               for i, section in ipairs(nav) do               
-                  cosmo.yield { 
-                     class = util.choose(section.is_active, "front", "back"),
-                     id    = section.id,
-                     link  = sputnik:make_link(section.id),  
-                     label = section.title,
-                     do_subsections = function() return do_subsections(section) end
-                  }
-               end
-            end,
-            do_subsections = function() return do_subsections(nav.current_section) end
-         }
+             do_sections = function() 
+                for i, section in ipairs(nav) do               
+                   cosmo.yield { 
+                      class = util.choose(section.is_active, "front", "back"),
+                      id    = section.id,
+                      link  = sputnik:make_link(section.id),  
+                      label = section.title,
+                      do_subsections = function()
+                                          return do_subsections(section)
+                                       end
+                   }
+                end
+             end,
+             do_subsections = function()
+                                 return do_subsections(nav.current_section)
+                              end
+          }
 end
 
 
---x--------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Checks the post parameters are OK.
 -----------------------------------------------------------------------------
 
-local function check_post_parameters(node, request, sputnik)
+function check_post_parameters(node, request, sputnik)
    local token = request.params.post_token
    local timestamp = request.params.post_timestamp
    local timeout = (sputnik.config.POST_TOKEN_TIMEOUT or 15) * 60
@@ -122,7 +128,7 @@ function actions.post(node, request, sputnik)
       if action then
          function err_msg(err_code, message)
             request.try_again = "true"
-            node:post_error(node.translator.translate_key(err_code).. (message or ""))
+            node:post_error(node.translator.translate_key(err_code)..(message or ""))
          end
 
          -- check the validity of the request
@@ -133,7 +139,8 @@ function actions.post(node, request, sputnik)
 
          -- test captcha, if configured
          if not request.user and sputnik.captcha then
-            local captcha_ok, err = sputnik.captcha:verify(request.POST, request.wsapi_env.REMOTE_ADDR)
+            local client_ip = request.wsapi_env.REMOTE_ADDR
+            local captcha_ok, err = sputnik.captcha:verify(request.POST, client_ip)
             if not captcha_ok then
                err_msg("COULD_NOT_VERIFY_CAPTCHA", err)
             end
@@ -281,6 +288,33 @@ end
 -----------------------------------------------------------------------------
 function actions.history(node, request, sputnik)
    local history = sputnik:get_history(node.name, 200, request.params.date)
+
+   -- cosmo iterator for revisions
+   local function do_revisions()
+      for i, edit in ipairs(history) do
+         local author_display = edit.author or ""
+         if author_display == "" then
+            author_display = edit.ip or "Anonymous"
+         end
+         if (not request.params.recent_users_only)
+             or sputnik.auth:user_is_recent(edit.author) then
+            cosmo.yield{
+               version_link = node.links:show{ version = edit.version },
+               version      = edit.version,
+               date         = format_time(edit.timestamp, "%Y/%m/%d"),
+               time         = format_time(edit.timestamp, "%H:%M GMT"),
+               if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
+               title        = node.name,
+               author_link  = sputnik:make_link(author_display),
+               author       = author_display,
+               if_summary   = cosmo.c(edit.comment:len() > 0){
+                                 summary = util.escape(edit.comment)
+                              },
+            }
+         end
+      end
+   end 
+
    node.inner_html = cosmo.f(node.templates.HISTORY){
       date_selector = date_selector.make_date_selector{
                          template = node.templates.DATE_SELECTOR,
@@ -289,28 +323,7 @@ function actions.history(node, request, sputnik)
                             return node.links:history{date=date}
                          end
                       },
-      do_revisions  = function()
-                           for i, edit in ipairs(history) do
-                              local author_display = edit.author or ""
-                              if author_display == "" then
-                                 author_display = edit.ip or "Anonymous"
-                              end
-                              if (not request.params.recent_users_only)
-                                  or sputnik.auth:user_is_recent(edit.author) then
-                                 cosmo.yield{
-                                    version_link = node.links:show{ version = edit.version },
-                                    version      = edit.version,
-                                    date         = versium.util.format_time(edit.timestamp, "%Y/%m/%d"),
-                                    time         = versium.util.format_time(edit.timestamp, "%H:%M GMT"),
-                                    if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
-                                    title        = node.name,
-                                    author_link  = sputnik:make_link(author_display),
-                                    author       = author_display,
-                                    if_summary   = cosmo.c(edit.comment:len() > 0){ summary = util.escape(edit.comment) },
-                                 }
-                              end
-                           end
-                        end, 
+      do_revisions  = do_revisions, -- the function defined above
       version       = node.version,
       node_name     = node.name,
       base_url      = sputnik.config.BASE_URL,
@@ -326,7 +339,8 @@ end
 function actions.complete_history(node, request, sputnik)
    local edits = sputnik:get_complete_history(limit, request.params.date)
 
-   -- figure out which revisions are stale so that we could group them with the later ones
+   -- figure out which revisions are stale so that we could group them with
+   -- the later ones.
    local latest = {}
    local later
    for i, e in ipairs(edits) do
@@ -344,37 +358,45 @@ function actions.complete_history(node, request, sputnik)
          e.stale = true -- this is the field we'll be checking later
       end
    end
+
+   -- the cosmo iterator over revisions
+   local function do_revisions()
+      for i, edit in ipairs(edits) do
+         if (not request.params.recent_users_only)
+             or sputnik.auth:user_is_recent(edit.author) then
+            local is_minor = (edit.minor or ""):len() > 0
+            cosmo.yield{
+               version_link = edit.node.links:show{ version = edit.version },
+               diff_link    = edit.node.links:diff{ version=edit.version, other=edit.previous },
+               history_link = edit.node.links:history(),
+               latest_link  = edit.node.links:show(),
+               version      = edit.version,
+               date         = format_time(edit.timestamp, "%Y/%m/%d"),
+               time         = format_time(edit.timestamp, "%H:%M GMT"),
+               if_minor     = cosmo.c(is_minor){},
+               title        = edit.node.id,
+               author_link  = sputnik:make_link((edit.author or "Anon")),
+               author       = edit.author,
+               if_summary   = cosmo.c(edit.comment and edit.comment:len() > 0){
+                                 summary = edit.comment
+                              },
+               if_stale     = cosmo.c(edit.stale){},
+               row_span     = edit.repeats + 1,
+            }
+         end
+      end
+   end 
+
    
    node.inner_html = cosmo.f(node.templates.COMPLETE_HISTORY){
       date_selector = date_selector.make_date_selector{
                          current_date = request.params.date,
                          datelink = function(date)
-                            return sputnik:pseudo_node(sputnik.config.HISTORY_node).links:show{date=date}
+                            local n = sputnik:pseudo_node(sputnik.config.HISTORY_NODE)
+                            return n.links:show{date=date}
                          end
                       },
-      do_revisions  = function()
-                         for i, edit in ipairs(edits) do
-                            if (not request.params.recent_users_only) or sputnik.auth:user_is_recent(edit.author) then
-                               local is_minor = (edit.minor or ""):len() > 0
-                               cosmo.yield{
-                                    version_link = edit.node.links:show{ version = edit.version },
-                                    diff_link    = edit.node.links:diff{ version=edit.version, other=edit.previous },
-                                    history_link = edit.node.links:history(),
-                                    latest_link  = edit.node.links:show(),
-                                    version      = edit.version,
-                                    if_minor     = cosmo.c(is_minor){},
-                                    title        = edit.node.id,
-                                    author_link  = sputnik:make_link((edit.author or "Anon")),
-                                    author       = edit.author,
-                                    if_summary   = cosmo.c(edit.comment and edit.comment:len() > 0){
-                                                      summary = edit.comment
-                                                   },
-                                    if_stale     = cosmo.c(edit.stale){},
-                                    row_span     = edit.repeats + 1,
-                               }
-                            end
-                         end
-                      end, 
+      do_revisions  = do_revisions, -- function defined above
       version       = node.version,
       base_url      = sputnik.config.BASE_URL,
       node_name     = node.name,
@@ -383,9 +405,9 @@ function actions.complete_history(node, request, sputnik)
 end
 
 
------------------------------------------------------------------------------
---     Now all the actions that return XML
------------------------------------------------------------------------------
+--=========================================================================--
+--     Now all the actions that return XML                                 --
+--=========================================================================--
 
 -----------------------------------------------------------------------------
 -- Returns RSS of recent changes to this node or all nodes.
@@ -399,16 +421,14 @@ function actions.rss(node, request, sputnik)
       title = "Recent Edits to '" .. node.title .."'"  --::LOCALIZE::--
       edits = sputnik:get_history(node.name, 50)
    end
-   sputnik.logger:debug("recent_users_only="..(request.params.recent_users_only or "nil")) 
    return cosmo.f(node.templates.RSS){  
       title   = title,
       baseurl = sputnik.config.BASE_URL, 
       items   = function()
                    for i, edit in ipairs(edits) do
                       edit.node = edit.node or node
-                      if (not request.params.recent_users_only) or sputnik.auth:user_is_recent(edit.author) then
-                         sputnik.logger:debug("recent_users_only="..(request.params.recent_users_only or "nil")) 
-                         sputnik.logger:debug("user recent?"..tostring(sputnik.auth:user_is_recent(node.author)))
+                      if (not request.params.recent_users_only)
+                          or sputnik.auth:user_is_recent(edit.author) then
                          cosmo.yield{
                             link        = "http://" .. sputnik.config.DOMAIN ..
                                           sputnik:escape_url(
@@ -504,9 +524,9 @@ function actions.show_sitemap_xml(node, request, sputnik)
    }, "text/xml"
 end
 
------------------------------------------------------------------------------
+--=========================================================================--
 --     Now the few remaining things
------------------------------------------------------------------------------
+--=========================================================================--
 
 -----------------------------------------------------------------------------
 -- Shows HTML for the standard Edit field.

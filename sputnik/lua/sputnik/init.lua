@@ -467,15 +467,16 @@ function Sputnik:hash_field_name(field_name, token)
    return "field_"..md5.sumhexa(field_name..token..self.config.SECRET_CODE)
 end
 
-------------------------------------------------------------------
--- Generates a unique numeric or hashed identifier using sputnik's
--- default storage repository as the shared state.
+-----------------------------------------------------------------------------
+-- Generates a unique numeric or hashed identifier using sputnik's default
+-- storage repository as the shared state.
 --
--- @param sputnik the sputnik instance to use when generating
--- @param namespace a namespace idenfier string ["sputnik"]
--- @param type the type of uid to generate ("hash" or "number") ["number"]
--- @return uid a unique identifier for the given namespace
-
+-- @param namespace      [optional] a namespace idenfier string (defaults to
+--                       "sputnik").
+-- @param type           [optional] the type of uid to generate ("hash" or
+--                       "number", defaults to "number").
+-- @return               uid a unique identifier for the given namespace.
+-----------------------------------------------------------------------------
 function Sputnik:get_uid(namespace, type)
    -- Initialize the default values
    namespace = namespace or "sputnik"
@@ -489,7 +490,7 @@ function Sputnik:get_uid(namespace, type)
    -- Create and store a node
    local node_name = "_uid:" .. namespace
    local node = self:get_node(node_name)
-   node = self:activate_node(node)
+   node = self:update_node_with_params(node, {content=hash})
    node:save("Sputnik-UID", hash)
 
    -- Retrieve the node history 
@@ -498,12 +499,12 @@ function Sputnik:get_uid(namespace, type)
 
    -- Find our specific hash in the history
    for i=1,#history do
-	  if history[i].comment == hash then
-		 -- This is our node, it will likely be the first entry
-		 -- So add it to the total number of entries
-		 history_id = #history + (i - 1)
-		 break
-	  end
+	   if history[i].comment == hash then
+		   -- This is our node, it will likely be the first entry
+		   -- So add it to the total number of entries
+		   history_id = #history + (i - 1)
+		   break
+	   end
    end
 
    assert(history_id)

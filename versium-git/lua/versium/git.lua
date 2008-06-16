@@ -182,10 +182,6 @@ function GitVersium:save_version(id, data, author, comment, extra, timestamp)
    local node_path = self.dir.."/"..util.fs_escape_id(id)
    util.write_file(self.dir.."/"..util.fs_escape_id(id), data, id)
 
-   if not self:node_exists(id) then
-      self:git("add", id)
-   end
-
    if comment=="" or comment==nil then
       comment = "(no comment)"
    end
@@ -203,14 +199,13 @@ function GitVersium:save_version(id, data, author, comment, extra, timestamp)
       author = "anonymous" 
    end
    author = author.." <"..author.."@sputnik>"
-   local message
-   if self:node_exists(id) then
-      message = self:git("commit", "-F ", tmp_file, 
-                                   string.format("--author %q", author), id)
-   else
-      message = self:git("commit", "-F ", tmp_file, id)
-      self.node_table[id] = 1
-   end
+
+   local filename = util.fs_escape_id(id) 
+   self:git("add", filename)
+
+   local message = self:git("commit", "-F ", tmp_file, 
+                                   string.format("--author %q", author))
+   self.node_table[id] = 1
    if message:sub(1,14) == "Created commit" then
       return message:sub(15,22)
    else

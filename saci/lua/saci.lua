@@ -110,7 +110,7 @@ end
 -- @param node           A versium node as a table.
 -- @return               The string representation of the versium node.
 -----------------------------------------------------------------------------
-function Saci:deflate(node)
+function Saci:deflate(node, fields)
    local buffer = ""
    local keysort = {}
 
@@ -120,11 +120,21 @@ function Saci:deflate(node)
          table.insert(keysort, k)
       end
    end
-   table.sort(keysort)
+   table.sort(keysort, function(x, y)
+                          if fields then
+                             return fields[x][1] < fields[y][1]
+                          else
+                             return x < y
+                          end
+                       end)
 
    for idx,key in ipairs(keysort) do
       local value = serialize(node[key])
-      buffer = string.format("%s\n%s = %s", buffer, key, value)
+      local padded_key = key
+      if key:len() < 15 then
+         padded_key = (key.."               "):sub(1,15)
+      end
+      buffer = string.format("%s\n%s= %s", buffer, padded_key, value)
    end
 
    return buffer
@@ -210,8 +220,8 @@ end
 -----------------------------------------------------------------------------
 function Saci:save_node(node, author, comment, extra)
    assert(node.id)
-   self.versium:save_version(node.id, self:deflate(node.raw_values), author,
-                             comment, extra)
+   self.versium:save_version(node.id, self:deflate(node.raw_values, node.fields),
+                             author, comment, extra)
 end
 
 -----------------------------------------------------------------------------

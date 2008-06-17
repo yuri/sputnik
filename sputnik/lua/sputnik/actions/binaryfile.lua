@@ -60,6 +60,9 @@ function actions.download(node, request, sputnik)
 	return base64.decode(node.content), mime
 end
 
+
+CHUNK_LENGTH=78
+
 function actions.save(node, request, sputnik)
 	local info = request.params.file_upload
 
@@ -78,7 +81,12 @@ function actions.save(node, request, sputnik)
 		if name and name:match("%S") and size > 0 then
 			-- A file was uploaded 
 
-			request.params.content = base64.encode(info.contents)
+            local long_line = base64.encode(info.contents)
+            request.params.content = "\n"
+            for i=1,long_line:len(),CHUNK_LENGTH-1 do
+               request.params.content = request.params.content
+                                        ..long_line:sub(i, i+CHUNK_LENGTH-2).."\n"
+            end
 			request.params.file_type = type
 			request.params.file_name = tostring(name)
 			request.params.file_size = tostring(size)

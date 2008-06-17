@@ -1,14 +1,19 @@
 module(..., package.seeall)
 
 NODE = {
- actions= [=[png = "binaryfile.mimetype"]=],
- file_type= [=[image/png]=],
- prototype= [=[@Binary_File]=],
- file_size= [=[309]=],
- file_name= [=[sputnik-icon.png]=],
- title= [=[Browser "favicon"]=],
+ actions   = [[png = "binaryfile.mimetype"]],
+ file_type = "image/png",
+ prototype = "@Binary_File",
+ file_size = "309",
+ file_name = "sputnik-icon.png",
+ title     = [[Browser "favicon"]],
 }
 
-NODE.content = "‰PNG\r\
-\
-\000\000\000\rIHDR\000\000\000\000\000\000\000\000\000óÿa\000\000\000bKGD\000ÿ\000ÿ\000ÿ ½§“\000\000\000	pHYs\000\000\000\000\000šœ\000\000\000tIME×!¸Oeí\000\000\000ÂIDAT8ËåÒ±JÃPÆñ_l¨“X\\¤N¡k¬ĞÅÁ7.®‚¯f§¾€oP¤CÚÍÁIèàäĞê`ºÜ!\"I&Á.‡{ÿ|ß9©Ú|Š÷{ôñƒW<ã\rùo€¨BÉ9®„7_Xb6J1Ä/˜`Ôr”äáìÆÁ÷m\rÀİ’ª»<Ö\000$¸)õÍãë‚…'Qlœá£ƒ°-z¸@Š£‰÷°¾¾«rá!&ÃŸşGíÌ¯\"ŞC]®ë\000\000\000\000IEND®B`‚"
+NODE.content = [[
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIW
+XMAAAsTAAALEwEAmpwYAAAAB3RJTUUH1wUIBCEauE9l7QAAAMJJREFUOMvl0rFKw1AUxvFfbKiTWF
+ykTgGhaxys0MXBN5AuroKvZqe+gG9QpEPazRbBSejg5NDqYLrcIQQiSSbBAxcuh3v/fN85H3+pDtp
+8igv3e/Txg1c84w35b4CoQsk5rpCEN19YYo6PNkoPMcQUL5hg1BRyHZTk4eyQxsH3bQ3AGN2SqrsY
+GzzWACS4KfUazeMU64KFDCdRjWyc4RIDHKODGZ6wLQN6uECKo5CJ97C+Fb6rchDhIQwmwwKf/kftA
+cyvIt5DXa7rAAAAAElFTkSuQmCC
+]]

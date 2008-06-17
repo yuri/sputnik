@@ -42,35 +42,6 @@ function Saci:node_exists(id)
    return self.versium:node_exists(id)
 end
 
-----------------------------------------------------------------------------
--- Inflates a versium node, turning it into a Lua table.
---
--- @param node           The node to be "inflated" (represented as a versium
---                       node object).
--- @return               A table representing the fields of the node, with
---                       the metadata and the string representation pushed
---                       into the metatable.
------------------------------------------------------------------------------
-function Saci:inflate(data, metadata, id)
-   assert(data); assert(metadata); assert(id)
-   local object = saci.sandbox.new():do_lua(data)
-   assert(object, "the sandbox should give us a table")
-   local mt = {
-      _version = {
-         id        = metadata.version,
-         timestamp = metadata.timestamp,
-         author    = metadata.author,
-         comment   = metadata.comment,
-         extra     = metadata.extra,
-      },
-      _raw = data,
-      _id  = id,
-   }
-   mt.__index = mt
-   setmetatable(object, mt)
-   return object
-end
-
 --[--------------------------------------------------------------------------
 -- Prepares a Lua value for serialization into a stored saci node
 --

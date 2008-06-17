@@ -279,6 +279,20 @@ function actions.edits_by_recent_users(node, request, sputnik)
    return actions.complete_history(node, request, sputnik)  
 end
 
+
+-----------------------------------------------------------------------------
+-- Given an edit table, retursn either the author (if other than ""), or the
+-- IP address of the edit (if defined), or "Anonymous."
+-----------------------------------------------------------------------------
+
+local function author_or_ip(edit)
+   if not edit.author or edit.author == "" then
+      return edit.ip or "Anonymous"
+   else
+      return edit.author
+   end
+end
+
 -----------------------------------------------------------------------------
 -- Returns the history of this node as HTML.
 --
@@ -292,10 +306,7 @@ function actions.history(node, request, sputnik)
    -- cosmo iterator for revisions
    local function do_revisions()
       for i, edit in ipairs(history) do
-         local author_display = edit.author or ""
-         if author_display == "" then
-            author_display = edit.ip or "Anonymous"
-         end
+         local author_display = author_or_ip(edit)
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
             cosmo.yield{
@@ -364,6 +375,7 @@ function actions.complete_history(node, request, sputnik)
       for i, edit in ipairs(edits) do
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
+            local author_display = author_or_ip(edit)
             local is_minor = (edit.minor or ""):len() > 0
             cosmo.yield{
                version_link = edit.node.links:show{ version = edit.version },
@@ -375,8 +387,8 @@ function actions.complete_history(node, request, sputnik)
                time         = format_time(edit.timestamp, "%H:%M GMT"),
                if_minor     = cosmo.c(is_minor){},
                title        = edit.node.id,
-               author_link  = sputnik:make_link((edit.author or "Anon")),
-               author       = edit.author,
+               author_link  = sputnik:make_link((author_display or "Anon")),
+               author       = author_display,
                if_summary   = cosmo.c(edit.comment and edit.comment:len() > 0){
                                  summary = edit.comment
                               },
@@ -646,14 +658,17 @@ function actions.diff(node, request, sputnik)
    node.inner_html  = cosmo.f(node.templates.DIFF){  
                          version1 = request.params.version,
                          link1    = node.links:show{version=request.params.version},
-                         author1  = this_node_info.author,
-                         time1    = this_node_info.timestamp,
+                         author1  = author_or_ip(this_node_info.author),
+                         time1    = format_time(this_node_info.timestamp, "%H:%M GMT"),
+                         date1    = format_time(this_node_info.timestamp, "%Y/%m/%d"),
                          version2 = request.params.other,
                          link2    = node.links:show{version=request.params.other},
-                         author2  = other_node_info.author,
-                         time2    = this_node_info.timestamp,
+                         author2  = author_or_ip(other_node_info.author),
+                         time2    = format_time(other_node_info.timestamp, "%H:%M GMT"),
+                         date2    = format_time(other_node_info.timestamp, "%Y/%m/%d"),
                          diff     = diff, 
                       }
+
    request.is_diff = true
    return node.wrappers.default(node, request, sputnik)
 end

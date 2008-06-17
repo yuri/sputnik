@@ -137,16 +137,14 @@ HISTORY = [===[
         <tbody>
          $do_revisions[==[
           <tr> 
-            <td width="100px" $if_minor[[bgcolor="#f0f0f0"]]>
-             <a $version_link>$version</a>
-            </td>
             <td width="5px" $if_minor[[bgcolor="#f0f0f0"]]>
              <input class="diff_radio" type="radio" value="$version" name="other"/>
             </td>
             <td width="5px" $if_minor[[bgcolor="#f0f0f0"]]>
              <input class="diff_radio" type="radio" value="$version" name="version"/>
             </td>
-            <td width="50%" $if_minor[[bgcolor="#f0f0f0"]]>
+            <td width="400px" $if_minor[[bgcolor="#f0f0f0"]]>
+             <a $version_link>$version</a>
              _(BY_AUTHOR) $if_summary[[<ul><li>$summary</li></ul>]]
             </td>
           </tr>
@@ -165,14 +163,13 @@ COMPLETE_HISTORY = [===[
             <td width="50px" $if_stale[[style="display:none"]] rowspan="$row_span">
              &nbsp;
              <a $latest_link>$title</a>
-             <a class="help" $history_link>_(HISTORY)</a>
             </td>
-            <td width="100px" $if_minor[[bgcolor="#f0f0f0"]]>
-             <a $version_link>$version</a>
-             <a class="help" $diff_link>_(DIFF)</a>
+            <td width="400px" $if_minor[[bgcolor="#f0f0f0"]]>
+             <a $version_link>$version</a> _(BY_AUTHOR) $if_summary[[<ul><li>$summary</li></ul>]]
             </td>
-            <td width="50%" $if_minor[[bgcolor="#f0f0f0"]]>
-             _(BY_AUTHOR) $if_summary[[<ul><li>$summary</li></ul>]]
+            <td width="5%" $if_minor[[bgcolor="#f0f0f0"]]>
+             <a class="help" $history_link>_(HISTORY)</a></br>
+             <a class="help" $diff_link>_(DIFF)</a>             
             </td>
           </tr>
          ]==]

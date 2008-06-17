@@ -423,16 +423,16 @@ CANCEL = {
 
 -- In diff mode, this is the phrase introducing the user name of the first author
 BY_AUTHOR1 = {
-   en_US = "by $author1 at $time1",
-   ru    = "(автор: $author1, время: $time1)", 
-   pt_BR = "por $author1 ($time1)",
+   en_US = "by $author1 on $date1 at $time1",
+   ru    = "(автор: $author1, время: $date1, $time1)", 
+   pt_BR = "por $author1 ($date1, $time1)",
 }
 
 -- In diff mode, this is the phrase introducing the user name of the second author
 BY_AUTHOR2 = { "by $author2",
-   en_US = "by $author2  at $time2",
-   ru    = "(автор: $author2, время: $time2)", 
-   pt_BR = "por $author2 ($time2)",
+   en_US = "by $author2 on $date2 at $time2",
+   ru    = "(автор: $author2, время: $date2, $time2)", 
+   pt_BR = "por $author2 ($date2, $time2)",
 }
 
 

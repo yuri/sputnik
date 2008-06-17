@@ -35,16 +35,11 @@ end
 -- Un-escapes a node id. (See escape_id().)
 -- 
 -- @param id             an escaped node id.
--- @param options        [optional] a table of options.
 -- @return               the original node id.
 -----------------------------------------------------------------------------
-function fs_unescape_id(id, options)
+function fs_unescape_id(id)
    assert(id and id:len() > 0)
-   if (options or {}).keep_slash then
-      return id:gsub("%%3A", ":"):gsub("%%25", "%%")
-   else
-      return id:gsub("%%2F", "/"):gsub("%%3A", ":"):gsub("%%25", "%%")
-   end
+   return id:gsub("%%2F", "/"):gsub("%%3A", ":"):gsub("%%25", "%%")
 end
 
 -----------------------------------------------------------------------------

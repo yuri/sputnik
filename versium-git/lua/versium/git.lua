@@ -43,13 +43,23 @@ function new(params)
    -- beginning and only update it later with nodes that we create, we won't
    -- pick up any new nodes that were created bypassing this instance.
    local node_table = {}
-   for filename in lfs.dir(params[1]) do
-      if filename~="." and filename~=".." then
-         node_table[util.fs_unescape_id(filename, {keep_slash=true})] = 1
+   local file_extension = params.file_extension or ".lua"
+   local git_dir = params[1]
+   local function make_node_list(dir)
+      for filename in lfs.dir(git_dir..dir) do
+         local path = dir..filename
+         local len = path:len()
+         if filename:sub(filename:len()-3) == file_extension then
+            node_table[util.fs_unescape_id(path:sub(1, path:len()-4))] = 1
+         elseif filename:sub(1,1)~="." and lfs.attributes(git_dir..path).mode == "directory" then
+            make_node_list(path.."/")
+         end
       end
    end
-   local new_versium = { dir=params[1], node_table=node_table,
-                         git_command=params.command or "git" }
+   make_node_list("")
+   local new_versium = { dir=git_dir, node_table=node_table,
+                         git_command=params.command or "git",
+                         file_extension=file_extension }
    return setmetatable(new_versium, GitVersium_mt)
 end
 
@@ -72,6 +82,31 @@ function GitVersium:git(...)
    return output
 end
 
+--x--------------------------------------------------------------------------
+-- Returns the path to the file that stores the node with this id.
+--
+-- @param id             a node id.
+-- @return               the path relative to the git repository root.
+-----------------------------------------------------------------------------
+
+function GitVersium:id2path(id)
+   return util.fs_escape_id_but_keep_slash(id)..self.file_extension
+end
+
+--x--------------------------------------------------------------------------
+-- Creates all directories that form the given path.
+--
+-- @param path           a file path (relative to self.dir).
+-----------------------------------------------------------------------------
+
+function GitVersium:make_path(path)
+   local ready_path=self.dir
+   for dir in path:gmatch("([^/]*)/") do
+      ready_path = ready_path.."/"..dir
+      pcall(lfs.mkdir, ready_path)
+   end
+end
+
 -----------------------------------------------------------------------------
 -- Returns the data stored in the node as a string and a table representing
 -- the node's metadata.  Returns nil if the node doesn't exist.  Throws an
@@ -90,10 +125,9 @@ function GitVersium:get_node(id, version)
       return nil
    end
    if version then
-      return self:git("show", version..":"..util.fs_escape_id(id))
+      return self:git("show", version..":"..self:id2path(id))
    else
-      local path = self.dir.."/"..util.fs_escape_id(id)
-      local data = util.read_file(path, id)
+      local data = util.read_file(self.dir.."/"..self:id2path(id), id)
       assert(data)
       return data
    end
@@ -182,8 +216,9 @@ function GitVersium:save_version(id, data, author, comment, extra, timestamp)
    assert(data)
    assert(author)
    -- write
-   local node_path = self.dir.."/"..util.fs_escape_id(id)
-   util.write_file(self.dir.."/"..util.fs_escape_id(id), data, id)
+   local path = self:id2path(id)
+   self:make_path(path)
+   util.write_file(self.dir.."/"..path, data, id)
 
    if comment=="" or comment==nil then
       comment = "(no comment)"
@@ -203,9 +238,7 @@ function GitVersium:save_version(id, data, author, comment, extra, timestamp)
    end
    author = author.." <"..author.."@sputnik>"
 
-   local filename = util.fs_escape_id(id) 
-   self:git("add", filename)
-
+   self:git("add", path)
    local message = self:git("commit", "-F ", tmp_file, 
                                    string.format("--author %q", author))
    self.node_table[id] = 1
@@ -233,17 +266,21 @@ end
 function GitVersium:get_node_history(id, prefix)
    assert(id)
    if not self:node_exists(id) then return nil end
-   local filename = util.fs_escape_id(id)
-   local comments_and_names = self:git("log", '--pretty=format:"%ae %s"', filename)
+   local path = self:id2path(id)
+   local comments_and_names = self:git("log", '--pretty=format:"%ae %s"', path)
    -- use comments and names to decide what's the longest string of =='s.
-   -- but for now, let's assume that === is good enough
-   local eqs = "==="
+   local max_eqs = ""
+   for eqs in comments_and_names:gmatch("(=+)") do
+      if eqs:len() > max_eqs:len() then
+         max_eqs = eqs
+      end
+   end
    local format = '--pretty=format:"'.."table.insert(commits, "
-                                     .."{version='%h', timestamp='%ct', "
-                                     .." author='%ae', comment=["..eqs.."[%s%n%n%b]"..eqs.."]})"
-                                ..'"' 
+                     .."{version='%h', timestamp='%ct', author='%ae',"
+                     .." comment=["..max_eqs.."=[%s%n%n%b]="..max_eqs.."]})"
+                     ..'"'
    local history_as_lua = "commits = {}\n"
-                          ..self:git("log", format, filename)
+                          ..self:git("log", format, path)
                           .."\nreturn commits"
 
    local history = loadstring(history_as_lua)()

@@ -147,6 +147,11 @@ function Sputnik.escape(self, text) return sputnik.util.escape(text) end
 --- Escapes a URL.
 function Sputnik.escape_url (self, text) return sputnik.util.escape_url(text) end
 
+function Sputnik:node_exists(id)
+   id = self:dirify(id)
+   return self.repo:node_exists(id) or pcall(require, "sputnik.node_defaults."..id)
+end
+
 ---------------------------------------------------------------------------------------------------
 --- Makes a URL from a table of parameters.
 ---------------------------------------------------------------------------------------------------
@@ -174,15 +179,16 @@ end
 ---------------------------------------------------------------------------------------------------
 --- Makes a link from a table of parameters.
 ---------------------------------------------------------------------------------------------------
-function Sputnik:make_link(node_name, action, params, anchor)
+function Sputnik:make_link(node_name, action, params, anchor, options)
    assert(node_name)
+   options=options or {}
    if node_name:find("%.") then -- allow for the action to be passed attached to the node name
       node_name, action = node_name:match("(.+)%.(.+)")
    end
    local css_class = "local"
    local url = self:make_url(node_name, action, params, anchor)
    self.logger:debug("Creating a link to "..node_name)
-   if not self.repo:node_exists(self:dirify(node_name)) then
+   if (not options.do_not_highlight_missing) and (not self:node_exists(node_name)) then
       css_class="no_such_node"
       url = self:make_url(node_name, action, params, anchor) --"edit", params, anchor)
       self.logger:debug("No such node, will link to .edit")
@@ -371,7 +377,8 @@ end
 function Sputnik:add_urls(node)
    node.urls = { __index = function(table, key)
                               return function(inner_self, params)
-                                 return self:make_url(node.name, key, params)
+                                 return self:make_url(node.name, key, params,
+                                                      nil, {do_not_highlight_missing=true})
                               end
                            end
                }
@@ -386,7 +393,8 @@ end
 function Sputnik:add_links(node)
    node.links = { __index = function(table, key)
                                return function(inner_self, params)
-                                  return self:make_link(node.name, key, params)
+                                  return self:make_link(node.name, key, params,
+                                                        nil, {do_not_highlight_missing=true})
                                end
                             end
                 }

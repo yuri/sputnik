@@ -864,10 +864,12 @@ function wrappers.default(node, request, sputnik)
                          },
       if_logged_in     = cosmo.c(request.user){
                             user         = request.user,
-                            logout_link  = sputnik:make_link(node.name, request.params.action, {logout="1"}) 
+                            logout_link  = sputnik:make_link(node.name, request.params.action, {logout="1"},
+                                                             nil, {do_not_highlight_missing=true}) 
                          },
       if_not_logged_in = cosmo.c(not request.user){
-                            login_link = sputnik:make_link(node.name, "login", {prev = request.params.action}),
+                            login_link   = sputnik:make_link(node.name, "login", {prev = request.params.action},
+                                                             nil, {do_not_highlight_missing=true}),
                             register_link = sputnik:make_link("register")
                          },
       if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){

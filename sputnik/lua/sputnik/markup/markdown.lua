@@ -37,6 +37,8 @@ function new(sputnik)
                      end
                      local xss_filter = xssfilter.new()
                      xss_filter.generic_attributes.style = "."
+                     xss_filter.allowed_tags.a.href = "."
+                     xss_filter.allowed_tags.a.css_class = "."
                      local html, message = xss_filter:filter(markdown(buffer))
                      if html then
                         return html

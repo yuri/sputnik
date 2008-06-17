@@ -33,7 +33,8 @@ rss        = homepage.."releases.rss"
 --------------------------------------------------------------------------------
 
 dependencies = [[
-  'luafilesystem >= 1.3'
+  'luafilesystem >= 1.3',
+  'diff >= 8.06.15',
 ]]
 
 TOC = {

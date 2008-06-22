@@ -209,7 +209,7 @@ function Saci:get_node_history(id, prefix, limit)
    assert(id)
    local versium_history = self.versium:get_node_history(id, prefix, limit) or {}
    for i,v in ipairs(versium_history) do
-      v.get_node = function() self:get_node(id, v.version) end
+      v.get_node = function() return self:get_node(id, v.version) end
    end
    return versium_history
 end

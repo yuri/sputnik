@@ -1,5 +1,6 @@
 package    = 'Versium'
 versions   = {
+   {'8.06.22', 'June 22, 2008', 'refactoring diff logic into a separate rock'},
    {'8.05.24', 'May 24, 2008', 'making a test release of new versium'},
    {'8.03.28', 'March 28, 2008', 'separated SACI into its own rock'},
 }

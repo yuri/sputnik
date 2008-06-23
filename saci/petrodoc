@@ -1,5 +1,6 @@
 package    = 'SACI'
 versions   = {
+   {'8.06.22', 'June 22, 2008', 'making serialized nodes look pretty'},
    {'8.06.11', 'June 11, 2008', 'allowing anonymous revisions'},
    {'8.05.24', 'May 24, 2008', 'making a test release of Saci'},
 }
@@ -25,7 +26,7 @@ rss        = homepage.."releases.rss"
 
 dependencies = [[
   'cosmo >= 7.12.24',
-  'versium >= 8.05.24',
+  'versium >= 8.06.22',
 ]]
 
 TOC = {

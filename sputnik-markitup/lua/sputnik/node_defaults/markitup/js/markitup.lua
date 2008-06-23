@@ -4,6 +4,9 @@ NODE = {
 
  prototype= "@JavaScript",
  title= "Markitup - JQuery Editor Component",
+ permissions = [[
+    allow(all_users, 'js')
+ ]],
 }
 
 NODE.content = [====[

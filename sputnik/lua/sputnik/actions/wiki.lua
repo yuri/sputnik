@@ -562,15 +562,15 @@ function actions.edit (node, request, sputnik, etc)
    end
 
    -- Add the scripts and stylesheets
-   node:add_stylesheet("/css/markitup/simple.css", "screen")
-   node:add_stylesheet("/css/markitup/markdown.css", "screen")
-   node:add_javascript("/js/jquery.js")
-   node:add_javascript("/js/markitup.js")
-   node:add_javascript("/js/markdown.js")
-   node:add_javascript(nil, [[
-   $(document).ready(function() {
-      $(".editor").markItUp(mySettings);
-   });]])
+   --node:add_stylesheet(sputnik:make_url("markitup/css/markitup/simple.css"), "screen")
+   --node:add_stylesheet(sputnik:make_url("markitup/css/markitup/markdown.css"), "screen")
+   --node:add_javascript(sputnik:make_url("jquery.js"))
+   --node:add_javascript(sputnik:make_url("markitup/js/markitup.js"))
+   --node:add_javascript(sputnik:make_url("markitup/js/markdown.js"))
+   --node:add_javascript(nil, [[
+   --$(document).ready(function() {
+   --   $(".editor").markItUp(mySettings);
+   --});]])
 
    -- select the parameters that should be copied
    local fields = {}

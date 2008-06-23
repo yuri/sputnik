@@ -3,6 +3,9 @@ module(..., package.seeall)
 NODE = {
  prototype= "@JavaScript",
  title= "Markitup - Markdown Set",
+ permissions = [[
+    allow(all_users, 'js')
+ ]],
 }
 
 NODE.content = [====[

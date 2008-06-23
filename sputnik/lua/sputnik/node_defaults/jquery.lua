@@ -3,6 +3,9 @@ module(..., package.seeall)
 NODE = {
  prototype= "@JavaScript",
  title= "JQuery",
+ permissions = [[
+    allow(all_users, 'js')
+ ]],
 }
 
 NODE.content= "/*\

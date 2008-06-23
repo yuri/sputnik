@@ -1,5 +1,6 @@
 package    = 'Versium-Git'
 versions   = {
+   {'8.06.22', 'June 22, 2008', 'now pretty'},
    {'8.06.12', 'June 12, 2008', 'a first stab'},
 }
 summary    = 'Versium over Git'

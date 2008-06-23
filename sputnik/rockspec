@@ -1,7 +1,7 @@
 package = "Sputnik"
-version = "8.06.12-0"
+version = "8.06.22-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/sputnik-8.06.12.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/sputnik-8.06.22.tar.gz",
 }
 description = {
    summary    = "A wiki and a framework for wiki-like applications",
@@ -29,12 +29,13 @@ description = {
    maintainer = "Yuri Takhteyev (yuri@freewisdom.org)",
 }
 dependencies = {
-  'saci >= 8.05.24',
-  'xssfilter >= 8.04.20',
-  'colors >= 8.02.23',
+  'saci >= 8.06.22',
+  'xssfilter >= 8.06.22',
+  'colors >= 8.05.26',
   'markdown >= 0.18',
   'md5 >= 1.1',
   'wsapi >= 1.0',
+  'lbase64 >= 20070628',
 }
 build = {
   type = "none",
@@ -45,6 +46,7 @@ build = {
 
 
         ["sputnik.actions.javascript"] = "lua/sputnik/actions/javascript.lua",
+
 
         ["sputnik.actions.binaryfile"] = "lua/sputnik/actions/binaryfile.lua",
 
@@ -57,15 +59,18 @@ build = {
         ["sputnik.markup.markdown"] = "lua/sputnik/markup/markdown.lua",
         ["sputnik.markup.init"] = "lua/sputnik/markup/init.lua",
 
+
         ["sputnik.init"] = "lua/sputnik/init.lua",
         ["sputnik.util"] = "lua/sputnik/util.lua",
 
 
         ["sputnik.node_defaults._translations"] = "lua/sputnik/node_defaults/_translations.lua",
         ["sputnik.node_defaults._rss_icon_medium"] = "lua/sputnik/node_defaults/_rss_icon_medium.lua",
+
         ["sputnik.node_defaults.register"] = "lua/sputnik/node_defaults/register.lua",
 
         ["sputnik.node_defaults.@Text_Config"] = "lua/sputnik/node_defaults/@Text_Config.lua",
+
         ["sputnik.node_defaults._layout"] = "lua/sputnik/node_defaults/_layout.lua",
 
 
@@ -78,6 +83,7 @@ build = {
         ["sputnik.node_defaults._passwords"] = "lua/sputnik/node_defaults/_passwords.lua",
         ["sputnik.node_defaults._templates"] = "lua/sputnik/node_defaults/_templates.lua",
         ["sputnik.node_defaults.@Account_Activation_Ticket"] = "lua/sputnik/node_defaults/@Account_Activation_Ticket.lua",
+
         ["sputnik.node_defaults.@JavaScript"] = "lua/sputnik/node_defaults/@JavaScript.lua",
         ["sputnik.node_defaults.@Lua_Config"] = "lua/sputnik/node_defaults/@Lua_Config.lua",
         ["sputnik.node_defaults._navigation"] = "lua/sputnik/node_defaults/_navigation.lua",
@@ -86,11 +92,13 @@ build = {
         ["sputnik.node_defaults._history"] = "lua/sputnik/node_defaults/_history.lua",
         ["sputnik.node_defaults._edits_by_recent_users"] = "lua/sputnik/node_defaults/_edits_by_recent_users.lua",
 
+
         ["sputnik.node_defaults._sitemap"] = "lua/sputnik/node_defaults/_sitemap.lua",
         ["sputnik.node_defaults.@Root"] = "lua/sputnik/node_defaults/@Root.lua",
         ["sputnik.node_defaults._favicon"] = "lua/sputnik/node_defaults/_favicon.lua",
         ["sputnik.node_defaults.@CSS"] = "lua/sputnik/node_defaults/@CSS.lua",
         ["sputnik.node_defaults.@Binary_File"] = "lua/sputnik/node_defaults/@Binary_File.lua",
+
 
         ["sputnik.node_defaults._logo"] = "lua/sputnik/node_defaults/_logo.lua",
         ["sputnik.node_defaults._colors"] = "lua/sputnik/node_defaults/_colors.lua",

@@ -1,7 +1,7 @@
 package = "XSSFilter"
-version = "8.04.20-0"
+version = "8.06.22-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/xssfilter-8.04.20.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/xssfilter-8.06.22.tar.gz",
 }
 description = {
    summary    = "A filter to prevernt cross-site scripting (XSS) attacks",
@@ -25,7 +25,6 @@ build = {
   type = "none",
   install = {
      lua = {        ["xssfilter"] = "lua/xssfilter.lua",
-
 
      }
   }

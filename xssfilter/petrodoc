@@ -1,5 +1,6 @@
 package    = 'XSSFilter'
 versions   = {
+   {'8.06.22', 'June 22, 2008', 'added anchors to the href/src patterns, and absolute local URLs (i.e. /blah)'},
    {'8.04.20', 'April 20, 2008', 'first public version'},
 }
 summary    = 'A filter to prevernt cross-site scripting (XSS) attacks'

@@ -91,8 +91,8 @@ actions.show = function(node, request, sputnik)
                                            }
                                         end
                                      end,
-                        new_ticket_link = sputnik:make_link(string.format("Tickets/%06d", ticket_counter + 1), "edit",
-                                                            {prototype = "@Ticket", reported_by = request.user})
+                        new_ticket_link = sputnik:make_link("Tickets/new", "edit", 
+                                                            {reported_by = request.user})
                      }
    return node.wrappers.default(node, request, sputnik)
 end
@@ -103,8 +103,10 @@ actions.save_new = function(node, request, sputnik)
    local new_id = string.format("Tickets/%06d", sputnik:get_uid("Tickets"))
    local new_node = sputnik:get_node(new_id)
    sputnik:update_node_with_params(new_node, {prototype = "@Ticket"})
-   --new_node = sputnik:activate_node(new_node, request)
-   request.params.prototype="@Ticket"
+   new_node = sputnik:activate_node(new_node)
+   new_node.inner_html = "Created a new ticket: <a "..sputnik:make_link(new_id)..">"
+                         ..new_id.."</a><br/>"
+                         .."List <a "..sputnik:make_link("Tickets")..">tickets</a>"
    return wiki.actions.save(new_node, request, sputnik)
 end
 

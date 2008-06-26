@@ -39,7 +39,7 @@ ALLOWED_TAGS = {
    "acronym", "abbr", "cite", "dfn", "tt", "del", "ins", "kbd", "strike",
    "sub", "sup", "var",
    "table", "tr", "th", "thead", "td", "caption", "tbody", "tfoot",
-   "big",
+   "big", "center", "right", "left",
    "hr",
 
    -- For "a" tag allow "name" and "href", and limit href to three protocols.
@@ -219,7 +219,7 @@ end
 function XSSFilter:filter(html)
    local status, parsed = pcall(parse_xml, "<xml>"..html.."</xml>")
    if not status then
-      return nil, "XSSFilter could not parse (X)HTML"
+      return nil, "XSSFilter could not parse (X)HTML:\n"..html:gsub("<", "&lt;"):gsub(">", "&gt;")
    end
 
    local buffer = ""

@@ -35,11 +35,10 @@ function new(sputnik)
                            buffer = buffer..line
                         end
                      end
-                     local xss_filter = xssfilter.new()
-                     xss_filter.generic_attributes.style = "."
-                     xss_filter.allowed_tags.a.href = "."
-                     xss_filter.allowed_tags.a.css_class = "."
-                     local html, message = xss_filter:filter(markdown(buffer))
+                     local filter = sputnik.xssfilter or xssfilter.new()
+                     filter.generic_attributes.style = "."
+                     filter.allowed_tags.a.css_class = "."
+                     local html, message = filter:filter(markdown(buffer))
                      if html then
                         return html
                      elseif message then

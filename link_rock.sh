@@ -141,7 +141,7 @@ for ROCK in $ROCKS; do
       fi
       if [ -e $ROCKS_DIR/$ROCK/cvs-1 ]; then
          echo "WARNING : $ROCKS_DIR/$ROCK/cvs-1 File exists"
-         ecoo "          will not make link form :$ROCK"
+         echo "          will not make link form :$ROCK"
       else
          echo -e "Make symbolic link from : $ROCK\nto : $ROCKS_DIR/$ROCK/cvs-1"
          ln -s `pwd`/$ROCK $ROCKS_DIR/$ROCK/cvs-1

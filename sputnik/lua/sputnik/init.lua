@@ -168,7 +168,7 @@ function Sputnik:make_url(node_name, action, params, anchor)
    if params and next(params) then
       local link = self.config.BASE_URL.."?p="..node_name
       for k, v in pairs(params or {}) do
-         link = link.."&"..k.."="..v
+         link = link.."&"..k.."="..(v or "")
       end
       return self:escape(link..anchor)
    else

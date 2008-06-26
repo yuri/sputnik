@@ -5,7 +5,15 @@ local util = require"sputnik.util"
 SLASH = "/"
 actions = {}
 
-actions.mixed_album = function(node, params, sputnik)
+actions.show_photo = function(node, request, sputnik)
+   node.inner_html = cosmo.f(node.templates.SINGLE_PHOTO){
+                        photo_url = node.album_config.image_base.."/"..request.params.id..".sized.jpg",
+                        album_link = sputnik:make_link(node.id)
+                     }
+   return node.wrappers.default(node, request, sputnik)
+end
+
+actions.mixed_album = function(node, request, sputnik)
  
    local total_height = 0
    for i, row in ipairs(node.content.rows) do
@@ -39,14 +47,12 @@ actions.mixed_album = function(node, params, sputnik)
                                                     height     = pixify(height*photo.size + 8*(photo.size-1)),
                                                     left       = pixify(2 + (width + dwidth) * (i-1)),
                                                     top        = pixify(y),
-                                                    link_base  = node.album_config.link_base,
-                                                    thumb_base = node.album_config.thumb_base,
+                                                    image_base = node.album_config.image_base,
                                                     suffix     = photo.size>1 and string.format("%dx", photo.size) or "",
                                                     thumb_dir  = photo.size==1 and album or "oddsize",
                                                     album      = album,
                                                     image      = image,
-                                                    id         = photo.id,
-
+                                                    url        = sputnik:make_url(node.id, "photo", {id=photo.id}),
                                                  }
                                               end
                                            end
@@ -56,6 +62,6 @@ actions.mixed_album = function(node, params, sputnik)
                             height = total_height
    }
 
-   return node.wrappers.default(node, params, sputnik)
+   return node.wrappers.default(node, request, sputnik)
 end
 

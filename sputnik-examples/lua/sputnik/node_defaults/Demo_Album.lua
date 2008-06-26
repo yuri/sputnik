@@ -17,8 +17,7 @@ are quite nice.
 
 
 NODE.album_config = [[
-thumb_base = "http://media.freewisdom.org/freewisdom/albums"
-link_base = "http://www.freewisdom.org/en/all/albums"
+image_base = "http://media.freewisdom.org/freewisdom/albums"
 ]]
 
 NODE.content = [===[

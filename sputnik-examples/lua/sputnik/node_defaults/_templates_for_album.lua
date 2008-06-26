@@ -13,12 +13,12 @@ $before
  <center>
   <div style='position:relative;' class='image-links'> 
    $do_photos[[
-     <a href="http://www.freewisdom.org/projects/sputnik/Demo_Album.photo&id=$id" 
+     <a href="$url" 
 class='local'> 
         <img style="position: absolute; left: $left; top: $top;" 
              width="$width"
              height="$height"
-             src="$thumb_base/$thumb_dir/$image.thumb$suffix.jpg"
+             src="$image_base/$thumb_dir/$image.thumb$suffix.jpg"
              title="$title"/>
      </a>
    ]]
@@ -31,8 +31,9 @@ class='local'>
 
 ]====]
 
-SINGLE_PHOTO = [[
-  <img src="$url"/>
-]]
+SINGLE_PHOTO = [==[
+  <img src="$photo_url"/><br/>
+  <a $album_link>Back to the album</a>
+]==]
 
 ]=========]

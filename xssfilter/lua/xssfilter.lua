@@ -39,6 +39,8 @@ ALLOWED_TAGS = {
    "acronym", "abbr", "cite", "dfn", "tt", "del", "ins", "kbd", "strike",
    "sub", "sup", "var",
    "table", "tr", "th", "thead", "td", "caption", "tbody", "tfoot",
+   "big",
+   "hr",
 
    -- For "a" tag allow "name" and "href", and limit href to three protocols.
    a = {

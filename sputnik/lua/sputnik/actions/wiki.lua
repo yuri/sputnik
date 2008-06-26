@@ -526,7 +526,7 @@ function actions.show_sitemap_xml(node, request, sputnik)
                 end
                 cosmo.yield{
                    url = "http://"..sputnik.config.DOMAIN..url,
-                   lastmod = sputnik:get_node_info(name).timestamp.."T"..sputnik.config.SERVER_TZ,
+                   lastmod = sputnik.repo:get_node_info(name).timestamp.."T"..sputnik.config.SERVER_TZ,
                    changefreq = "weekly",
                    priority = priority
                 }

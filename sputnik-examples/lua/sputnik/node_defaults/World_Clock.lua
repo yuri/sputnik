@@ -3,7 +3,6 @@ module(..., package.seeall)
 
 NODE = {
    title="World Clock",
-   actions=[[show="worldclock.full_html"; show_content="worldclock.show_content"]],
    templates="_templates_for_world_clock",
    prototype="@Lua_Config",
 }
@@ -20,4 +19,13 @@ start = -8
 timeout = 5
 local_tz = -5
 ]=============]
-
+NODE.actions=[[
+show="worldclock.full_html"
+show_content="worldclock.show_content"
+]]
+NODE.permissions=[[
+allow(all_users, "show")
+allow(all_users, "edit")
+allow(all_users, "save")
+allow(all_users, "show_content")
+]]

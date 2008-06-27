@@ -23,7 +23,7 @@ DARK_GRAY            = GRAY:shade(.7)        -- higher nu mber = darker
 WHITE                = "white"
 BLACK                = "black"
 
-BODY_BG              = MAIN:desaturate_to(.5):tint(.5) -- or set to WHITE 
+BODY_BG              = MAIN:desaturate_to(.2):tint(.4) -- or set to WHITE
 LINK                 = "#0000cc" -- darker blue
 TEXT                 = BLACK
 
@@ -53,7 +53,7 @@ INS                  = "#cfc"
 CSS = [[
 
 body                  {                          background: $BODY_BG;                                                     }
-#page                 {                                                            BORDER-RIGHT:  2px solid  $NAVBAR;      }
+
 #bd                   {                          background: $WHITE;               BORDER:        1px solid  $DARK_GRAY;   }
 #sidebar              {                                                            border-right:  1px solid  $NAVBAR;      }
 H1                    {                                                            BORDER-BOTTOM: 4px solid  $NAVBAR;      }

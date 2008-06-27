@@ -41,7 +41,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
  </head>
 
  <body>
-  <div id='doc2' class='yui-t4'>
+  <div id='doc3'>
   
    <div id="login"> <!--login and search (in the upper right corner) -->
     $if_search[[    <form action="$base_url" style="margin-right: 0px; padding-right: 0px;">
@@ -88,7 +88,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      </div>  <!-- end of div .yui-b#page -->     
     </div>  <!-- end of div #yui-main (end of body)-->
 
-    <div class="yui-b" id="sidebar">$sidebar</div>
+    <!--div class="yui-b" id="sidebar">$sidebar</div-->
     
    </div>  <!-- end of div #bd -->
    _(POWERED_BY_SPUTNIK)
@@ -292,8 +292,8 @@ EDIT_FORM_HIDDEN        = [[<input type="hidden" class="hidden" value="$value" n
 EDIT_FORM_READONLY_TEXT = [[<input type="text" value="$value" name="$name" class="readonly" readonly="readonly" />]]
 EDIT_FORM_PASSWORD      = [[<input type="password" value="$value" name="$name" size="20"></input>]]
 EDIT_FORM_TEXTAREA      = [[<textarea class="small" name="$name" rows="$rows">$value</textarea>]]
-EDIT_FORM_EDITOR        = [[<textarea class="editor" name="$name" rows="$rows">$value</textarea>]]
-EDIT_FORM_BIG_TEXTAREA  = [[<textarea name="$name" id="main_text_area" rows="$rows">$value</textarea><br/>
+EDIT_FORM_EDITOR        = [[<textarea class="editor resizeable" name="$name" rows="$rows">$value</textarea>]]
+EDIT_FORM_BIG_TEXTAREA  = [[<textarea class="editor resizeable" name="$name" id="main_text_area" rows="$rows">$value</textarea><br/>
                             <a href="#" onclick="expandTextArea(); return false;">expand</a>]]
 EDIT_FORM_CHECKBOX      = [[<input class="checkbox" style="border:1px solid black" 
                                    type="checkbox" name="$name" value="yes"

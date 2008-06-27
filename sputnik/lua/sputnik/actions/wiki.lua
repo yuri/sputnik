@@ -589,6 +589,8 @@ function actions.edit (node, request, sputnik, etc)
    --$(document).ready(function() {
    --   $(".editor").markItUp(mySettings);
    --});]])
+   --node:add_javascript("/jquery-textarearesizer.js")
+   --node:add_javascript("/editpage.js")
 
    -- select the parameters that should be copied
    local fields = {}
@@ -970,6 +972,7 @@ function wrappers.default(node, request, sputnik)
             end
          end
       end,
+      --
       -- "links" include "href="
       show_link        = node.links:show(),
       edit_link        = node.links:edit{version = request.params.version},

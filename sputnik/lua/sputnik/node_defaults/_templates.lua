@@ -140,6 +140,10 @@ HISTORY = [===[
         <tbody>
          $do_revisions[==[
           <tr> 
+            $if_new_date[=[
+              <tr><td style="border-right: 0; border-left: 0" colspan="3"><h2>$date</h2></td></tr>
+            ]=]
+            $if_edit[=[
             <td width="5px" $if_minor[[bgcolor="#f0f0f0"]]>
              <input class="diff_radio" type="radio" value="$version" name="other"/>
             </td>
@@ -147,9 +151,9 @@ HISTORY = [===[
              <input class="diff_radio" type="radio" value="$version" name="version"/>
             </td>
             <td width="400px" $if_minor[[bgcolor="#f0f0f0"]]>
-             <a $version_link>$version</a>
-             _(BY_AUTHOR) $if_summary[[<ul><li>$summary</li></ul>]]
+             _(AUTHOR_SAVED_VERSION) $if_summary[[<ul><li>$summary</li></ul>]]
             </td>
+            ]=]
           </tr>
          ]==]
         </tbody>

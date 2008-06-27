@@ -254,19 +254,6 @@ function actions.show(node, request, sputnik)
 end
 
 -----------------------------------------------------------------------------
--- Returns history of changes for _all_ nodes. 
---
--- @param node
--- @param request        not used.
--- @param sputnik        not used.
------------------------------------------------------------------------------
-function actions.complete_history(node, request, sputnik)
-   request.show_complete_history = 1
-   -- let the "history" action actually do all the work.
-   return node.actions.history(node, request, sputnik)  
-end
-
------------------------------------------------------------------------------
 -- Returns the history of changes by users who created their accounts only
 -- recently.
 --
@@ -278,7 +265,6 @@ function actions.edits_by_recent_users(node, request, sputnik)
    request.params.recent_users_only = 1
    return actions.complete_history(node, request, sputnik)  
 end
-
 
 -----------------------------------------------------------------------------
 -- Given an edit table, retursn either the author (if other than ""), or the
@@ -305,7 +291,19 @@ function actions.history(node, request, sputnik)
 
    -- cosmo iterator for revisions
    local function do_revisions()
+      local old_date = ""
+      local new_date = ""
       for i, edit in ipairs(history) do
+         new_date = format_time(edit.timestamp, "%Y/%m/%d")
+         if new_date ~= old_date then
+            cosmo.yield {
+               if_new_date = cosmo.c(true){
+                  date = new_date
+               },
+               if_edit      = cosmo.c(false){},
+            }
+         end
+         old_date = new_date
          local author_display = author_or_ip(edit)
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
@@ -317,10 +315,13 @@ function actions.history(node, request, sputnik)
                if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
                title        = node.name,
                author_link  = sputnik:make_link(author_display),
+               author_icon  = sputnik:get_user_icon(edit.author),
                author       = author_display,
                if_summary   = cosmo.c(edit.comment:len() > 0){
                                  summary = util.escape(edit.comment)
                               },
+               if_new_date  = cosmo.c(false){},
+               if_edit      = cosmo.c(true){},
             }
          end
       end

@@ -273,9 +273,13 @@ end
 
 local function author_or_ip(edit)
    if not edit.author or edit.author == "" then
-      return edit.ip or "Anonymous"
+      if edit.ip then
+         return edit.ip, "User at IP "..edit.ip:gsub("%.", "-")
+      else
+         return "Anonymous", "Anonymous User"
+      end
    else
-      return edit.author
+      return edit.author, edit.author
    end
 end
 
@@ -304,7 +308,7 @@ function actions.history(node, request, sputnik)
             }
          end
          old_date = new_date
-         local author_display = author_or_ip(edit)
+         local author_display, author_id_for_link = author_or_ip(edit)
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
             cosmo.yield{
@@ -314,7 +318,7 @@ function actions.history(node, request, sputnik)
                time         = format_time(edit.timestamp, "%H:%M GMT"),
                if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
                title        = node.name,
-               author_link  = sputnik:make_link(author_display),
+               author_link  = sputnik:make_link(author_id_for_link),
                author_icon  = sputnik:get_user_icon(edit.author),
                author       = author_display,
                if_summary   = cosmo.c(edit.comment:len() > 0){
@@ -391,7 +395,7 @@ function actions.complete_history(node, request, sputnik)
          old_date = new_date
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
-            local author_display = author_or_ip(edit)
+            local author_display, author_ip_for_link = author_or_ip(edit)
             local is_minor = (edit.minor or ""):len() > 0
             cosmo.yield{
                version_link = edit.node.links:show{ version = edit.version },
@@ -406,7 +410,7 @@ function actions.complete_history(node, request, sputnik)
                time         = format_time(edit.timestamp, "%H:%M GMT"),
                if_minor     = cosmo.c(is_minor){},
                title        = edit.node.id,
-               author_link  = sputnik:make_link((author_display or "Anon")),
+               author_link  = sputnik:make_link(author_ip_for_link),
                author_icon  = sputnik:get_user_icon(edit.author),
                author       = author_display,
                if_summary   = cosmo.c(edit.comment and edit.comment:len() > 0){

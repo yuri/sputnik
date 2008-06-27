@@ -10,7 +10,7 @@ NODE.permissions = [[
 ]]
 NODE.content=[===[
 
-TEMPLATE = [==[
+NODE.TEMPLATE = [==[
 <script src="http://www.google.com/uds/api?file=uds.js&amp;v=0.1&amp;key=$api_key"
         type="text/javascript"></script>
 <script type="text/javascript">

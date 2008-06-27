@@ -159,19 +159,23 @@ COMPLETE_HISTORY = [===[
       <table width="100%">
         <tbody>
          $do_revisions[==[
-          <tr> 
-            <td width="50px" $if_stale[[style="display:none"]] rowspan="$row_span">
-             &nbsp;
-             <a $latest_link>$title</a>
-            </td>
-            <td width="400px" $if_minor[[bgcolor="#f0f0f0"]]>
-             <a $version_link>$version</a> _(BY_AUTHOR) $if_summary[[<ul><li>$summary</li></ul>]]
-            </td>
-            <td width="5%" $if_minor[[bgcolor="#f0f0f0"]]>
-             <a class="help" $history_link>_(HISTORY)</a></br>
-             <a class="help" $diff_link>_(DIFF)</a>             
-            </td>
-          </tr>
+            $if_new_date[=[
+              <tr><td style="border-right: 0; border-left: 0" colspan="3"><h2>$date</h2></td></tr>
+            ]=]
+            $if_edit[=[
+              <tr>
+                <td width="50px" $if_stale[[style="display:none"]] rowspan="$row_span">
+                 &nbsp;<a $latest_link>$title</a>
+                </td>
+                <td width="300px" $if_minor[[bgcolor="#f0f0f0"]]>
+                 _(AUTHOR_SAVED_VERSION) $if_summary[[<p>$summary</p>]]
+                </td>
+                <td width="5%" $if_minor[[bgcolor="#f0f0f0"]]>
+                 <a class="help" $history_link>_(HISTORY)</a></br>
+                 <a class="help" $diff_link>_(DIFF)</a>             
+                </td>
+              </tr>
+            ]=]
          ]==]
         </tbody>
        </table>

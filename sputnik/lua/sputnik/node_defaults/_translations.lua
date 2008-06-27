@@ -130,10 +130,10 @@ CHOOSE_ANOTHER_MONTH = {
 }
 
 -- A phrase introducing the author of the edit
-BY_AUTHOR = {
-   en_US = "by <a $author_link>$author</a> on $date at $time",
-   ru    = "<a $author_link>$author</a> ($date, $time)",
-   pt_BR = "por <a $author_link>$author</a> ($date, $time)",
+AUTHOR_SAVED_VERSION = {
+   en_US = "<a $author_link>$author</a> saved <a $version_link>$version</a> at $time",
+   ru    = "<a $author_link>$author</a> сохранил <a $version_link>$version</a> в $time",
+   pt_BR = "<a $author_link>$author</a> guardou <a $version_link>$version</a> ás $time",
 }
 
 -- Diff link in history

@@ -371,8 +371,20 @@ function actions.complete_history(node, request, sputnik)
    end
 
    -- the cosmo iterator over revisions
+   local old_date = ""
+   local new_date = ""
    local function do_revisions()
       for i, edit in ipairs(edits) do
+         new_date = format_time(edit.timestamp, "%Y/%m/%d")
+         if new_date ~= old_date then
+            cosmo.yield {
+               if_new_date = cosmo.c(true){
+                  date = new_date
+               },
+               if_edit      = cosmo.c(false){},
+            }
+         end
+         old_date = new_date
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
             local author_display = author_or_ip(edit)
@@ -383,7 +395,8 @@ function actions.complete_history(node, request, sputnik)
                history_link = edit.node.links:history(),
                latest_link  = edit.node.links:show(),
                version      = edit.version,
-               date         = format_time(edit.timestamp, "%Y/%m/%d"),
+               if_new_date  = cosmo.c(false){},
+               if_edit      = cosmo.c(true){},
                time         = format_time(edit.timestamp, "%H:%M GMT"),
                if_minor     = cosmo.c(is_minor){},
                title        = edit.node.id,

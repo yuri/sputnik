@@ -144,21 +144,27 @@ end
 
 --- Returns a small icon for this user.
 function Sputnik:get_user_icon(user)
+   self.user_icon_hash = self.user_icon_hash or {}
+   if self.user_icon_hash[user] then
+      return self.user_icon_hash[user]
+   end
+   local icon
    if not user or user:len()==0 then
-      return self:make_url("icons/anon", "png")
+      icon = self:make_url("icons/anon", "png")
    elseif user=="admin" or user=="Admin" then 
-      return self:make_url("icons/admin", "png")
+      icon = self:make_url("icons/admin", "png")
    elseif user=="Sputnik-UID" or user=="Sputnik" then
-      return self:make_url("icons/system", "png") 
+      icon = self:make_url("icons/system", "png") 
    elseif self.auth:user_exists(user) then
       local email = self.auth:get_metadata(user, "email")
       if email and self.config.USE_GRAVATAR then 
-         return "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
+         icon = "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
                 .."?s=16&d=http://"
                 ..self.config.DOMAIN..self:make_url("icons/user", "png")
       end
    end
-   return self:make_url("icons/user", "png")
+   self.user_icon_hash[user] = icon or self:make_url("icons/user", "png")
+   return self.user_icon_hash[user]
 end
 
 --- Escapes a text for using in a textarea.

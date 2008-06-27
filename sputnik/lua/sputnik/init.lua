@@ -156,10 +156,8 @@ function Sputnik:get_user_icon(user)
          return "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
                 .."?s=16&d=http://"
                 ..self.config.DOMAIN..self:make_url("icons/user", "png")
-      end
-   else
-      return self:make_url("icons/user", "png")
    end
+   return self:make_url("icons/user", "png")
 end
 
 --- Escapes a text for using in a textarea.

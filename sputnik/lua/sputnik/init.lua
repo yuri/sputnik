@@ -142,6 +142,26 @@ function Sputnik:init(initial_config)
 end
 
 
+--- Returns a small icon for this user.
+function Sputnik:get_user_icon(user)
+   if not user or user:len()==0 then
+      return self:make_url("icons/anon", "png")
+   elseif user=="admin" or user=="Admin" then 
+      return self:make_url("icons/admin", "png")
+   elseif user=="Sputnik-UID" or user=="Sputnik" then
+      return self:make_url("icons/system", "png") 
+   elseif self.auth:user_exists(user) then
+      local email = self.auth:get_metadata(edit.author, "email")
+      if email then 
+         return "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
+                .."?s=16&d=http://"
+                ..self.config.DOMAIN..sputnik:make_url("icons/user", "png")
+      end
+   else
+      return self:make_url("icons/user", "png")
+   end
+end
+
 --- Escapes a text for using in a textarea.
 function Sputnik.escape(self, text) return sputnik.util.escape(text) end
 --- Escapes a URL.

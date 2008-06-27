@@ -37,7 +37,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 
   <link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
-  <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_node)" $node_rss_link/>
+  <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>
  </head>
 
  <body>
@@ -68,12 +68,15 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      <div class="yui-b" id='page'>
 
       <span class="toolbar">
-          <a $edit_link > _(EDIT)      </a>
-          | <a $history_link> _(HISTORY)   </a>
-          | <a $node_rss_link>
-             <img src="$rss_small_url" class="rss_icon"
-                  title="_(RSS_FOR_EDITS_TO_THIS_NODE)" alt="_(SMALL_RSS_ICON)" />
-            </a>
+       <a $edit_link title="_(EDIT)"> 
+        <img src="$edit_icon" alt="_(EDIT_ICON)"/>
+       </a>
+       <a $history_link title="_(HISTORY)">
+        <img src="$history_icon" alt="_(HISTORY_ICON)"/>
+       </a>
+       <a $node_rss_link title="_(RSS_FOR_EDITS_TO_THIS_NODE)">
+        <img src="$rss_icon" alt="_(SMALL_RSS_ICON)" />
+       </a>
       </span>
 
       <h1 class="title"><a $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]</h1>
@@ -167,12 +170,13 @@ COMPLETE_HISTORY = [===[
                 <td width="50px" $if_stale[[style="display:none"]] rowspan="$row_span">
                  &nbsp;<a $latest_link>$title</a>
                 </td>
-                <td width="300px" $if_minor[[bgcolor="#f0f0f0"]]>
-                 _(AUTHOR_SAVED_VERSION) $if_summary[[<p>$summary</p>]]
+                <td width="300px" $if_minor[[bgcolor="#f0f0f0"]] style="border-right: 0px">
+                 _(AUTHOR_SAVED_VERSION)
+                 $if_summary[[<p>$summary</p>]]
                 </td>
-                <td width="5%" $if_minor[[bgcolor="#f0f0f0"]]>
-                 <a class="help" $history_link>_(HISTORY)</a></br>
-                 <a class="help" $diff_link>_(DIFF)</a>             
+                <td width="10%" $if_minor[[bgcolor="#f0f0f0"]] style="border-left: 0px" align="right">
+                 <a class="help"  $diff_link title="_(DIFF)"><img alt="_(DIFF)" src="$diff_icon"/></a>
+                 <a class="help" $history_link title="_(HISTORY)"><img alt="_(HISTORY)" src="$history_icon"/></a>
                 </td>
               </tr>
             ]=]

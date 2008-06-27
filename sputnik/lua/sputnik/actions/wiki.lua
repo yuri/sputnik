@@ -348,6 +348,7 @@ end
 -- @param request       request.params.date is an optional filter.
 -----------------------------------------------------------------------------
 function actions.complete_history(node, request, sputnik)
+   require("md5")
    local edits = sputnik:get_complete_history(limit, request.params.date)
 
    -- figure out which revisions are stale so that we could group them with
@@ -389,11 +390,28 @@ function actions.complete_history(node, request, sputnik)
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
             local author_display = author_or_ip(edit)
+            local author_icon = sputnik:make_url("icons/user", "png")
+            if edit.author=="admin" or edit.author=="Admin" then 
+               author_icon = sputnik:make_url("icons/admin", "png")
+            elseif (edit.author or ""):len()==0 then
+               author_icon = sputnik:make_url("icons/anon", "png")
+            elseif edit.author=="Sputnik-UID" or edit.author=="Sputnik" then
+               author_icon = sputnik:make_url("icons/system", "png") 
+            elseif sputnik.auth:user_exists(edit.author) then
+               local email = sputnik.auth:get_metadata(edit.author, "email")
+               if email then 
+                  author_icon = "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
+                                .."?s=16&d=http://"
+                                ..sputnik.config.DOMAIN..sputnik:make_url("icons/user", "png")
+               end
+            end
             local is_minor = (edit.minor or ""):len() > 0
             cosmo.yield{
                version_link = edit.node.links:show{ version = edit.version },
                diff_link    = edit.node.links:diff{ version=edit.version, other=edit.previous },
+               diff_icon    = sputnik:make_url("icons/diff", "png"),
                history_link = edit.node.links:history(),
+               history_icon = sputnik:make_url("icons/history", "png"),
                latest_link  = edit.node.links:show(),
                version      = edit.version,
                if_new_date  = cosmo.c(false){},
@@ -402,6 +420,7 @@ function actions.complete_history(node, request, sputnik)
                if_minor     = cosmo.c(is_minor){},
                title        = edit.node.id,
                author_link  = sputnik:make_link((author_display or "Anon")),
+               author_icon  = author_icon,
                author       = author_display,
                if_summary   = cosmo.c(edit.comment and edit.comment:len() > 0){
                                  summary = edit.comment
@@ -972,6 +991,7 @@ function wrappers.default(node, request, sputnik)
       history_link     = node.links:history(),
       site_rss_link    = sputnik:pseudo_node(sputnik.config.HISTORY_PAGE).links:rss(),
       node_rss_link    = node.links:rss(),
+      sputnik_link     = "href='http://sputnik.freewisdom.org/'",
       -- urls are just urls
       make_url         = function(args)
          return sputnik:make_url(unpack(args))
@@ -983,7 +1003,10 @@ function wrappers.default(node, request, sputnik)
       rss_medium_url   = sputnik.config.IMAGES.rss_medium,
       rss_small_url    = sputnik.config.IMAGES.rss_small,
       home_page_url    = sputnik.config.HOME_PAGE_URL,
-      sputnik_link     = "href='http://sputnik.freewisdom.org/'"
+      -- icons are urls of images
+      edit_icon        = sputnik:make_url("icons/edit", "png"),
+      history_icon     = sputnik:make_url("icons/history", "png"),
+      rss_icon         = sputnik:make_url("icons/feed", "png"),
    }, "text/html"
 end
 

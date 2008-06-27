@@ -152,7 +152,7 @@ function Sputnik:get_user_icon(user)
       return self:make_url("icons/system", "png") 
    elseif self.auth:user_exists(user) then
       local email = self.auth:get_metadata(user, "email")
-      if email then 
+      if email and self.config.USE_GRAVATAR then 
          return "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
                 .."?s=16&d=http://"
                 ..self.config.DOMAIN..self:make_url("icons/user", "png")
@@ -470,10 +470,12 @@ function Sputnik:get_complete_history(limit, date)
       end
    end
    table.sort(edits, function(e1, e2) return e1.timestamp > e2.timestamp end)
-   if limit then 
-      for i=limit, #edits do
-         table.remove(edits, i)
+   if limit then
+      local another_table = {}
+      for i=1,limit do
+         table.insert(another_table, edits[i])
       end
+      edits = another_table
    end   
    return edits
 end

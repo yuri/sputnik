@@ -359,7 +359,8 @@ function actions.complete_history(node, request, sputnik)
          later.previous = e.version
       end
       later = e
-      if latest.id ~= e.id then
+      if latest.id ~= e.id or 
+         format_time(latest.timestamp, "%Y/%m/%d")~=format_time(e.timestamp, "%Y/%m/%d") then
          latest = e
          latest.repeats = 0
          --n.title_style = ""

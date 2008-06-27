@@ -95,6 +95,6 @@ end
 
 function format_time(timestamp, format)
    return os.date(format, os.time{ year=timestamp:sub(1,4), month=timestamp:sub(6,7),
-                                   day=timestamp:sub(9,10), hours=timestamp:sub(12,13),
+                                   day=timestamp:sub(9,10), hour=timestamp:sub(12,13),
                                    min=timestamp:sub(15,16), sec=timestamp:sub(18)} )
 end

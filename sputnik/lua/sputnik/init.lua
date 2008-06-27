@@ -151,11 +151,11 @@ function Sputnik:get_user_icon(user)
    elseif user=="Sputnik-UID" or user=="Sputnik" then
       return self:make_url("icons/system", "png") 
    elseif self.auth:user_exists(user) then
-      local email = self.auth:get_metadata(edit.author, "email")
+      local email = self.auth:get_metadata(user, "email")
       if email then 
          return "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
                 .."?s=16&d=http://"
-                ..self.config.DOMAIN..sputnik:make_url("icons/user", "png")
+                ..self.config.DOMAIN..self:make_url("icons/user", "png")
       end
    else
       return self:make_url("icons/user", "png")

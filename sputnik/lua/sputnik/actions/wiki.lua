@@ -390,21 +390,6 @@ function actions.complete_history(node, request, sputnik)
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
             local author_display = author_or_ip(edit)
-            local author_icon = sputnik:make_url("icons/user", "png")
-            if edit.author=="admin" or edit.author=="Admin" then 
-               author_icon = sputnik:make_url("icons/admin", "png")
-            elseif (edit.author or ""):len()==0 then
-               author_icon = sputnik:make_url("icons/anon", "png")
-            elseif edit.author=="Sputnik-UID" or edit.author=="Sputnik" then
-               author_icon = sputnik:make_url("icons/system", "png") 
-            elseif sputnik.auth:user_exists(edit.author) then
-               local email = sputnik.auth:get_metadata(edit.author, "email")
-               if email then 
-                  author_icon = "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
-                                .."?s=16&d=http://"
-                                ..sputnik.config.DOMAIN..sputnik:make_url("icons/user", "png")
-               end
-            end
             local is_minor = (edit.minor or ""):len() > 0
             cosmo.yield{
                version_link = edit.node.links:show{ version = edit.version },
@@ -420,7 +405,7 @@ function actions.complete_history(node, request, sputnik)
                if_minor     = cosmo.c(is_minor){},
                title        = edit.node.id,
                author_link  = sputnik:make_link((author_display or "Anon")),
-               author_icon  = author_icon,
+               author_icon  = sputnik:get_user_icon(edit.author),
                author       = author_display,
                if_summary   = cosmo.c(edit.comment and edit.comment:len() > 0){
                                  summary = edit.comment

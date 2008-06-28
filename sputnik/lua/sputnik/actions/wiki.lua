@@ -1001,7 +1001,7 @@ function wrappers.default(node, request, sputnik)
       edit_icon        = sputnik:make_url("icons/edit", "png"),
       history_icon     = sputnik:make_url("icons/history", "png"),
       rss_icon         = sputnik:make_url("icons/feed", "png"),
-      if_title_icon    = cosmo.c(node.icon~=""){title_icon = sputnik:make_url(node.icon, "png")},
+      if_title_icon    = cosmo.c(node.icon and node.icon~=""){title_icon = sputnik:make_url(node.icon, "png")},
    }, "text/html"
 end
 

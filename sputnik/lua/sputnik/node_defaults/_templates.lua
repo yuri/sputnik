@@ -80,7 +80,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       </span>
 
       <h1 class="title">
-        $if_title_icon[[<img src="$title_icon"/> ]]
+        $if_title_icon[[<img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/> ]]
         <a $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
       </h1>
 

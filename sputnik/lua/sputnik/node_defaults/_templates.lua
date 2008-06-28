@@ -50,7 +50,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      <input class="small_submit" type="submit" name="Search" value="_(SEARCH)" 
             title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>]]    
     $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
-    $if_not_logged_in[[_(LOGIN_OR_REGISTER)</a>]]
+    $if_not_logged_in[[_(LOGIN_OR_REGISTER)]]
     <a $site_rss_link><img src="$rss_medium_url" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)" alt="_(LARGE_RSS_ICON)" /></a>
    </div>
    

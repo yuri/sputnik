@@ -37,6 +37,8 @@ local LIST_TEMPLATE = [===[
 
 SHOW_TEMPLATE = [===[
 
+   See <a $index_link>all tickets</a> <br/><br/>
+
    <table width="50%">
     <tr><td width="40px">Reported by</td><td width="100px">$reported_by</td></tr>
     <tr style="background:$ticket_status_color"><td>Status</td><td>$status</td></tr>
@@ -145,8 +147,13 @@ actions.save_new = function(node, request, sputnik)
 end
 
 actions.show = function(node, request, sputnik)
-   node.ticket_status_color = status_colors[node.status] or "white"
-   node.ticket_priority_color = priority_colors[node.priority] or "white"
-   node.inner_html = cosmo.fill(SHOW_TEMPLATE, node)
+ 
+   local ticket_info = {
+      ticket_status_color = status_colors[node.status] or "white",
+      ticket_priority_color = priority_colors[node.priority] or "white",
+      index_link = sputnik:make_link("Tickets")
+   }
+   local mt = {__index = node}
+   node.inner_html = cosmo.fill(SHOW_TEMPLATE, setmetatable(ticket_info, mt))
    return node.wrappers.default(node, request, sputnik)
 end

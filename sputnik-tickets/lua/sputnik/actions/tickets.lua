@@ -3,7 +3,7 @@ module(..., package.seeall)
 local sorttable = require"sputnik.javascript.sorttable"
 local wiki = require"sputnik.actions.wiki"
 
-local TEMPLATE = [===[
+local LIST_TEMPLATE = [===[
 
 <a $new_ticket_link>Create a New Ticket</a>
 <br/><br/>
@@ -33,6 +33,25 @@ local TEMPLATE = [===[
 </table>
 
 (Click on the headers to sort.)
+]===]
+
+SHOW_TEMPLATE = [===[
+
+   <table width="50%">
+    <tr><td width="40px">Reported by</td><td width="100px">$reported_by</td></tr>
+    <tr style="background:$ticket_status_color"><td>Status</td><td>$status</td></tr>
+    <tr><td>Severity</td><td>$severity</td></tr>
+    <tr><td>Priority</td><td>$priority</td></tr>
+    <tr><td>Milestone</td><td>$milestone</td></tr>
+    <tr><td>Version</td><td>$prod_version</td></tr>
+    <tr><td>Component</td><td>$component</td></tr>
+    <tr><td>Keywords</td><td>$keywords</td></tr>
+    <tr><td>Assigned to</td><td>$assigned_to</td></tr>
+   </table>
+   <br/>
+
+   $content
+
 ]===]
 
 actions = {}
@@ -74,7 +93,7 @@ actions.show = function(node, request, sputnik)
       if ticket_number > ticket_counter then ticket_counter = ticket_number; end 
    end
    table.sort(tickets, function(x,y) return x.ticket_id > y.ticket_id end)
-   node.inner_html = cosmo.f(TEMPLATE){
+   node.inner_html = cosmo.f(LIST_TEMPLATE){
                         sorttable_script = sorttable.script,
                         do_tickets = function()
                                         for i, ticket in ipairs(tickets) do
@@ -110,3 +129,8 @@ actions.save_new = function(node, request, sputnik)
    return wiki.actions.save(new_node, request, sputnik)
 end
 
+actions.show = function(node, request, sputnik)
+   node.ticket_status_color = status_colors[node.status] or "white"
+   node.inner_html = cosmo.fill(SHOW_TEMPLATE, node)
+   return node.wrappers.default(node, request, sputnik)
+end

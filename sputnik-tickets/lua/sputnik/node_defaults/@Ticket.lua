@@ -1,6 +1,6 @@
 module(..., package.seeall)
 NODE = {
-   actions= [[show = "wiki.edit"]],
+   actions= [[show = "tickets.show"]],
    fields= [[reported_by = {1.1}
 severity    = {1.2}
 priority    = {1.3}
@@ -11,7 +11,6 @@ component   = {1.7}
 keywords    = {1.8}
 assigned_to = {1.9}
 ]],
-   title= "@Ticket",
    edit_ui= [[reported_by = {1.31, "text_field"}
 severity    = {1.32, "select", options={"unassigned", "show stopper", "annoying", "cosmetic"}}
 priority    = {1.33, "select", options={"unassigned", "highest", "high", "medium", "low", "lowest"}}

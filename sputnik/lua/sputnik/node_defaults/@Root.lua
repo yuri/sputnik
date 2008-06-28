@@ -17,7 +17,7 @@ content         = {0.8  }
 edit_ui         = {0.9, proto="concat"}
 admin_edit_ui   = {0.91, proto="concat"}
 child_defaults  = {0.92, proto="concat", activate="lua"}
-
+icon            = {0.93, proto="fallback"}
 -- "virtual" fields (never saved) ------------------------
 version         = {virtual=true}
 prev_version    = {virtual=true}

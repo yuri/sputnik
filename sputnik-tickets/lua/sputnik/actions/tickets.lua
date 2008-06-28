@@ -147,7 +147,6 @@ actions.save_new = function(node, request, sputnik)
 end
 
 actions.show = function(node, request, sputnik)
- 
    local ticket_info = {
       ticket_status_color = status_colors[node.status] or "white",
       ticket_priority_color = priority_colors[node.priority] or "white",

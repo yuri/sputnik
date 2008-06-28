@@ -68,7 +68,7 @@ body               {                                                            
      .toolbar      { margin:   0em   0em   0em   0em;  padding:  .5em  .5em  .5em   2em;  float:right;                                }
      .toolbar A    {                                                                      text-decoration: none;                      }
 
-h1                 { margin:   0em   0em  0em  0em;    padding:   1em   0em  .5em   1em;  font-size: 270%; font-weight: normal;       }
+h1                 { margin:   0em   0em  0em  0em;    padding:   1em   0em  0.5em   0em;  font-size: 270%; font-weight: normal;       }
 h1 a               {                                                                      text-decoration: none;                      }
 h2                 { margin:  2em   .3em  1em  -1em;   padding:   0em   0em   0em   1em;  font-size: 140%; font-weight: normal;       }
 h3                 { margin:  20px   3px  10px  -5px;  padding:   1px   5px   1px   1em;  font-size: 129%; font-weight: normal;       }

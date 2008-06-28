@@ -11,6 +11,7 @@ allow(all_users, "logout")
 ]],
    category="_prototypes",
    actions=[[show_content="wiki.show_content_as_lua_code"]],
+   icon = "icons/system",
 }
 NODE.content=[===[
 --The content of this page is ignored but it's fields are inherited by 

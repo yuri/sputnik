@@ -79,7 +79,10 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
        </a>
       </span>
 
-      <h1 class="title"><a $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]</h1>
+      <h1 class="title">
+        $if_title_icon[[<img src="$title_icon"/> ]]
+        <a $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
+      </h1>
 
       $do_messages[[<p class="error $class">$message</p>]]
 

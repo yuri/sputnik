@@ -11,6 +11,7 @@ component   = {1.7}
 keywords    = {1.8}
 assigned_to = {1.9}
 ]],
+   icon = "icons/bug",
    edit_ui= [[reported_by = {1.31, "text_field"}
 severity    = {1.32, "select", options={"unassigned", "show stopper", "annoying", "cosmetic"}}
 priority    = {1.33, "select", options={"unassigned", "highest", "high", "medium", "low", "lowest"}}

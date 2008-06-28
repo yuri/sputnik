@@ -7,24 +7,25 @@ require("sputnik.actions.wiki")
 require("sputnik.i18n")
 require("sputnik.util")
 
----------------------------------------------------------------------------------------------------
--- THE SPUTNIK CLASS  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+-- THE SPUTNIK CLASS  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+-----------------------------------------------------------------------------
 local Sputnik = {}
 local Sputnik_mt = {__metatable = {}, __index = Sputnik}
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Creates a new instance of Sputnik.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function new(config)
    -- Set up default configuration variables
    config = config or {}
    config.ROOT_PROTOTYPE = config.ROOT_PROTOTYPE or "@Root"
-   config.SECRET_CODE = config.SECRET_CODE or "23489701982370894172309847123"
+   config.SECRET_CODE = config.SECRET_CODE or "2348979898237082394172309847123"
    config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "_config"
    config.PASS_PAGE_NAME = config.PASS_PAGE_NAME or "_passwords"
    --config.LOGGER = config.LOGGER or "file"
-   --config.LOGGER_PARAMS = config.LOGGER_PARAMS or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
+   --config.LOGGER_PARAMS = config.LOGGER_PARAMS
+   --                       or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
 
    -- Create and return the new initialized Sputnik instance
    local obj = setmetatable({}, Sputnik_mt)
@@ -39,9 +40,9 @@ function new_wsapi_run_fn(config)
    end
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Initializes a the new Sputnik instance.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:init(initial_config)
    -- setup the logger -- do this before loading user configuration
    if initial_config.LOGGER then
@@ -50,7 +51,7 @@ function Sputnik:init(initial_config)
    else
       self.logger = {
          debug = function(self, level, message) end, -- do nothing
-         info = function(self, level, message) end,
+         info  = function(self, level, message) end,
          error = function(self, level, message) end,
       }
    end
@@ -94,16 +95,18 @@ function Sputnik:init(initial_config)
    assert(self.repo)
    self.repo.logger = self.logger 
 
-   -- WARNING ------------------------------------------------------------------------
-   -- Up to now we were using "initial_config" which is loaded from sputnik/config.lua
-   -- We are now going to load values from the configuration node.  This means that
-   -- the config values can no longer be trusted.
+   -- WARNING ---------------------------------------------------------------
+   -- Up to now we were using "initial_config" which is loaded from
+   -- sputnik/config.lua We are now going to load values from the
+   -- configuration node.  This means that the config values can no longer be
+   -- trusted quite as much.
    
    self.config = initial_config
    initial_config = nil -- just to keep us honest
 
    local config_node = self:get_node(self.config.CONFIG_PAGE_NAME)
-   assert(config_node, "Failed to retrieve the config node "..tostring(self.config.CONFIG_PAGE_NAME))
+   assert(config_node, "Failed to retrieve the config node "
+                       ..tostring(self.config.CONFIG_PAGE_NAME))
    assert(type(config_node)=="table")
    for k,v in pairs(config_node.content) do
       self.config[k] = v
@@ -168,18 +171,23 @@ function Sputnik:get_user_icon(user)
 end
 
 --- Escapes a text for using in a textarea.
-function Sputnik.escape(self, text) return sputnik.util.escape(text) end
+function Sputnik.escape(self, text)
+   return sputnik.util.escape(text)
+end
+
 --- Escapes a URL.
-function Sputnik.escape_url (self, text) return sputnik.util.escape_url(text) end
+function Sputnik.escape_url (self, text)
+   return sputnik.util.escape_url(text)
+end
 
 function Sputnik:node_exists(id)
    id = self:dirify(id)
    return self.repo:node_exists(id) or pcall(require, "sputnik.node_defaults."..id)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 --- Makes a URL from a table of parameters.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:make_url(node_name, action, params, anchor)
    node_name = self:dirify(node_name)
    if action and action~="show" then 
@@ -201,45 +209,48 @@ function Sputnik:make_url(node_name, action, params, anchor)
    end   
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 --- Makes a link from a table of parameters.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:make_link(node_name, action, params, anchor, options)
    assert(node_name)
    options=options or {}
-   if node_name:find("%.") then -- allow for the action to be passed attached to the node name
+   -- check if we have a command attached to the node name
+   if node_name:find("%.") then 
       node_name, action = node_name:match("(.+)%.(.+)")
    end
    local css_class = "local"
    local url = self:make_url(node_name, action, params, anchor)
    self.logger:debug("Creating a link to "..node_name)
-   if (not options.do_not_highlight_missing) and (not self:node_exists(node_name)) then
+   if (not options.do_not_mark_missing)
+      and (not self:node_exists(node_name)) then
       css_class="no_such_node"
-      url = self:make_url(node_name, action, params, anchor) --"edit", params, anchor)
+      url = self:make_url(node_name, action, params, anchor)
       self.logger:debug("No such node, will link to .edit")
    end
    return string.format("href='%s' class='%s'", url, css_class)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 --- Does a bit of extra activation beyond what SACI does.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:activate_node(node, params)
 
    -- setup the page-specific translator
    for i, translation_node in ipairs(node.translations) do
       local translations = self:get_node(translation_node).content
-      assert(type(translations) == "table", "the translation node should load and evaluate into a table")
+      assert(type(translations) == "table", "Could not load translation node")
       for k, translation in pairs(translations) do
          node.translations[k] = translation
       end
     end
-    node.translator = sputnik.i18n.make_translator(node.translations, self.config.INTERFACE_LANGUAGE)
+    node.translator = sputnik.i18n.make_translator(node.translations,
+                                                   self.config.INTERFACE_LANGUAGE)
     
    -- translate the templates
    for i, template_node in ipairs(node.templates) do
       local templates = self:get_node(template_node).content
-      assert(type(templates) == "table", "the template node should load and evaluate into a table")
+      assert(type(templates) == "table", "Could not evaluate translation node")
       for k, template in pairs(templates) do
          node.templates[k] = node.translator.translate(template)
       end
@@ -337,9 +348,9 @@ function Sputnik:activate_node(node, params)
    return node
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns the node with this name (without additional activation).
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:get_node(id, version, mode)
    local node, stub = self.repo:get_node(id, version)
    
@@ -355,16 +366,17 @@ function Sputnik:get_node(id, version, mode)
    return node, stub
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Adds extra sputnik-specific fields to a node.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:prime_node(node)
    node.markup = self.markup
-   self:add_urls(node)
-   self:add_links(node)
+   self:add_links_and_urls(node)
    node.messages = {}
    for i, class in ipairs{"error", "warning", "success", "notice"} do
-      node["post_"..class] = function(self, message) table.insert(self.messages, {message=message, class=class}) end
+      node["post_"..class] = function(self, message) 
+         table.insert(self.messages, {message=message, class=class})
+      end
    end
    -- Table/Function that allow the developer to add custom HTML response headers
    node.headers = {}
@@ -395,51 +407,39 @@ function Sputnik:prime_node(node)
    return node
 end  
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Makes node.urls:foo(params) equivalent to sputnik:make_url(node.name, "foo", 
--- params) for ANY foo.
----------------------------------------------------------------------------------------------------
-function Sputnik:add_urls(node)
-   node.urls = { __index = function(table, key)
-                              return function(inner_self, params)
-                                 return self:make_url(node.name, key, params,
-                                                      nil, {do_not_highlight_missing=true})
-                              end
-                           end
-               }
-   setmetatable(node.urls, node.urls)
-   return node
-end
+-- params) and node.links:foo(params) equivalent to sputnik:make_link(
+-- node.name, "foo", params) for ANY foo.
+-----------------------------------------------------------------------------
+function Sputnik:add_links_and_urls(node)
 
----------------------------------------------------------------------------------------------------
--- Makes node.links:foo(params) equivalent to sputnik:make_link(node.name, "foo", params) for ANY 
--- foo.
----------------------------------------------------------------------------------------------------
-function Sputnik:add_links(node)
-   node.links = { __index = function(table, key)
-                               return function(inner_self, params)
-                                  return self:make_link(node.name, key, params,
-                                                        nil, {do_not_highlight_missing=true})
-                               end
-                            end
-                }
+   local make_fn = function (method, key)
+      return function(inner_self, params)
+                -- method is either self.make_link or self.make_url
+                return method(self, node.name, key, params, nil, 
+                              {do_not_mark_missing=true})
+      end
+   end
+   node.urls  = { __index = function(table, key) return make_fn(self.make_url, key) end }
+   setmetatable(node.urls, node.urls)
+   node.links = { __index = function(table, key) return make_fn(self.make_link, key) end }
    setmetatable(node.links, node.links)
    return node
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Generates a node-like table to make urls.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik.pseudo_node(self, node_name)
    local node = {name = node_name }
-   self:add_urls(node)
-   self:add_links(node)
+   self:add_links_and_urls(node)
    return node
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 --- Updates node with values from params table.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:update_node_with_params(node, params)
    node:update(params, node.fields)
    --new_node.name = node.name
@@ -447,11 +447,11 @@ function Sputnik:update_node_with_params(node, params)
    return node
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns node's history.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:get_history(node_name, limit, date)
-   local edits = self.repo:get_node_history(node_name, date)  -- limit discarded for now
+   local edits = self.repo:get_node_history(node_name, date, limit)
    if limit then 
       for i=limit, #edits do
          table.remove(edits, i)
@@ -460,9 +460,9 @@ function Sputnik:get_history(node_name, limit, date)
    return edits
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns history for all nodes.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:get_complete_history(limit, date)
    local edits = {}
    for i, id in ipairs(self:get_node_names()) do
@@ -485,19 +485,17 @@ function Sputnik:get_complete_history(limit, date)
    return edits
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns a list of all node ids.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik.get_node_names(self, args)
-   local prefix = args and args.prefix or nil
-   local limit = args and args.limit or nil
-   local node_ids = self.repo.versium:get_node_ids(prefix, limit) -- reaching deep
-   return node_ids
+   return self.repo.versium:get_node_ids(args and args.prefix or nil,
+                                         args and args.limit or nil)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Generates a hash for a POST field name.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:hash_field_name(field_name, token)
    return "field_"..md5.sumhexa(field_name..token..self.config.SECRET_CODE)
 end
@@ -550,26 +548,6 @@ function Sputnik:get_uid(namespace, type)
    end
 end
 
-------------------------------------------------------------------
--- Generates a new node name by calling string.format on the 
--- given string with a UID as the argument.
---
--- @param sputnik the sputnik instance to use when generating
--- @param namespace a namespace idenfier string ["sputnik"]
--- @param type the type of uid to generate ("hash" or "number") ["number"]
--- @param format the format to be used when constructing the new name
--- @usage gen_name(sputnik, "forums", "number", "forums/general/%d")
--- could generate the string "forums/general/42" depending on the
--- state of the system.  This name will be unique to the namespace
--- "forums".
--- @return uid a unique identifier for the given namespace
-
-function Sputnik:gen_name(namespace, type, format)
-   local uid = self:get_uid(namespace, type)
-   return format:format(uid)
-end
-
-
 -----------------------------------------------------------------------------
 -- Sends email on Sputnik's behalf.
 -----------------------------------------------------------------------------
@@ -577,9 +555,9 @@ function Sputnik:sendmail(args)
    return sputnik.util.sendmail(args, self)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Pre-processes CGI parameters and does authentication.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:translate_request (request)
    if request.method=="POST" then
       request.params = request.POST or {}
@@ -587,13 +565,15 @@ function Sputnik:translate_request (request)
       request.params = request.GET or {}
    end
 
-   -- For a post action we'll need to unhash the parameters first.  Note that we don't care if the 
-   -- action was actually submitted via get or post: if an idempotent request was sent via POST,
-   -- that's ok.  Instead, we divide actions into two types: those that were submitted with a post
-   -- token and those that were submitted without.  Requests submitted with a post token are
-   -- allowed to make changes to the state of the wiki.  They get their fields unhashed.  This
-   -- means that if an action is submitted with a post token but its fields are not hashed, it will
-   -- be processed as if submitted with no arguments.
+   -- For a post action we'll need to unhash the parameters first.  Note that
+   -- we don't care if the action was actually submitted via get or post: if
+   -- an idempotent request was sent via POST, that's ok.  Instead, we divide
+   -- actions into two types: those that were submitted with a post token and
+   -- those that were submitted without.  Requests submitted with a post token
+   -- are allowed to make changes to the state of the wiki.  They get their
+   -- fields unhashed.  This means that if an action is submitted with a post
+   -- token but its fields are not hashed, it will be processed as if
+   -- submitted with no arguments.
    if request.params.post_token then
       assert(request.params.post_fields)
       self.logger:debug("handling post parameters")
@@ -605,7 +585,8 @@ function Sputnik:translate_request (request)
       end
       for name in string.gmatch(request.params.post_fields, "[%a_]+") do 
          self.logger:debug(name)
-         new_params[name] = request.params[self:hash_field_name(name, request.params.post_token)] or ""
+         local field = self:hash_field_name(name, request.params.post_token)
+         new_params[name] = request.params[field] or ""
          --self.logger:debug(new_params[name])
       end
       new_params.p = request.params.p
@@ -623,15 +604,13 @@ function Sputnik:translate_request (request)
    request.node_name = request.node_name:gsub("/$", "") -- remove the trailing slash
    request.action = request.action or "show"
 
-
-   self.logger:debug("login")
    -- now login/logout/register the user
    if request.params.logout then 
-      self.logger:debug("logout")
       request.user = nil
    elseif (request.params.user or ""):len() > 0 then
-      self.logger:debug("knock knock: "..request.params.user)
-      request.user, request.auth_token = self.auth:authenticate(request.params.user, request.params.password)
+      request.user, request.auth_token = self.auth:authenticate(
+                                                      request.params.user, 
+                                                      request.params.password)
       if not request.user then
          request.auth_message = "INCORRECT_PASSWORD"
       else
@@ -650,9 +629,9 @@ function Sputnik:translate_request (request)
    return request
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Handles a request.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:run(request, response)
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
@@ -660,8 +639,8 @@ function Sputnik:run(request, response)
    local node, stub = self:get_node(request.node_name, request.params.version)
   
    if stub and self.config.PROTOTYPE_PATTERNS then
-      -- If an empty stub was returned, check the PROTOTYPE_PATTERNS table to see
-      -- if we should apply a prototype
+      -- If an empty stub was returned, check the PROTOTYPE_PATTERNS table to
+      -- see if we should apply a prototype.
       local node_name = request.node_name
       for pattern,prototype in pairs(self.config.PROTOTYPE_PATTERNS or {}) do
          if node_name:find(pattern) then
@@ -683,7 +662,7 @@ function Sputnik:run(request, response)
    local content, content_type
 
    if not action_function then
-      content,content_type = sputnik.actions.wiki.actions.action_not_found(node, request, self)
+      content, content_type = sputnik.actions.wiki.actions.action_not_found(node, request, self)
    else
       -- Check permissions on the node, for the given action
       if node:check_permissions(request.user, action) then
@@ -703,7 +682,6 @@ function Sputnik:run(request, response)
          end
 
          content, content_type = action_function(node, request, self)
-         self.logger:info(self.cookie_name.."=".. ((request.user or "").."|"..(request.auth_token or "")))
 
          -- Handle any action hooks at this point, with no digging for post actions
          -- If you want to hook a post action, you need to iterate the parameters 
@@ -742,22 +720,22 @@ function Sputnik:run(request, response)
    return response
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Handles a request, throwing errors if something goes wrong.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:unprotected_run(request, response)
    return self:run(request, response)
 end
 
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Handles a request safely.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function Sputnik:protected_run(request, response)
    local function mypcall(fn, ...)
-      local params = {...} -- this is to keep the inner function from being confused
+      local params = {...} -- to keep the inner function from being confused
       return xpcall(function()  return fn(unpack(params)) end,
-                    function(err) return {err, require("debug").traceback()} end )
+                    function(e) return {e, require("debug").traceback()} end )
    end  
 
    local success, err = mypcall(self.unprotected_run, self, request, response)
@@ -783,9 +761,9 @@ function Sputnik:protected_run(request, response)
    end
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Handles a request coming from WSAPI
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 
 function Sputnik:wsapi_run(wsapi_env)
 

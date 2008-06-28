@@ -1,7 +1,7 @@
 module(..., package.seeall)
 NODE = {
    title= "Tickets",
-   actions= [[show = "tickets.show"]],
+   actions= [[show = "tickets.list"]],
 }
 
 NODE.child_defaults = [=[

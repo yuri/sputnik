@@ -41,7 +41,7 @@ SHOW_TEMPLATE = [===[
     <tr><td width="40px">Reported by</td><td width="100px">$reported_by</td></tr>
     <tr style="background:$ticket_status_color"><td>Status</td><td>$status</td></tr>
     <tr><td>Severity</td><td>$severity</td></tr>
-    <tr><td>Priority</td><td>$priority</td></tr>
+    <tr style="background:$ticket_priority_color"><td>Priority</td><td>$priority</td></tr>
     <tr><td>Milestone</td><td>$milestone</td></tr>
     <tr><td>Version</td><td>$prod_version</td></tr>
     <tr><td>Component</td><td>$component</td></tr>
@@ -73,6 +73,21 @@ priority_to_number = {
    lowest = "*",
 }
 
+priority_colors = {
+   unassigned = "",
+   highest = "orange",
+   high = "#ffff30",
+   medium = "white",
+   low = "#f8f8f8",
+   lowest = "#f5f5f5",
+
+   fixed = "#f0fff0",
+   new = "#f0f0ff",
+   assigned = "#fffff0",
+   wontfix = "#f0f0f0",
+   confirmed = "#fff0ff",
+}
+
 status_to_number = {
    new = "1",
    confirmed = "2",
@@ -82,7 +97,7 @@ status_to_number = {
    tested = "6",
 }
 
-actions.show = function(node, request, sputnik)
+actions.list = function(node, request, sputnik)
    local tickets = {}
    local ticket_counter = 0
    for i, node_id in ipairs(sputnik:get_node_names{prefix="Tickets/"}) do
@@ -131,6 +146,7 @@ end
 
 actions.show = function(node, request, sputnik)
    node.ticket_status_color = status_colors[node.status] or "white"
+   node.ticket_priority_color = priority_colors[node.priority] or "white"
    node.inner_html = cosmo.fill(SHOW_TEMPLATE, node)
    return node.wrappers.default(node, request, sputnik)
 end

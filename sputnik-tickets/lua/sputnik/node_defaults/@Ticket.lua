@@ -15,7 +15,7 @@ assigned_to = {.19}
    edit_ui= [[reported_by = {1.31, "text_field"}
 severity    = {1.32, "select", options={"unassigned", "show stopper", "annoying", "cosmetic"}}
 priority    = {1.33, "select", options={"unassigned", "highest", "high", "medium", "low", "lowest"}}
-status      = {1.34, "select", options={"new", "confirmed", "assigned", "fixed", "tested", "wontfix"}} 
+status      = {1.34, "select", options={"new", "confirmed", "assigned", "fixed", "tested", "wontfix", "closed"}} 
 milestone   = {1.35, "text_field"}
 prod_version = {1.36, "text_field"}
 component   = {1.37, "text_field"}

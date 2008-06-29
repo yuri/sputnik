@@ -222,7 +222,7 @@ function Sputnik:make_link(node_name, action, params, anchor, options)
    local css_class = "local"
    local url = self:make_url(node_name, action, params, anchor)
    self.logger:debug("Creating a link to "..node_name)
-   if (not options.do_not_mark_missing)
+   if (not options.mark_missing==false)
       and (not self:node_exists(node_name)) then
       css_class="no_such_node"
       url = self:make_url(node_name, action, params, anchor)
@@ -418,7 +418,7 @@ function Sputnik:add_links_and_urls(node)
       return function(inner_self, params)
                 -- method is either self.make_link or self.make_url
                 return method(self, node.name, key, params, nil, 
-                              {do_not_mark_missing=true})
+                              {mark_missing=false})
       end
    end
    node.urls  = { __index = function(table, key) return make_fn(self.make_url, key) end }

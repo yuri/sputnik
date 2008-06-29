@@ -5,8 +5,9 @@ local wiki = require"sputnik.actions.wiki"
 
 local LIST_TEMPLATE = [===[
 
-<a $new_ticket_link>Create a New Ticket</a>
-<br/><br/>
+<a $new_ticket_link>Create a New Ticket</a> | $show_closed
+<br/>
+<br/>
 
 <script type="text/javascript">
 /* <![CDATA[ */
@@ -112,25 +113,34 @@ actions.list = function(node, request, sputnik)
       if ticket_number > ticket_counter then ticket_counter = ticket_number; end 
    end
    table.sort(tickets, function(x,y) return x.ticket_id > y.ticket_id end)
+   local show_closed = ""
+   if request.params.show_closed then
+      show_closed = "<a "..node.links:show()..">Hide closed</a>"
+   else
+      show_closed = "<a "..node.links:show{show_closed="1"}..">Show closed</a>"
+   end
    node.inner_html = cosmo.f(LIST_TEMPLATE){
                         sorttable_script = sorttable.script,
+                        show_closed = show_closed,
                         do_tickets = function()
                                         for i, ticket in ipairs(tickets) do
-                                           
-                                           cosmo.yield{
-                                              ticket_link = sputnik:make_link(ticket.name),
-                                              ticket_id   = ticket.ticket_id,
-                                              status      = ticket.status,
-                                              num_status  = status_to_number[ticket.status],
-                                              priority    = priority_to_number[ticket.priority],
-                                              milestone   = ticket.milestone or "undef",
-                                              title       = ticket.title,
-                                              color       = status_colors[ticket.status] or "white",
-                                           }
+                                           if ticket.status~="closed" or request.params.show_closed then
+                                              cosmo.yield{
+                                                 ticket_link = sputnik:make_link(ticket.name),
+                                                 ticket_id   = ticket.ticket_id,
+                                                 status      = ticket.status,
+                                                 num_status  = status_to_number[ticket.status],
+                                                 priority    = priority_to_number[ticket.priority],
+                                                 milestone   = ticket.milestone or "undef",
+                                                 title       = ticket.title,
+                                                 color       = status_colors[ticket.status] or "white",
+                                              }
+                                           end
                                         end
                                      end,
                         new_ticket_link = sputnik:make_link("Tickets/new", "edit", 
-                                                            {reported_by = request.user})
+                                                            {reported_by = request.user}, nil, nil, 
+                                                            {mark_missing=false} )
                      }
    return node.wrappers.default(node, request, sputnik)
 end

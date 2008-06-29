@@ -137,7 +137,7 @@ function Sputnik:init(initial_config)
    end
       
    -- setup authentication
-   local auth_mod = require(self.config.AUTH_MODULE or "sputnik.authentication.simple")
+   local auth_mod = require(self.config.AUTH_MODULE or "sputnik.auth.simple")
    self.auth = auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
    
    -- setup wrappers

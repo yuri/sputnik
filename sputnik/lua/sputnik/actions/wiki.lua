@@ -588,7 +588,8 @@ function actions.edit (node, request, sputnik, etc)
    -- Add the scripts and stylesheets
    --node:add_stylesheet(sputnik:make_url("markitup/css/markitup/simple.css"), "screen")
    --node:add_stylesheet(sputnik:make_url("markitup/css/markitup/markdown.css"), "screen")
-   --node:add_javascript(sputnik:make_url("jquery.js"))
+   node:add_javascript(sputnik:make_url("jquery.js"))
+   node:add_javascript(sputnik:make_url("sputnik/js/editpage.js"))
    --node:add_javascript(sputnik:make_url("markitup/js/markitup.js"))
    --node:add_javascript(sputnik:make_url("markitup/js/markdown.js"))
    --node:add_javascript(nil, [[
@@ -864,6 +865,19 @@ end
 function actions.sputnik_version(node, request, sputnik)
    node.inner_html = sputnik.config.VERSION or "&lt;no version information&gt;"
    return node.wrappers.default(node, request, sputnik)
+end
+
+-----------------------------------------------------------------------------
+-- Validates a chunk of Lua code.  Returns "valid" or "invalid" depending
+-- on whether the code is ok.  (This 
+-----------------------------------------------------------------------------
+function actions.validate_lua(node, request, sputnik)
+   local result, err = saci.sandbox.new(sputnik.config):do_lua(request.params.code or "")
+   if result then
+      return "valid"
+   else
+      return "invalid" --tostring(err.err)
+   end
 end
 
 -----------------------------------------------------------------------------

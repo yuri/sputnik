@@ -4,6 +4,7 @@ NODE = {
    prototype="@Text_Config",
    category="_prototypes",
    actions=[[js="javascript.js"]],
+   permissions = [[allow(all_users, "js")]],
    content=[[ The content of this page is ignored but it's fields are inherited by some of the other pages of this wiki.]]
 }
 

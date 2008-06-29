@@ -80,11 +80,11 @@ prototype       = {2.2, "text_field", advanced=true}
 templates       = {2.3, "text_field", advanced=true}
 translations    = {2.31, "text_field", advanced=true}
 permissions     = {2.4, "textarea", advanced=true, rows=3}
-actions         = {2.5, "textarea", advanced=true, rows=3}
-config          = {2.6, "textarea", advanced=true, rows=3}
-fields          = {2.7, "textarea", advanced=true, rows=3}
-edit_ui         = {2.8, "textarea", advanced=true, rows=3}
-admin_edit_ui   = {2.9, "textarea", advanced=true, rows=3}
+actions         = {2.5, "small_lua_editor", advanced=true, rows=3}
+config          = {2.6, "small_lua_editor", advanced=true, rows=3}
+fields          = {2.7, "small_lua_editor", advanced=true, rows=3}
+edit_ui         = {2.8, "small_lua_editor", advanced=true, rows=3}
+admin_edit_ui   = {2.9, "small_lua_editor", advanced=true, rows=3}
 --- the content of the page ----------------------------
 content_hdr     = {3.0, "header"}
 content         = {3.1, "editor", rows=27, 

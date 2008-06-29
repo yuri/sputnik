@@ -308,6 +308,8 @@ EDIT_FORM_HIDDEN        = [[<input type="hidden" class="hidden" value="$value" n
 EDIT_FORM_READONLY_TEXT = [[<input type="text" value="$value" name="$name" class="readonly" readonly="readonly" />]]
 EDIT_FORM_PASSWORD      = [[<input type="password" value="$value" name="$name" size="20"></input>]]
 EDIT_FORM_TEXTAREA      = [[<textarea class="small" name="$name" cols="70" rows="$rows">$value</textarea>]]
+EDIT_FORM_SMALL_LUA_EDITOR = [[<div class="editlua"><textarea class="small" name="$name" cols="70" rows="$rows">$value</textarea></div>]]
+EDIT_FORM_LUA_EDITOR    = [[<div class="editlua"><textarea class="editor resizeable" name="$name" cols="100" rows="$rows">$value</textarea></div>]]
 EDIT_FORM_EDITOR        = [[<textarea class="editor resizeable" name="$name" cols="100" rows="$rows">$value</textarea>]]
 EDIT_FORM_BIG_TEXTAREA  = [[<textarea class="editor resizeable" name="$name" id="main_text_area" cols="100" rows="$rows">$value</textarea><br/>
                             <a href="#" onclick="expandTextArea(); return false;">expand</a>]]

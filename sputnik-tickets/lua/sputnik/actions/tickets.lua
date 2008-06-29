@@ -9,7 +9,9 @@ local LIST_TEMPLATE = [===[
 <br/><br/>
 
 <script type="text/javascript">
+<![CDATA[
  $sorttable_script
+]]>
 </script>
 <table class="sortable" width="100%">
  <thead>

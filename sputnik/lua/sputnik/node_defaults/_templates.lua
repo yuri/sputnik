@@ -182,8 +182,8 @@ COMPLETE_HISTORY = [===[
                  $if_summary[[<p>$summary</p>]]
                 </td>
                 <td width="10%" $if_minor[[bgcolor="#f0f0f0"]] style="border-left: 0px" align="right">
-                 <a class="help"  $diff_link title="_(DIFF)"><img alt="_(DIFF)" src="$diff_icon"/></a>
-                 <a class="help" $history_link title="_(HISTORY)"><img alt="_(HISTORY)" src="$history_icon"/></a>
+                 <a $diff_link title="_(DIFF)"><img alt="_(DIFF)" src="$diff_icon"/></a>
+                 <a $history_link title="_(HISTORY)"><img alt="_(HISTORY)" src="$history_icon"/></a>
                 </td>
               </tr>
             ]=]

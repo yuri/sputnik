@@ -162,12 +162,12 @@ function Sputnik:get_user_icon(user)
       local email = self.auth:get_metadata(user, "email")
       if email and self.config.USE_GRAVATAR then 
          icon = "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
-                .."?s=16&d=http://"
+                .."?s=16&amp;d=http://"
                 ..self.config.DOMAIN..self:make_url("icons/user", "png")
       end
    end
    self.user_icon_hash[user] = icon or self:make_url("icons/user", "png")
-   return self.user_icon_hash[user]
+   return self:escape(self.user_icon_hash[user])
 end
 
 --- Escapes a text for using in a textarea.

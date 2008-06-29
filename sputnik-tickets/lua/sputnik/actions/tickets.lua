@@ -3,168 +3,75 @@ module(..., package.seeall)
 local sorttable = require"sputnik.javascript.sorttable"
 local wiki = require"sputnik.actions.wiki"
 
-local LIST_TEMPLATE = [===[
-
-<a $new_ticket_link>Create a New Ticket</a> | $show_closed
-<br/>
-<br/>
-
-<script type="text/javascript">
-/* <![CDATA[ */
- $sorttable_script
-/* ]]> */
-</script>
-<table class="sortable" width="100%">
- <thead>
-  <tr>
-   <th>ID</th>
-   <th>priority</th>
-   <th>milestone</th>
-   <th>status</th>
-   <th>title</th>
-  </tr>
- </thead>
- $do_tickets[[
-  <tr style="background:$color">
-   <td width="20px"><a $ticket_link>$ticket_id</a></td>
-   <td width="20px">$priority</td>
-   <td width="20px">$milestone</td>
-   <td sorttable_customkey="$num_status" width="20px">$status</td>
-   <td>$title</td>
-  </tr>
- ]]
-</table>
-
-(Click on the headers to sort.)
-]===]
-
-SHOW_TEMPLATE = [===[
-
-   See <a $index_link>all tickets</a> <br/><br/>
-
-   <table width="50%">
-    <tr><td width="40px">Reported by</td><td width="100px">$reported_by</td></tr>
-    <tr style="background:$ticket_status_color"><td>Status</td><td>$status</td></tr>
-    <tr><td>Severity</td><td>$severity</td></tr>
-    <tr style="background:$ticket_priority_color"><td>Priority</td><td>$priority</td></tr>
-    <tr><td>Milestone</td><td>$milestone</td></tr>
-    <tr><td>Version</td><td>$prod_version</td></tr>
-    <tr><td>Component</td><td>$component</td></tr>
-    <tr><td>Keywords</td><td>$keywords</td></tr>
-    <tr><td>Assigned to</td><td>$assigned_to</td></tr>
-   </table>
-   <br/>
-
-   $content
-
-]===]
-
 actions = {}
-
-status_colors = {
-   fixed = "#f0fff0",
-   new = "#f0f0ff",
-   assigned = "#fffff0",
-   wontfix = "#f0f0f0",
-   confirmed = "#fff0ff",
-}
-
-priority_to_number = {
-   unassigned = "",
-   highest = "*****",
-   high = "****",
-   medium = "***",
-   low = "**",
-   lowest = "*",
-}
-
-priority_colors = {
-   unassigned = "",
-   highest = "orange",
-   high = "#ffff30",
-   medium = "white",
-   low = "#f8f8f8",
-   lowest = "#f5f5f5",
-
-   fixed = "#f0fff0",
-   new = "#f0f0ff",
-   assigned = "#fffff0",
-   wontfix = "#f0f0f0",
-   confirmed = "#fff0ff",
-}
-
-status_to_number = {
-   new = "1",
-   confirmed = "2",
-   assigned = "3",
-   wontfix = "4",
-   fixed = "5",
-   tested = "6",
-}
 
 actions.list = function(node, request, sputnik)
    local tickets = {}
-   local ticket_counter = 0
-   for i, node_id in ipairs(sputnik:get_node_names{prefix="Tickets/"}) do
-      local ticket = sputnik:get_node(node_id)
-      ticket.ticket_id = node_id:sub(9)
-      table.insert(tickets, ticket)
-      local ticket_number = tonumber(ticket.ticket_id) or 0
-      if ticket_number > ticket_counter then ticket_counter = ticket_number; end 
+   for id, ticket in pairs(sputnik.saci:get_nodes_by_prefix(node.id.."/")) do
+      if ticket.status~="closed" or request.params.show_closed then
+         table.insert(tickets, ticket)
+      end
    end
-   table.sort(tickets, function(x,y) return x.ticket_id > y.ticket_id end)
-   local show_closed = ""
-   if request.params.show_closed then
-      show_closed = "<a "..node.links:show()..">Hide closed</a>"
-   else
-      show_closed = "<a "..node.links:show{show_closed="1"}..">Show closed</a>"
+   table.sort(tickets, function(x,y) return x.id > y.id end)
+
+   local function do_tickets()
+      for i, ticket in ipairs(tickets) do
+         cosmo.yield{
+            ticket_link = sputnik:make_link(ticket.id),
+            ticket_id   = ticket.id:sub(node.id:len()+2),
+            status      = ticket.status,
+            num_status  = node.config.status_to_number[ticket.status],
+            priority    = node.config.priority_to_number[ticket.priority],
+            milestone   = ticket.milestone or "undef",
+            title       = ticket.title,
+            color       = node.config.status_colors[ticket.status] or "white",
+         }
+      end
    end
-   node.inner_html = cosmo.f(LIST_TEMPLATE){
-                        sorttable_script = sorttable.script,
-                        show_closed = show_closed,
-                        do_tickets = function()
-                                        for i, ticket in ipairs(tickets) do
-                                           if ticket.status~="closed" or request.params.show_closed then
-                                              cosmo.yield{
-                                                 ticket_link = sputnik:make_link(ticket.name),
-                                                 ticket_id   = ticket.ticket_id,
-                                                 status      = ticket.status,
-                                                 num_status  = status_to_number[ticket.status],
-                                                 priority    = priority_to_number[ticket.priority],
-                                                 milestone   = ticket.milestone or "undef",
-                                                 title       = ticket.title,
-                                                 color       = status_colors[ticket.status] or "white",
-                                              }
-                                           end
-                                        end
-                                     end,
-                        new_ticket_link = sputnik:make_link("Tickets/new", "edit", 
-                                                            {reported_by = request.user}, nil, nil, 
-                                                            {mark_missing=false} )
+
+   local new_ticket_link = sputnik:make_link(node.id.."/new", "edit", 
+                                             {reported_by = request.user}, nil, nil, 
+                                             {mark_missing=false} )
+
+   node.inner_html = cosmo.f(node.templates.LIST){
+                        sorttable_script  = sorttable.script,
+                        if_showing_all  = cosmo.c(request.params.show_closed){
+                                             link=node.links:show()
+                                          },
+                        if_showing_open = cosmo.c(not request.params.show_closed){
+                                             link=node.links:show{show_closed="1"}
+                                          },
+                        do_tickets = do_tickets,
+                        new_ticket_link = new_ticket_link
                      }
    return node.wrappers.default(node, request, sputnik)
 end
 
 --local wiki = require("sputnik.actions.wiki")
 
+PARENT_PATTERN = "(.+)%/[^%/]+$" -- everything up to the last slash
+
 actions.save_new = function(node, request, sputnik)
-   local new_id = string.format("Tickets/%06d", sputnik:get_uid("Tickets"))
+   local parent_id = node.id:match(PARENT_PATTERN)
+   local new_id = string.format("%s/%06d", parent_id, sputnik:get_uid(parent_id))
    local new_node = sputnik:get_node(new_id)
    sputnik:update_node_with_params(new_node, {prototype = "@Ticket"})
    new_node = sputnik:activate_node(new_node)
    new_node.inner_html = "Created a new ticket: <a "..sputnik:make_link(new_id)..">"
                          ..new_id.."</a><br/>"
-                         .."List <a "..sputnik:make_link("Tickets")..">tickets</a>"
+                         .."List <a "..sputnik:make_link(parent_id)..">tickets</a>"
    return wiki.actions.save(new_node, request, sputnik)
 end
 
 actions.show = function(node, request, sputnik)
+   local parent_id = node.id:match(PARENT_PATTERN)
+   local index_node = sputnik:get_node(parent_id)
    local ticket_info = {
-      ticket_status_color = status_colors[node.status] or "white",
-      ticket_priority_color = priority_colors[node.priority] or "white",
-      index_link = sputnik:make_link("Tickets")
+      ticket_status_color = index_node.config.status_colors[node.status] or "white",
+      ticket_priority_color = index_node.config.priority_colors[node.priority] or "white",
+      index_link = sputnik:make_link(parent_id)
    }
    local mt = {__index = node}
-   node.inner_html = cosmo.fill(SHOW_TEMPLATE, setmetatable(ticket_info, mt))
+   node.inner_html = cosmo.fill(node.templates.SHOW, setmetatable(ticket_info, mt))
    return node.wrappers.default(node, request, sputnik)
 end

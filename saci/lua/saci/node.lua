@@ -303,6 +303,6 @@ end
 -----------------------------------------------------------------------------
 function Node:get_child(id)
    if self.child_defaults and self.child_defaults[id] then
-      return self.repository:make_node(self.child_defaults[id], {}, self.id.."/"..id)
+      return self.repository:make_node(self.child_defaults[id], self.id.."/"..id)
    end
 end

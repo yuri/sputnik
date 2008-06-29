@@ -223,26 +223,21 @@ end
 -- @return               a table containing the returned Saci nodes, indexed
 --                       by node name.
 -----------------------------------------------------------------------------
-function Saci:get_nodes_prefix(prefix)
-   -- Only allow this when the versium repository has the get_nodes_prefix
-   -- capability
-   if not self.versium.capabilities.get_nodes_prefix then
-      return {}
-   end
-
-   assert(prefix)
-
-   -- Fetch the data from versium, for the given prefix
-   local data = self.versium:get_nodes_prefix(prefix)
-   local nodes = {}
-
-   if next(data) then
-      -- There are some nodes to process, so process them
-      for id in pairs(data) do
-         nodes[id] = self:make_node(data[id], id)
+function Saci:get_nodes_by_prefix(prefix, limit)
+   local versium_nodes = {}
+   -- Get the nodes, either all at once, of one by one
+   if self.versium.get_nodes_by_prefix then
+      versium_nodes = self.versium:get_nodes_by_prefix(prefix, limit)
+   else
+      for i, id in ipairs(self.versium:get_node_ids(prefix, limit)) do
+         versium_nodes[id] = self.versium:get_node(id)
       end
    end
 
+   local nodes = {}
+   for id, data in pairs(versium_nodes) do
+      nodes[id] = self:make_node(data, id)
+   end
    return nodes
 end
 

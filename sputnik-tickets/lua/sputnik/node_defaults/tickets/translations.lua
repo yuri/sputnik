@@ -4,6 +4,10 @@ NODE = {
    prototype= "@Lua_Config",
 }
 NODE.content= [=[
+EDIT_FORM_TITLE = {
+   en_US = "Ticket Title"
+}
+
 EDIT_FORM_REPORTED_BY = {
    en_US = "Reported by"
 }

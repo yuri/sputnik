@@ -69,7 +69,7 @@ function Sputnik:init(initial_config)
    assert(self.saci.root_prototype_id)
    self.repo = self.saci -- for backwards compatibility
 
-   self.repo.get_fallback_node = function(repo, id, version)
+   self.saci.get_fallback_node = function(repo, id, version)
       local status, page_module = pcall(require, "sputnik.node_defaults."..id)
 
       if not status then
@@ -79,21 +79,21 @@ function Sputnik:init(initial_config)
       end
 
       if status then
-         local data = self.repo:deflate(page_module.NODE)
-         local node = self.repo:make_node(data, id)
+         local data = self.saci:deflate(page_module.NODE)
+         local node = self.saci:make_node(data, id)
          assert(node)
          if page_module.CREATE_DEFAULT then
             node:save()
-            node = self.repo:get_node(id)
+            node = self.saci:get_node(id)
          end
          return node
       else
-         return self.repo:make_node("", id), true -- set stub=true
+         return self.saci:make_node("", id), true -- set stub=true
       end
    end
 
-   assert(self.repo)
-   self.repo.logger = self.logger 
+   assert(self.saci)
+   self.saci.logger = self.logger 
 
    -- WARNING ---------------------------------------------------------------
    -- Up to now we were using "initial_config" which is loaded from
@@ -182,7 +182,7 @@ end
 
 function Sputnik:node_exists(id)
    id = self:dirify(id)
-   return self.repo:node_exists(id) or pcall(require, "sputnik.node_defaults."..id)
+   return self.saci:node_exists(id) or pcall(require, "sputnik.node_defaults."..id)
 end
 
 -----------------------------------------------------------------------------
@@ -250,7 +250,7 @@ function Sputnik:activate_node(node, params)
    -- translate the templates
    for i, template_node in ipairs(node.templates) do
       local templates = self:get_node(template_node).content
-      assert(type(templates) == "table", "Could not evaluate translation node")
+      assert(type(templates) == "table", "Could not load templates node")
       for k, template in pairs(templates) do
          node.templates[k] = node.translator.translate(template)
       end
@@ -352,7 +352,7 @@ end
 -- Returns the node with this name (without additional activation).
 -----------------------------------------------------------------------------
 function Sputnik:get_node(id, version, mode)
-   local node, stub = self.repo:get_node(id, version)
+   local node, stub = self.saci:get_node(id, version)
    
    node.name = id
    if not node.title then
@@ -451,7 +451,7 @@ end
 -- Returns node's history.
 -----------------------------------------------------------------------------
 function Sputnik:get_history(node_name, limit, date)
-   local edits = self.repo:get_node_history(node_name, date, limit)
+   local edits = self.saci:get_node_history(node_name, date, limit)
    if limit then 
       for i=limit, #edits do
          table.remove(edits, i)
@@ -489,7 +489,7 @@ end
 -- Returns a list of all node ids.
 -----------------------------------------------------------------------------
 function Sputnik.get_node_names(self, args)
-   return self.repo.versium:get_node_ids(args and args.prefix or nil,
+   return self.saci.versium:get_node_ids(args and args.prefix or nil,
                                          args and args.limit or nil)
 end
 

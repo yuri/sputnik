@@ -8,7 +8,7 @@ title           = {0.1  }
 category        = {0.2  }
 actions         = {0.3, proto="concat", activate="lua"}
 action_hooks    = {0.31, proto="concat", activate="lua"}
-config          = {0.4, proto="concat" }
+config          = {0.4, proto="concat", activate="lua"}
 templates       = {0.5, proto="concat", activate="list"}
 translations    = {0.51, proto="concat", activate="list"}
 prototype       = {0.6  }

@@ -100,7 +100,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     <!--div class="yui-b" id="sidebar">$sidebar</div-->
     
    </div>  <!-- end of div #bd -->
-   _(POWERED_BY_SPUTNIK)
+   _(POWERED_BY_SPUTNIK) | <a style="font-size: .7em" href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a>
   </div> <!-- end of div.yui-t4#doc2 -->
   <br/>
  </body>

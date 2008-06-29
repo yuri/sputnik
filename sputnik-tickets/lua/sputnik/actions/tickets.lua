@@ -8,7 +8,7 @@ local LIST_TEMPLATE = [===[
 <a $new_ticket_link>Create a New Ticket</a>
 <br/><br/>
 
-<script>
+<script type="text/javascript">
  $sorttable_script
 </script>
 <table class="sortable" width="100%">

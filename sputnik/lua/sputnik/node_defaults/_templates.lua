@@ -247,6 +247,7 @@ EDIT = [===[
       <form method="post" enctype="multipart/form-data" action="$action_url">
        $captcha
        <script type="text/javascript">
+        /* <![CDATA[ */
          function toggleElements(class_name) {
             var re = new RegExp('\\b' + "advanced_field" + '\\b');
             var els = document.getElementsByTagName("div");
@@ -269,6 +270,7 @@ EDIT = [===[
             elem.style.height="800px";
             elem.style.margin="10px 10px 10px -100px";
          }
+        /* ]]> */
        </script>
        <input class="hidden" type="hidden" name="p" value="$node_name.post"/>
        <input class="hidden" type="hidden" name="post_token" value="$post_token"/>

@@ -47,7 +47,7 @@ end
 function ReCaptcha:get_html(options)
    options = options or {}
    return string.format([[
-      <script>
+      <script type="text/javascript">
        var RecaptchaOptions = {
           theme : '%s',
           lang  : '%s',

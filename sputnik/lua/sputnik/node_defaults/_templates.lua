@@ -109,7 +109,6 @@ NAV_BAR = [===[
      <li class='$class'><a $link>$label</a></li>]]
      <li style="display:none">&nbsp;</li>
     </ul>
-    </div>
 ]===]
 
 

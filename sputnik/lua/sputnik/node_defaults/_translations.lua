@@ -138,9 +138,9 @@ BY_AUTHOR = {
 
 -- A phrase introducing the author of the edit in global history
 AUTHOR_SAVED_VERSION = {
-   en_US = "<img src='$author_icon'/> <a $author_link>$author</a> at $time: <a $version_link>$version</a>",
-   ru    = "<img src='$author_icon'/> <a $author_link>$author</a> сохранил <a $version_link>$version</a> в $time",
-   pt_BR = "<img src='$author_icon'/> <a $author_link>$author</a> guardou <a $version_link>$version</a> ás $time",
+   en_US = "<img alt='author' src='$author_icon'/> <a $author_link>$author</a> at $time: <a $version_link>$version</a>",
+   ru    = "<img alt='author' src='$author_icon'/> <a $author_link>$author</a> сохранил <a $version_link>$version</a> в $time",
+   pt_BR = "<img alt='author' src='$author_icon'/> <a $author_link>$author</a> guardou <a $version_link>$version</a> ás $time",
 }
 
 -- Diff link in history

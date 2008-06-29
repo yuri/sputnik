@@ -675,8 +675,13 @@ end
 function actions.diff(node, request, sputnik)
    local other_node_data = sputnik.saci:get_node(node.id, request.params.other)
    local diff = ""
-   for field, tokens in pairs(node:diff(other_node_data)) do
-      diff = diff.."<pre><code>"..tokens:to_html().."</code></pre>\n"
+   local diff_table = node:diff(other_node_data)
+   for i, field in ipairs(node:get_ordered_field_names()) do
+      local tokens = diff_table[field]
+      if tokens then
+         diff = diff.."<h2>"..node.translator.translate_key("EDIT_FORM_"..field:upper()).."</h2>\n"
+                    .."<pre><code>"..tokens:to_html().."</code></pre>\n"
+      end
    end
 
    local other_node_info = sputnik.saci:get_node_info(node.id, request.params.other)

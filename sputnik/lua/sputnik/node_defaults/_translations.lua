@@ -185,6 +185,8 @@ EDIT_FORM_CONTENT_HDR = {
    pt_BR = "Conteúdo da página",
 }
 
+EDIT_FORM_CONTENT = EDIT_FORM_CONTENT_HDR
+
 -- A lable for the section of the form that deals with user id, minor parameter and edit summary
 EDIT_FORM_EDIT_INFO_HDR = {
    en_US = "About this Edit",

@@ -1,15 +1,15 @@
 module(..., package.seeall)
 NODE = {
    actions= [[show = "tickets.show"]],
-   fields= [[reported_by = {1.1}
-severity    = {1.2}
-priority    = {1.3}
-status      = {1.4} 
-milestone   = {1.5}
-prod_version = {1.6}
-component   = {1.7}
-keywords    = {1.8}
-assigned_to = {1.9}
+   fields= [[reported_by = {.11}
+severity    = {.12}
+priority    = {.13}
+status      = {.14} 
+milestone   = {.15}
+prod_version = {.16}
+component   = {.17}
+keywords    = {.18}
+assigned_to = {.19}
 ]],
    icon = "icons/bug",
    edit_ui= [[reported_by = {1.31, "text_field"}

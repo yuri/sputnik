@@ -105,9 +105,11 @@ NAV_BAR = [===[
     <ul id='menu'>   $do_sections[[
      <li class='$class' id='$id'><a $link>$label</a></li>]]
     </ul>
-    <ul id='submenu'>   $do_subsections[[
+    <ul id='submenu'>  $do_subsections[[
      <li class='$class'><a $link>$label</a></li>]]
+     <li style="display:none">&nbsp;</li>
     </ul>
+    </div>
 ]===]
 
 

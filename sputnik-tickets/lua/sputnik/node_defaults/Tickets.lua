@@ -2,7 +2,7 @@ module(..., package.seeall)
 NODE = {
    title      = "Tickets",
    actions    = [[show = "tickets.list"]],
-   templates  = "tickets/templates"
+   templates  = "tickets/templates",
 }
 
 NODE.config = [[
@@ -50,3 +50,15 @@ title     = "New Ticket";
 actions   = 'save="tickets.save_new"';
 ]]
 ]=]
+
+NODE.permissions = [=[
+deny(all_users, "edit")
+deny(all_users, "save")
+deny(all_users, "history")
+deny(all_users, "rss")
+allow(Admin, "edit")
+allow(Admin, "save")
+allow(Admin, "history")
+]=]
+
+

@@ -68,15 +68,21 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      <div class="yui-b" id='page'>
 
       <span class="toolbar">
+       $if_can_edit[[
        <a $edit_link title="_(EDIT)"> 
         <img src="$edit_icon" alt="_(EDIT_ICON)"/>
        </a>
+       ]]
+       $if_can_see_history[[
        <a $history_link title="_(HISTORY)">
         <img src="$history_icon" alt="_(HISTORY_ICON)"/>
        </a>
+       ]]
+       $if_can_see_feed[[
        <a $node_rss_link title="_(RSS_FOR_EDITS_TO_THIS_NODE)">
         <img src="$rss_icon" alt="_(SMALL_RSS_ICON)" />
        </a>
+       ]]
       </span>
 
       <h1 class="title">

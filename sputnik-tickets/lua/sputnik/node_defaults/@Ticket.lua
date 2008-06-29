@@ -3,7 +3,7 @@ NODE = {
    actions= [[show = "tickets.show"]],
    icon = "icons/bug",
    translations = "tickets/translations",
-   templates    = "tickets/templates"
+   templates    = "tickets/templates",
 }
 
 NODE.fields= [[

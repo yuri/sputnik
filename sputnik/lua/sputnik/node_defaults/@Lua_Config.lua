@@ -8,6 +8,8 @@ deny(all_users, all_actions)
 allow(Admin, all_actions)
 allow(all_users, "login")
 allow(all_users, "logout")
+allow(all_users, "show")
+allow(all_users, "history")
 ]],
    category="_prototypes",
    actions=[[show_content="wiki.show_content_as_lua_code"]],

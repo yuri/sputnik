@@ -991,8 +991,11 @@ function wrappers.default(node, request, sputnik)
       --
       -- "links" include "href="
       show_link        = node.links:show(),
+      if_can_edit      = cosmo.c(node:check_permissions(request.user, "edit")){},
       edit_link        = node.links:edit{version = request.params.version},
+      if_can_see_history = cosmo.c(node:check_permissions(request.user, "history")){},
       history_link     = node.links:history(),
+      if_can_see_feed  = cosmo.c(node:check_permissions(request.user, "rss")){},
       site_rss_link    = sputnik:pseudo_node(sputnik.config.HISTORY_PAGE).links:rss(),
       node_rss_link    = node.links:rss(),
       sputnik_link     = "href='http://sputnik.freewisdom.org/'",

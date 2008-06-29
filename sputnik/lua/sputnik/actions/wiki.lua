@@ -833,7 +833,7 @@ function actions.show_login_form(node, request, sputnik)
    local post_token = sputnik.auth:timestamp_token(post_timestamp)   
    local html_for_fields, field_list = html_forms.make_html_form{
                                           field_spec = [[
-                                                           please_login = {4.0, "note"}
+                                                           --please_login = {4.0, "note"}
                                                            user = {4.1, "text_field"}
                                                            password = {4.2, "password"}      
                                                        ]], 
@@ -877,6 +877,11 @@ wrappers = {}
 -- etc.
 -----------------------------------------------------------------------------
 function wrappers.default(node, request, sputnik) 
+
+
+   if request.auth_message then
+      node:post_error(node.translator.translate_key(request.auth_message))
+   end
 
    for i, url in ipairs(sputnik.config.STYLESHEETS) do
       node:add_stylesheet(url, "screen")

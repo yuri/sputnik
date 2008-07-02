@@ -150,9 +150,12 @@ function FileDirVersium:get_node_info(id, version)
    local history = self:get_node_history(id) or {}
    assert(#history > 0, "History should have at least one item in it")
 
-   if version and tonumber(version) then
-      -- version N is listed as N-latest
-      return history[#history-tonumber(version)+1]
+   if version then
+      for i, commit in ipairs(history) do
+         if commit.version == version then
+            return commit
+         end
+      end
    else
       return history[1] -- i.e., the _latest_ version
    end

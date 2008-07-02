@@ -467,7 +467,7 @@ RECENT_EDITS_TO_SITE = {
    en_US = "Recent edits to $site_title"
 }
 
-RECENT_EDITS_TO_PAGE = {
+RECENT_EDITS_TO_NODE = {
    en_US = "Recent edits to $site_title: $title"
 }
 

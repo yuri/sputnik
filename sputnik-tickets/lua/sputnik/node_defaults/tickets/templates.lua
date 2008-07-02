@@ -17,6 +17,7 @@ $if_showing_open[[<a $link>Show closed</a>]]
 <table class="sortable" width="100%">
  <thead>
   <tr>
+   <th>&nbsp;</th>
    <th>ID</th>
    <th>priority</th>
    <th>milestone</th>
@@ -26,6 +27,7 @@ $if_showing_open[[<a $link>Show closed</a>]]
  </thead>
  $do_tickets[[
   <tr style="background:$color">
+   <td width="5px"><a title="Edit Ticket $ticket_id" $edit_link><img src="$edit_icon" alt="Edit"/></a></td>
    <td width="20px"><a $ticket_link>$ticket_id</a></td>
    <td width="20px">$priority</td>
    <td width="20px">$milestone</td>

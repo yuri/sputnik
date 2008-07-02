@@ -18,6 +18,8 @@ actions.list = function(node, request, sputnik)
       for i, ticket in ipairs(tickets) do
          cosmo.yield{
             ticket_link = sputnik:make_link(ticket.id),
+            edit_link   = sputnik:make_link(ticket.id, "edit"),
+            edit_icon   = sputnik:make_url("icons/edit", "png"),
             ticket_id   = ticket.id:sub(node.id:len()+2),
             status      = ticket.status,
             num_status  = node.config.status_to_number[ticket.status],

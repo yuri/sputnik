@@ -814,7 +814,7 @@ function actions.show_users(node, request, sputnik)
 
    local users = {}
    for username, record in pairs(node.content.USERS) do
-      table.insert(users, {username=username, link=sputnik:make_link(username), time=record.time, formatted_time=os.date("%c", record.time)})
+      table.insert(users, {username=username, link=sputnik:make_link(username), time=record.creation_time, formatted_time=os.date("%c", record.time)})
    end
    table.sort(users, function(x,y) return x.time > y.time end)
 

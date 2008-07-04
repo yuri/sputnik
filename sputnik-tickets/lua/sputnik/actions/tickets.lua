@@ -80,6 +80,7 @@ actions.show = function(node, request, sputnik)
       ticket_id = node.id:gsub(parent_id.."/", ""):gsub("^(0*)", "<span style='color:gray'>%1</span>"),
       assigned_to = node.assigned_to or "",
       priority = node.priority or "",
+      content = node.markup.transform(node.content or "")
    }
    if ticket_info.assigned_to == "" then 
       ticket_info.assigned_to = "<span style='color:red'>NOBODY</span>"

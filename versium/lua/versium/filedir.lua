@@ -225,7 +225,7 @@ function FileDirVersium:save_version(id, data, author, comment, extra, timestamp
    end                                
    local new_history = string.format(INDEX_TEMPLATE, 
                                      new_version_id, timestamp, author, 
-                                     comment, extra_buffer) 
+                                     comment or "", extra_buffer) 
    util.write_file(self.dir.."/"..util.fs_escape_id(id).."/index", new_history..raw_history, id)
 
    return new_version_id

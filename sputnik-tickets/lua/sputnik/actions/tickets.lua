@@ -78,7 +78,16 @@ actions.show = function(node, request, sputnik)
       priority_stars = index_node.config.priority_to_number[node.priority],
       index_link = sputnik:make_link(parent_id),
       ticket_id = node.id:gsub(parent_id.."/", ""):gsub("^(0*)", "<span style='color:gray'>%1</span>"),
+      assigned_to = node.assigned_to or "",
+      priority = node.priority or "",
    }
+   if ticket_info.assigned_to == "" then 
+      ticket_info.assigned_to = "<span style='color:red'>NOBODY</span>"
+   end
+   if node.priority=="unassigned" then
+      ticket_info.priority = ""
+      ticket_info.priority_stars = "???"
+   end
    local mt = {__index = node}
    node.inner_html = cosmo.fill(node.templates.SHOW, setmetatable(ticket_info, mt))
    return node.wrappers.default(node, request, sputnik)

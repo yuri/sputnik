@@ -51,7 +51,7 @@ SHOW = [===[
    <span style="font-size: 200%">$status</span>
   </td>
   <td width="15%" style="text-align: right;">
-   <span style="font-size: 80%">priority: $priority</span><br/>
+   <span style="font-size: 80%">priority $priority</span><br/>
    <span style="font-size: 200%">$priority_stars</span>
   </td>
   <td width="15%" style="text-align: right;">

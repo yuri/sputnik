@@ -25,9 +25,9 @@ $if_has_tickets[=[
        <th>&nbsp;</th>
        <th>ID</th>
        <th>priority</th>
-       <th>status</th>
        <th>title</th>
        <th>assigned to</th>
+       <th>status</th>
       </tr>
      </thead>
      $do_my_tickets[[
@@ -35,9 +35,9 @@ $if_has_tickets[=[
        <td width="5px"><a title="Edit Ticket $ticket_id" $edit_link><img src="$edit_icon" alt="Edit"/></a></td>
        <td width="20px"><a $ticket_link>$ticket_id</a></td>
        <td width="20px">$priority</td>
-       <td sorttable_customkey="$num_status" width="20px">$status</td>
        <td>$title</td>
        <td>$assigned_to</td>
+       <td sorttable_customkey="$num_status" width="20px">$status</td>
       </tr>
      ]]
     </table>
@@ -53,9 +53,9 @@ $if_has_no_tickets[=[<br/>You have no tickets assigned to you.]=]
    <th>&nbsp;</th>
    <th>ID</th>
    <th>priority</th>
-   <th>status</th>
    <th>title</th>
    <th>assigned to</th>
+   <th>status</th>
   </tr>
  </thead>
  $do_tickets[[
@@ -63,9 +63,9 @@ $if_has_no_tickets[=[<br/>You have no tickets assigned to you.]=]
    <td width="5px"><a title="Edit Ticket $ticket_id" $edit_link><img src="$edit_icon" alt="Edit"/></a></td>
    <td width="20px"><a $ticket_link>$ticket_id</a></td>
    <td width="20px">$priority</td>
-   <td sorttable_customkey="$num_status" width="20px">$status</td>
    <td>$title</td>
    <td>$assigned_to</td>
+   <td sorttable_customkey="$num_status" width="20px">$status</td>
   </tr>
  ]]
 </table>

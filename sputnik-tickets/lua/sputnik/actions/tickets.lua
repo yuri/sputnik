@@ -19,7 +19,7 @@ actions.list = function(node, request, sputnik)
          cosmo.yield{
             ticket_link = sputnik:make_link(ticket.id),
             edit_link   = sputnik:make_link(ticket.id, "edit"),
-            edit_icon   = sputnik:make_url("icons/edit", "png"),
+            edit_icon   = sputnik:make_url("icons/edit-faded", "png"),
             ticket_id   = ticket.id:sub(node.id:len()+2),
             status      = ticket.status,
             num_status  = node.config.status_to_number[ticket.status],

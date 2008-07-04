@@ -70,6 +70,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       <div id="breadcrumb">
        <ul>
         $do_breadcrumb[[<li class="$class"><a $link>$title</a></li>]],[[<li class="$class">▹ <a $link>$title</a></li>]]
+        <li style="display:none">&nbsp;</li>
        </ul>
       </div>
 

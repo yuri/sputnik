@@ -20,6 +20,13 @@ EDIT_FORM_PRIORITY = {
 EDIT_FORM_STATUS = {
    en_US = "Status"
 }
+EDIT_FORM_RESOLUTION = {
+   en_US = "Resolution"
+}
+EDIT_FORM_RESOLUTION_DETAILS = {
+   en_US = "Resolution Explanation"
+}
+
 EDIT_FORM_MILESTONE = {
    en_US = "Milestone"
 }

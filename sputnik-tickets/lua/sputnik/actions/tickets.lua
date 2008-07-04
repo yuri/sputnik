@@ -69,9 +69,15 @@ actions.show = function(node, request, sputnik)
    local parent_id = node.id:match(PARENT_PATTERN)
    local index_node = sputnik:get_node(parent_id)
    local ticket_info = {
+      if_resolved = cosmo.c(node.status=="closed" or node.status=="resolved"){
+                       resolution = node.resolution,
+                       resolution_details = node.markup.transform(node.resolution_details or " ")
+                    },
       ticket_status_color = index_node.config.status_colors[node.status] or "white",
       ticket_priority_color = index_node.config.priority_colors[node.priority] or "white",
-      index_link = sputnik:make_link(parent_id)
+      priority_stars = index_node.config.priority_to_number[node.priority],
+      index_link = sputnik:make_link(parent_id),
+      ticket_id = node.id:gsub(parent_id.."/", ""):gsub("^(0*)", "<span style='color:gray'>%1</span>"),
    }
    local mt = {__index = node}
    node.inner_html = cosmo.fill(node.templates.SHOW, setmetatable(ticket_info, mt))

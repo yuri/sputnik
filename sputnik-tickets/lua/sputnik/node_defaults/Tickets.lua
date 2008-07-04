@@ -7,21 +7,19 @@ NODE = {
 
 NODE.config = [[
 status_colors = {
-   fixed      = "#f0fff0",
-   new        = "#f0f0ff",
-   assigned   = "#fffff0",
-   wontfix    = "#f0f0f0",
-   confirmed  = "#fff0ff",
+   resolved   = "#f0fff0",
+   someday        = "#f0f0ff",
+   open   = "#fffff0",
    closed     = "#c0c0c0",
 }
 
 priority_to_number = {
    unassigned = "",
-   highest    = "*****",
-   high       = "****",
-   medium     = "***",
-   low        = "**",
-   lowest     = "*",
+   highest    = "★★★★",
+   high       = "★★★ ",
+   medium     = "★★",
+   low        = "★",
+   lowest     = ".",
 }
 
 priority_colors = {

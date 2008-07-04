@@ -20,7 +20,6 @@ $if_showing_open[[<a $link>Show closed</a>]]
    <th>&nbsp;</th>
    <th>ID</th>
    <th>priority</th>
-   <th>milestone</th>
    <th>status</th>
    <th>title</th>
   </tr>
@@ -30,7 +29,6 @@ $if_showing_open[[<a $link>Show closed</a>]]
    <td width="5px"><a title="Edit Ticket $ticket_id" $edit_link><img src="$edit_icon" alt="Edit"/></a></td>
    <td width="20px"><a $ticket_link>$ticket_id</a></td>
    <td width="20px">$priority</td>
-   <td width="20px">$milestone</td>
    <td sorttable_customkey="$num_status" width="20px">$status</td>
    <td>$title</td>
   </tr>
@@ -42,49 +40,42 @@ $if_showing_open[[<a $link>Show closed</a>]]
 
 SHOW = [===[
 
-See <a $index_link>all tickets</a> <br/><br/>
-
-<table width="50%">
- <tr>
-  <td width="40px">Reported by</td>
-  <td width="100px">$reported_by</td>
- </tr>
+<table width="100%">
  <tr style="background:$ticket_status_color">
-  <td>Status</td>
-  <td>$status</td>
- </tr>
- <tr>
-  <td>Severity</td>
-  <td>$severity</td>
- </tr>
- <tr style="background:$ticket_priority_color">
-  <td>Priority</td>
-  <td>$priority</td>
- </tr>
- <tr>
-  <td>Milestone</td>
-  <td>$milestone</td>
- </tr>
- <tr>
-  <td>Version</td>
-  <td>$prod_version</td>
- </tr>
- <tr>
-  <td>Component</td>
-  <td>$component</td>
- </tr>
- <tr>
-  <td>Keywords</td>
-  <td>$keywords</td>
- </tr>
- <tr>
-  <td>Assigned to</td>
-  <td>$assigned_to</td>
+  <td width="15%" style="text-align: right;">
+   <span style="font-size: 80%">ticket id</span><br/>
+   <span style="font-size: 200%;">$ticket_id</span>
+  </td>
+  <td width="15%" style="text-align: right;">
+   <span style="font-size: 80%">status</span><br/>
+   <span style="font-size: 200%">$status</span>
+  </td>
+  <td width="15%" style="text-align: right;">
+   <span style="font-size: 80%">priority: $priority</span><br/>
+   <span style="font-size: 200%">$priority_stars</span>
+  </td>
+  <td width="15%" style="text-align: right;">
+   <span style="font-size: 80%">assigned to</span><br/>
+   <span style="font-size: 200%">$assigned_to</span>
+  </td>
+  <td width="40%" style="text-align: right;">
+   Reported by: $reported_by<br/>
+   Component: $component
+  </td>
  </tr>
 </table>
 <br/>
 
 $content
+
+$if_resolved[[
+
+<h2>Resolution</h2>
+<p style="font-size: 150%; font-weight: bold">$resolution</p>
+
+$resolution_details
+
+]]
 
 ]===]   
 

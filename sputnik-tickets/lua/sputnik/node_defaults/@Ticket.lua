@@ -29,7 +29,7 @@ show_advanced   = {2.0, "show_advanced", no_label=true}
 priority    = {2.1, "select", advanced=true}
 priority.options={"unassigned", "high", "medium", "low"}
 resolution_details = {2.3, "textarea", advanced=true, rows=3}
-component   = {1.37, "text_field", advanced=true}
+component   = {2.37, "text_field", advanced=true}
 page_name   = null
 ]]
 

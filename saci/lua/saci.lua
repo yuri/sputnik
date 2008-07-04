@@ -93,7 +93,7 @@ function Saci:deflate(node, fields)
       end
    end
    table.sort(keysort, function(x, y)
-                          if fields then
+                          if fields and fields[x] and fields[y] then
                              return fields[x][1] < fields[y][1]
                           else
                              return x < y

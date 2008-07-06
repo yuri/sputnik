@@ -189,6 +189,9 @@ end
 --- Makes a URL from a table of parameters.
 -----------------------------------------------------------------------------
 function Sputnik:make_url(node_name, action, params, anchor)
+   if not node_name or node_name=="" then
+      node_name = self.config.HOME_PAGE
+   end
    node_name = self:dirify(node_name)
    if action and action~="show" then 
       node_name = node_name.."."..action
@@ -601,7 +604,7 @@ function Sputnik:translate_request (request)
    end
    
    -- break "p" parameter into node name and the action
-   if request.params.p then
+   if request.params.p and request.params.p~="" then
       request.node_name, request.action = sputnik.util.split(request.params.p, "%.")
    else
       request.node_name = self.config.HOME_PAGE 

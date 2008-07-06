@@ -970,6 +970,7 @@ function wrappers.default(node, request, sputnik)
       do_javascript_links = node.javascript_links,
       do_javascript_snippets  = node.javascript_snippets,
       do_breadcrumb    = get_breadcrumbs(node, sputnik),
+      if_multipart_id  = cosmo.c(node.id:match("/")){},
 
       -- "links" include "href="
       show_link        = node.links:show(),

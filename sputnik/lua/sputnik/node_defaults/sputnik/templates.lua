@@ -69,10 +69,12 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      <div class="yui-b" id='page'>
 
       <div id="breadcrumb">
+       $if_multipart_id[=[
        <ul>
         $do_breadcrumb[[<li class="$class"><a $link>$title</a></li>]],[[<li class="$class">▹ <a $link>$title</a></li>]]
         <li style="display:none">&nbsp;</li>
        </ul>
+       ]=]
       </div>
 
       <span class="toolbar">

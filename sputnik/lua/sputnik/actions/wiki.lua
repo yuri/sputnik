@@ -28,17 +28,32 @@ function get_nav_bar (node, sputnik)
    local nav = nav_node.content.NAVIGATION
    local cur_node = sputnik:dirify(node.name)          
 
+   local function matches(id, patterns)
+      if not patterns or #patterns == 0 then
+         return false
+      end
+
+      for i, pattern in ipairs(patterns) do
+         if id:match(pattern) then
+            return true
+         end
+      end
+      return false
+   end
+
    for i, section in ipairs(nav) do
       section.title = section.title or section.id
       section.id = sputnik:dirify(section.id)
-      if section.id == cur_node or section.id == node.category then
+      if section.id == cur_node or section.id == node.category 
+         or matches(node.name, section.patterns) then
          section.is_active = true
          nav.current_section = section
       end
       for j, subsection in ipairs(section) do
          subsection.title = subsection.title or subsection.id
          subsection.id = sputnik:dirify(subsection.id)
-         if subsection.id == cur_node or subsection.id == node.category then
+         if subsection.id == cur_node or subsection.id == node.category
+            or matches(node.name, subsection.patterns) then
             section.is_active = true
             nav.current_section = section
             subsection.is_active = true
@@ -939,34 +954,9 @@ function wrappers.default(node, request, sputnik)
       sidebar          = "",
       do_messages      = node.messages,
 
-      -- Navigation bar (two solutions for now, until we figure out how to unify them)
-      nav_bar = get_nav_bar(node, sputnik),
-      do_navbar = function()
-         local nav = sputnik:get_node("_navigation")
-         if nav and nav.content and nav.content.NAVIGATION then
-            local nav = nav.content.NAVIGATION
-            for i=#nav,1,-1 do
-               local v = nav[i]
-               local active = false;
-               if v.patterns then
-                  for idx,pattern in ipairs(v.patterns) do
-                     if node.name:match(pattern) then
-                        active = true
-                        break
-                     end
-                  end
-               end
-               -- url, title, patterns
-               cosmo.yield{
-                  class = active and "active" or "inactive",
-                  title = v.title,
-                  url = v.url,
-               }
-            end
-         end
-      end,
-      do_css_links = node.css_links,
-      do_css_snippets = node.css_snippets,
+      nav_bar          = get_nav_bar(node, sputnik),
+      do_css_links     = node.css_links,
+      do_css_snippets  = node.css_snippets,
       do_javascript_links = node.javascript_links,
       do_javascript_snippets  = node.javascript_snippets,
       do_breadcrumb    = get_breadcrumbs(node, sputnik),

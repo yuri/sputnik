@@ -877,6 +877,30 @@ end
 
 wrappers = {}
 
+function get_breadcrumbs(node, sputnik)
+   local breadcrumbs = {}
+   local path = ""
+   local not_first
+   for i, part in ipairs{util.split(node.name, "/")} do
+      path = path..part
+      local b_node
+      if path == node.id then
+         b_node = node
+      else
+         b_node = sputnik:get_node(path)
+      end
+      table.insert(breadcrumbs, {
+         link = sputnik:make_link(path),
+         title = b_node.breadcrumb or part,
+         _template = not_first and 2
+      })
+      not_first = true
+      path = path.."/"
+   end
+   return breadcrumbs
+end
+
+
 -----------------------------------------------------------------------------
 -- Wraps the HTML content in bells and whistles such as the navigation bar, the header, the footer,
 -- etc.
@@ -945,63 +969,7 @@ function wrappers.default(node, request, sputnik)
       do_css_snippets = node.css_snippets,
       do_javascript_links = node.javascript_links,
       do_javascript_snippets  = node.javascript_snippets,
-
-      do_breadcrumb = function()
-         local path = {}
-         local namemap = {}
-         local name = node.name
-
-         local prev,last = name:match("^(.+)/(.-)$")
-         while prev do
-            table.insert(path, 1, last)
-            table.insert(namemap, 1, prev .. "/" .. last)
-            prev,last = prev:match("^(.+)/(.-)$")
-         end
-
-         table.insert(path, 1, name:match("^[^/]+"))
-         table.insert(namemap, 1, path[1])
-
-         if #path == 1 then 
-            -- Do nothing
-            return
-         end
-
-         for idx,crumb in ipairs(path) do
-            -- The breadcrumb field can either be a text string, or a function
-            local b_node_id = namemap[idx]
-            local b_node = sputnik:get_node(b_node_id)
-            if (b_node.breadcrumb or ""):match("%S") then
-               -- Try to load the breadcrumb string into a function
-               local func,err = loadstring("return " .. b_node.breadcrumb)
-
-               if func then
-                  -- Actually load and run the function to see what we get back
-                  local succ,err = pcall(func)
-                  if type(err) == "string" then
-                     crumb = err
-                  elseif type(err) == "function" then
-                     crumb = select(2, pcall(err, b_node))
-                  else
-                     crumb = b_node.breadcrumb
-                  end
-               else
-                  crumb = b_node.breadcrumb
-               end
-            end
-
-            cosmo.yield{
-               class = function()
-                  if idx == #path then return "last"
-                  elseif idx == 1 then return "first"
-                  else return "" end
-               end,
-               link = sputnik:make_link(b_node_id),
-               title = crumb,
-               _template = dirty and 2
-            }
-            dirty = true
-         end
-      end,
+      do_breadcrumb    = get_breadcrumbs(node, sputnik),
 
       -- "links" include "href="
       show_link        = node.links:show(),

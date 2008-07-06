@@ -21,8 +21,8 @@ function new(config)
    config = config or {}
    config.ROOT_PROTOTYPE = config.ROOT_PROTOTYPE or "@Root"
    config.SECRET_CODE = config.SECRET_CODE or "2348979898237082394172309847123"
-   config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "_config"
-   config.PASS_PAGE_NAME = config.PASS_PAGE_NAME or "_passwords"
+   config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "sputnik/config"
+   config.PASS_PAGE_NAME = config.PASS_PAGE_NAME or "sputnik/passwords"
    --config.LOGGER = config.LOGGER or "file"
    --config.LOGGER_PARAMS = config.LOGGER_PARAMS
    --                       or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
@@ -204,6 +204,8 @@ function Sputnik:make_url(node_name, action, params, anchor)
          link = link.."&"..k.."="..(v or "")
       end
       return self:escape(link..anchor)
+   elseif node_name==self.config.HOME_PAGE then
+      return self:escape(self.config.HOME_PAGE_URL..anchor)
    else
       return self:escape(self.config.NICE_URL..node_name..anchor)
    end   
@@ -383,26 +385,29 @@ function Sputnik:prime_node(node)
    node.add_header = function(self, header, value) self.headers[header] = value end
    node.redirect = function(self, url) self.headers["Location"] = url end
 
-   node.stylesheets = {}
-   node.javascript = {}
-   function node:add_stylesheet(href, media, src)
-      media = media or "screen"
-      -- Scan the current table to ensure there are no duplicates
-      for k,v in ipairs(self.stylesheets) do
-         if href == v.href and media == v.media and src == v.src then
-            return
-         end
-      end
-      table.insert(self.stylesheets, {href = href, src = src, media = media})
+   node.css_links = {}
+   node.css_snippets = {}
+   node.javascript_links = {}
+   node.javascript_snippets = {}
+
+   local function add(tab, key, values, defaults)
+      if tab[key] then return end
+      tab[key] = true
+      table.insert(tab, values)
    end
-   function node:add_javascript(href, src)
-      -- Scan the current table to ensure there are no duplicates
-      for k,v in ipairs(self.stylesheets) do
-         if href == v.href and src == v.src then
-            return
-         end
-      end
-      table.insert(self.javascript, {href = href, src = src})
+   function node:add_css_link(href, media)
+      media = media or "screen"
+      return add(self.css_links, href.."|"..media, {href = href, media = media})
+   end
+   function node:add_css_snippet(href, media)
+      media = media or "screen"
+      return add(self.css_snippets, href.."|"..media, {snippet = snippet, media = media})
+   end
+   function node:add_javascript_link(href)
+      return add(self.javascript_links, href, {href=href})
+   end
+   function node:add_javascript_snippet(snippet)
+      return add(self.javascript_snippets, snippet, {snippet=snippet})
    end
    return node
 end  
@@ -755,7 +760,7 @@ function Sputnik:protected_run(request, response)
       return success, string.format([[
        <br/>
        <span style="color:red; font-size: 19pt;">%s</span></br><br/><br/>
-       Error details: <b><code>%s</code></b><br/>
+       Error details: <pre><b><code>%s</code></b></pre><br/>
        <pre><code>%s</code></pre>
       ]], message, err[1], err[2])
    end

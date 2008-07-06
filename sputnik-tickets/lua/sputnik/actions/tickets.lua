@@ -5,7 +5,6 @@ local wiki = require"sputnik.actions.wiki"
 
 actions = {}
 
-
 actions.list = function(node, request, sputnik)
    local tickets = {}
    for id, ticket in pairs(sputnik.saci:get_nodes_by_prefix(node.id.."/")) do
@@ -43,8 +42,8 @@ actions.list = function(node, request, sputnik)
         user_has_tickets = true
       end
    end
+   node:add_javascript_snippet(sorttable.script)
    node.inner_html = cosmo.f(node.templates.LIST){
-                        sorttable_script  = sorttable.script,
                         if_showing_all  = cosmo.c(request.params.show_closed){
                                              link=node.links:show()
                                           },

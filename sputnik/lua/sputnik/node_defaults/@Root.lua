@@ -44,9 +44,9 @@ save            = "wiki.save"
 preview         = "wiki.preview"
 preview_content = "wiki.preview_content"
 ]],
-templates = "_templates",
-translations = "_translations",
-config = [[
+templates    = "sputnik/templates",
+translations = "sputnik/translations",
+config       = [[
    
 ]],
 edit_ui = [[

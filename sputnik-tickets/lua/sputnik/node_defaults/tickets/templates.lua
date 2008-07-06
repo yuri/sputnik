@@ -9,12 +9,6 @@ $if_showing_all[[<a $link>Hide closed</a>]]
 $if_showing_open[[<a $link>Show closed</a>]]
 <br/><br/>
 
-<script type="text/javascript">
-/* <![CDATA[ */
- $sorttable_script
-/* ]]> */
-</script>
-
 $if_has_tickets[=[
 
     <h2>Your Tickets</h2>

@@ -21,21 +21,20 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]
   <title>$site_title: $title</title>
-  $do_stylesheets[[
+  <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/css/yui_reset.css'}" media="screen"/>
+  <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/css/layout.css'}" media="screen"/>
+  <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/css/colors.css'}" media="screen"/>
 
-  <link type="text/css" rel="stylesheet" href="$href" media="$media"/>]]
-  $do_stylesheets_src[[
+  $do_css_links[[
+   <link type="text/css" rel="stylesheet" href="$href" media="$media"/>]]
+  $do_css_snippets[[
+   <style type="text/css" media="$media">$snippet</style>]]
+  $do_javascript_links[[
+   <script type="text/javascript" src="$href"></script>]]
+  $do_javascript_snippets[=[
+   <script type="text/javascript">/* <![CDATA[ */ $snippet /* ]]> */</script>]=] 
 
-  <style type="text/css" media="$media">$src</style>]]
-  $do_javascript_link[[
-
-  <script type="text/javascript" src="$href"></script>]]
-  $do_javascript_src[[
-
-  <script type="text/javascript">$src
-  </script>]] 
-
-  <link rel="shortcut icon" href="$favicon_url"/>
+  <link rel="shortcut icon" href="$make_url{'icons/sputnik.png'}"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>
  </head>
@@ -51,12 +50,12 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
             title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>]]    
     $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
     $if_not_logged_in[[_(LOGIN_OR_REGISTER)]]
-    <a $site_rss_link><img src="$rss_medium_url" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)" alt="_(LARGE_RSS_ICON)" /></a>
+    <a $site_rss_link><img src="$make_url{'icons/feed_medium.png'}" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)" alt="_(LARGE_RSS_ICON)" /></a>
    </div>
    
    <div id="logo">
     <a class="logo" href="$home_page_url">
-     <img src="$logo_url" alt="_(LOGO)" /> 
+     <img src="$make_url{'logo.png'}" alt="_(LOGO)" /> 
     </a>
    </div>
    

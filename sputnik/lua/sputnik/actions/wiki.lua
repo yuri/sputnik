@@ -586,18 +586,9 @@ function actions.edit (node, request, sputnik, etc)
    end
 
    -- Add the scripts and stylesheets
-   --node:add_stylesheet(sputnik:make_url("markitup/css/markitup/simple.css"), "screen")
-   --node:add_stylesheet(sputnik:make_url("markitup/css/markitup/markdown.css"), "screen")
-   node:add_javascript(sputnik:make_url("jquery.js"))
-   node:add_javascript(sputnik:make_url("sputnik/js/editpage.js"))
-   --node:add_javascript(sputnik:make_url("markitup/js/markitup.js"))
-   --node:add_javascript(sputnik:make_url("markitup/js/markdown.js"))
-   --node:add_javascript(nil, [[
-   --$(document).ready(function() {
-   --   $(".editor").markItUp(mySettings);
-   --});]])
-   node:add_javascript(sputnik:make_url("jquery/textarearesizer.js"))
-   --node:add_javascript("/editpage.js")
+   node:add_javascript_link(sputnik:make_url("jquery.js"))
+   node:add_javascript_link(sputnik:make_url("sputnik/js/editpage.js"))
+   node:add_javascript_link(sputnik:make_url("jquery/textarearesizer.js"))
 
    -- select the parameters that should be copied
    local fields = {}
@@ -897,10 +888,6 @@ function wrappers.default(node, request, sputnik)
       node:post_error(node.translator.translate_key(request.auth_message))
    end
 
-   for i, url in ipairs(sputnik.config.STYLESHEETS) do
-      node:add_stylesheet(url, "screen")
-   end
-
    local is_old = request.params.version
                   and sputnik.saci:get_node_info(node.id).version ~= request.params.version
                   and not request.is_diff
@@ -912,16 +899,13 @@ function wrappers.default(node, request, sputnik)
       if_old_version   = cosmo.c(is_old){
                             version      = request.params.version,
                          },
-      if_logged_in     = cosmo.c(request.user){
-                            user         = request.user,
-                            logout_link  = sputnik:make_link(node.name, request.params.action, {logout="1"},
-                                                             nil, {do_not_highlight_missing=true}) 
-                         },
-      if_not_logged_in = cosmo.c(not request.user){
-                            login_link   = sputnik:make_link(node.name, "login", {prev = request.params.action},
-                                                             nil, {do_not_highlight_missing=true}),
-                            register_link = sputnik:make_link("register")
-                         },
+      logout_link      = sputnik:make_link(node.name, request.params.action, {logout="1"},
+                                           nil, {do_not_highlight_missing=true}),
+      login_link       = sputnik:make_link(node.name, "login", {prev = request.params.action},
+                                           nil, {do_not_highlight_missing=true}),
+      register_link    = sputnik:make_link("register"),
+      if_logged_in     = cosmo.c(request.user){ user = request.user },
+      if_not_logged_in = cosmo.c(not request.user){},
       if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){
                             base_url    = sputnik.config.BASE_URL,
                             search_page = sputnik.config.SEARCH_PAGE,
@@ -929,14 +913,7 @@ function wrappers.default(node, request, sputnik)
                          },
       content          = node.inner_html,
       sidebar          = "",
-      
-      -- Include messages that may have been added to the page
-      do_messages      = function()
-                            for i,message in ipairs(node.messages) do
-                               cosmo.yield(message)
-                            end
-                         end,
- 
+      do_messages      = node.messages,
 
       -- Navigation bar (two solutions for now, until we figure out how to unify them)
       nav_bar = get_nav_bar(node, sputnik),
@@ -964,44 +941,10 @@ function wrappers.default(node, request, sputnik)
             end
          end
       end,
-      do_stylesheets = function()
-         for idx,entry in ipairs(node.stylesheets) do
-            if entry.href then
-               cosmo.yield{
-                  href = entry.href,
-                  media = entry.media or "screen",
-               }
-            end
-         end
-      end,
-      do_stylesheets_src = function()
-         for idx,entry in ipairs(node.stylesheets) do
-            if entry.src then
-               cosmo.yield{
-                  src = entry.src,
-                  media = entry.media or "screen",
-               }
-            end
-         end
-      end,
-      do_javascript_link = function()
-         for idx,entry in ipairs(node.javascript) do
-            if entry.href then
-               cosmo.yield{
-                  href = entry.href,
-               }
-            end
-         end
-      end,
-      do_javascript_src = function()
-         for idx,entry in ipairs(node.javascript) do
-            if entry.src then
-               cosmo.yield{
-                  src = entry.src,
-               }
-            end
-         end
-      end,
+      do_css_links = node.css_links,
+      do_css_snippets = node.css_snippets,
+      do_javascript_links = node.javascript_links,
+      do_javascript_snippets  = node.javascript_snippets,
 
       do_breadcrumb = function()
          local path = {}
@@ -1072,14 +1015,10 @@ function wrappers.default(node, request, sputnik)
       sputnik_link     = "href='http://sputnik.freewisdom.org/'",
       -- urls are just urls
       make_url         = function(args)
-         return sputnik:make_url(unpack(args))
-      end,
+                            return sputnik:make_url(unpack(args))
+                         end,
       base_url         = sputnik.config.BASE_URL, -- for mods
       nice_url         = sputnik.config.NICE_URL, -- for mods
-      logo_url         = sputnik.config.IMAGES.logo,
-      favicon_url      = sputnik.config.IMAGES.favicon,
-      rss_medium_url   = sputnik.config.IMAGES.rss_medium,
-      rss_small_url    = sputnik.config.IMAGES.rss_small,
       home_page_url    = sputnik.config.HOME_PAGE_URL,
       -- icons are urls of images
       edit_icon        = sputnik:make_url("icons/edit", "png"),

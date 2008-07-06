@@ -88,7 +88,7 @@ function create_email_activation_ticket(args)
    local ticket_id = sputnik:gen_name("register", "hash", "activate/%s")
    local ticket = sputnik:get_node(ticket_id)
    ticket:update{
-            prototype = "@Account_Activation_Ticket",
+            prototype = "sputnik/@Account_Activation_Ticket",
             username  = args.username,
             email     = args.email,
             hash      = args.hash,

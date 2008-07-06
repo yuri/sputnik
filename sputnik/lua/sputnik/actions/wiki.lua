@@ -1021,9 +1021,6 @@ function wrappers.default(node, request, sputnik)
       nice_url         = sputnik.config.NICE_URL, -- for mods
       home_page_url    = sputnik.config.HOME_PAGE_URL,
       -- icons are urls of images
-      edit_icon        = sputnik:make_url("icons/edit", "png"),
-      history_icon     = sputnik:make_url("icons/history", "png"),
-      rss_icon         = sputnik:make_url("icons/feed", "png"),
       if_title_icon    = cosmo.c(node.icon and node.icon~=""){title_icon = sputnik:make_url(node.icon, "png")},
    }, "text/html"
 end

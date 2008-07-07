@@ -14,7 +14,7 @@ DOMAIN         = "www.freewisdom.org"       -- set this for RSS feeds to work pr
 SITE_TITLE     = "My New Wiki"              -- change the title of the site
 NICE_URL       = BASE_URL.."?p="            -- set if you want "nicer" URLs
 HOME_PAGE      = "index"
-HOME_PAGE_URL  = BASE_URL                   -- you can change this to NICE_URL.."?p="..HOME_PAGE
+HOME_PAGE_URL  = BASE_URL                   -- or NICE_URL.."?p="..HOME_PAGE
 COOKIE_NAME    = "Sputnik"                  -- change if you run several
 SEARCH_PAGE    = "search"                   -- comment out remove the search box
 --SEARCH_CONTENT = "Installation"

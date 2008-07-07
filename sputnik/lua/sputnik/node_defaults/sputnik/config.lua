@@ -10,20 +10,17 @@ NODE.content = [=============[
 ----------- THINGS YOU SHOULD PROBABLY CHANGE -------------------------------
 -----------------------------------------------------------------------------
 
-DOMAIN         = "www.freewisdom.org"       -- set this for RSS feeds to work properly
-SITE_TITLE     = "My New Wiki"              -- change the title of the site
-NICE_URL       = BASE_URL.."?p="            -- set if you want "nicer" URLs
+SITE_TITLE     = "My New Wiki"        -- change the title of the site
+DOMAIN         = "localhost:8080"     -- set for RSS feeds to work properly
+NICE_URL       = BASE_URL.."?p="      -- set if you want "nicer" URLs
+
 HOME_PAGE      = "index"
-HOME_PAGE_URL  = BASE_URL                   -- or NICE_URL.."?p="..HOME_PAGE
-COOKIE_NAME    = "Sputnik"                  -- change if you run several
-SEARCH_PAGE    = "search"                   -- comment out remove the search box
+HOME_PAGE_URL  = BASE_URL             -- or NICE_URL.."?p="..HOME_PAGE
+COOKIE_NAME    = "Sputnik"            -- change if you run several
+SEARCH_PAGE    = "search"             -- comment out remove the search box
+
 --SEARCH_CONTENT = "Installation"
-SERVER_TZ      = "-05:00"                   -- set to the correct time zone offset for sitemap to work properly
-
------- variables that are defined in sputnik.lua but could be changed here --
-
---BASE_URL
---MARKUP_MODULE
+SERVER_TZ      = "-05:00"             -- set to the correct time zone offset for sitemap to work properly
 
 -----------------------------------------------------------------------------
 --------- other things you might want to change -----------------------------

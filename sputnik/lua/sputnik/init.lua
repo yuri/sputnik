@@ -137,8 +137,7 @@ function Sputnik:init(initial_config)
    end
       
    -- setup authentication
-   local auth_mod = require(self.config.AUTH_MODULE or "sputnik.auth.simple")
-   self.auth = auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
+   self.auth_mod = require(self.config.AUTH_MODULE or "sputnik.auth.simple")
    
    -- setup wrappers
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      
@@ -641,6 +640,8 @@ end
 -- Handles a request.
 -----------------------------------------------------------------------------
 function Sputnik:run(request, response)
+   self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
+
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
 

@@ -58,7 +58,7 @@ body               {                                  min-width  : 800px;
 
    ul#menu         {margin:  1.1em   0em   0em   0em; 
                     padding:   0em   0em   0em   0em; width      : 100%; 
-                                                      text-align :left; 
+                                                      text-align : left; 
                                                       display    : block;   }
    ul#menu li      {margin:    0em  .5em   0em   0em;  
                     padding:   0em   0em   0em   0em; display    : inline;  
@@ -73,8 +73,12 @@ body               {                                  min-width  : 800px;
                                                       left       : 0em;
                                                       top        : 0em;
                                                       min-height : 20px;
-                                                      text-align :left;
+                                                      text-align : left;
                                                       display    : block;   }
+   ul#submenu.back {                                  display    : none}
+   ul#submenu.front{                                  float      : left; 
+                                                      width      : 100%;
+                                                      z-index    : 1000}
    ul#submenu li   {margin:    0em   0em   0em   0em; 
                     padding:   0em   0em   0em   0em; display    : inline;
                                                       list-style-type: none;}

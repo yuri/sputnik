@@ -29,66 +29,39 @@ function get_nav_bar (node, sputnik)
    local cur_node = sputnik:dirify(node.name)          
 
    local function matches(id, patterns)
-      if not patterns or #patterns == 0 then
-         return false
-      end
-
+      patterns = patterns or {}
       for i, pattern in ipairs(patterns) do
          if id:match(pattern) then
             return true
          end
       end
-      return false
    end
 
    for i, section in ipairs(nav) do
       section.title = section.title or section.id
-      section.id = sputnik:dirify(section.id)
+      section.id    = sputnik:dirify(section.id)
+      section.link  = sputnik:make_link(section.id)
+      section.class = "back"
+      section.subsections = section
       if section.id == cur_node or section.id == node.category 
          or matches(node.name, section.patterns) then
-         section.is_active = true
+         section.class = "front"
          nav.current_section = section
       end
       for j, subsection in ipairs(section) do
          subsection.title = subsection.title or subsection.id
          subsection.id = sputnik:dirify(subsection.id)
+         subsection.class = "back"
+         subsection.link = sputnik:make_link(subsection.id)
          if subsection.id == cur_node or subsection.id == node.category
             or matches(node.name, subsection.patterns) then
-            section.is_active = true
+            section.class = "front"
             nav.current_section = section
-            subsection.is_active = true
+            subsection.class = "front"
          end
       end
    end
-
-   local do_subsections = function(section)
-              for i, subsection in ipairs(section or {}) do
-                 cosmo.yield {
-                    class = util.choose(subsection.is_active, "front", "back"),
-                    link = sputnik:make_link(subsection.id),
-                    label = subsection.title
-                 }
-              end
-   end
-
-   return cosmo.f(node.templates.NAV_BAR){  
-             do_sections = function() 
-                for i, section in ipairs(nav) do               
-                   cosmo.yield { 
-                      class = util.choose(section.is_active, "front", "back"),
-                      id    = section.id,
-                      link  = sputnik:make_link(section.id),  
-                      label = section.title,
-                      do_subsections = function()
-                                          return do_subsections(section)
-                                       end
-                   }
-                end
-             end,
-             do_subsections = function()
-                                 return do_subsections(nav.current_section)
-                              end
-          }
+   return nav
 end
 
 
@@ -922,7 +895,6 @@ end
 -----------------------------------------------------------------------------
 function wrappers.default(node, request, sputnik) 
 
-
    if request.auth_message then
       node:post_error(node.translator.translate_key(request.auth_message))
    end
@@ -930,6 +902,8 @@ function wrappers.default(node, request, sputnik)
    local is_old = request.params.version
                   and sputnik.saci:get_node_info(node.id).version ~= request.params.version
                   and not request.is_diff
+
+   local nav_sections, nav_subsections = get_nav_bar(node, sputnik)
 
    return cosmo.f(node.templates.MAIN){  
       site_title       = sputnik.config.SITE_TITLE or "",
@@ -954,7 +928,8 @@ function wrappers.default(node, request, sputnik)
       sidebar          = "",
       do_messages      = node.messages,
 
-      nav_bar          = get_nav_bar(node, sputnik),
+      do_nav_sections  = nav_sections,
+      do_nav_subsections = nav_sections.current_section,
       do_css_links     = node.css_links,
       do_css_snippets  = node.css_snippets,
       do_javascript_links = node.javascript_links,

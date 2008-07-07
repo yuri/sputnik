@@ -59,8 +59,15 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     </a>
    </div>
    
-   <div id='hd'><!--navigation bar -->    $nav_bar   
-
+   <div id='hd'><!--navigation bar --> 
+    <ul id='menu'>   $do_nav_sections[=[
+     <li class='$class' id='$id'>
+      <a $link>$title</a>
+      <ul id='submenu' class='$class'> <!-- ul.back will be hidden via CSS -->
+       $subsections[[<li class='$class'><a $link>$title</a></li>]]
+      </ul>
+     </li>]=]
+    </ul>
    </div>
  
    <div id='bd'><!--the body, consisting of the page and the sidebar--> 
@@ -116,19 +123,6 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
  </body>
 </html>
 ]===]
-
-NAV_BAR = [===[
-    <ul id='menu'>   $do_sections[[
-     <li class='$class' id='$id'><a $link>$label</a></li>]]
-    </ul>
-    <ul id='submenu'>  $do_subsections[[
-     <li class='$class'><a $link>$label</a></li>]]
-     <li style="display:none">&nbsp;</li>
-    </ul>
-]===]
-
-
-LOGGED_OUT = [===[_(YOU_ARE_NOW_LOGGED_OUT)]===]
 
 --------------------------------------------------------------------------------
 ------- HISTORY, ETC -----------------------------------------------------------

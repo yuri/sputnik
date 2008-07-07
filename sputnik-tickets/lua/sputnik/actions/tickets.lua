@@ -37,6 +37,8 @@ actions.list = function(node, request, sputnik)
                                              {mark_missing=false} )
 
    local user = (request.user or ""):lower()
+   if user == "" then user = nil end
+
    for i, ticket in ipairs(tickets) do
       if (ticket.assigned_to or ""):lower()==user then
         user_has_tickets = true

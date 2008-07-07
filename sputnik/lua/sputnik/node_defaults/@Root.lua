@@ -118,6 +118,7 @@ permissions=[[
    allow(all_users, "post")  --needed for login
    allow(all_users, "login")
    allow(all_users, "history")
+   allow(all_users, "rss")
 
    --deny(Anonymous, "edit")
    --deny(Anonymous, "save")

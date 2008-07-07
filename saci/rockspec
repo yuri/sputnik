@@ -1,7 +1,7 @@
 package = "SACI"
-version = "8.06.22-0"
+version = "8.07.07-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/saci-8.06.22.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/saci-8.07.07.tar.gz",
 }
 description = {
    summary    = "Saci is a document-oriented hierarchical storage system",
@@ -13,17 +13,14 @@ description = {
 }
 dependencies = {
   'cosmo >= 7.12.24',
-  'versium >= 8.06.22',
+  'versium == 8.07.07',
 }
 build = {
   type = "none",
   install = {
-     lua = {
-        ["saci"] = "lua/saci.lua",
+     lua = {        ["saci"] = "lua/saci.lua",
         ["saci.node"] = "lua/saci/node.lua",
-
         ["saci.sandbox"] = "lua/saci/sandbox.lua",
-
 
      }
   }

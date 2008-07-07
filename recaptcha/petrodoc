@@ -1,7 +1,8 @@
 package    = 'ReCaptcha'
 versions   = {
+   {'8.07.07', 'July 7, 2008',  'fixing HTML to please validators'},
    {'8.06.12', 'June 12, 2008', 'ensuring error-less return when post fields are missing'},
-   {'8.05.26', 'May 26, 2008', 'the initial release'},
+   {'8.05.26', 'May 26, 2008',  'the initial release'},
 }
 summary    = 'A Lua interface to reCaptcha.'
 maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'

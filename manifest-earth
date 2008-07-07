@@ -34,3 +34,9 @@ repository['versium']['8.06.22-0']     = {{arch='rockspec'}}
 repository['saci']['8.06.22-0']        = {{arch='rockspec'}}
 repository['sputnik']['8.06.22-0']     = {{arch='rockspec'}}
 repository['versium-git']['8.06.22-0'] = {{arch='rockspec'}}
+repository['recaptcha']['8.07.07-0']   = {{arch='rockspec'}}
+repository['xssfilter']['8.07.07-0']   = {{arch='rockspec'}}
+repository['versium']['8.07.07-0']     = {{arch='rockspec'}}
+repository['saci']['8.07.07-0']        = {{arch='rockspec'}}
+repository['sputnik']['8.07.07-0']     = {{arch='rockspec'}}
+

@@ -1,7 +1,7 @@
 package = "ReCaptcha"
-version = "8.06.12-0"
+version = "8.07.07-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/recaptcha-8.06.12.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/recaptcha-8.07.07.tar.gz",
 }
 description = {
    summary    = "A Lua interface to reCaptcha.",
@@ -22,7 +22,6 @@ build = {
   install = {
      lua = {
         ["recaptcha"] = "lua/recaptcha.lua",
-
      }
   }
 }

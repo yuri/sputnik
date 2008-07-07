@@ -53,7 +53,7 @@ function get_nav_bar (node, sputnik)
          subsection.id = sputnik:dirify(subsection.id)
          subsection.class = "back"
          subsection.link = sputnik:make_link(subsection.id)
-         if subsection.id == cur_node or subsection.id == node.category
+         if subsection.id == cur_node or subsection.id == sputnik:dirify(node.category)
             or matches(node.name, subsection.patterns) then
             section.class = "front"
             nav.current_section = section

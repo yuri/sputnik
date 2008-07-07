@@ -55,9 +55,9 @@ page_params_hdr = {1.0, "header"}
 page_name       = {1.1, "readonly_text"}
 title           = {1.2, "text_field"}
 -------------------------- advanced fields -------------
---show_advanced   = {2.0, "show_advanced", no_label=true}
---category        = {2.1, "text_field", advanced=true}
---prototype       = {2.2, "text_field", advanced=true}
+show_advanced   = {2.0, "show_advanced", no_label=true}
+category        = {2.1, "text_field", advanced=true}
+prototype       = {2.2, "text_field", advanced=true}
 --- the content of the page ----------------------------
 content_hdr     = {3.0, "header"}
 content         = {3.1, "editor", rows=15, 

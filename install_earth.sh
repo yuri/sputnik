@@ -23,5 +23,6 @@ echo "require('sputnik')"                         >> sputnik.cgi
 echo "return sputnik.new_wsapi_run_fn{"           >> sputnik.cgi
 echo "   VERSIUM_PARAMS = { '$SPUTNIK/wiki-data/' }," >> sputnik.cgi
 echo "   BASE_URL       = '/cgi-bin/sputnik.cgi'," >> sputnik.cgi
+echo "   VERSION        = 'Earth from git',"      >> sputnik.cgi
 echo "}"                                          >> sputnik.cgi
 

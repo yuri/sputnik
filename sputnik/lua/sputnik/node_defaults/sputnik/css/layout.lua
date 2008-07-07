@@ -195,6 +195,11 @@ input.submit       {margin:   .8em   0em  .8em  .4em;
                                                       float: right;
                                                       font-size: 140%;
                                                       width: 180px;          }
+a.button           {margin:   .8em    0em  .8em  .4em; 
+                    padding:  .3em  .5em  .3em .5em;  font-size: 140%;
+                                                      width: 180px;          }
+
+
 input.small_submit {margin:   auto   0em  auto   1px; 
                     padding:   1px   0em   1px  auto; display    : inline;
                                                       line-height: 10px; 

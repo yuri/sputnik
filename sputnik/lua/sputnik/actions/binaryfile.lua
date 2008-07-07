@@ -17,18 +17,17 @@ end
 
 local TPL_FILE_INFO = [=[
 <h2>File information</h2>
-$img
-<table><tr>
-<th>Filename:</th>
-<td>$filename</td>
-</tr><tr>
-<th>Size:</th>
-<td>$size</td>
-</tr><tr>
-<th>Content-type:</th>
-<td>$type</td>
-</tr></table>
-<a $link>Download this file</a>
+
+$if_image[[<img style="float: right; max-width:300px; margin: 2em;" src="$url"/>]]
+
+<table>
+<tr><th>Filename</th><td>$filename</td></tr>
+<tr><th>Size</th><td>$size</td></tr>
+<tr><th>Content-type</th><td>$type</td></tr>
+</table>
+
+<p><a class="button" $link>Download this file</a></p>
+
 ]=]
 
 function actions.show(node, request, sputnik)
@@ -39,14 +38,9 @@ function actions.show(node, request, sputnik)
 		size = node.file_size,
 		type = node.file_type,
 		link = sputnik:make_link(node.name, "download"),
-		img = function()
-			if node.file_type:match("image") then
-				local image_url = sputnik:make_url(node.name, ext, {version=request.params.version})
-				return '<img style="float: right" src="'..image_url..'" width="350"'
-			else
-				return ""
-			end
-		end,
+        if_image = cosmo.c(node.file_type:match("image")){
+                      url = sputnik:make_url(node.name, ext, {version=request.params.version})
+        }
 	}
 
 	return node.wrappers.default(node, request, sputnik)

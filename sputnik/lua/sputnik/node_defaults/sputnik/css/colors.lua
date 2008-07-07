@@ -92,6 +92,9 @@ INPUT.readonly        {                          background: $FORM_BG_READONLY; 
 INPUT.checkbox        {                          background: $FORM_BG;             BORDER:        1px solid  $FORM_BORDER; }
 TEXTAREA              {                          background: $FORM_BG;             BORDER:        1px solid  $FORM_BORDER; }
 INPUT.submit          {                          background: $FORM_BG_SUBMIT;      BORDER:        1px outset $FORM_BORDER; }
+A.button              {                          background: $FORM_BG_SUBMIT;      BORDER:        1px outset $FORM_BORDER; 
+    color: black; text-decoration: none;                                                                               
+}
 INPUT.small_submit    {                          background: $FORM_BG_SUBMIT;      BORDER:        1px outset $FORM_BORDER; }
 .save input           {                          background: #ffa20f;              border:        2px outset #d7b9c9       }
 

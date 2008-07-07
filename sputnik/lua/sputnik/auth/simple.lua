@@ -137,9 +137,9 @@ function Simple:user_is_recent(username)
 
    if entry then
       local now = os.time()
-      local min = now - self.recent
+      local min = now - (self.recent or 3600*24*14) --two weeks
 
-      return (tonumber(entry.time) > min)
+      return (tonumber(entry.creation_time) > min)
    else
       return nil, errors.no_such_user(username)
    end

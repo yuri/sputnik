@@ -112,8 +112,10 @@ permissions=[[
    deny(all_users, all_actions)
    allow(all_users, "show")
    allow(all_users, "edit")
+   allow(all_users, "post")  --needed for login
    allow(all_users, "login")
    allow(all_users, "history")
+
    --deny(Anonymous, "edit")
    --deny(Anonymous, "save")
 ]]

@@ -18,6 +18,7 @@ actions.fancy_css = function(page, params, sputnik)
    local data, e = saci.sandbox.new{
                       string = string,
                       table  = table,
+                      MAIN_COLOR = sputnik.config.MAIN_COLOR,
                       colors = colors,
                       ipairs = ipairs,
                       unpack = unpack,

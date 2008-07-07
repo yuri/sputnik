@@ -9,7 +9,7 @@ NODE = {
 }
 
 NODE.content = [===[
-MAIN_HUE             = 200  -- pick a number between 0 and 360
+MAIN_HUE             = MAIN_COLOR or 200  -- pick a number between 0 and 360
 STARTING_SATURATION  =  .7  -- pick a number between 0 and 1
 MAIN                 = colors.new(MAIN_HUE, STARTING_SATURATION, .50)
 
@@ -23,7 +23,7 @@ DARK_GRAY            = GRAY:shade(.7)        -- higher nu mber = darker
 WHITE                = "white"
 BLACK                = "black"
 
-BODY_BG              = MAIN:desaturate_to(.2):tint(.4) -- or set to WHITE
+BODY_BG              = MAIN:desaturate_to(0):tint(.3) -- or set to WHITE
 LINK                 = "#0000cc" -- darker blue
 TEXT                 = BLACK
 

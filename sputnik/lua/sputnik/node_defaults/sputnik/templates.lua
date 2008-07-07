@@ -427,5 +427,22 @@ CONSENT_TO_TERMS_OF_SERVICE = [[
    _(I_AGREE_TO_TERMS_OF_SERVICE)
 ]]
 
+VERSION = [=[
+   <h2>Installer Version</h2>
+
+   $installer
+
+   <h2>Specific Rocks</h2> 
+
+   <table>
+    $rocks[[
+    <tr>
+     <th>$rock</th>
+     <td>$version</td>
+    </tr>
+    ]]
+   </table>  
+]=]
+
 ]=====]
 

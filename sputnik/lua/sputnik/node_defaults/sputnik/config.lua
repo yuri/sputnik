@@ -62,6 +62,10 @@ STYLESHEETS = {
 DEFAULT_NAVIGATION_BAR    = "sputnik/navigation"
 HISTORY_PAGE              = "history"
 VERSION                   = "'Earth' from the git repository"
+-- the versions of those rocks will be displayed under "sputnik/version"
+ROCK_LIST_FOR_VERSION     = { "sputnik", "versium", "saci",
+                              "colors", "diff", "xssfilter", "recaptcha",
+                              "cosmo", "wsapi", "markdown" }
 ]=============]
 
 

@@ -845,7 +845,18 @@ end
 -- Shows the version of sputnik.
 -----------------------------------------------------------------------------
 function actions.sputnik_version(node, request, sputnik)
-   node.inner_html = sputnik.config.VERSION or "&lt;no version information&gt;"
+   local rocks = {}
+   if luarocks and luarocks.require then
+      for _, rock in ipairs(sputnik.config.ROCK_LIST_FOR_VERSION or {}) do
+         local __, version = luarocks.require.get_rock_from_module(rock)
+         table.insert(rocks, {rock=rock, version=version or "unknown"})
+      end
+   end
+
+   node.inner_html = cosmo.f(node.templates.VERSION){
+                        installer = sputnik.config.VERSION or "UNKNOWN",
+                        rocks     = rocks
+                     }
    return node.wrappers.default(node, request, sputnik)
 end
 

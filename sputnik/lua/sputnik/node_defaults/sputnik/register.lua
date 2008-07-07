@@ -7,4 +7,7 @@ NODE = {
  ]],
  --translations = [[_translations_register]],
  title = "New Account",
+ permissions = [[
+allow(all_users, "submit")
+]]
 }

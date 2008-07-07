@@ -35,7 +35,7 @@ end
 function new(sputnik, params)
    -- Set up default parameters
    params = params or {}
-   params.node = params.node or "_passwords"
+   params.node = params.node or "sputnik/passwords"
    params.salt = params.salt or sputnik.config.SECRET_CODE
    params.recent = params.recent or (14 * 24 * 60 * 60)
 

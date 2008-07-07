@@ -65,10 +65,10 @@ H5                    { COLOR: $HEADER;                                         
 ul#menu a             { color: $MENU_TEXT;       background: $MENU_BG;                                                     }
 ul#menu li a:hover    { color: $MENU_TEXT_HOVER;                                                                           }
 ul#menu li.front a    {                          background: $NAVBAR;                                                      }
-ul#submenu            {                          background: $NAVBAR;                                                      }
-ul#submenu li.front a { color: $WHITE;           background: $SUBMENU_CURRENT_BG;  BORDER:        2px solid  $SUBMENU_CURRENT_BORDER; }
-ul#submenu li.back a  { color: $SUBMENU_FG;      background: $SUBMENU_BG;          BORDER:        1px solid  $SUBMENU_BORDER; }
-ul#submenu li a:hover { color: $MENU_TEXT_HOVER;                                                                           }
+ul#menu li ul            {                          background: $NAVBAR;                                                      }
+ul#menu li ul li.front a { color: $WHITE;           background: $SUBMENU_CURRENT_BG;  BORDER:        2px solid  $SUBMENU_CURRENT_BORDER; }
+ul#menu li ul li.back a  { color: $SUBMENU_FG;      background: $SUBMENU_BG;          BORDER:        1px solid  $SUBMENU_BORDER; }
+ul#menu li ul li a:hover { color: $MENU_TEXT_HOVER;                                                                           }
 
 DEL                   { COLOR: $BLACK;           background: $LIGHT_GRAY;                                                  }
 INS                   { COLOR: $TEXT;            background: $INS;                                                         }

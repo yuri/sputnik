@@ -40,7 +40,6 @@ NODE.content=[===[
 html               {                                  overflow   : -moz-scrollbars-vertical; }
 body               {                                  min-width  : 800px; 
                                                       text-align : left;    }
- #doc2             {                                                        }
 
   /* ABOVE HEADER                                                          */
   #login           {margin:    0em   0em   0em   0em;  
@@ -68,21 +67,21 @@ body               {                                  min-width  : 800px;
                     padding:  .3em   1em 0.3em   1em; position   : relative; 
                                                       font-size  : 140%; 
                                                       text-decoration: none;}
-   ul#submenu      {margin:    0em   0em   0em   0em;  
+   ul#menu li ul   {margin:    0em   0em   0em   0em;  
                     padding:  .8em   0em  .4em   0em; position   : relative; 
                                                       left       : 0em;
                                                       top        : 0em;
                                                       min-height : 20px;
                                                       text-align : left;
                                                       display    : block;   }
-   ul#submenu.back {                                  display    : none}
-   ul#submenu.front{                                  float      : left; 
+   ul#menu li ul.back {                               display    : none}
+   ul#menu li ul.front{                               float      : left; 
                                                       width      : 100%;
                                                       z-index    : 1000}
-   ul#submenu li   {margin:    0em   0em   0em   0em; 
+   ul#menu li ul li{margin:    0em   0em   0em   0em; 
                     padding:   0em   0em   0em   0em; display    : inline;
                                                       list-style-type: none;}
-   ul#submenu li a {margin:    0em  .5em   0em  .5em; 
+   ul#menu li ul li a {margin:    0em  .5em   0em  .5em; 
                     padding:   0em  .2em   0em  .2em; font-size  : 100%;
                                                       font-family: Verdana, sans-serif;
                                                       text-decoration:none; 
@@ -114,9 +113,13 @@ body               {                                  min-width  : 800px;
     /* CONTENT = toolbar + actual content                                  */
     .content       {
                     padding:   1em   3em   1em   3em; font-size  : 100%;
-                                                      max-width  : 700px;   }         
-     .toolbar      {margin:    0em   0em   0em   0em; 
-                    padding:  .5em  .5em  .5em   2em; float      : right;   }
+                                                      max-width  : 700px;   } 
+     .crumbs_and_tools {margin:    0em   0em   0em   0em; 
+                    padding:  .5em  .5em  .5em   2em; width      : 100%;   }
+        
+     .toolbar      {margin:    0em  .5em   0em   0em; 
+                    padding:  .5em  .5em  .5em   2em; position   : absolute;
+                                                      right      : 0;}
      .toolbar A    {                                  text-decoration: none;}
 
 
@@ -225,14 +228,16 @@ ins                {                                  text-decoration: none  }
 .teaser            {                                  font-size  : 120%; 
                                                       font-weight: bold      }
 
-#breadcrumb        {margin:    0em   0em   0em   0em; 
+#breadcrumbs       {margin:    0em   0em   0em   0em; 
 	                padding:   0em   0em   0em  .5em; float      : left;
-                                                      width      : 100%      }
-#breadcrumb ul     {margin:    0em   0em   0em   0em;
-	                padding:   0em   0em   0em   0em; list-style : none;     }
-#breadcrumb li     {margin:    0em   0em   0em   0em;
+                                                      width      : 100%;
+                                                      min-height : 3em;      }
+#breadcrumbs ul    {margin:    0em   0em   0em   0em;
+	                padding:   0em   0em   0em   0em; display    : inline;
+                                                      list-style : none;     }
+#breadcrumbs li    {margin:    0em   0em   0em   0em;
 	                padding:   0em   0em   0em   0em; display    : inline;   }
-#breadcrumb a      {margin:    0em  .5em   0em   0em; text-decoration: none; }
+#breadcrumbs a     {margin:    0em  .5em   0em   0em; text-decoration: none; }
 
 textarea.resizeable{margin:    0em   0em   0em   0em; display    : block;
                                                       height     : 20%;      }

@@ -63,26 +63,20 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     <ul id='menu'>   $do_nav_sections[=[
      <li class='$class' id='$id'>
       <a $link>$title</a>
-      <ul id='submenu' class='$class'> <!-- ul.back will be hidden via CSS -->
+      <ul class='$class'> <!-- ul.back will be hidden via CSS -->
        $subsections[[<li class='$class'><a $link>$title</a></li>]]
        <li style="display:none">&nbsp;</li>
       </ul>
      </li>]=]
     </ul>
-      <div id="breadcrumb">
+      <div id="breadcrumbs">
        $if_multipart_id[=[
        <ul>
         $do_breadcrumb[[<li class="$class"><a $link>$title</a></li>]],[[<li class="$class">▹ <a $link>$title</a></li>]]
         <li style="display:none">&nbsp;</li>
        </ul>
        ]=]
-      </div>
-   </div>
- 
-   <div id='bd'><!--the body, consisting of the page and the sidebar--> 
-    <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]><!--this just marks the page as "main" -->
-     <div class="yui-b" id='page'>
-      <span class="toolbar">
+       <span class="toolbar">
        $if_can_edit[[
        <a $edit_link title="_(EDIT)"> 
         <img src="$make_url{'icons/edit.png'}" alt="_(EDIT_ICON)"/>
@@ -98,7 +92,14 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         <img src="$make_url{'icons/feed.png'}" alt="_(SMALL_RSS_ICON)" />
        </a>
        ]]
-      </span>
+       </span>
+
+      </div>
+   </div>
+ 
+   <div id='bd'><!--the body, consisting of the page and the sidebar--> 
+    <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]><!--this just marks the page as "main" -->
+     <div class="yui-b" id='page'>
 
       <h1 class="title">
         $if_title_icon[[<img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/> ]]

@@ -344,60 +344,59 @@ LOGIN_FORM              = [===[
 --------------------------------------------------------------------------------
 
 LUA_CODE = [===[
-       $if_ok[[<font color="green">_(THIS_LUA_CODE_PARSES_CORRECTLY)</font>]]
-       $if_errors[[
-	 <font color='red'>
-            <p><b>_(THIS_LUA_CODE_HAS_PROBLEMS)</b></p>
-	    <code> $errors </code>
-         </font>]]
+    $if_ok[[<font color="green">_(THIS_LUA_CODE_PARSES_CORRECTLY)</font>]]
+    $if_errors[[
+     <font color='red'>
+      <p><b>_(THIS_LUA_CODE_HAS_PROBLEMS)</b></p>
+      <code> $errors </code>
+     </font>
+    ]]
 
-       <div width="100%">
-        <style>
-         table.code {
-           width: 100%;
-           border-collapse: collapse
-           background: red;
-           border-style: none;
-         }
-	 table.body {
-           background: yellow;
-	 }
-	 table.code tbody th {
-           font-size: 90%;
-	 }
-	 table.code tbody th a{
-	    text-decoration: none;
-	    color: white;
-	 }
-         table.code th.lineno { 
-           width: 4em;
-         }
-         table.code th.bad {
-	   background: red;
-	 }
-         table.code tbody td {
-           //font: normal 120% monospace;
-           border: none;
-	   //color: black;
-	 }
-	 table.code tbody td code {
-	   background: white;
-         }
-	 table.code tbody td code.bad{
-	   background: yellow;
-	 }
-        </style>
-        <table class="code">
-         <tbody>
-         $do_lines[[
-             <tr>
-              <th id="L$i" class="$class"><a href="#L$i">$i</a></th>
-              <td><code class="$class">$line</code></td>
-             </tr>
-         ]]
-        </tbody>
-       </table>
-      </div>
+    <div width="100%">
+     <style>
+      table.code {
+       width: 100%;
+       border-collapse: collapse
+       background: red;
+       border-style: none;
+      }
+      table.body {
+       background: yellow;
+      }
+      table.code tbody th {
+       font-size: 90%;
+      }
+      table.code tbody th a{
+       text-decoration: none;
+       color: white;
+      }
+      table.code th.lineno { 
+       width: 4em;
+      }
+      table.code th.bad {
+       background: red;
+      }
+      table.code tbody td {
+       border: none;
+      }
+      table.code tbody td code {
+       background: white;
+      }
+      table.code tbody td code.bad{
+       background: yellow;
+      }
+     </style>
+     <table class="code">
+      <tbody>
+       $do_lines[[
+        <tr>
+         <th id="L$i" class="$class"><a href="#L$i">$i</a></th>
+         <td><code class="$class">$line</code></td>
+        </tr>
+       ]]
+      </tbody>
+     </table>
+    </div>
 ]===]
 
 ACTION_NOT_FOUND = [===[

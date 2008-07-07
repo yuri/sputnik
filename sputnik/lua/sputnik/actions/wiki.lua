@@ -61,6 +61,9 @@ function get_nav_bar (node, sputnik)
          end
       end
    end
+   if not nav.current_section then
+      nav[1].class="front"
+   end
    return nav
 end
 

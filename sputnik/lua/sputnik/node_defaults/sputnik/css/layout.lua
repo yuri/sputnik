@@ -114,9 +114,9 @@ body               {                                  min-width  : 800px;
     /* CONTENT = toolbar + actual content                                  */
     .content       {
                     padding:   1em   3em   1em   3em; font-size  : 100%;
-                                                      max-width  : 700px;  }
+                                                      max-width  : 700px;   }         
      .toolbar      {margin:    0em   0em   0em   0em; 
-                    padding:  .5em  .5em  .5em   2em; float      :right;   }
+                    padding:  .5em  .5em  .5em   2em; float      : right;   }
      .toolbar A    {                                  text-decoration: none;}
 
 
@@ -214,44 +214,23 @@ div.advanced_field {                                  display: none;         }
 
 ins                {                                  text-decoration: none  }
 
-.history_dates     {                                  font-size: 80%;        }
+.history_dates     {                                  font-size  : 80%;      }
 .error_message     {margin:   15px  15px  15px  15px; 
                     padding:  15px  15px  15px  15px;                        } 
-.teaser            {                                  font-size: 120%; 
-                                                      font-weight:bold       }
+.teaser            {                                  font-size  : 120%; 
+                                                      font-weight: bold      }
 
-#breadcrumb {
-	padding: 0 0 0 0;
-	margin: 0 0 0 0;
-    float      :left; 
-}
-#breadcrumb ul {
-	list-style: none;
-}
-#breadcrumb li {
-	margin: 0;
-	padding: 0 0 0 0;
-	display: inline;
-}
-#breadcrumb a {
-	margin-right: .5em;
-	background: none;
-	text-decoration: none;
-	font-family: serif;
-}
-#breadcrumb .first {
-	margin-left: 0;
-	padding-left: 0;
-}
-#breadcrumb .last {
-	background: none;
-}
+#breadcrumb        {margin:    0em   0em   0em   0em; 
+	                padding:   0em   0em   0em  .5em; float      : left;
+                                                      width      : 100%      }
+#breadcrumb ul     {margin:    0em   0em   0em   0em;
+	                padding:   0em   0em   0em   0em; list-style : none;     }
+#breadcrumb li     {margin:    0em   0em   0em   0em;
+	                padding:   0em   0em   0em   0em; display    : inline;   }
+#breadcrumb a      {margin:    0em  .5em   0em   0em; text-decoration: none; }
 
-textarea.resizeable {
-	display:block;
-	margin-bottom:0pt;
-	height: 20%;
-}
+textarea.resizeable{margin:    0em   0em   0em   0em; display    : block;
+                                                      height     : 20%;      }
 
 div.grippie {
 	background:#F3F3F3 url($make_url{node="sputnik/grippie.png"}) no-repeat scroll center 2px;

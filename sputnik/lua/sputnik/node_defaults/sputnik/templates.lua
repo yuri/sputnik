@@ -65,16 +65,10 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
       <a $link>$title</a>
       <ul id='submenu' class='$class'> <!-- ul.back will be hidden via CSS -->
        $subsections[[<li class='$class'><a $link>$title</a></li>]]
+       <li style="display:none">&nbsp;</li>
       </ul>
      </li>]=]
     </ul>
-   </div>
- 
-   <div id='bd'><!--the body, consisting of the page and the sidebar--> 
-
-    <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]><!--this just marks the page as "main" -->
-     <div class="yui-b" id='page'>
-
       <div id="breadcrumb">
        $if_multipart_id[=[
        <ul>
@@ -83,7 +77,11 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
        </ul>
        ]=]
       </div>
-
+   </div>
+ 
+   <div id='bd'><!--the body, consisting of the page and the sidebar--> 
+    <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]><!--this just marks the page as "main" -->
+     <div class="yui-b" id='page'>
       <span class="toolbar">
        $if_can_edit[[
        <a $edit_link title="_(EDIT)"> 
@@ -101,7 +99,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
        </a>
        ]]
       </span>
-      <br/>
+
       <h1 class="title">
         $if_title_icon[[<img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/> ]]
         <a $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]

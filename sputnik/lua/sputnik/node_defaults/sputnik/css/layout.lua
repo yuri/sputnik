@@ -147,6 +147,8 @@ ul                 {margin:   10px   0em  10px  15px; list-style-type: square }
 li                 {                                  line-height: 150%     }
 ol                 {margin:   10px   0em  10px  24px; list-style-type: decimal } 
 p                  {margin:   15px   0em  auto  auto; line-height: 155%     }
+
+blockquote         {margin:   15px   0em  auto   3em; line-height: 120%     }
 code               {
                     padding:   2px   2px   2px   1em; font-size  : 100%; 
                                                       font-family: monospace} 

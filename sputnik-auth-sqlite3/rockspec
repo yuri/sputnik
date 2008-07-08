@@ -1,0 +1,21 @@
+-- Package metadata
+package = 'Sputnik Auth SQLite3'
+version = 'cvs1'
+description = {
+  summary = 'A SQLite3 authentication module for Sputnik',
+  detailed = [[
+  ]],
+  license = 'MIT/X11',
+  homepage = 'http://sputnik.freewisdom.org/en/Authentication',  
+}
+
+-- Dependency information
+dependencies = {
+  'sputnik == cvs1',
+  'luasql-sqlite3'
+}
+
+-- Build rules
+source = {
+}
+

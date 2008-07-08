@@ -1,4 +1,4 @@
-module(..., package.seeall) --  sputnik.authentication.mysql
+module(..., package.seeall) --  sputnik.auth.mysql
 
 -----------------------------------------------------------------------------
 -- Implements Sputnik's authentication API using a MySQL database.
@@ -33,40 +33,6 @@ CREATE TABLE IF NOT EXISTS %s (
    value VARCHAR(255) NOT NULL,
    PRIMARY KEY(username, name)
 );]]
-
------------------------------------------------------------------------------
--- Prepares a SQL statement using placeholders.
--- 
--- @param statement      the statement to be prepared
--- @param ...            a list of parameters  
--- @return               the prepared statement.
------------------------------------------------------------------------------
-local function prepare(statement, ...)
-    local count = select('#', ...)
-    
-    if count > 0 then
-        local someBindings = {}
-        
-        for index = 1, count do
-            local value = select(index, ...)
-            local type = type(value)
-            
-            if type == 'string' then
-                value = '\'' .. value:gsub('\'', '\'\'') .. '\''
-            elseif type == 'nil' then
-                value = 'null'
-            else
-                value = tostring(value)
-            end 
-            
-            someBindings[index] = value
-        end
-        
-        statement = statement:format(unpack(someBindings))
-    end
-
-    return statement
-end
 
 -----------------------------------------------------------------------------
 -- Creates a new instance of the authentication module for use in sputnik
@@ -108,7 +74,7 @@ function new(sputnik, params)
 		obj.tables.user = string.format("%suser", params.prefix or "")
 		obj.tables.metadata = string.format("%smetadata", params.prefix or "")
 
-      local cmd = prepare(schemas[tbl]:format(obj.tables[tbl]))
+      local cmd = obj:prepare(schemas[tbl]:format(obj.tables[tbl]))
       assert(con:execute(cmd))
 	end
 
@@ -126,6 +92,40 @@ function new(sputnik, params)
 	return obj 
 end
 
+-----------------------------------------------------------------------------
+-- Prepares a SQL statement using placeholders.
+-- 
+-- @param statement      the statement to be prepared
+-- @param ...            a list of parameters  
+-- @return               the prepared statement.
+-----------------------------------------------------------------------------
+function Auth:prepare(statement, ...)
+   local count = select('#', ...)
+
+   if count > 0 then
+      local someBindings = {}
+
+      for index = 1, count do
+         local value = select(index, ...)
+         local type = type(value)
+
+         if type == 'string' then
+            value = "'" .. self.con:excape(value) .. "'"
+         elseif type == 'nil' then
+            value = 'null'
+         else
+            value = tostring(value)
+         end 
+
+         someBindings[index] = value
+      end
+
+      statement = statement:format(unpack(someBindings))
+   end
+
+   return statement
+end
+
 ------------------------------------------------------------------
 -- Returns whether or not a given username exists in the 
 -- authentication system, without any further information
@@ -135,7 +135,7 @@ end
 
 function Auth:user_exists(username)
    username = username:lower()
-   local cmd = prepare(self.queries.USER_EXISTS, username)
+   local cmd = self:prepare(self.queries.USER_EXISTS, username)
    local cur = self.con:execute(cmd)
    local row = cur:fetch("*a")
    cur:close()
@@ -167,19 +167,19 @@ function Auth:authenticate(username, password)
       return nil, errors.no_such_user(username)
    end
 
-   local cmd = prepare(self.queries.GET_META, username, "creation_time")
+   local cmd = self:prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
    local time = cur:fetch("*a")
    cur:close()
 
    local hash = get_salted_hash(time, self.salt, password)
-   local cmd = prepare(self.queries.USER_AUTH, username, hash)
+   local cmd = self:prepare(self.queries.USER_AUTH, username, hash)
    local cur = self.con:execute(cmd)
    local row = cur:fetch("*a")
    cur:close()
 
    -- Get the display name for this user
-   local cmd = prepare(self.queries.GET_META, username, "display")
+   local cmd = self:prepare(self.queries.GET_META, username, "display")
    local cur = self.con:execute(cmd)
    local display = cur:fetch("*a")
    cur:close()
@@ -201,16 +201,16 @@ end
 
 function Auth:validate_token(username, token)
    username = username:lower()
-   local cmd = prepare(self.queries.USER_PWHASH, username)
-   local cur = self.con:execute(cmd)
-   local row = cur:fetch("*a")
+   local cmd = self:prepare(self.queries.USER_PWHASH, username)
+   local cur = assert(self.con:execute(cmd))
+   local row = cur:fetch("a")
    cur:close()
    
    if row then
       local hash = user_token(username, self.salt, row.password)
       if token == hash then
          -- Get the display name for this user
-         local cmd = prepare(self.queries.GET_META, username, "display")
+         local cmd = self:prepare(self.queries.GET_META, username, "display")
          local cur = self.con:execute(cmd)
          local display = cur:fetch("*a")
          cur:close()
@@ -231,7 +231,7 @@ end
 
 function Auth:user_is_recent(username)
    username = username:lower()
-   local cmd = prepare(self.queries.GET_META, username, "creation_time")
+   local cmd = self:prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
    local time = cur:fetch("*a")
    cur:close()
@@ -271,13 +271,13 @@ function Auth:add_user(username, password, metadata)
    username = username:lower()
 
    -- Add the user to the user table
-   local cmd = prepare(self.queries.ADD_USER, username, pwhash)
+   local cmd = self:prepare(self.queries.ADD_USER, username, pwhash)
    local res = self.con:execute(cmd)
    assert(res == 1)
 
    -- Add any metadata to the table
    for key,value in pairs(metadata) do
-      local cmd = prepare(self.queries.ADD_META, username, key, value)
+      local cmd = self:prepare(self.queries.ADD_META, username, key, value)
       local res = self.con:execute(cmd)
       assert(res == 1)
    end
@@ -293,7 +293,7 @@ end
 function Auth:get_metadata(username, key)
    if type(username) ~= "string" then return nil end
 
-   local cmd = prepare(self.queries.GET_META, username, key)
+   local cmd = self:prepare(self.queries.GET_META, username, key)
    local cur = assert(self.con:execute(cmd))
    local data = cur:fetch("*a")
    cur:close()
@@ -311,7 +311,7 @@ function Auth:set_metadata(username, key, value)
    if type(username) ~= "string" then return nil end
 
    -- Determine if the metadata currently exists
-   local cmd = prepare(self.queries.SET_META, username, key, value, value)
+   local cmd = self:prepare(self.queries.SET_META, username, key, value, value)
    assert(self.con:execute(cmd))
 end
 

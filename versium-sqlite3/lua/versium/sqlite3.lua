@@ -17,41 +17,8 @@ capabilities = {
    can_save = true,
    has_history = true,
    is_persistent = true,
+   get_nodes_prefix = true,
 }
-
------------------------------------------------------------------------------
--- Prepares a SQL statement using placeholders.
--- 
--- @param statement      the statement to be prepared
--- @param ...            a list of parameters  
--- @return               the prepared statement.
------------------------------------------------------------------------------
-local function prepare(statement, ...)
-    local count = select('#', ...)
-    
-    if count > 0 then
-        local someBindings = {}
-        
-        for index = 1, count do
-            local value = select(index, ...)
-            local type = type(value)
-            
-            if type == 'string' then
-                value = '\'' .. value:gsub('\'', '\'\'') .. '\''
-            elseif type == 'nil' then
-                value = 'null'
-            else
-                value = tostring(value)
-            end 
-            
-            someBindings[index] = value
-        end
-        
-        statement = statement:format(unpack(someBindings))
-    end
-
-    return statement
-end
 
 local schemas = {}
 schemas.node = [[
@@ -103,6 +70,7 @@ function new(params)
 	setmetatable(obj, SQLite3Versium_mt)
 
 	obj.tables = {}
+   obj.capabilities = capabilities
 
 	-- Create the two data tables, if they don't already exist
 	local tables = {"node", "node_index"}
@@ -111,7 +79,7 @@ function new(params)
 		obj.tables.node = string.format("%snode", params.prefix or "")
 		obj.tables.node_index = string.format("%snode_index", params.prefix or "")
 
-      local cmd = prepare(schemas[tbl]:format(obj.tables[tbl]))
+      local cmd = obj:prepare(schemas[tbl]:format(obj.tables[tbl]))
       assert(con:execute(cmd))
 	end
 
@@ -120,10 +88,11 @@ function new(params)
 		GET_NODE_VERSION = string.format("SELECT id,data,version from %s WHERE id = %%s and version = %%s;", obj.tables.node),
 		GET_NODE_LATEST = string.format("SELECT n.id,n.data,n.version FROM %s as n NATURAL JOIN %s WHERE n.id = %%s;", obj.tables.node, obj.tables.node_index),
 		GET_VERSION = string.format("SELECT max(version) as version FROM %s WHERE id = %%s;", obj.tables.node),
-		GET_NODES = string.format("SELECT id FROM %s ORDER BY id;", obj.tables.node_index),
-		GET_NODES_PREFIX_LIMIT = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id LIMIT %%s;", obj.tables.node_index),
-      GET_NODES_PREFIX = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id;", obj.tables.node_index),
-      GET_NODES_LIMIT = string.format("SELECT id FROM %s ORDER BY id LIMIT %%s;", obj.tables.node_index),
+      GET_NODES_PREFIX = string.format("SELECT n.* FROM %s as n NATURAL JOIN %s WHERE n.id LIKE %%s;", obj.tables.node, obj.tables.node_index),
+		GET_NODE_IDS = string.format("SELECT id FROM %s ORDER BY id;", obj.tables.node_index),
+		GET_NODE_IDS_PREFIX_LIMIT = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id LIMIT %%s;", obj.tables.node_index),
+      GET_NODE_IDS_PREFIX = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id;", obj.tables.node_index),
+      GET_NODE_IDS_LIMIT = string.format("SELECT id FROM %s ORDER BY id LIMIT %%s;", obj.tables.node_index),
       NODE_EXISTS = string.format("SELECT DISTINCT id FROM %s WHERE id = %%s;", obj.tables.node),
 		INSERT_NODE = string.format("INSERT INTO %s (id,version,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s, %%s);", obj.tables.node),
 		INSERT_INDEX = string.format("INSERT INTO %s (id, version) VALUES (%%s, %%s);", obj.tables.node_index),
@@ -134,6 +103,43 @@ function new(params)
 	}
 
 	return obj 
+end
+
+-----------------------------------------------------------------------------
+-- Prepares a SQL statement using placeholders.
+-- 
+-- @param statement      the statement to be prepared
+-- @param ...            a list of parameters  
+-- @return               the prepared statement.
+-----------------------------------------------------------------------------
+function SQLite3Versium:prepare(statement, ...)
+    local count = select('#', ...)
+    
+    if count > 0 then
+        local someBindings = {}
+        
+        for index = 1, count do
+            local value = select(index, ...)
+            local type = type(value)
+            
+            if type == 'string' then
+               if value:find("%z") then
+                  error("versium.sqlite3 cannot store embedded zeros")
+               end
+               value = "'" .. self.con:escape(value) .. "'"
+            elseif type == 'nil' then
+                value = 'null'
+            else
+                value = tostring(value)
+            end 
+            
+            someBindings[index] = value
+        end
+        
+        statement = statement:format(unpack(someBindings))
+    end
+
+    return statement
 end
 
 -----------------------------------------------------------------------------
@@ -156,9 +162,9 @@ function SQLite3Versium:get_node(id, version)
 	-- Get the most recent version of the node
 	local cmd
 	if version then
-		cmd = prepare(self.queries.GET_NODE_VERSION, id, version)
+		cmd = self:prepare(self.queries.GET_NODE_VERSION, id, version)
 	else
-		cmd = prepare(self.queries.GET_NODE_LATEST, id)
+		cmd = self:prepare(self.queries.GET_NODE_LATEST, id)
 	end
 
 	-- Run the query to get the node
@@ -173,9 +179,9 @@ function SQLite3Versium:get_node(id, version)
    -- Query the metadata
    local cmd
    if version then
-      cmd = prepare(self.queries.GET_METADATA_VERSION, id, version)
+      cmd = self:prepare(self.queries.GET_METADATA_VERSION, id, version)
    else
-      cmd = prepare(self.queries.GET_METADATA_LATEST, id)
+      cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
    end
 
 	local cur = assert(self.con:execute(cmd))
@@ -195,7 +201,7 @@ end
 function SQLite3Versium:node_exists(id)
 	assert(id)
 
-	local cmd = prepare(self.queries.NODE_EXISTS, id)
+	local cmd = self:prepare(self.queries.NODE_EXISTS, id)
 	local cur = assert(self.con:execute(cmd))
    local row = cur:fetch({}, "*a")
 	cur:close()
@@ -214,7 +220,7 @@ function SQLite3Versium:get_node_info(id)
 	assert(id)
 
 	-- Fetch the latest version number
-	local cmd = prepare(self.queries.GET_METADATA_LATEST, id)
+	local cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
 	local cur = assert(self.con:execute(cmd))
 	local row = cur:fetch({}, "a")
 	cur:close()
@@ -239,14 +245,14 @@ function SQLite3Versium:get_node_ids(prefix, limit)
    local cmd
    if prefix and limit then
       prefix = prefix .. "%"
-      cmd = prepare(self.queries.GET_NODES_PREFIX_LIMIT, prefix, limit)
+      cmd = self:prepare(self.queries.GET_NODE_IDS_PREFIX_LIMIT, prefix, limit)
    elseif prefix then
       prefix = prefix .. "%"
-      cmd = prepare(self.queries.GET_NODES_PREFIX, prefix)
+      cmd = self:prepare(self.queries.GET_NODE_IDS_PREFIX, prefix)
    elseif limit then
-      cmd = prepare(self.queries.GET_NODES_LIMIT, limit)
+      cmd = self:prepare(self.queries.GET_NODE_IDS_LIMIT, limit)
    else
-      cmd = prepare(self.queries.GET_NODES)
+      cmd = self:prepare(self.queries.GET_NODE_IDS)
    end
 
 	local cur = assert(self.con:execute(cmd))
@@ -283,7 +289,7 @@ function SQLite3Versium:save_version(id, data, author, comment, extra, timestamp
 	end
 
 	-- Determine what the new version number will be
-	local cmd = prepare(self.queries.GET_VERSION, id)
+	local cmd = self:prepare(self.queries.GET_VERSION, id)
 	local cur = self.con:execute(cmd)
 	local row = cur:fetch({}, "a")
 	cur:close()
@@ -298,16 +304,16 @@ function SQLite3Versium:save_version(id, data, author, comment, extra, timestamp
 	end
 
 	-- Store the new node in the 'nodes' table
-	local cmd = prepare(self.queries.INSERT_NODE, id, version, author, comment, timestamp, data)
+	local cmd = self:prepare(self.queries.INSERT_NODE, id, version, author, comment, timestamp, data)
 	local cur,err = assert(self.con:execute(cmd), out)
 	
 	-- Update the index table to the newest revision
 	if new then
-		local cmd = prepare(self.queries.INSERT_INDEX, id, version)
+		local cmd = self:prepare(self.queries.INSERT_INDEX, id, version)
 		local cur,err = self.con:execute(cmd)
 		assert(cur, err)
 	else
-		local cmd = prepare(self.queries.UPDATE_INDEX, version, id) 
+		local cmd = self:prepare(self.queries.UPDATE_INDEX, version, id) 
 		local cur,err = self.con:execute(cmd)
 		assert(cur, err)
 	end
@@ -333,7 +339,7 @@ function SQLite3Versium:get_node_history(id, prefix)
 	local history = {}
 
 	-- Pull the history of the given node
-	local cmd = prepare(self.queries.GET_METADATA_ALL, id)
+	local cmd = self:prepare(self.queries.GET_METADATA_ALL, id)
 	local cur = self.con:execute(cmd)
 	local row = cur:fetch({}, "a")
 
@@ -345,6 +351,39 @@ function SQLite3Versium:get_node_history(id, prefix)
 	cur:close()
 
 	return history
+end
+
+-----------------------------------------------------------------------------
+-- Returns the data and metadata for multiple nodes, using a single database
+-- query.  This is used to optimize specific types of pages where the system
+-- may need to pull many nodes at once.  Returns an empty table if there are
+-- no nodes matching the prefix.
+--
+-- @param prefix          the prefix to query
+-- @return                (1) a table containing the data for each node,
+--                        indexed by node name.
+--                        (2) a table containing the metadata for each node,
+--                        indexed by node name.
+-----------------------------------------------------------------------------
+function SQLite3Versium:get_nodes_prefix(prefix)
+   assert(prefix)
+
+   local data,metadata = {}, {}
+   
+   local cmd = self:prepare(self.queries.GET_NODES_PREFIX, prefix .. "%")
+   local cur = self.con:execute(cmd)
+   local row = cur:fetch({}, "a")
+
+   while row do
+      data[row.id] = row.data
+      row.data = nil
+      metadata[row.id] = row
+      row = cur:fetch({}, "a")
+   end
+
+	cur:close()
+
+	return data, metadata
 end
 
 -- vim:ts=3 ss=3 sw=3 expandtab

@@ -20,40 +20,6 @@ capabilities = {
    get_nodes_prefix = true,
 }
 
------------------------------------------------------------------------------
--- Prepares a SQL statement using placeholders.
--- 
--- @param statement      the statement to be prepared
--- @param ...            a list of parameters  
--- @return               the prepared statement.
------------------------------------------------------------------------------
-local function prepare(statement, ...)
-    local count = select('#', ...)
-    
-    if count > 0 then
-        local someBindings = {}
-        
-        for index = 1, count do
-            local value = select(index, ...)
-            local type = type(value)
-            
-            if type == 'string' then
-                value = '\'' .. value:gsub('\'', '\'\'') .. '\''
-            elseif type == 'nil' then
-                value = 'null'
-            else
-                value = tostring(value)
-            end 
-            
-            someBindings[index] = value
-        end
-        
-        statement = statement:format(unpack(someBindings))
-    end
-
-    return statement
-end
-
 local schemas = {}
 schemas.node = [[
 CREATE TABLE IF NOT EXISTS %s ( 
@@ -103,6 +69,7 @@ function new(params)
 	setmetatable(obj, MySQLVersium_mt)
 
 	obj.tables = {}
+   obj.capabilities = capabilities
 
 	-- Create the two data tables, if they don't already exist
 	local tables = {"node", "node_index"}
@@ -111,7 +78,7 @@ function new(params)
 		obj.tables.node = string.format("%snode", params.prefix or "")
 		obj.tables.node_index = string.format("%snode_index", params.prefix or "")
 
-      local cmd = prepare(schemas[tbl]:format(obj.tables[tbl]))
+      local cmd = obj:prepare(schemas[tbl]:format(obj.tables[tbl]))
       assert(con:execute(cmd))
 	end
 
@@ -138,6 +105,40 @@ function new(params)
 end
 
 -----------------------------------------------------------------------------
+-- Prepares a SQL statement using placeholders.
+-- 
+-- @param statement      the statement to be prepared
+-- @param ...            a list of parameters  
+-- @return               the prepared statement.
+-----------------------------------------------------------------------------
+function MySQLVersium:prepare(statement, ...)
+    local count = select('#', ...)
+    
+    if count > 0 then
+        local someBindings = {}
+        
+        for index = 1, count do
+            local value = select(index, ...)
+            local type = type(value)
+            
+            if type == 'string' then
+               value = "'" .. self.con:excape(value) .. "'"
+            elseif type == 'nil' then
+                value = 'null'
+            else
+                value = tostring(value)
+            end 
+            
+            someBindings[index] = value
+        end
+        
+        statement = statement:format(unpack(someBindings))
+    end
+
+    return statement
+end
+
+-----------------------------------------------------------------------------
 -- Returns the data stored in the node as a string and a table representing
 -- the node's metadata.  Returns nil if the node doesn't exist.  Throws an
 -- error if anything else goes wrong.
@@ -157,9 +158,9 @@ function MySQLVersium:get_node(id, version)
 	-- Get the most recent version of the node
 	local cmd
 	if version then
-		cmd = prepare(self.queries.GET_NODE_VERSION, id, version)
+		cmd = self:prepare(self.queries.GET_NODE_VERSION, id, version)
 	else
-		cmd = prepare(self.queries.GET_NODE_LATEST, id)
+		cmd = self:prepare(self.queries.GET_NODE_LATEST, id)
 	end
 
 	-- Run the query to get the node
@@ -174,9 +175,9 @@ function MySQLVersium:get_node(id, version)
    -- Query the metadata
    local cmd
    if version then
-      cmd = prepare(self.queries.GET_METADATA_VERSION, id, version)
+      cmd = self:prepare(self.queries.GET_METADATA_VERSION, id, version)
    else
-      cmd = prepare(self.queries.GET_METADATA_LATEST, id)
+      cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
    end
 
 	local cur = assert(self.con:execute(cmd))
@@ -196,7 +197,7 @@ end
 function MySQLVersium:node_exists(id)
 	assert(id)
 
-	local cmd = prepare(self.queries.NODE_EXISTS, id)
+	local cmd = self:prepare(self.queries.NODE_EXISTS, id)
 	local cur = assert(self.con:execute(cmd))
    local row = cur:fetch({}, "*a")
 	cur:close()
@@ -215,7 +216,7 @@ function MySQLVersium:get_node_info(id)
 	assert(id)
 
 	-- Fetch the latest version number
-	local cmd = prepare(self.queries.GET_METADATA_LATEST, id)
+	local cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
 	local cur = assert(self.con:execute(cmd))
 	local row = cur:fetch({}, "a")
 	cur:close()
@@ -240,14 +241,14 @@ function MySQLVersium:get_node_ids(prefix, limit)
    local cmd
    if prefix and limit then
       prefix = prefix .. "%"
-      cmd = prepare(self.queries.GET_NODE_IDS_PREFIX_LIMIT, prefix, limit)
+      cmd = self:prepare(self.queries.GET_NODE_IDS_PREFIX_LIMIT, prefix, limit)
    elseif prefix then
       prefix = prefix .. "%"
-      cmd = prepare(self.queries.GET_NODE_IDS_PREFIX, prefix)
+      cmd = self:prepare(self.queries.GET_NODE_IDS_PREFIX, prefix)
    elseif limit then
-      cmd = prepare(self.queries.GET_NODE_IDS_LIMIT, limit)
+      cmd = self:prepare(self.queries.GET_NODE_IDS_LIMIT, limit)
    else
-      cmd = prepare(self.queries.GET_NODE_IDS)
+      cmd = self:prepare(self.queries.GET_NODE_IDS)
    end
 
 	local cur = assert(self.con:execute(cmd))
@@ -282,10 +283,8 @@ function MySQLVersium:save_version(id, data, author, comment, extra, timestamp)
 		timestamp = string.format("%02d-%02d-%02d %02d:%02d:%02d", t.year, t.month, t.day, t.hour, t.min, t.sec)
 	end
 
-   data = data:gsub("\\", "\\\\")
-
 	-- Store the new node in the 'nodes' table
-	local cmd = prepare(self.queries.INSERT_NODE, id, author, comment, timestamp, data)
+	local cmd = self:prepare(self.queries.INSERT_NODE, id, author, comment, timestamp, data)
 	assert(self.con:execute(cmd), out)
 
    local cur,err = assert(self.con:execute("SELECT LAST_INSERT_ID();"))
@@ -294,11 +293,11 @@ function MySQLVersium:save_version(id, data, author, comment, extra, timestamp)
 
 	-- Update the index table to the newest revision
 	if version == 1 then
-		local cmd = prepare(self.queries.INSERT_INDEX, id, version)
+		local cmd = self:prepare(self.queries.INSERT_INDEX, id, version)
 		local cur = assert(self.con:execute(cmd))
 		assert(cur, err)
 	else
-		local cmd = prepare(self.queries.UPDATE_INDEX, version, id) 
+		local cmd = self:prepare(self.queries.UPDATE_INDEX, version, id) 
 		local cur = assert(self.con:execute(cmd))
 	end
 
@@ -323,7 +322,7 @@ function MySQLVersium:get_node_history(id, prefix)
 	local history = {}
 
 	-- Pull the history of the given node
-	local cmd = prepare(self.queries.GET_METADATA_ALL, id)
+	local cmd = self:prepare(self.queries.GET_METADATA_ALL, id)
 	local cur = self.con:execute(cmd)
 	local row = cur:fetch({}, "a")
 
@@ -354,7 +353,7 @@ function MySQLVersium:get_nodes_prefix(prefix)
 
    local data,metadata = {}, {}
    
-   local cmd = prepare(self.queries.GET_NODES_PREFIX, prefix .. "%")
+   local cmd = self:prepare(self.queries.GET_NODES_PREFIX, prefix .. "%")
    local cur = self.con:execute(cmd)
    local row = cur:fetch({}, "a")
 

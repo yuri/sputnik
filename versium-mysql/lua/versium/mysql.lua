@@ -122,7 +122,7 @@ function MySQLVersium:prepare(statement, ...)
          local type = type(value)
 
          if type == 'string' then
-            value = "'" .. self.con:excape(value) .. "'"
+            value = "'" .. self.con:escape(value) .. "'"
          elseif type == 'nil' then
             value = 'null'
          else

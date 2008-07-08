@@ -22,6 +22,7 @@ $if_has_tickets[=[
        <th>title</th>
        <th>assigned to</th>
        <th>status</th>
+       <th>component</th>
       </tr>
      </thead>
      $do_my_tickets[[
@@ -32,6 +33,7 @@ $if_has_tickets[=[
        <td>$title</td>
        <td>$assigned_to</td>
        <td sorttable_customkey="$num_status" width="20px">$status</td>
+       <td>$component</td>
       </tr>
      ]]
     </table>
@@ -50,6 +52,7 @@ $if_has_no_tickets[=[<br/>You have no tickets assigned to you.]=]
    <th>title</th>
    <th>assigned to</th>
    <th>status</th>
+   <th>component</th>
   </tr>
  </thead>
  $do_tickets[[
@@ -60,6 +63,7 @@ $if_has_no_tickets[=[<br/>You have no tickets assigned to you.]=]
    <td>$title</td>
    <td>$assigned_to</td>
    <td sorttable_customkey="$num_status" width="20px">$status</td>
+   <td>$component</td>
   </tr>
  ]]
 </table>

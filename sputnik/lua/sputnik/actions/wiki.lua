@@ -921,7 +921,7 @@ function wrappers.default(node, request, sputnik)
 
    return cosmo.f(node.templates.MAIN){  
       site_title       = sputnik.config.SITE_TITLE or "",
-      title            = node.title,
+      title            = sputnik:escape(node.title),
       if_no_index      = cosmo.c((not request.is_indexable) or is_old){},
       if_old_version   = cosmo.c(is_old){
                             version      = request.params.version,
@@ -931,7 +931,7 @@ function wrappers.default(node, request, sputnik)
       login_link       = sputnik:make_link(node.name, "login", {prev = request.params.action},
                                            nil, {do_not_highlight_missing=true}),
       register_link    = sputnik:make_link("sputnik/register"),
-      if_logged_in     = cosmo.c(request.user){ user = request.user },
+      if_logged_in     = cosmo.c(request.user){ user = sputnik:escape(request.user) },
       if_not_logged_in = cosmo.c(not request.user){},
       if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){
                             base_url    = sputnik.config.BASE_URL,

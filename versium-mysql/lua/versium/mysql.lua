@@ -52,56 +52,56 @@ local MySQLVersium_mt = {__metatable = {}, __index = MySQLVersium}
 -- @return               a new versium object.
 -----------------------------------------------------------------------------
 function new(params)
-  	-- Params table accepts the following:
-	-- prefix - A string that will be prepended to table names
-	-- connect - A list that is passed to the luasql connection function
+   -- Params table accepts the following:
+   -- prefix - A string that will be prepended to table names
+   -- connect - A list that is passed to the luasql connection function
 
-	-- Try to connect to the given database
-  	local env = luasql.mysql()
-	local con = env:connect(unpack(params))
+   -- Try to connect to the given database
+   local env = luasql.mysql()
+   local con = env:connect(unpack(params))
 
-	if not con then
-	   errors.could_not_initialize("Could not connect to MySQL database")
-	end
+   if not con then
+      errors.could_not_initialize("Could not connect to MySQL database")
+   end
 
    -- Create the new object
-	local obj = {con=con, versium=versium}
-	setmetatable(obj, MySQLVersium_mt)
+   local obj = {con=con, versium=versium}
+   setmetatable(obj, MySQLVersium_mt)
 
-	obj.tables = {}
+   obj.tables = {}
    obj.capabilities = capabilities
 
-	-- Create the two data tables, if they don't already exist
-	local tables = {"node", "node_index"}
+   -- Create the two data tables, if they don't already exist
+   local tables = {"node", "node_index"}
 
-	for idx,tbl in ipairs(tables) do
-		obj.tables.node = string.format("%snode", params.prefix or "")
-		obj.tables.node_index = string.format("%snode_index", params.prefix or "")
+   for idx,tbl in ipairs(tables) do
+      obj.tables.node = string.format("%snode", params.prefix or "")
+      obj.tables.node_index = string.format("%snode_index", params.prefix or "")
 
       local cmd = obj:prepare(schemas[tbl]:format(obj.tables[tbl]))
       assert(con:execute(cmd))
-	end
+   end
 
-	-- Pre-build our queries
-	obj.queries = {
-		GET_NODE_VERSION = string.format("SELECT id,data,version from %s WHERE id = %%s and version = %%s;", obj.tables.node),
-		GET_NODE_LATEST = string.format("SELECT n.id,n.data,n.version FROM %s as n NATURAL JOIN %s WHERE n.id = %%s;", obj.tables.node, obj.tables.node_index),
-		GET_VERSION = string.format("SELECT max(version) as version FROM %s WHERE id = %%s;", obj.tables.node),
+   -- Pre-build our queries
+   obj.queries = {
+      GET_NODE_VERSION = string.format("SELECT id,data,version from %s WHERE id = %%s and version = %%s;", obj.tables.node),
+      GET_NODE_LATEST = string.format("SELECT n.id,n.data,n.version FROM %s as n NATURAL JOIN %s WHERE n.id = %%s;", obj.tables.node, obj.tables.node_index),
+      GET_VERSION = string.format("SELECT max(version) as version FROM %s WHERE id = %%s;", obj.tables.node),
       GET_NODES_PREFIX = string.format("SELECT n.* FROM %s as n NATURAL JOIN %s WHERE n.id LIKE %%s;", obj.tables.node, obj.tables.node_index),
-		GET_NODE_IDS = string.format("SELECT id FROM %s ORDER BY id;", obj.tables.node_index),
-		GET_NODE_IDS_PREFIX_LIMIT = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id LIMIT %%s;", obj.tables.node_index),
+      GET_NODE_IDS = string.format("SELECT id FROM %s ORDER BY id;", obj.tables.node_index),
+      GET_NODE_IDS_PREFIX_LIMIT = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id LIMIT %%s;", obj.tables.node_index),
       GET_NODE_IDS_PREFIX = string.format("SELECT id FROM %s WHERE id LIKE %%s ORDER BY id;", obj.tables.node_index),
       GET_NODE_IDS_LIMIT = string.format("SELECT id FROM %s ORDER BY id LIMIT %%s;", obj.tables.node_index),
       NODE_EXISTS = string.format("SELECT DISTINCT id FROM %s WHERE id = %%s;", obj.tables.node),
-		INSERT_NODE = string.format("INSERT INTO %s (id,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s);", obj.tables.node),
-		INSERT_INDEX = string.format("INSERT INTO %s (id, version) VALUES (%%s, %%s);", obj.tables.node_index),
-		UPDATE_INDEX = string.format("UPDATE %s SET version=%%s WHERE id = %%s;", obj.tables.node_index),
+      INSERT_NODE = string.format("INSERT INTO %s (id,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s);", obj.tables.node),
+      INSERT_INDEX = string.format("INSERT INTO %s (id, version) VALUES (%%s, %%s);", obj.tables.node_index),
+      UPDATE_INDEX = string.format("UPDATE %s SET version=%%s WHERE id = %%s;", obj.tables.node_index),
       GET_METADATA_ALL = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s ORDER BY timestamp;", obj.tables.node),
-		GET_METADATA_VERSION = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s and version = %%s;", obj.tables.node),
-		GET_METADATA_LATEST = string.format("SELECT n.id,n.version,timestamp,author,comment FROM %s as n NATURAL JOIN %s WHERE n.id = %%s ORDER BY timestamp;", obj.tables.node, obj.tables.node_index),
-	}
+      GET_METADATA_VERSION = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s and version = %%s;", obj.tables.node),
+      GET_METADATA_LATEST = string.format("SELECT n.id,n.version,timestamp,author,comment FROM %s as n NATURAL JOIN %s WHERE n.id = %%s ORDER BY timestamp;", obj.tables.node, obj.tables.node_index),
+   }
 
-	return obj 
+   return obj 
 end
 
 -----------------------------------------------------------------------------
@@ -112,30 +112,30 @@ end
 -- @return               the prepared statement.
 -----------------------------------------------------------------------------
 function MySQLVersium:prepare(statement, ...)
-    local count = select('#', ...)
-    
-    if count > 0 then
-        local someBindings = {}
-        
-        for index = 1, count do
-            local value = select(index, ...)
-            local type = type(value)
-            
-            if type == 'string' then
-               value = "'" .. self.con:excape(value) .. "'"
-            elseif type == 'nil' then
-                value = 'null'
-            else
-                value = tostring(value)
-            end 
-            
-            someBindings[index] = value
-        end
-        
-        statement = statement:format(unpack(someBindings))
-    end
+   local count = select('#', ...)
 
-    return statement
+   if count > 0 then
+      local someBindings = {}
+
+      for index = 1, count do
+         local value = select(index, ...)
+         local type = type(value)
+
+         if type == 'string' then
+            value = "'" .. self.con:excape(value) .. "'"
+         elseif type == 'nil' then
+            value = 'null'
+         else
+            value = tostring(value)
+         end 
+
+         someBindings[index] = value
+      end
+
+      statement = statement:format(unpack(someBindings))
+   end
+
+   return statement
 end
 
 -----------------------------------------------------------------------------
@@ -155,16 +155,16 @@ end
 function MySQLVersium:get_node(id, version)
    assert(id)
 
-	-- Get the most recent version of the node
-	local cmd
-	if version then
-		cmd = self:prepare(self.queries.GET_NODE_VERSION, id, version)
-	else
-		cmd = self:prepare(self.queries.GET_NODE_LATEST, id)
-	end
+   -- Get the most recent version of the node
+   local cmd
+   if version then
+      cmd = self:prepare(self.queries.GET_NODE_VERSION, id, version)
+   else
+      cmd = self:prepare(self.queries.GET_NODE_LATEST, id)
+   end
 
-	-- Run the query to get the node
-	local cur = assert(self.con:execute(cmd))
+   -- Run the query to get the node
+   local cur = assert(self.con:execute(cmd))
    local row = cur:fetch({}, "a")
    cur:close()
 
@@ -180,12 +180,12 @@ function MySQLVersium:get_node(id, version)
       cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
    end
 
-	local cur = assert(self.con:execute(cmd))
-	local metadata = cur:fetch({}, "a")
-	cur:close()
+   local cur = assert(self.con:execute(cmd))
+   local metadata = cur:fetch({}, "a")
+   cur:close()
 
-	assert(row.data)
-	return row.data, metadata
+   assert(row.data)
+   return row.data, metadata
 end
 
 -----------------------------------------------------------------------------
@@ -195,14 +195,14 @@ end
 -- @return               true or false.
 -----------------------------------------------------------------------------
 function MySQLVersium:node_exists(id)
-	assert(id)
+   assert(id)
 
-	local cmd = self:prepare(self.queries.NODE_EXISTS, id)
-	local cur = assert(self.con:execute(cmd))
+   local cmd = self:prepare(self.queries.NODE_EXISTS, id)
+   local cur = assert(self.con:execute(cmd))
    local row = cur:fetch({}, "*a")
-	cur:close()
+   cur:close()
 
-	return row ~= nil
+   return row ~= nil
 end
 
 -----------------------------------------------------------------------------
@@ -213,15 +213,15 @@ end
 -- @return               the metadata for the latest version or nil.
 -----------------------------------------------------------------------------
 function MySQLVersium:get_node_info(id)
-	assert(id)
+   assert(id)
 
-	-- Fetch the latest version number
-	local cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
-	local cur = assert(self.con:execute(cmd))
-	local row = cur:fetch({}, "a")
-	cur:close()
+   -- Fetch the latest version number
+   local cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
+   local cur = assert(self.con:execute(cmd))
+   local row = cur:fetch({}, "a")
+   cur:close()
 
-	return row
+   return row
 end
 
 -----------------------------------------------------------------------------
@@ -237,7 +237,7 @@ end
 -- @return               true if there are more ids left.
 -----------------------------------------------------------------------------
 function MySQLVersium:get_node_ids(prefix, limit)
-	local nodes = {}
+   local nodes = {}
    local cmd
    if prefix and limit then
       prefix = prefix .. "%"
@@ -251,16 +251,16 @@ function MySQLVersium:get_node_ids(prefix, limit)
       cmd = self:prepare(self.queries.GET_NODE_IDS)
    end
 
-	local cur = assert(self.con:execute(cmd))
-	local row = cur:fetch({}, "a")
+   local cur = assert(self.con:execute(cmd))
+   local row = cur:fetch({}, "a")
 
-	while row do
-		nodes[#nodes+1] = row.id
-		row = cur:fetch(row, "a")
-	end
-	
-	cur:close()
-	return nodes
+   while row do
+      nodes[#nodes+1] = row.id
+      row = cur:fetch(row, "a")
+   end
+
+   cur:close()
+   return nodes
 end
 
 -----------------------------------------------------------------------------
@@ -274,35 +274,35 @@ end
 -- @return               the version id of the new node.
 -----------------------------------------------------------------------------
 function MySQLVersium:save_version(id, data, author, comment, extra, timestamp)
-	assert (id)
-	assert(data)
-	assert(author)
+   assert (id)
+   assert(data)
+   assert(author)
 
-	if not timestamp then
-		local t = os.date("*t")
-		timestamp = string.format("%02d-%02d-%02d %02d:%02d:%02d", t.year, t.month, t.day, t.hour, t.min, t.sec)
-	end
+   if not timestamp then
+      local t = os.date("*t")
+      timestamp = string.format("%02d-%02d-%02d %02d:%02d:%02d", t.year, t.month, t.day, t.hour, t.min, t.sec)
+   end
 
-	-- Store the new node in the 'nodes' table
-	local cmd = self:prepare(self.queries.INSERT_NODE, id, author, comment, timestamp, data)
-	assert(self.con:execute(cmd), out)
+   -- Store the new node in the 'nodes' table
+   local cmd = self:prepare(self.queries.INSERT_NODE, id, author, comment, timestamp, data)
+   assert(self.con:execute(cmd), out)
 
    local cur,err = assert(self.con:execute("SELECT LAST_INSERT_ID();"))
    local version = tonumber(assert(cur:fetch("*a")))
    cur:close()
 
-	-- Update the index table to the newest revision
-	if version == 1 then
-		local cmd = self:prepare(self.queries.INSERT_INDEX, id, version)
-		local cur = assert(self.con:execute(cmd))
-		assert(cur, err)
-	else
-		local cmd = self:prepare(self.queries.UPDATE_INDEX, version, id) 
-		local cur = assert(self.con:execute(cmd))
-	end
+   -- Update the index table to the newest revision
+   if version == 1 then
+      local cmd = self:prepare(self.queries.INSERT_INDEX, id, version)
+      local cur = assert(self.con:execute(cmd))
+      assert(cur, err)
+   else
+      local cmd = self:prepare(self.queries.UPDATE_INDEX, version, id) 
+      local cur = assert(self.con:execute(cmd))
+   end
 
-	-- Return the new version number
-	return version
+   -- Return the new version number
+   return version
 end
 
 -----------------------------------------------------------------------------
@@ -317,23 +317,23 @@ end
 -- be empty if the node doesn't exist)
 -----------------------------------------------------------------------------
 function MySQLVersium:get_node_history(id, prefix)
-	assert(id)
+   assert(id)
 
-	local history = {}
+   local history = {}
 
-	-- Pull the history of the given node
-	local cmd = self:prepare(self.queries.GET_METADATA_ALL, id)
-	local cur = self.con:execute(cmd)
-	local row = cur:fetch({}, "a")
+   -- Pull the history of the given node
+   local cmd = self:prepare(self.queries.GET_METADATA_ALL, id)
+   local cur = self.con:execute(cmd)
+   local row = cur:fetch({}, "a")
 
-	while row do
+   while row do
       table.insert(history, 1, row)
-		row = cur:fetch({}, "a")
-	end
+      row = cur:fetch({}, "a")
+   end
 
-	cur:close()
+   cur:close()
 
-	return history
+   return history
 end
 
 -----------------------------------------------------------------------------
@@ -352,7 +352,7 @@ function MySQLVersium:get_nodes_prefix(prefix)
    assert(prefix)
 
    local data,metadata = {}, {}
-   
+
    local cmd = self:prepare(self.queries.GET_NODES_PREFIX, prefix .. "%")
    local cur = self.con:execute(cmd)
    local row = cur:fetch({}, "a")
@@ -364,9 +364,9 @@ function MySQLVersium:get_nodes_prefix(prefix)
       row = cur:fetch({}, "a")
    end
 
-	cur:close()
+   cur:close()
 
-	return data, metadata
+   return data, metadata
 end
 
 -- vim:ts=3 ss=3 sw=3 expandtab

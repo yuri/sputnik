@@ -6,6 +6,10 @@ NODE = {
    templates    = "tickets/templates",
 }
 
+NODE.permissions = [[
+   allow(all_users, "raw")
+]]
+
 NODE.fields= [[
 reported_by = {.11}
 priority    = {.13}

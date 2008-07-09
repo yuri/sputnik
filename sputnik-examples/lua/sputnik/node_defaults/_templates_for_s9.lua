@@ -30,7 +30,10 @@ SLIDESHOW = [[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         font-family: sans-serif;
         font-weight: bold;
         margin-bottom: 2em;
-      } 
+      }
+      .bg_image { display: none}
+      h1 { border: 2px solid #003300; background-color: #ddffdd;} 
+      h1.first { display: none} 
     }
     @media projection {     
      body {
@@ -79,6 +82,7 @@ SLIDESHOW = [[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         -moz-border-radius: 11px;
     }
     hr {color: yellow; width: 90%;}
+    bg_image { position: absolute; right: 0; width: 300px}
    }  
   </style>
  </head>
@@ -95,7 +99,7 @@ SLIDESHOW = [[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   </div>
   $do_slides[=[
    <div class='slide'>
-    <h1 class="$heading_class">$heading   <img style="position: absolute; right: 0; width: 300px" src="http://media.freewisdom.org/etc/sputnik-big.png"/></h1>
+    <h1 class="$heading_class">$heading   <img class="bg_image" src="http://media.freewisdom.org/etc/sputnik-big.png"/></h1>
     <div class='slide_content'>
 
       $content

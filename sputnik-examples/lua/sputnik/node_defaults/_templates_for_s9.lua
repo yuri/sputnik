@@ -10,9 +10,12 @@ NODE.permissions = [[
 
 NODE.content = [========[
 
-SLIDESHOW = [[<html>
+SLIDESHOW = [[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <!-- shamelessly stolen from http://slideshow.rubyforge.org/ -->
-  <head>
   <meta name="slideselector" content=".slide">
   <meta name="titleselector" content="h1">
   <meta name="stepselector" content=".step">
@@ -33,12 +36,16 @@ SLIDESHOW = [[<html>
      body {
         height: 100%; margin: 0px; padding: 0px;
         font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-        color: white;  
+        color: white; background-color: #003300; 
         opacity: .99; 
      }    
     .slide {
       page-break-after: always;
-      padding-left: 2em;
+      padding-left: 0px;
+      padding-top: 0em;
+    }
+    .slide_content {
+      padding-left: 3em;
       padding-top: 2em;
     }
     .banner {
@@ -48,10 +55,8 @@ SLIDESHOW = [[<html>
       display: block;
     }
     div.background {
-        position: fixed;
-        left: 0px;
+        position: absolute;
         right: 0px;
-        top: 0px;
         bottom: 0px;
         z-index: -1;
     }
@@ -59,10 +64,13 @@ SLIDESHOW = [[<html>
         color: white;
     } 
     a:hover { background-color: yellow; }
-    h1, h2 { font-size: 36pt;  }    
-    h3 { font-size: 25pt;  }
-    p, li, td, th { font-size: 18pt; }
-    pre { font-size: 16pt;  }
+    h1 { font-size: 47pt; background-color: #ffffff; color: #003300; width: 100%; padding: 10px 0 0 10px; margin: 0}   
+    h1.first { display: none} 
+    h2 { font-size: 36pt;  }    
+    h3 { font-size: 25pt; font-weight: bold; color: yellow; }
+    h4 { font-size: 25pt; }
+    p, li, td, th { font-size: 20pt; }
+    pre { font-size: 18pt; padding-left: 1em; color: #9999ff; }
     pre.code { font-size: 16pt;
         background-color: black;
         color: white;
@@ -70,6 +78,7 @@ SLIDESHOW = [[<html>
         border: silver thick groove;
         -moz-border-radius: 11px;
     }
+    hr {color: yellow; width: 90%;}
    }  
   </style>
  </head>
@@ -77,7 +86,7 @@ SLIDESHOW = [[<html>
  <body>
   <div class="layout"> 
    <div class="background">  
-    <object data="http://media.freewisdom.org/etc/sputnik-background.svg" width="100%" height="100%">
+    <!--object data="http://media.freewisdom.org/etc/sputnik-background.svg" width="100%" height="100%"-->
    </div>    
   </div> 
   <div class="banner">
@@ -86,8 +95,11 @@ SLIDESHOW = [[<html>
   </div>
   $do_slides[=[
    <div class='slide'>
-    <h1>$heading</h1>
-    $content
+    <h1 class="$heading_class">$heading   <img style="position: absolute; right: 0; width: 300px" src="http://media.freewisdom.org/etc/sputnik-big.png"/></h1>
+    <div class='slide_content'>
+
+      $content
+    </div>
    </div>
   ]=]
  </body>

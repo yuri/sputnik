@@ -7,6 +7,10 @@ NODE = {
 NODE.actions = [[
 slides = "s9.slides"
 ]]
+NODE.permissions = [[
+allow(all_users, "slides")
+]]
+
 NODE.content = [========[
 <span class="teaser">
   This node can be viewed as a wiki page or as a full screen slideshow.

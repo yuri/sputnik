@@ -119,7 +119,7 @@ permissions=[[
    allow(all_users, "login")
    allow(all_users, "history")
    allow(all_users, "rss")
-
+   allow(all_users, "diff")
    --deny(Anonymous, "edit")
    --deny(Anonymous, "save")
 ]]

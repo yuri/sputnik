@@ -250,7 +250,7 @@ Saci Nodes
 Commands & Actions
 -----------------
 
-### Request = Node + Command
+### Request = Node + Command + Parameters
 
 - Lua\_Workshop\_2008 + .slides
 

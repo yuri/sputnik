@@ -70,7 +70,7 @@ SLIDESHOW = [[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     h1 { font-size: 47pt; background-color: #ffffff; color: #003300; width: 100%; padding: 10px 0 0 10px; margin: 0}   
     h1.first { display: none} 
     h2 { font-size: 36pt;  }    
-    h3 { font-size: 25pt; font-weight: bold; color: yellow; }
+    h3 { font-size: 28pt; font-weight: bold; color: yellow; }
     h4 { font-size: 25pt; }
     p, li, td, th { font-size: 20pt; }
     pre { font-size: 18pt; padding-left: 1em; color: #9999ff; }
@@ -82,7 +82,7 @@ SLIDESHOW = [[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         -moz-border-radius: 11px;
     }
     hr {color: yellow; width: 90%;}
-    bg_image { position: absolute; right: 0; width: 300px}
+    .bg_image { position: absolute; right: 0; width: 300px; display: inline}
    }  
   </style>
  </head>

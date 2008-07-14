@@ -61,66 +61,85 @@ Demo!
 WSAPI
 -----------------
 
-### Easy to Install
+### Easy to install
 
-    $ bash kepler-install-1.1-1 --prefix=$SPUTNIK --without-readline
+    $ bash kepler-install-1.1-1 --prefix=$SPUTNIK
 
-### Simple Web API
+### Simple web API
+
+    #! /bin/bash /home/yuri/sputnik/bin/wsapi.cgi
+    require('sputnik')
+    local my_sputnik = sputnik.new{
+       -- set a bunch of parameters
+    }
+    return function(wsapi_env)
+       return my_sputnik.run(wsapi_env)
+    end
+
+WSAPI
+-----------------
+
+### Or
 
     #! /bin/bash /home/yuri/sputnik/bin/wsapi.cgi
     require('sputnik')
     return sputnik.new_wsapi_run_fn{
-       -- set some parameters
+       -- set a bunch of parameters
     }
+
+### Works with CGI, FastCGI, Xavante
 
 LuaRocks
 -----------------
 
-### Easy to Install
+### Easy to install
 
-    $ ./bin/luarocks --from=http://sputnik.freewisdom.org/rocks/earth
-         install sputnik
+    $ ./bin/luarocks --from=$URL install sputnik
 
-### Easy to Add Plugins
+### Easy to add plugins, libraries
 
-    $ ./bin/luarocks --from=http://sputnik.freewisdom.org/rocks/earth
-         install sputnik-tickets
+    $ ./bin/luarocks install wsapi-fcgi
+    $ ./bin/luarocks --from=$URL1 install sputnik-tickets
+    $ ./bin/luarocks --from=$URL2 install your-plugin
+
 
 
 Other Components
 -----------------
 
-### Cosmo, Markdown
-### LuaFileSystem, MD5, lbase64, luasocket
-### Optionally: LuaSQL, LuaSVN
+### Core
+
+#### Cosmo, Markdown
+#### LuaFileSystem, MD5, lbase64, luasocket
+
+### Optional
+
+#### LuaSQL, LuaSVN
 
 
 Extensibility
 ----------------------
 
 ### Storage
-### Markup
-### Templates
-### Internationalization
-
-- - -
-
-### Object Types
+### Markup, templates, i18n
+### Object types
 ### Actions
 
 
-Storage
+Storage (and History)
 ----------------------
 
-### A Simple API: "Versium"
+### A simple API: "Versium"
 
-#### Five Implementations
+#### Five implementations
 
 - files & directories (131 lines)
 - git (167 lines)
 - mysql (208 lines)
 - sqlite3 (200 lines)
 - subversion (coming soon)
+
+http://sputnik.freewisdom.org/en/Versium
 
 
 Markup
@@ -137,7 +156,7 @@ Markup
 Templates
 ------------------------
 
-### 1. Cosmo Templates
+### 1. Cosmo templates
 
     $do_messages[[<p class="$class">$message</p>]]
     <div class='content'>$content</div>
@@ -156,6 +175,8 @@ Templates
 
     <p class="notice">Successfully created your new account.\</p>
     <div class='content'>\</div>
+
+(See http://cosmo.luaforge.net)
 
 
 Internationalization
@@ -188,18 +209,23 @@ Internationalization
 Saci
 -------------------
 
-### A document-oriented hierarchical storage system
+### A document-oriented hierarchical<br/>storage system with history.
 
-#### "Nodes"
+Saci Nodes
+-------------------
 
-- have history
-- represented as Lua code
-- can be activated
-- self-describing
-- use prototype inheritance
-- can have children (sort of)
+### Chunks of data
+#### Stored as Lua code
+#### Stored with history (via "Versium")
 
-(Physical storage is abstracted via "Versium")
+Saci Nodes
+-------------------
+
+### Can be "activated"
+### Are self-describing
+### Use prototype inheritance
+### Can have children (sort of)
+
 
 Commands & Actions
 -----------------
@@ -220,7 +246,34 @@ Commands & Actions
 Example 1
 -----------------------------
 
-### wowprogramming.com
+wowprogramming.com
+
+
+wowprogramming.com
+-----------------------------
+
+### Purpose of Site
+### Server specs
+### Sputnik setup
+
+wowprogramming.com API
+----------------------
+
+### Generating API Documentation and Reference
+- Databases
+- XML
+- Lua tables
+
+### API table for UnitHealth function
+### Editing an API table
+### Validating API
+
+wowprogramming.com: Conclusions
+-------------------------------
+
+### Why Lua?
+### Why Sputnik?
+### Why Kepler?
 
 
 Example 2
@@ -240,12 +293,12 @@ Adding a Prototype
 ### More Fields
 
     fields= [[
-    reported_by = {.11}
-    priority    = {.12}
-    component   = {.13}
-    assigned_to = {.14}
-    status      = {.15} 
-    resolution  = {.16}
+      reported_by = {.11}
+      priority    = {.12}
+      component   = {.13}
+      assigned_to = {.14}
+      status      = {.15} 
+      resolution  = {.16}
     ]]
 
 Adding a Prototype
@@ -254,15 +307,15 @@ Adding a Prototype
 ### Edit UI
 
     NODE.edit_ui= [[
-    reported_by    = {1.31, "text_field"}
-    assigned_to    = {1.32, "text_field"}
-    status         = {1.33, "select", 
+      reported_by    = {1.31, "text_field"}
+      assigned_to    = {1.32, "text_field"}
+      status         = {1.33, "select", 
                       options = {"open", "someday", ... }}
-    resolution     = {1.35, "select",
+      resolution     = {1.35, "select",
                       options = {"n.a.", "fixed", "wontfix"}}
-    priority       = {2.10, "select", 
+      priority       = {2.10, "select", 
                       options = {"unassigned", "high", ... }}
-    page_name   = null
+      page_name   = null
     ]]
 
 Loose Ends
@@ -290,15 +343,15 @@ Adding Templates
 Adding Templates
 -------------------------------
 
-     
-                           $status_color  
-       
-        
-                                      $ticket_id
-       
-       
-     
-                                     $status
+               
+                           $status_color  
+       
+        
+                                      $ticket_id
+       
+       
+     
+                                     $status
 
 
 Adding Actions
@@ -320,6 +373,11 @@ Adding Actions
 
 Q&A
 --------------
+
+### http://sputnik.freewisdom.org/
+
+http://sputnik.freewisdom.org/en/Lua_Workshop_2008.slides
+
 
 
 ]========]

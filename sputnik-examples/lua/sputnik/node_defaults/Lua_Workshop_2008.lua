@@ -504,8 +504,6 @@ Q&A
 
 ### http://sputnik.freewisdom.org/
 
-http://sputnik.freewisdom.org/en/Lua_Workshop_2008.slides
-
-
+http://sputnik.freewisdom.org/en/Lua\_Workshop\_2008.slides
 
 ]========]

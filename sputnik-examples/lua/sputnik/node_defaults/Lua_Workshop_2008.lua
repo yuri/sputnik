@@ -181,7 +181,7 @@ Templates
     $do_messages[[<p class="$class">$message</p>]]
     <div class='content'>$content</div>
 
-### 2. A Lua Table
+### 2. A Lua table
 
     {
       do_messages      = node.messages,
@@ -202,11 +202,11 @@ Templates
 Internationalization
 -------------------
 
-### 1. Keys in Templates
+### 1. Keys in templates
 
     $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
 
-### 2. A Translation File
+### 2. A translation file
 
     HI_USER = {
        en_US = "Hi, $user!",
@@ -217,7 +217,7 @@ Internationalization
 Internationalization
 -------------------
 
-### 3. A Config Value
+### 3. A config value
 
     INTERFACE_LANGUAGE = "ru"
 
@@ -250,7 +250,7 @@ Saci Nodes
 Commands & Actions
 -----------------
 
-### Request = Node + Command + Parameters
+### Request = node + command + parameters
 
 - Lua\_Workshop\_2008 + .slides
 

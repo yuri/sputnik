@@ -65,6 +65,12 @@ WSAPI
 
     $ bash kepler-install-1.1-1 --prefix=$SPUTNIK
 
+### Works with CGI, FastCGI, Xavante
+
+
+WSAPI
+-----------------
+
 ### Simple web API
 
     #! /bin/bash /home/yuri/sputnik/bin/wsapi.cgi
@@ -87,7 +93,21 @@ WSAPI
        -- set a bunch of parameters
     }
 
-### Works with CGI, FastCGI, Xavante
+WSAPI
+-----------------
+
+### Application side
+
+    local request = wsapi.request.new(wsapi_env)
+    request = self:translate_request(request)
+    local node = self:get_node(request.node_id)
+    local action_fn = self:get_action_fn(node, request.command)
+    local content, content_type = action_fn(node, request, self)    
+
+    local response = wsapi.response.new()
+    response.headers["Content-Type"] = content_type or "text/html"
+    response:write(content)
+    return response:finish()
 
 LuaRocks
 -----------------
@@ -139,7 +159,7 @@ Storage (and History)
 - sqlite3 (200 lines)
 - subversion (coming soon)
 
-http://sputnik.freewisdom.org/en/Versium
+(See http://sputnik.freewisdom.org/en/Versium)
 
 
 Markup
@@ -246,34 +266,142 @@ Commands & Actions
 Example 1
 -----------------------------
 
-wowprogramming.com
+### wowprogramming.com
 
-
-wowprogramming.com
+Purpose of Site
 -----------------------------
 
-### Purpose of Site
-### Server specs
-### Sputnik setup
+### Provide online reference material for book
+### Community discussion and support
+### Endpoint for targeted advertisement
 
-wowprogramming.com API
-----------------------
+Server specs
+-----------------------------
 
-### Generating API Documentation and Reference
-- Databases
-- XML
-- Lua tables
+### Virtual Private Server with modest limits:
+
+* 384MB memory (guaranteed)
+* 768MB memory (burst)
+* 15GB disk space
+* 200GB bandwidth limit
+
+### Lighttpd web server
+### WSAPI/Kepler stack
+
+Sputnik setup
+-----------------------------
+
+### Pre-release version of Earth (slightly customized)
+### Uses versium-mysql and sputnik-auth-mysql to speed up data access
+### Contains custom modules:
+
+- API documentation
+- Forums
+- Node comments
+- AJAX web-based Lua interpreter
+- Node redirection
+
+API Documentation
+-----------------------------
+
+### Databases
+
+Creating a database schema for API documentation is relatively
+straightforward, but difficult to extend.
+
+- Could make the schema extensible through use of tag/value pairs in a separate table
+- Handles concurrent edits better than alternative methods due to centralized system/locking
+- PROBLEM: How to create an intuitive web form for editing this data
+
+API Documentation
+-----------------
+
+### XML
+
+#### XML format is easy to validate and parse but difficult to write a schema for
+
+- As new aspects are encountered, the schema or format must change
+- Extremely difficult for a human to edit directly, so requires some sort of web form and validation.
+
+API Documentation 
+-----------------------------
+
+### Lua tables
+
+- Lua tables are easy to serialize and read
+- Adding new elements to API definitions is as simple as adding another key/value pair to the table.
+- Easy to batch process
+    - Simple text-based format allowing for storage in a text-based SCM for diff/history
+
+API Documentation 
+-----------------------------
 
 ### API table for UnitHealth function
-### Editing an API table
-### Validating API
 
-wowprogramming.com: Conclusions
--------------------------------
+     arguments = {
+      [1] = {
+        name = "unit",
+        desc = "The unit to query",
+        type = "unitId",
+      },
+     }
+     categories = "unit, stats"
+     description = "Returns the current mana points of the given unit"
+     returns = {
+      [1] = {
+        desc = "The unit's current mana points",
+        name = "mana",
+        type = "number",
+      },
+     }
+     signature = [[mana = UnitMana("unit")]]
 
-### Why Lua?
-### Why Sputnik?
-### Why Kepler?
+Editing an API table
+-----------------------------
+
+#### Although the ease of editing these tables is completely subjective, empirical observations show that these more concise definitions are easier to use than XML or direct entry into a database.
+
+Validating API
+-----------------------------
+
+### Use AJAX to check the syntax of the Lua definitions
+###  Can provide error messages as well as a simple pass/fail
+###  Perform more complex validation
+
+- Only allow valid keys and value
+- Check the content of description/signatures
+- Possiblities are endless
+
+Results
+-----------------------------
+
+#### 600+ pages of World of Warcraft Programming: A Guide and Reference for Creating WoW Addons were created via two-step transformation:
+
+- Generated markup from Lua definitions
+- Run a macro to convert the markup into appropriate styling and formatting
+- API documents on wowprogramming.com generated on-the-fly from Lua definitions
+
+Conclusions - Why Lua?
+-----------------------------
+
+- Easy to edit
+- Easy to parse
+- Extensible
+
+Conclusions - Why Sputnik?
+-----------------------------
+
+- Modular and easy to extend
+- Versium and Saci naturally fit into the way we define API functions
+- Active open source project, easy to contribute to
+
+Conclusions - Why Kepler?
+-----------------------------
+
+- WSAPI layer makes Kepler extremely easy to deploy
+- Allows Sputnik to run as a WSAPI application via CGI/FastCGI
+- Fits naturally into the application stack giving us a Lua solution for web deployment.
+
 
 
 Example 2

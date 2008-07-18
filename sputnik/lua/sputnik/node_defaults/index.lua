@@ -16,7 +16,7 @@ What's next?
 
 **Second**, click on "register" and create an account called "Admin". This
 account will be special - you will be able to use it to edit pages that are
-not editable by other users.  You can also create a "regualar" account for
+not editable by other users.  You can also create a "regular" account for
 yourself, calling it something like "Bob" or "Andre".
 
 After that, logged in as "Admin", you can do some customizations.

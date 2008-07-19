@@ -22,8 +22,8 @@ FALLBACKS = {
 -- The login link
 LOGIN_OR_REGISTER = {
    en_US = "<a $login_link>Login</a> or <a $register_link>register</a>",
-   ru    = "<a $login_link>Войти</a> или <a $register_link>зарегистрироваться</a>",     
-   pt_BR = "<a $login_link>Entre</a> or <a $register_link>se cadastar</a>",
+   ru    = "<a $login_link>Представиться</a> или <a $register_link>зарегистрироваться</a>",     
+   pt_BR = "<a $login_link>Login</a> | <a $register_link>Criar conta</a>",
 }
 
 -- The login button

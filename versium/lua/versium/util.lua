@@ -93,8 +93,43 @@ function read_file_if_exists(path)
    end
 end
 
-function format_time(timestamp, format)
+-----------------------------------------------------------------------------
+-- Converts a versium time stamp into the requested format.  Users some code
+-- from http://lua-users.org/wiki/TimeZone)
+--
+-- @param timestamp      Versium timestamp (string) 
+-- @param format         Lua time format (string) 
+-- @param tzoffset       time zone offset as "+hh:mm" or "-hh:mm"
+--                        (ISO 8601) or "local" [string, optional, defaults 
+--                        to "local"]
+-- @param tzname         name/description of the time zone [string, optional,
+--                        defaults to tzoffset, valid XHTML is ok]
+-- @return               formatted time (string)
+-----------------------------------------------------------------------------
+
+function format_time(timestamp, format, tzoffset, tzname)
+   if tzoffset == "local" then  -- calculate local time zone (for the server)
+      local now = os.time()
+      local timezone = os.difftime(now, os.time(os.date("!*t", now)))
+      local h, m = math.modf(timezone / 3600)
+      tzoffset = string.format("%+.4d", 100 * h + 60 * m)
+   end
+   tzoffset = tzoffset or "GMT"
+   format = format:gsub("%%z", tzname or tzoffset)
+   if tzoffset == "GMT" then 
+      tzoffset = "+0000"
+   end
+   tzoffset = tzoffset:gsub(":", "")
+
+   local sign = 1
+   if tzoffset:sub(1,1) == "-" then
+      sign = -1
+      tzoffset = tzoffset:sub(2)
+   elseif tzoffset:sub(1,1) == "+" then
+      tzoffset = tzoffset:sub(2)       
+   end
+   tzoffset = sign * (tonumber(tzoffset:sub(1,2))*60 + tonumber(tzoffset:sub(3,4)))*60
    return os.date(format, os.time{ year=timestamp:sub(1,4), month=timestamp:sub(6,7),
                                    day=timestamp:sub(9,10), hour=timestamp:sub(12,13),
-                                   min=timestamp:sub(15,16), sec=timestamp:sub(18)} )
+                                   min=timestamp:sub(15,16), sec=timestamp:sub(18)} + tzoffset)
 end

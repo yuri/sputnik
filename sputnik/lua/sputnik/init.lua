@@ -143,6 +143,24 @@ function Sputnik:init(initial_config)
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      
 end
 
+-----------------------------------------------------------------------------
+-- Converts a versium time stamp into the requested format.  (Same as
+-- versium.util.format_time, except that config parameters are applied.)
+--
+-- @param timestamp      Versium timestamp (string) 
+-- @param format         Lua time format (string) 
+-- @param tzoffset       time zone offset as "+hh:mm" or "-hh:mm"
+--                        (ISO 8601) or "local" [string, optional, defaults 
+--                        to "local"]
+-- @param tzname         name/description of the time zone [string, optional,
+--                        defaults to tzoffset, valid XHTML is ok]
+-- @return               formatted time (string)
+-----------------------------------------------------------------------------
+function Sputnik:format_time(timestamp, format, tzoffset, tzname)
+   return versium.util.format_time(timestamp,format, 
+                                   tzoffset or self.config.TIME_ZONE,
+                                   tzname or self.config.TIME_ZONE_NAME)
+end
 
 --- Returns a small icon for this user.
 function Sputnik:get_user_icon(user)

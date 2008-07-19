@@ -22,7 +22,9 @@ COOKIE_NAME    = "Sputnik"            -- change if you run several
 SEARCH_PAGE    = "search"             -- comment out remove the search box
 
 --SEARCH_CONTENT = "Installation"
-SERVER_TZ      = "-05:00"             -- set to the correct time zone offset for sitemap to work properly
+
+TIME_ZONE      = "+0000"
+TIME_ZONE_NAME = "<abbr title='Greenwich Mean Time'>GMT</abbr>"
 
 LOGO_URL       = NICE_URL.."logo.png"
 FAVICON_URL    = NICE_URL.."icons/sputnik.png"

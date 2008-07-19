@@ -10,7 +10,7 @@ module(..., package.seeall)
 
 require("cosmo")
 require("versium.util")
-local format_time = versium.util.format_time
+
 local util = require("sputnik.util")
 local html_forms = require("sputnik.util.html_forms")
 local date_selector = require("sputnik.util.date_selector")
@@ -289,7 +289,7 @@ function actions.history(node, request, sputnik)
       local old_date = ""
       local new_date = ""
       for i, edit in ipairs(history) do
-         new_date = format_time(edit.timestamp, "%Y/%m/%d")
+         new_date = sputnik:format_time(edit.timestamp, "%Y/%m/%d")
          if new_date ~= old_date then
             cosmo.yield {
                if_new_date = cosmo.c(true){
@@ -305,8 +305,8 @@ function actions.history(node, request, sputnik)
             cosmo.yield{
                version_link = node.links:show{ version = edit.version },
                version      = edit.version,
-               date         = format_time(edit.timestamp, "%Y/%m/%d"),
-               time         = format_time(edit.timestamp, "%H:%M GMT"),
+               date         = sputnik:format_time(edit.timestamp, "%Y/%m/%d"),
+               time         = sputnik:format_time(edit.timestamp, "%H:%M %z"),
                if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
                title        = node.name,
                author_link  = sputnik:make_link(author_id_for_link),
@@ -352,13 +352,17 @@ function actions.complete_history(node, request, sputnik)
    -- the later ones.
    local latest = {}
    local later
+   local function same_date(t1, t2)
+      local format = "%Y/%m/%d"
+      return sputnik:format_time(t1, format)==sputnik:format_time(t2, format)
+   end
    for i, e in ipairs(edits) do
       if later then 
          later.previous = e.version
       end
       later = e
-      if latest.id ~= e.id or 
-         format_time(latest.timestamp, "%Y/%m/%d")~=format_time(e.timestamp, "%Y/%m/%d") then
+      if not (latest.id == e.id 
+              and same_date(latest.timestamp, e.timestamp)) then
          latest = e
          latest.repeats = 0
          --n.title_style = ""
@@ -374,7 +378,7 @@ function actions.complete_history(node, request, sputnik)
    local new_date = ""
    local function do_revisions()
       for i, edit in ipairs(edits) do
-         new_date = format_time(edit.timestamp, "%Y/%m/%d")
+         new_date = sputnik:format_time(edit.timestamp, "%Y/%m/%d")
          if new_date ~= old_date then
             cosmo.yield {
                if_new_date = cosmo.c(true){
@@ -398,7 +402,7 @@ function actions.complete_history(node, request, sputnik)
                version      = edit.version,
                if_new_date  = cosmo.c(false){},
                if_edit      = cosmo.c(true){},
-               time         = format_time(edit.timestamp, "%H:%M GMT"),
+               time         = sputnik:format_time(edit.timestamp, "%H:%M GMT"),
                if_minor     = cosmo.c(is_minor){},
                title        = edit.node.id,
                author_link  = sputnik:make_link(author_ip_for_link),
@@ -541,7 +545,8 @@ function actions.show_sitemap_xml(node, request, sputnik)
                 end
                 cosmo.yield{
                    url = "http://"..sputnik.config.DOMAIN..url,
-                   lastmod = sputnik.repo:get_node_info(name).timestamp.."T"..sputnik.config.SERVER_TZ,
+                   lastmod = sputnik:format_time(sputnik.repo:get_node_info(name).timestamp, 
+                                                "%Y-%m-%dT%H:%M:%S+00:00", "+00:00"),
                    changefreq = "weekly",
                    priority = priority
                 }

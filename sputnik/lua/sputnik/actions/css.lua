@@ -19,6 +19,7 @@ actions.fancy_css = function(page, params, sputnik)
                       string = string,
                       table  = table,
                       MAIN_COLOR = sputnik.config.MAIN_COLOR,
+                      BODY_BG_COLOR = sputnik.config.BODY_BG_COLOR,
                       colors = colors,
                       ipairs = ipairs,
                       unpack = unpack,

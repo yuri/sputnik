@@ -14,7 +14,7 @@ SITE_TITLE     = "My New Wiki"        -- change the title of the site
 DOMAIN         = "localhost:8080"     -- set for RSS feeds to work properly
 NICE_URL       = BASE_URL.."?p="      -- set if you want "nicer" URLs
 MAIN_COLOR     = 200                  -- pick a number from 0 to 360
-
+--BODY_BG_COLOR  = "white"
 
 HOME_PAGE      = "index"
 HOME_PAGE_URL  = BASE_URL             -- or NICE_URL.."?p="..HOME_PAGE

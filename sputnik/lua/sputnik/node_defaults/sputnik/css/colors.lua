@@ -23,7 +23,7 @@ DARK_GRAY            = GRAY:shade(.7)        -- higher nu mber = darker
 WHITE                = "white"
 BLACK                = "black"
 
-BODY_BG              = MAIN:desaturate_to(0):tint(.3) -- or set to WHITE
+BODY_BG              = BODY_BG_COLOR or MAIN:desaturate_to(0):tint(.3)
 LINK                 = "#0000cc" -- darker blue
 TEXT                 = BLACK
 

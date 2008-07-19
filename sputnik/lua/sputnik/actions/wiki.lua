@@ -538,10 +538,10 @@ function actions.show_sitemap_xml(node, request, sputnik)
                 
                 if name == sputnik.config.HOME_PAGE then
                    url = sputnik.config.HOME_PAGE_URL
-                   priority = ".9"
+                   priority = "0.9"
                 else
                    url = sputnik.config.NICE_URL..name
-                   priority = ".1"
+                   priority = "0.1"
                 end
                 cosmo.yield{
                    url = "http://"..sputnik.config.DOMAIN..url,

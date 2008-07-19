@@ -12,7 +12,7 @@ allow(all_users, "logout")
 allow(all_users, "show")
 allow(all_users, "history")
 ]],
-   icon = "icons/system",
+   icon = "icons/system.png",
 }
 
 NODE.content=[===[

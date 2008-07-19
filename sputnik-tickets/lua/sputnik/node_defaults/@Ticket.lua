@@ -1,7 +1,7 @@
 module(..., package.seeall)
 NODE = {
    actions= [[show = "tickets.show"]],
-   icon = "icons/bug",
+   icon = "icons/bug.png",
    translations = "tickets/translations",
    templates    = "tickets/templates",
 }

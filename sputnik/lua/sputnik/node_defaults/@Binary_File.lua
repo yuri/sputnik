@@ -3,7 +3,7 @@ module(..., package.seeall)
 NODE = {
    title = [=[A prototype for binary files]=],
    content = [=[This content is never displayed]=],
-   icon = "icons/attach",
+   icon = "icons/attach.png",
    actions = [=[
 show = "binaryfile.show"
 save = "binaryfile.save"

@@ -34,7 +34,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   $do_javascript_snippets[=[
    <script type="text/javascript">/* <![CDATA[ */ $snippet /* ]]> */</script>]=] 
 
-  <link rel="shortcut icon" href="$make_url{'icons/sputnik.png'}"/>
+  <link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>
  </head>
@@ -55,7 +55,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
    
    <div id="logo">
     <a class="logo" href="$home_page_url">
-     <img src="$make_url{'logo.png'}" alt="_(LOGO)" /> 
+     <img src="$logo_url" alt="_(LOGO)" /> 
     </a>
    </div>
    

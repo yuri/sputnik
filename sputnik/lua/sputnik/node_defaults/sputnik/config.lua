@@ -24,6 +24,9 @@ SEARCH_PAGE    = "search"             -- comment out remove the search box
 --SEARCH_CONTENT = "Installation"
 SERVER_TZ      = "-05:00"             -- set to the correct time zone offset for sitemap to work properly
 
+LOGO_URL       = NICE_URL.."logo.png"
+FAVICON_URL    = NICE_URL.."icons/sputnik.png"
+
 -----------------------------------------------------------------------------
 --------- other things you might want to change -----------------------------
 -----------------------------------------------------------------------------

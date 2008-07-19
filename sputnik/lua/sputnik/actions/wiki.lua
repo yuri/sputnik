@@ -968,8 +968,10 @@ function wrappers.default(node, request, sputnik)
       base_url         = sputnik.config.BASE_URL, -- for mods
       nice_url         = sputnik.config.NICE_URL, -- for mods
       home_page_url    = sputnik.config.HOME_PAGE_URL,
+      logo_url         = sputnik.config.LOGO_URL,
+      favicon_url      = sputnik.config.FAVICON_URL,
       -- icons are urls of images
-      if_title_icon    = cosmo.c(node.icon and node.icon~=""){title_icon = sputnik:make_url(node.icon, "png")},
+      if_title_icon    = cosmo.c(node.icon and node.icon~=""){title_icon = sputnik:make_url(node.icon)},
    }, "text/html"
 end
 

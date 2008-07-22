@@ -41,7 +41,8 @@ ALLOWED_TAGS = {
    "table", "tr", "thead", "caption", "tbody", "tfoot",
    "big", "center", "right", "left",
    "hr",
-
+   "style",
+   "div",
    -- For "a" tag allow "name" and "href", and limit href to three protocols.
    a = {
       name = ".",

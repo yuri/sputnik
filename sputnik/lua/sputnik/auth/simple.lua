@@ -196,7 +196,7 @@ end
 -- @param key            the metadata key to query
 -- @return data          the value of the metadata or nil
 function Simple:get_metadata(username, key)
-   if not username or username=="" then return {} end
+   if not username or username=="" then return nil end
    username=username:lower()
    local users = load_users(self.sputnik, self.node)
    if users[username] then 

@@ -121,6 +121,7 @@ permissions=[[
    allow(all_users, "rss")
    allow(all_users, "diff")
    allow(all_users, "xml")
+   allow(all_users, "show_content")
    --deny(Anonymous, "edit")
    --deny(Anonymous, "save")
 ]]

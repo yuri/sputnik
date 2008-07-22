@@ -2,7 +2,7 @@
 wget http://luaforge.net/frs/download.php/3468/kepler-install-1.1-1 
 export SPUTNIK=`pwd`
 bash kepler-install-1.1-1 --prefix=$SPUTNIK --without-readline
-./bin/luarocks --from=http://sputnik.freewisdom.org/rocks/earth install sputnik
+./bin/luarocks --only-from=http://sputnik.freewisdom.org/rocks/earth install sputnik 8.07.21
 
 # Make wiki-data directory
 mkdir wiki-data

@@ -1,0 +1,23 @@
+package    = 'Sputnik-Tickets'
+versions   = {
+   {'8.07.21', 'July 21, 2008',  'initial release for earth'},
+}
+summary    = 'A bug-tracking plugin for Sputnik'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+]]
+
+license    = 'MIT/X11'
+download   = 'http://sputnik.freewisdom.org/files/sputnik-tickets-$version.tar.gz'
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+  'sputnik == 8.07.21',
+]]
+
+-------------------------------------------------------------------------------
+
+
+

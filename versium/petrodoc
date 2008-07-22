@@ -1,8 +1,9 @@
 package    = 'Versium'
 versions   = {
-   {'8.07.07', 'July 7, 2008',  'fixing hour conversion and a bug with out of sequence IDs in filedir'},
-   {'8.06.22', 'June 22, 2008', 'refactoring diff logic into a separate rock'},
-   {'8.05.24', 'May 24, 2008', 'making a test release of new versium'},
+   {'8.07.21', 'July 21, 2008',  'fixed the handling of time zones'},
+   {'8.07.07', 'July 7, 2008',   'fixed hour conversion and a bug with out of sequence IDs in filedir'},
+   {'8.06.22', 'June 22, 2008',  'refactored diff logic into a separate rock'},
+   {'8.05.24', 'May 24, 2008',   'made a test release of new versium'},
    {'8.03.28', 'March 28, 2008', 'separated SACI into its own rock'},
 }
 summary    = 'A versioned storage API for Lua'

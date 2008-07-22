@@ -1,5 +1,6 @@
 package    = 'Sputnik'
 versions   = {
+   {'8.07.21', 'July 21, 2008',  'lots of small bug fixes'},
    {'8.07.07', 'July 7, 2008',  'way too many fixes to list'},
    {'8.06.22', 'June 22, 2008', 'updating to new diff module (a new dependency: lbase64), plus some cosmetic changes'},
    {'8.06.12', 'June 12, 2008', 'added missing translation strings'},
@@ -39,10 +40,11 @@ push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
 --------------------------------------------------------------------------------
 
 dependencies = [[
-  'saci == 8.07.07',
+  'saci == 8.07.21',
+  'cosmo >= 8.04.14',
   'xssfilter == 8.07.07',
   'colors == 8.05.26',
-  'markdown >= 0.18',
+  'markdown >= 0.32',
   'md5 >= 1.1',
   'wsapi >= 1.0',
   'lbase64 >= 20070628',

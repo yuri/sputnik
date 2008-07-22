@@ -82,6 +82,7 @@ function new(args)
    node.repository = args.repository
 
    node.raw_values = saci.sandbox.new():do_lua(args.data)
+   print(args.id)
    assert(rawget(node, "raw_values"), "the sandbox should give us a table")
 
    node:apply_inheritance()
@@ -304,5 +305,12 @@ end
 function Node:get_child(id)
    if self.child_defaults and self.child_defaults[id] then
       return self.repository:make_node(self.child_defaults[id], self.id.."/"..id)
+   elseif self.child_defaults and self.child_defaults.any then
+      return self.repository:make_node(self.child_defaults.any, self.id.."/"..id)
    end
+end
+
+function Node:get_parent_id()
+   local parent_id, rest = string.match(self.id, "^(.+)/(.-)$")
+   return parent_id, rest
 end

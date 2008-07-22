@@ -228,7 +228,11 @@ end
 -- @param sputnik        not used.
 -----------------------------------------------------------------------------
 function actions.show_content(node, request, sputnik)
-   return node.markup.transform(node.content or "")
+   local title = ""
+   if request.params.show_title then
+      title = "<h1>"..node.title.."</h1>\n\n"
+   end
+   return title..node.markup.transform(node.content or "")
 end
 
 -----------------------------------------------------------------------------

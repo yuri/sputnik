@@ -82,7 +82,6 @@ function new(args)
    node.repository = args.repository
 
    node.raw_values = saci.sandbox.new():do_lua(args.data)
-   print(args.id)
    assert(rawget(node, "raw_values"), "the sandbox should give us a table")
 
    node:apply_inheritance()

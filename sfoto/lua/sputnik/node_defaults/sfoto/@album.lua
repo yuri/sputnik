@@ -17,3 +17,7 @@ NODE.child_defaults = [=[
       actions = "show='sfoto.show_photo'"
    ]]
 ]=]
+NODE.permissions = [[
+deny(all_users, "edit")
+deny(all_users, "save")
+]]

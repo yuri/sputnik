@@ -8,21 +8,43 @@ full_size_base = "http://media.freewisdom.org/freewisdom/full_size/"
 actions = {}
 
 
-
-actions.show_photo = function(node, request, sputnik)
+actions.show_photo_content = function(node, request, sputnik)
    local parent_id, short_id = node:get_parent_id()
    local parent = sputnik:get_node(parent_id) 
    node.title = parent.title
-   local prev_photo, next_photo
-   for i, p in ipairs(parent.content.photos) do
-      if p.id == short_id then
-         node.title = node.title.." #"..i 
+
+   local photos = {}
+   local user_access_level = sputnik.auth:get_metadata(request.user, "access") or "0"
+   for i, photo in ipairs(parent.content.photos) do
+      if user_access_level >= (photo.private or "0") then
+         table.insert(photos, photo)
+         if photo.id == short_id then
+            node.position = i 
+            node.title = node.title.." #"..i 
+         end
       end
    end
-   node.inner_html = cosmo.f(node.templates.SINGLE_PHOTO){
+   if not node.position then
+      node:post_error("No such photo or access denied")
+      return ""
+   end
+
+   local link_notes = { 
+            [true]  = "Click for the next photo", 
+            [false] = "This is the last photo photo, click to return"
+         }
+
+   return cosmo.f(node.templates.SINGLE_PHOTO){
                         photo_url = album_base.."/"..node.id:gsub("albums/", "")..".sized.jpg",
                         original_size = full_size_base.."/"..node.id:gsub("albums/", "")..".JPG",
-                     }
+                        next_link = sputnik:make_url(parent_id.."/"..(photos[node.position+1] or {id=""}).id),
+                        prev_link = sputnik:make_url(parent_id.."/"..(photos[node.position-1] or {id=""}).id),
+                        note = link_notes[photos[node.position+1]~=nil]
+                  }
+end
+
+actions.show_photo = function(node, request, sputnik)
+   node.inner_html = actions.show_photo_content(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
@@ -125,8 +147,9 @@ actions.show_album_content = function(node, request, sputnik)
    local num_hidden = 0
    local rows = {}
    local row = {photos={}}
+   local user_access_level = sputnik.auth:get_metadata(request.user, "access") or "0"
    for i, photo in ipairs(node.content.photos) do
-      if not photo.private then
+      if user_access_level >= (photo.private or "0") then
          table.insert(row.photos, photo)
          photo.thumb = album_base..node.id:gsub("albums/", "").."/"..photo.id..".thumb.jpg"
          if #(row.photos) == 5 then
@@ -214,16 +237,31 @@ actions.show = function(node, request, sputnik)
    end
 
    local user_access_level = sputnik.auth:get_metadata(request.user, "access") or "0"
+   
+   local items_by_month = {}
+   for i, item in ipairs(items) do
+      local month = item.id:sub(6,7)
+      if not items_by_month[month] then items_by_month[month] = {} end
+      table.insert(items_by_month[month], item)
+   end
+ 
+   local months = {}
+   for i, month in ipairs(MONTHS) do
+      if items_by_month[month.id] then
+         month.items = items_by_month[month.id]
+         table.insert(months, month)
+      end
+   end
 
    node.inner_html = cosmo.f(node.templates.INDEX){
 
                         do_months = function()
-                                       for i, month in ipairs(MONTHS) do
+                                       for i, month in ipairs(months) do
                                           cosmo.yield { 
                                              month = month.name, 
                                              do_rows = function()
                                                 local row = make_row()
-                                                for i, item in ipairs(items) do
+                                                for i, item in ipairs(month.items) do
                                                    item.row_id = row.row_id
                                                    if item.id:sub(6,7)==month.id then
                                                           item.if_blog = cosmo.c(item.type=="blog"){}

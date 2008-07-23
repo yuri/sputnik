@@ -169,8 +169,11 @@ MIXED_ALBUM = [====[
 ]====]
 
 SINGLE_PHOTO = [==[
-  <img src="$photo_url"/><br/>
+  <a href="$next_link" title="$note"><img src="$photo_url"/></a>
+  <br/>
+  <a href="$prev_link" style="text-decoration: none;">&lt;</a>
   <a href="$original_size">original size</a> (large image)
+  <a href="$next_link" style="text-decoration: none;">&gt;</a>
 ]==]
 
 ]=========]

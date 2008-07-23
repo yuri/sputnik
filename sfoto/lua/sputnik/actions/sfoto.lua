@@ -224,6 +224,7 @@ actions.show = function(node, request, sputnik)
                                              do_rows = function()
                                                 local row = make_row()
                                                 for i, item in ipairs(items) do
+                                                   item.row_id = row.row_id
                                                    if item.id:sub(6,7)==month.id then
                                                           item.if_blog = cosmo.c(item.type=="blog"){}
                                                           item.if_album = cosmo.c(item.type~="blog"){}

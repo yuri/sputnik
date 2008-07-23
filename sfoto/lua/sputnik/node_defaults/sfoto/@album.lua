@@ -14,7 +14,7 @@ content.activate = "lua"
 NODE.child_defaults = [=[
    any = [[
       prototype = "sfoto/@album"
-      actions = "show='sfoto.show_photo'"
+      actions = "show='sfoto.show_photo'; show_content='sfoto.show_photo_content';"
    ]]
 ]=]
 NODE.permissions = [[

@@ -203,8 +203,6 @@ actions.show = function(node, request, sputnik)
       table.insert(items, v)
    end
 
-   table.sort(items, function(x,y) return x.sort_key > y.sort_key end)
-   
    --items = node.content.data
 
    local MONTHS = {
@@ -221,6 +219,22 @@ actions.show = function(node, request, sputnik)
       {id = "02", name="February"},
       {id = "01", name="January"},
    }
+   for i, m in ipairs(MONTHS) do m.short_name = m.name:sub(1,3):lower() end
+
+   local reverse_url
+   if request.params.ascending then
+      table.sort(items, function(x,y) return x.sort_key < y.sort_key end)
+      table.sort(MONTHS, function(x,y) return x.id < y.id end)
+      reverse_url = sputnik:make_url(node.id)
+   else
+      table.sort(items, function(x,y) return x.sort_key > y.sort_key end)
+      reverse_url = sputnik:make_url(node.id, nil, {ascending='1'})
+   end
+
+
+   if request.params.ascending then
+
+   end
 
    local odd = "odd"
    local cur_date = ""
@@ -255,10 +269,13 @@ actions.show = function(node, request, sputnik)
 
    node.inner_html = cosmo.f(node.templates.INDEX){
 
+                        reverse_url = reverse_url,
+                        months      = months,
                         do_months = function()
                                        for i, month in ipairs(months) do
                                           cosmo.yield { 
-                                             month = month.name, 
+                                             month = month.name,
+                                             month_id = month.id, 
                                              do_rows = function()
                                                 local row = make_row()
                                                 for i, item in ipairs(month.items) do

@@ -59,7 +59,7 @@ INDEX = [======[
 
 <script type="text/javascript">/* <![CDATA[ */
       function ahah(url,target) {
-         //document.getElementById(target).innerHTML = 'loading data...';
+         document.getElementById(target).innerHTML = 'fetching data...';
          if (window.XMLHttpRequest) {
             req = new XMLHttpRequest();
             req.onreadystatechange = function() {ahahDone(target);};
@@ -111,9 +111,17 @@ INDEX = [======[
       }
 /* ]]> */</script>
 
+
+
 <table>
+ <tr>
+ <td colspan="6">
+  <a href="$reverse_url" style="text-decoration: none">reverse the order</a>
+  | jump to: 
+  $months[[ <a href="#month_$id" style="text-decoration: none">$short_name</a>]]
+ </tr>
  $do_months[=[ 
-  <tr><th colspan="6" class="date" style="background: #333333; color: white;">$month</th></tr>
+  <tr><th colspan="6" class="date" style="background: #333333; color: white;">$month<a name="month_$month_id"></a></th></tr>
   $do_rows[==[
    <tr>
     $dates[===[
@@ -133,12 +141,32 @@ INDEX = [======[
      </td>
     ]===]
    </tr>
-   <tr><th colspan="6" style="background: #333333; color: white;">
-    &nbsp;
-     <div id="controller_$row_id" style="display:none"><a href="#" onclick="hideBlog('$row_id'); return false;">hide</a> | <a id="permalink_$row_id">permalink</a></div>
-     <div id="expander_$row_id" style="background:white; color: black; display:none; padding: 15px;"></div>
-     <div id="controller2_$row_id" style="display:none"><a href="#" onclick="hideBlog('$row_id'); return false;">hide</a></div>
-   </th></tr>
+   <tr>
+    <th colspan="6" style="background: #333333; color: white;">
+     <div id="controller_$row_id" style="display:none;">
+      <style>
+       table.sfoto_toolbar { border:none; margin: 0; padding: 0; }
+       .sfoto_toolbar tr { margin: 0; padding: 0; }
+       .sfoto_toolbar tr td { vertical-align: middle; border: none; color: gray; margin: 0; padding: 0; padding-right: .5em;    }
+       .sfoto_toolbar tr td a {  color: white; text-decoration: none; }
+       .sfoto_toolbar tr td a:hover {  color: yellow; }
+      </style>
+      <table class="sfoto_toolbar">
+       <tr>
+        <td><a href="#" onclick="hideBlog('$row_id'); return false;" style="font-size: 200%;">&#10799;</a></td>
+        <td>&#124;</td>
+        <td><a id="permalink_$row_id">permalink</a></td>
+       </tr>
+      </table>
+     </div>
+     <div id="expander_$row_id"
+          style="background:white; color: black; display:none; padding: 15px;">
+     </div>
+     <div id="controller2_$row_id" style="display:none; color: white;">
+      <a href="#" onclick="hideBlog('$row_id'); return false;" style="text-decoration:none; color:white; color: yellow;">hide</a>
+     </div>
+    </th>
+   </tr>
   ]==]
 ]=]
 </table>

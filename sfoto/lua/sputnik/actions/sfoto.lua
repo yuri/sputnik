@@ -168,12 +168,12 @@ actions.show = function(node, request, sputnik)
 
    local items = {} --node.content.data
 
-   for k,v in pairs(sputnik.saci:get_nodes_by_prefix("albums/2007", 100)) do
+   for k,v in pairs(sputnik.saci:get_nodes_by_prefix("albums/"..node.id, 100)) do
       v.id = v.id:gsub("^albums/", "")
       v.sort_key = v.id:gsub("-", "/")
       table.insert(items, v)
    end
-   for k,v in pairs(sputnik.saci:get_nodes_by_prefix("entries/2007", 100)) do
+   for k,v in pairs(sputnik.saci:get_nodes_by_prefix("entries/"..node.id, 100)) do
       v.id = v.id:gsub("^entries/", "")
       v.sort_key = v.id
       v.type = "blog"

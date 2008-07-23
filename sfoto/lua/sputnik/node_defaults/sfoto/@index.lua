@@ -9,5 +9,3 @@ NODE.actions = [[
 show="sfoto.show"
 ]]
 
-NODE.content = [===[
-]===]

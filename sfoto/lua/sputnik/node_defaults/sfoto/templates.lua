@@ -130,9 +130,12 @@ INDEX = [======[
    </tr>
    <tr>
     $items[===[
-     <td class="$odd" style="min-width: 150px">
+     <td class="$odd" style="min-width: 170px;">
       $if_blog[====[
-       <a class="blog" href="$url" onclick="showBlog('$row_id', '$url', '$content_url'); return false;">$title</a>
+       <a class="blog" href="$url" onclick="showBlog('$row_id', '$url', '$content_url'); return false;">
+        <p style="margin-top: 0px; height: 50px">$title </p>
+        <img src="http://localhost/drive_by_tax.jpg"/>
+       </a>
       ]====]
       $if_album[====[
        <a href="$url" title="$title" onclick="showBlog('$row_id', '$url', '$content_url'); return false;"><img src="$thumbnail"/></a>
@@ -173,8 +176,24 @@ INDEX = [======[
 ]======]
 
 
-MIXED_ALBUM = [====[
+SIMPLE_IMAGE_GRID = [====[
+<div width='100%'>
+ <center>
+  <div style='position:relative;' class='simple-image-grid'> 
+   $rows[[
+    $photos[=[
+     <a href="$link" class='local'> 
+        <img src="$photo_url"/>
+     </a>
+    ]=]<br/> 
+    ]]
+  </div>
+ </center>
+</div>
+]====]
 
+
+MIXED_ALBUM = [====[
 <div width='100%'>
  <center>
   <div style='position:relative;' class='image-links'> 

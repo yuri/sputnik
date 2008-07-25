@@ -100,3 +100,43 @@ end
 function Gridder:add_flexgrids(content)
    return content:gsub("<2~*\n(.-)\n~*>", function(code) return self:flexgrid(code) end)
 end
+
+
+function Gridder:parse_simplerow(row_code)
+   local row = {}
+   local i = 0
+   row_code:gsub("[^\n]+",
+                 function(item)
+                    i = i + 1
+                    if item~="" and item:sub(1,3) ~= "---" then
+                       local id, title = item:match("([^%s]*)(.*)")
+                       row[i] = {id=id, title=title}
+                    else
+                       row[i] = {}
+                    end
+                 end)
+   table.insert(self.rows, row)
+end
+
+
+function Gridder:simplegrid(image_code)
+   self.rows = {}
+   image_code:gsub("[^~]+", function (row) self:parse_simplerow(row) end)
+
+   for i, row in ipairs(self.rows) do
+      row.photos = row
+      for j, photo in ipairs(row) do
+         photo.photo_url = self.photo_url(photo.id, "thumb")
+         photo.link = self.sputnik:make_url(photo.id)
+      end
+   end
+
+   return cosmo.f(self.node.templates.SIMPLE_IMAGE_GRID){
+             rows = self.rows
+          }
+end
+
+function Gridder:add_flexgrids(content)
+   return content:gsub("<~*\n(.-)\n~*>", function(code) return self:simplegrid(code) end)
+end
+

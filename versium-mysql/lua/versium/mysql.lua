@@ -348,7 +348,7 @@ end
 --                        (2) a table containing the metadata for each node,
 --                        indexed by node name.
 -----------------------------------------------------------------------------
-function MySQLVersium:get_nodes_prefix(prefix)
+function MySQLVersium:get_nodes_by_prefix(prefix)
    assert(prefix)
 
    local data,metadata = {}, {}

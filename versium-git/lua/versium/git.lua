@@ -44,7 +44,7 @@ function new(params)
    -- pick up any new nodes that were created bypassing this instance.
    local node_table = {}
    local file_extension = params.file_extension or ".lua"
-   local git_dir = params[1]
+   local git_dir = params[1].."/"
    local function make_node_list(dir)
       for filename in lfs.dir(git_dir..dir) do
          local path = dir..filename

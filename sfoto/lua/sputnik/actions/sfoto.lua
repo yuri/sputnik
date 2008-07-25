@@ -2,8 +2,28 @@ module(..., package.seeall)
 
 local util = require"sputnik.util"
 
-album_base = "http://media.freewisdom.org/freewisdom/albums/"
-full_size_base = "http://media.freewisdom.org/freewisdom/full_size/"
+local imagegrid = require"sfoto.imagegrid"
+
+local LOCAL_MODE = true
+
+local function photo_url(id, size)
+   if LOCAL_MODE then 
+      return "http://localhost/image.jpg"
+   end
+   local album_base = "http://media.freewisdom.org/freewisdom/albums/"
+   local full_size_base = "http://media.freewisdom.org/freewisdom/full_size/"
+   if size=="original" then
+      return full_size_base.."/"..id:gsub("albums/", "")..".JPG"
+   elseif size=="thumb" then
+      return album_base..id:gsub("albums/", "").."/"..id..".thumb.jpg"
+   elseif size=="2x" or size=="3x" or size=="4x" then
+      return album_base.."/oddsize/"..id..".thumb"..size..".jpg"
+   else
+      return album_base.."/"..id:gsub("albums/", "")..".sized.jpg"
+   end
+end
+
+
 
 actions = {}
 
@@ -35,11 +55,11 @@ actions.show_photo_content = function(node, request, sputnik)
          }
 
    return cosmo.f(node.templates.SINGLE_PHOTO){
-                        photo_url = album_base.."/"..node.id:gsub("albums/", "")..".sized.jpg",
-                        original_size = full_size_base.."/"..node.id:gsub("albums/", "")..".JPG",
-                        next_link = sputnik:make_url(parent_id.."/"..(photos[node.position+1] or {id=""}).id),
-                        prev_link = sputnik:make_url(parent_id.."/"..(photos[node.position-1] or {id=""}).id),
-                        note = link_notes[photos[node.position+1]~=nil]
+                        photo_url     = photo_url(node.id),
+                        original_size = photo_url(node.id, "original"),
+                        next_link     = sputnik:make_url(parent_id.."/"..(photos[node.position+1] or {id=""}).id),
+                        prev_link     = sputnik:make_url(parent_id.."/"..(photos[node.position-1] or {id=""}).id),
+                        note          = link_notes[photos[node.position+1]~=nil]
                   }
 end
 
@@ -49,92 +69,18 @@ actions.show_photo = function(node, request, sputnik)
 end
 
 
-local function format_image_grid(node, rows, sputnik)
-   local total_height = 0
-   for i, row in ipairs(rows) do
-      total_height = total_height + 8 + (#row==6 and 150 or 100)
-   end
-
-   local function pixify(value) 
-      return string.format("%dpx", value)
-   end
-
-   local photos = {}
-    local width, dwidth, height
-    local y = 2
-    for i, row in ipairs(rows) do
-       if #row == 6 then
-          width, dwidth, height = 100, 6, 150
-       else
-          width, dwidth, height = 150, 10, 100
-       end
-       local x = 2
-       for i = 1,#row do 
-          photo = row[i]
-          if photo and photo.id then
-             local album, image = util.split(photo.id, "/")
-             photo.size = photo.size or 1
-
-             table.insert(photos, {
-                width      = pixify(width*photo.size + dwidth*(photo.size-1)),
-                height     = pixify(height*photo.size + 8*(photo.size-1)),
-                left       = pixify(2 + (width + dwidth) * (i-1)),
-                top        = pixify(y),
-                image_base = album_base,
-                suffix     = photo.size>1 and string.format("%dx", photo.size) or "",
-                thumb_dir  = photo.size==1 and album or "oddsize",
-                album      = album,
-                image      = image,
-                url        = sputnik:make_url(node.id, "photo", {id=photo.id}),
-             })
-          end
-       end
-       y = y + height + 8
-    end
-
-   return cosmo.f(node.templates.MIXED_ALBUM){
-             do_photos  = photos,
-             height = total_height
-   }
-end
-
-function image_link_2(node, image_code, sputnik)
-   local rows = {}
-   local buffer = ""
-   image_code:gsub("[^~]+", 
-                   function(row_code)
-                      row = {}
-                      local i = 0
-                      row_code:gsub("[^\n]+",
-                                    function(item)
-                                       i = i + 1
-                                       if item~="" and item:sub(1,3) ~= "---" then
-                                           if item:sub(1,1) ~= "x" then
-                                              item = "x1 "..item
-                                           end
-                                           local size, id, title = item:match("(%w*) ([^%s]*)(.*)")
-                                           row[i] = {item=item, id=id, size=tonumber(size:sub(2)), title=title}
-                                       else
-                                           row[i] = {}
-                                       end
-                                    end)
-                      table.insert(rows, row)
-                   end)
-   for i, row in ipairs(rows) do
-      for j, photo in ipairs(row) do
-         buffer = buffer .. (photo.id or "x").."\n"
-      end
-   end
-
-   return format_image_grid(node, rows, sputnik)
-end
 
 actions.show_entry_content = function(node, request, sputnik)
    local title = ""
    if request.params.show_title then
       title = "<h1>"..node.title.."</h1>\n\n"
    end
-   return title..node.markup.transform((node.content or ""):gsub("<2~*\n(.-)\n~*>", function(x) return image_link_2(node, x, sputnik) end))
+
+   gridder = imagegrid.new(node, photo_url, sputnik)
+
+   local content = gridder:add_flexgrids(node.content or "")
+   --:gsub("<~*\n(.-)\n~*>", gridder.simplegrid)
+   return title..node.markup.transform(content)
 end
 
 actions.show_entry = function(node, request, sputnik)
@@ -151,7 +97,7 @@ actions.show_album_content = function(node, request, sputnik)
    for i, photo in ipairs(node.content.photos) do
       if user_access_level >= (photo.private or "0") then
          table.insert(row.photos, photo)
-         photo.thumb = album_base..node.id:gsub("albums/", "").."/"..photo.id..".thumb.jpg"
+         photo.thumb = photo_url(node.id, "thumb")
          if #(row.photos) == 5 then
             table.insert(rows, row)
             row = {photos={}}
@@ -289,7 +235,7 @@ actions.show = function(node, request, sputnik)
                                                           else
                                                               item.url = sputnik:make_url("albums/"..item.id)
                                                               item.content_url = sputnik:make_url("albums/"..item.id, "show_content", {show_title="1"})
-                                                              item.thumbnail = album_base..item.id.."/"..item.thumb..".thumb.jpg"
+                                                              item.thumbnail = photo_url(node.id, "thumb")
                                                               
                                                               if user_access_level < (item.private or "0") then
                                                                  item.thumbnail = sputnik:make_url("sfoto/lock.png")

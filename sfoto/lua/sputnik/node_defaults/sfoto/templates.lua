@@ -183,7 +183,7 @@ MIXED_ALBUM = [====[
         <img style="position: absolute; left: $left; top: $top;" 
              width="$width"
              height="$height"
-             src="$image_base/$thumb_dir/$image.thumb$suffix.jpg"
+             src="$photo_url"
              title="$title"/>
      </a>
    ]]

@@ -7,6 +7,22 @@ require("sputnik.actions.wiki")
 require("sputnik.i18n")
 require("sputnik.util")
 
+if STRICT then
+   local exported={export = true}
+   local mt = getmetatable(_M) or {}
+   setmetatable(_M, mt)
+   mt.__newindex = function (t, n, v)
+     if not exported[n] then
+        error("assign to undeclared variable '"..n.."'", 2)
+     end
+     rawset(t, n, v)
+   end
+   function export(...)
+      for _, v in ipairs{...} do exported[v] = true end
+   end
+   export("new", "new_wsapi_run_fn")
+end
+
 -----------------------------------------------------------------------------
 -- THE SPUTNIK CLASS  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 -----------------------------------------------------------------------------
@@ -45,6 +61,7 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:init(initial_config)
    -- setup the logger -- do this before loading user configuration
+   self.initial_config = initial_config -- for reloading
    if initial_config.LOGGER then
       require("logging."..initial_config.LOGGER)
       self.logger = logging[initial_config.LOGGER](unpack(initial_config.LOGGER_PARAMS))
@@ -59,7 +76,6 @@ function Sputnik:init(initial_config)
    --- Turns a string into something that can be used as a node name.
    local dirify = initial_config.DIRIFY_FN or sputnik.util.dirify
    self.dirify = function(self, text) return dirify(text) end
-
    -- setup the repository -- do this before loading user configuration
    self.saci = saci.new(initial_config.VERSIUM_STORAGE_MODULE or "versium.filedir",
                         initial_config.VERSIUM_PARAMS,
@@ -70,8 +86,7 @@ function Sputnik:init(initial_config)
    self.repo = self.saci -- for backwards compatibility
 
    self.saci.get_fallback_node = function(repo, id, version)
-      local status, page_module = pcall(require, "sputnik.node_defaults."..id)
-
+      local status, page_module = pcall(require, "sputnik.node_defaults."..id:gsub("/", "."))
       if not status then
          -- Attempt to escape the node_id using basic filesystem rules
          local esc_id = id:gsub("%%", "%%25"):gsub(":", "%%3A"):gsub("/", ".")
@@ -419,7 +434,7 @@ function Sputnik:prime_node(node)
       media = media or "screen"
       return add(self.css_links, href.."|"..media, {href = href, media = media})
    end
-   function node:add_css_snippet(href, media)
+   function node:add_css_snippet(href, snippet, media)
       media = media or "screen"
       return add(self.css_snippets, href.."|"..media, {snippet = snippet, media = media})
    end

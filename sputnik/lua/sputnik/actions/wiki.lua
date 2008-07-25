@@ -10,6 +10,7 @@ module(..., package.seeall)
 
 require("cosmo")
 require("versium.util")
+require("saci.sandbox")
 
 local util = require("sputnik.util")
 local html_forms = require("sputnik.util.html_forms")
@@ -170,6 +171,17 @@ function actions.save(node, request, sputnik)
       return new_node.wrappers.default(new_node, request, sputnik)
    end
 end
+
+-----------------------------------------------------------------------------
+-- Forces a re-initialization of Sputnik.
+-----------------------------------------------------------------------------
+function actions.reload(node, request, sputnik)
+   sputnik:init(sputnik.initial_config)
+   node.inner_html = "Reloading..."
+   node:redirect(sputnik:make_url(node.name)) -- Redirect to the node
+   return node.wrappers.default(node, request, sputnik)
+end
+
 
 -----------------------------------------------------------------------------
 -- Updates the node with values in query parameters, then calls show_content.
@@ -682,13 +694,13 @@ function actions.diff(node, request, sputnik)
                          version1 = request.params.version,
                          link1    = node.links:show{version=request.params.version},
                          author1  = author_or_ip(this_node_info),
-                         time1    = format_time(this_node_info.timestamp, "%H:%M %z"),
-                         date1    = format_time(this_node_info.timestamp, "%Y/%m/%d"),
+                         time1    = sputnik:format_time(this_node_info.timestamp, "%H:%M %z"),
+                         date1    = sputnik:format_time(this_node_info.timestamp, "%Y/%m/%d"),
                          version2 = request.params.other,
                          link2    = node.links:show{version=request.params.other},
                          author2  = author_or_ip(other_node_info),
-                         time2    = format_time(other_node_info.timestamp, "%H:%M %z"),
-                         date2    = format_time(other_node_info.timestamp, "%Y/%m/%d"),
+                         time2    = sputnik:format_time(other_node_info.timestamp, "%H:%M %z"),
+                         date2    = sputnik:format_time(other_node_info.timestamp, "%Y/%m/%d"),
                          diff     = diff, 
                       }
 
@@ -818,7 +830,7 @@ end
 -----------------------------------------------------------------------------
 function actions.show_login_form(node, request, sputnik)
    if (request.params.user and request.user) then -- we've just logged in the user
-      node:redirect(sputnik:make_url(node.name, prev))
+      node:redirect(sputnik:make_url(node.id))
       return node.wrappers.default(node, request, sputnik)
    end
    local post_timestamp = os.time()

@@ -43,6 +43,7 @@ sputnik_version = "wiki.sputnik_version"
 save            = "wiki.save"
 preview         = "wiki.preview"
 preview_content = "wiki.preview_content"
+reload          = "wiki.reload"
 ]],
 templates    = "sputnik/templates",
 translations = "sputnik/translations",
@@ -124,6 +125,7 @@ permissions=[[
    allow(all_users, "show_content")
    --deny(Anonymous, "edit")
    --deny(Anonymous, "save")
+   allow(Admin, "reload")
 ]]
 }
 

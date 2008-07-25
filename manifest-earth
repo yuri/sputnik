@@ -61,7 +61,8 @@ repository['versium-git']['8.06.22-0'] = {{arch='rockspec'}}       -- ok
 repository['versium-sqlite3'] = {}
 repository['versium-sqlite3']['8.07.21-0']  = {{arch='rockspec'}}  -- up2date
 
-repository['versium-mysql'] = {}                                   -- new
+repository['versium-mysql'] = {}
+repository['versium-mysql']['8.07.25-0']    = {{arch='rockspec'}}  -- up2date
 
 repository['saci'] = {}               
 repository['saci']['8.05.24-0']             = {{arch='rockspec'}}

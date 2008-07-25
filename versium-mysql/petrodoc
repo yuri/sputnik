@@ -1,0 +1,39 @@
+package    = 'Versium-MySQL'
+versions   = {
+   {'8.07.25', 'July 25, 2008',    'the first release for earth'},
+}
+summary    = 'MySQL backends for Versium'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+     Versium-Sqlite3 implements versium using MySQL as a backend.
+]]
+
+license    = 'MIT/X11'
+
+homepage   = 'http://sputnik.freewisdom.org/en/SQLStorage'
+favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
+download   = 'http://sputnik.freewisdom.org/files/versium-mysql-$version.tar.gz'
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+logo       = 'versium.png'
+keywords   = 'lua, versioned storage, file system, sql, database'
+rss        = homepage.."releases.rss"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+  'luasql-mysql >= 2.2.0rc1-1',
+  'versium >= 8.07.21',
+]]
+
+TOC = {
+   { "Overview",     "<p>"..detailed.."</p>" },
+   --{ "Installation", markdown(Installation) },
+   --{ "Using Colors", markdown(include("docs/howto.md")) },
+   { "Contact",      "Please contact Yuri Takhteyev (yuri -at- freewisdom.org) with any questions."},
+   --{ "LuaDoc",       make_luadoc{"versium.lua"} },
+   { "License",      markdown(include("LICENSE.txt")) }
+}
+-------------------------------------------------------------------------------
+
+
+

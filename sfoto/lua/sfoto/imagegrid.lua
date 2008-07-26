@@ -82,9 +82,10 @@ function Gridder:flexgrid(image_code)
                height     = pixify(height*photo.size + 8*(photo.size-1)),
                left       = pixify(2 + (width + dwidth) * (i-1)),
                top        = pixify(y),
-               title      = "!!JLKJL",               
-               photo_url  = self.photo_url(self.node.id, 
+               title      = photo.title or "",               
+               photo_url  = self.photo_url(photo.id, 
                                            photo.size>1 and string.format("%dx", photo.size) or "thumb"),
+               link       = self.sputnik:make_url("albums/"..photo.id),
             })
          end
       end
@@ -127,7 +128,7 @@ function Gridder:simplegrid(image_code)
       row.photos = row
       for j, photo in ipairs(row) do
          photo.photo_url = self.photo_url(photo.id, "thumb")
-         photo.link = self.sputnik:make_url(photo.id)
+         photo.link = self.sputnik:make_url("albums/"..photo.id)
       end
    end
 
@@ -137,6 +138,10 @@ function Gridder:simplegrid(image_code)
 end
 
 function Gridder:add_flexgrids(content)
+   return content:gsub("<2~*\n(.-)\n~*>", function(code) return self:flexgrid(code) end)
+end
+
+function Gridder:add_simplegrids(content)
    return content:gsub("<~*\n(.-)\n~*>", function(code) return self:simplegrid(code) end)
 end
 

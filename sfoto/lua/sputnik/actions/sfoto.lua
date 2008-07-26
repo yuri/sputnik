@@ -4,7 +4,7 @@ local util = require"sputnik.util"
 
 local imagegrid = require"sfoto.imagegrid"
 
-local LOCAL_MODE = true
+local LOCAL_MODE = false
 
 local function photo_url(id, size)
    if LOCAL_MODE then 
@@ -15,9 +15,9 @@ local function photo_url(id, size)
    if size=="original" then
       return full_size_base.."/"..id:gsub("albums/", "")..".JPG"
    elseif size=="thumb" then
-      return album_base..id:gsub("albums/", "").."/"..id..".thumb.jpg"
+      return album_base..id:gsub("albums/", "")..".thumb.jpg"
    elseif size=="2x" or size=="3x" or size=="4x" then
-      return album_base.."/oddsize/"..id..".thumb"..size..".jpg"
+      return album_base.."/oddsize/"..id:match("/([^%/]*)$")..".thumb"..size..".jpg"
    else
       return album_base.."/"..id:gsub("albums/", "")..".sized.jpg"
    end
@@ -79,6 +79,7 @@ actions.show_entry_content = function(node, request, sputnik)
    gridder = imagegrid.new(node, photo_url, sputnik)
 
    local content = gridder:add_flexgrids(node.content or "")
+   content = gridder:add_simplegrids(content)
    --:gsub("<~*\n(.-)\n~*>", gridder.simplegrid)
    return title..node.markup.transform(content)
 end
@@ -232,6 +233,7 @@ actions.show = function(node, request, sputnik)
                                                           if item.type == "blog" then
                                                               item.url = sputnik:make_url("entries/"..item.id)
                                                               item.content_url = sputnik:make_url("entries/"..item.id, "show_content", {show_title="1"})
+                                                              item.blog_thumb = "http://media.freewisdom.org/blog_thumbs/"..item.id..".jpg"
                                                           else
                                                               item.url = sputnik:make_url("albums/"..item.id)
                                                               item.content_url = sputnik:make_url("albums/"..item.id, "show_content", {show_title="1"})

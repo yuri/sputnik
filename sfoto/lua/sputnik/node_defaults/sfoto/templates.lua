@@ -134,7 +134,7 @@ INDEX = [======[
       $if_blog[====[
        <a class="blog" href="$url" onclick="showBlog('$row_id', '$url', '$content_url'); return false;">
         <p style="margin-top: 0px; height: 50px">$title </p>
-        <img src="http://localhost/drive_by_tax.jpg"/>
+        <img src="$blog_thumb"/>
        </a>
       ]====]
       $if_album[====[
@@ -177,7 +177,7 @@ INDEX = [======[
 
 
 SIMPLE_IMAGE_GRID = [====[
-<div width='100%'>
+<div width='100%' style="margin-top: 20px; margin-bottom:20px">
  <center>
   <div style='position:relative;' class='simple-image-grid'> 
    $rows[[
@@ -194,11 +194,11 @@ SIMPLE_IMAGE_GRID = [====[
 
 
 MIXED_ALBUM = [====[
-<div width='100%'>
+<div width='100%' style="margin-top: 20px; margin-bottom:20px;">
  <center>
-  <div style='position:relative;' class='image-links'> 
+  <div style='position:relative; width: 635px; margin-left: auto;  margin-right: auto;' class='image-links'>
    $do_photos[[
-     <a href="$url" class='local'> 
+     <a href="$link" class='local'> 
         <img style="position: absolute; left: $left; top: $top;" 
              width="$width"
              height="$height"

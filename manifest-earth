@@ -80,6 +80,13 @@ repository['sputnik']['8.06.22-0']          = {{arch='rockspec'}}
 repository['sputnik']['8.07.07-0']          = {{arch='rockspec'}}
 repository['sputnik']['8.07.21-0']          = {{arch='rockspec'}}  -- up2date
 
+
+repository['sputnik-auth-sqlite3'] = {}
+repository['sputnik-auth-sqlite3']['8.07.25-0'] = {{arch='rockspec'}}  -- up2date
+
+repository['sputnik-auth-mysql'] = {}
+repository['sputnik-auth-mysql']['8.07.25-0'] = {{arch='rockspec'}}  -- up2date
+
 repository['sputnik-tickets'] = {}                                 -- new
 repository['sputnik-tickets']['8.07.21-0']  = {{arch='rockspec'}}  -- up2date
 

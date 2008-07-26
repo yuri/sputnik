@@ -237,7 +237,7 @@ actions.show = function(node, request, sputnik)
                                                           else
                                                               item.url = sputnik:make_url("albums/"..item.id)
                                                               item.content_url = sputnik:make_url("albums/"..item.id, "show_content", {show_title="1"})
-                                                              item.thumbnail = photo_url(node.id, "thumb")
+                                                              item.thumbnail = photo_url(item.id.."/"..item.thumb, "thumb")
                                                               
                                                               if user_access_level < (item.private or "0") then
                                                                  item.thumbnail = sputnik:make_url("sfoto/lock.png")

@@ -335,7 +335,6 @@ actions.show = function(node, request, sputnik)
        local key = node.id.."|"..request.query_string.."|"..(request.user or "Anon")
        cached_info = sputnik.app_cache:get_node_info(key) or {}
        if (not cached_info.timestamp) or (cached_info.timestamp < tracker.timestamp) then
-          print("not cached or expired cache")
           node.inner_html = actions.show_index_content(node, request, sputnik)
           sputnik.app_cache:save_version(key, node.inner_html, "sfoto")
        else

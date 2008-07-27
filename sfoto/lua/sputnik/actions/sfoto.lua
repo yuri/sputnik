@@ -81,7 +81,13 @@ actions.show_entry_content = function(node, request, sputnik)
    local content = gridder:add_flexgrids(node.content or "")
    content = gridder:add_simplegrids(content)
    --:gsub("<~*\n(.-)\n~*>", gridder.simplegrid)
-   return title..node.markup.transform(content)
+
+   local html = title..node.markup.transform(content)
+   if request.params.width then
+      return "<div style='width: "..request.params.width.."px'>"..html.."</div>"
+   else
+      return html
+   end
 end
 
 actions.show_entry = function(node, request, sputnik)
@@ -98,7 +104,7 @@ actions.show_album_content = function(node, request, sputnik)
    for i, photo in ipairs(node.content.photos) do
       if user_access_level >= (photo.private or "0") then
          table.insert(row.photos, photo)
-         photo.thumb = photo_url(node.id, "thumb")
+         photo.thumb = photo_url(node.id.."/"..photo.id, "thumb")
          if #(row.photos) == 5 then
             table.insert(rows, row)
             row = {photos={}}
@@ -131,23 +137,58 @@ actions.show_album = function(node, request, sputnik)
 end
 
 
+tag_expander = {
+   rio = "brazil",
+   paris = "france",
+   ["france-other"] = "france",
+   amiens = "france",
+   vladivostok="russia",
+}
+
+local function matches_tag(item, tag)
+   if not tag then
+      return true
+   elseif not item.tags then
+      return false
+   else
+      for t in item.tags:gmatch("[^ ]*") do
+         if t == tag or tag_expander[t]==tag then 
+            return true
+         end
+      end
+   end
+   return false
+end
+
 actions.show = function(node, request, sputnik)
 
    --node:add_javascript_link(sputnik:make_url("jquery.js"))
    -- node.content.data
 
+   local tag = request.params.tag
+
    local items = {} --node.content.data
 
-   for k,v in pairs(sputnik.saci:get_nodes_by_prefix("albums/"..node.id, 100)) do
+   for k,v in pairs(sputnik.saci:get_nodes_by_prefix("albums/"..node.id, 500)) do
       v.id = v.id:gsub("^albums/", "")
       v.sort_key = v.id:gsub("-", "/")
-      table.insert(items, v)
+      local match = false
+      for i, photo in ipairs(v.content.photos) do
+         if matches_tag(photo, tag) then
+            match = true
+         end
+      end
+      if match then
+         table.insert(items, v)
+      end
    end
-   for k,v in pairs(sputnik.saci:get_nodes_by_prefix("entries/"..node.id, 100)) do
+   for k,v in pairs(sputnik.saci:get_nodes_by_prefix("entries/"..node.id, 500)) do
       v.id = v.id:gsub("^entries/", "")
       v.sort_key = v.id
       v.type = "blog"
-      table.insert(items, v)
+      if matches_tag(v, tag) then
+         table.insert(items, v)
+      end
    end
 
    --items = node.content.data
@@ -178,11 +219,6 @@ actions.show = function(node, request, sputnik)
       reverse_url = sputnik:make_url(node.id, nil, {ascending='1'})
    end
 
-
-   if request.params.ascending then
-
-   end
-
    local odd = "odd"
    local cur_date = ""
    local show_date = ""
@@ -193,6 +229,7 @@ actions.show = function(node, request, sputnik)
       return {
          items={}, 
          dates={},
+         if_blanks = cosmo.c(false){},
          row_id = tostring(row_counter),
       }
    end
@@ -261,8 +298,19 @@ actions.show = function(node, request, sputnik)
                                                           end
                                                       end
                                                    end
-                                                   if #(row.items) > 0 then cosmo.yield(row) end
-                                               end
+                                                   local num_items = #(row.items)
+                                                   if num_items > 0 then
+                                                      if num_items < 6 then
+                                                         if odd == "odd" then odd = "even" else odd = "odd" end
+                                                      end
+                                                      row.if_blanks = cosmo.c(num_items < 6) {
+                                                                         blanks = 6 - num_items,
+                                                                         odd = odd,
+                                                                         width = 170*(6-num_items),
+                                                                      }
+                                                      cosmo.yield(row)
+                                                   end
+                                                end                                                
                                           }
                                        end
                                     end    

@@ -127,6 +127,7 @@ INDEX = [======[
     $dates[===[
      <th class="$odd date">$date</th>
     ]===]
+    $if_blanks[[<td class="$odd" colspan="$blanks" style="mid-width: $width{}px;">&nbsp;</td>]]
    </tr>
    <tr>
     $items[===[
@@ -143,6 +144,7 @@ INDEX = [======[
       ]====]
      </td>
     ]===]
+    $if_blanks[[<td class="$odd" colspan="$blanks">&nbsp;</td>]]
    </tr>
    <tr>
     <th colspan="6" style="background: #333333; color: white;">

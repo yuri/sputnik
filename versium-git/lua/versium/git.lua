@@ -156,16 +156,18 @@ end
 -----------------------------------------------------------------------------
 function GitVersium:get_node_info(id, version)
    assert(id)
-   local history = self:get_node_history(id) or {}
-   assert(#history > 0, "History should have at least one item in it")
-
-   if version then
+   
+   if version then 
+      local history = self:get_node_history(id) or {}
+      assert(#history > 0, "History should have at least one item in it")
       for i, commit in ipairs(history) do
          if commit.version == version then
             return commit
          end
       end
    else
+      local history = self:get_node_history(id, nil, 1) or {}
+      assert(#history > 0, "History should have at least one item in it")
       return history[1] -- i.e., the _latest_ version
    end
 end
@@ -263,7 +265,7 @@ end
 -- @return               a list of tables representing the versions (the list
 --                       will be empty if the node doesn't exist).
 -----------------------------------------------------------------------------
-function GitVersium:get_node_history(id, prefix)
+function GitVersium:get_node_history(id, prefix, limit)
    assert(id)
    if not self:node_exists(id) then return nil end
    local path = self:id2path(id)
@@ -284,13 +286,25 @@ function GitVersium:get_node_history(id, prefix)
                           .."\nreturn commits"
 
    local history = loadstring(history_as_lua)()
+
+   if limit then
+      local old_history = history
+      history = {}
+      for i, commit in ipairs(old_history) do
+         if i <= limit then
+            table.insert(history, commit)
+         end
+      end
+   end
+
    local divider="^(.*)%-%-%-extra%-fields%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-%-(.*)$"
    for i, commit in ipairs(history) do
       commit.comment = commit.comment:gsub("\n\n<unknown>$", "")
+      commit.timestamp = os.date("!%Y-%m-%d %H:%M:%S", commit.timestamp)
+
       local before, after = commit.comment:match(divider)
       if before then
          commit.comment = before
-         commit.timestamp = os.date("!%Y-%m-%d %H:%M:%S", commit.timestamp)
          local f, err=loadstring(after)
          if err then return nil, err end
          setfenv(f, {})

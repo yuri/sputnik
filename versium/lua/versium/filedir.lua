@@ -147,8 +147,13 @@ end
 -----------------------------------------------------------------------------
 function FileDirVersium:get_node_info(id, version)
    assert(id)
-   local history = self:get_node_history(id) or {}
-   assert(#history > 0, "History should have at least one item in it")
+   local history
+   if not version then 
+      history = self:get_node_history(id, nil, 1) or {}
+   else
+      history = self:get_node_history(id) or {}
+   end
+   if not #history==0 then return nil end
 
    if version then
       for i, commit in ipairs(history) do
@@ -242,15 +247,16 @@ end
 --
 -- @param id             the id of the node.
 -- @param prefix         time prefix.
+-- @param limit          the max number of history items to return
 -- @return               a list of tables representing the versions (the list
 --                       will be empty if the node doesn't exist).
 -----------------------------------------------------------------------------
-function FileDirVersium:get_node_history(id, prefix)
+function FileDirVersium:get_node_history(id, prefix, limit)
    assert(id)
    if not self:node_exists(id) then return nil end
 
    local raw_history = get_raw_history(self.dir, id)
    assert(raw_history:len() > 0)
-   return parse_history(raw_history, prefix)
+   return parse_history(raw_history, prefix, limit)
 end
 

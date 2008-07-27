@@ -131,11 +131,11 @@ INDEX = [======[
    </tr>
    <tr>
     $items[===[
-     <td class="$odd" style="min-width: 170px;">
+     <td class="$odd" style="min-width: 160px;">
       $if_blog[====[
        <a class="blog" href="$url" onclick="showBlog('$row_id', '$url', '$content_url'); return false;">
         <p style="margin-top: 0px; height: 50px">$title </p>
-        <img src="$blog_thumb"/>
+        <center><img src="$blog_thumb"/></center>
        </a>
       ]====]
       $if_album[====[

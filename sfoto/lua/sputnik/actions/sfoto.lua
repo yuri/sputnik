@@ -69,6 +69,15 @@ actions.show_photo = function(node, request, sputnik)
 end
 
 
+for_thumb = [[
+   <style type="css">
+     a:link img {border-style: none;}     
+   </style>
+   <div style="width: $width{}px">
+$html
+   </div>"
+]]
+
 
 actions.show_entry_content = function(node, request, sputnik)
    local title = ""
@@ -84,7 +93,7 @@ actions.show_entry_content = function(node, request, sputnik)
 
    local html = title..node.markup.transform(content)
    if request.params.width then
-      return "<div style='width: "..request.params.width.."px'>"..html.."</div>"
+      return cosmo.f(for_thumb){width=request.params.width, html=html}
    else
       return html
    end
@@ -160,7 +169,7 @@ local function matches_tag(item, tag)
    return false
 end
 
-actions.show = function(node, request, sputnik)
+function actions.show_index_content(node, request, sputnik)
 
    --node:add_javascript_link(sputnik:make_url("jquery.js"))
    -- node.content.data
@@ -251,8 +260,7 @@ actions.show = function(node, request, sputnik)
       end
    end
 
-   node.inner_html = cosmo.f(node.templates.INDEX){
-
+   return cosmo.f(node.templates.INDEX){
                         reverse_url = reverse_url,
                         months      = months,
                         do_months = function()
@@ -315,7 +323,27 @@ actions.show = function(node, request, sputnik)
                                        end
                                     end    
                         }
+end
 
+--require"versium.sqlite3"
+--require"versium.filedir"
+--cache = versium.filedir.new{"/tmp/cache/"} --sqlite3.new{"/tmp/cache.db"}
+
+actions.show = function(node, request, sputnik)
+   if sputnik.app_cache then
+       local tracker = sputnik.saci:get_node_info("sfoto_tracker")
+       local key = node.id.."|"..request.query_string.."|"..(request.user or "Anon")
+       cached_info = sputnik.app_cache:get_node_info(key) or {}
+       if (not cached_info.timestamp) or (cached_info.timestamp < tracker.timestamp) then
+          print("not cached or expired cache")
+          node.inner_html = actions.show_index_content(node, request, sputnik)
+          sputnik.app_cache:save_version(key, node.inner_html, "sfoto")
+       else
+          node.inner_html = sputnik.app_cache:get_node(key)
+       end
+   else
+      node.inner_html = actions.show_index_content(node, request, sputnik)
+   end
    return node.wrappers.default(node, request, sputnik)
 end
 

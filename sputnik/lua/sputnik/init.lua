@@ -144,6 +144,12 @@ function Sputnik:init(initial_config)
       }
    end
 
+   -- setup app cache
+   if self.config.APP_CACHE_STORAGE_MODULE then
+      local cache_mod = require(self.config.APP_CACHE_STORAGE_MODULE)
+      self.app_cache = cache_mod.new(self.config.APP_CACHE_PARAMS)
+   end
+
    -- setup captcha
 
    if self.config.CAPTCHA_MODULE then

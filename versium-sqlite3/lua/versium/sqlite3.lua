@@ -283,10 +283,7 @@ function SQLite3Versium:save_version(id, data, author, comment, extra, timestamp
    assert(author)
 
    -- generate and save the new index
-   if not timestamp then
-      local t = os.date("*t")
-      timestamp = string.format("%02d-%02d-%02d %02d:%02d:%02d", t.year, t.month, t.day, t.hour, t.min, t.sec)
-   end
+   timestamp = os.date("!%Y-%m-%d %H:%M:%S", timestamp) -- default to current time
 
    -- Determine what the new version number will be
    local cmd = self:prepare(self.queries.GET_VERSION, id)

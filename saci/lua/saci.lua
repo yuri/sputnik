@@ -29,9 +29,14 @@ function new(module_name, versium_params, root_prototype_id)
    module_name = module_name
    local versium_module = require(module_name)
    repo.versium = versium_module.new(versium_params)
+   repo:reset_cache()
    return repo
 end
 
+function Saci:reset_cache()
+   self.cache = {}
+   self.cache_stub = {}
+end
 -----------------------------------------------------------------------------
 -- Returns true if the node exists and false otherwise.
 -- 
@@ -128,6 +133,11 @@ function Saci:get_node(id, version)
    assert(id)
    assert(type(id)=="string")
 
+   local cache_key = version and id.."."..version or id
+   if self.cache[cache_key] then
+      return self.cache[cache_key], self.cache_stub[cache_key]
+   end
+
    -- first check if the id has a slash.  if so, identify the parent, and ask
    -- it about the child.
    local parent_id, rest = string.match(id, "^(.+)/(.-)$")
@@ -136,6 +146,7 @@ function Saci:get_node(id, version)
       if parent then
          local node = parent:get_child(rest)
          if node then
+            self.cache[cache_key] = node
             return node
          end
       end
@@ -152,6 +163,8 @@ function Saci:get_node(id, version)
    if self.get_fallback_node then
       local prototype = nil
       local node, stub = self:get_fallback_node(id, version)
+      self.cache[cache_key] = node
+      self.cache_stub[cache_key] = true
       return node, stub
    end
 end

@@ -81,17 +81,15 @@ end
 function sendmail(args, sputnik)
    assert(args.to, "No recepient specified")
    assert(args.subject, "No subject specified")
-   local from = "<yuri@cs.stanford.edu>" 
-                --args.from or sputnik.config.ADMIN_EMAIL
-                --or "<admin@"..(sputnik.config.DOMAIN or "localhost")..">"
-   args.to = "<fuddha@yahoo.com>"
+   assert(args.from, "No source specified")
+
    local smtp = require("socket.smtp")
    local status, err = smtp.send{
-            from = from,
+            from = args.from,
             rcpt = "<"..args.to..">",
             source = smtp.message{
                headers = {
-                  from = from,
+                  from = args.from,
                   to = args.to,
                   subject = args.subject
                },

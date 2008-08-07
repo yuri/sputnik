@@ -105,4 +105,17 @@ function sendmail(args, sputnik)
    return status, err
 end
 
- 
+-----------------------------------------------------------------------------
+----------------------------------------------------------------------------- 
+local Cycle = {}
+local Cycle_mt = {__metatable = {}, __index = Cycle}
+function new_cycle(values)
+   return setmetatable({values=values, i=1}, Cycle_mt)
+end
+function Cycle:next()
+   self.i = (self.i % #(self.values)) + 1
+end
+function Cycle:get()
+   return self.values[self.i]
+end
+

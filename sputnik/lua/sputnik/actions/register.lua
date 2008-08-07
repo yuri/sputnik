@@ -85,7 +85,8 @@ function create_email_activation_ticket(args)
    local node = args.node
    assert(node)
    -- Create the activation ticket
-   local ticket_id = sputnik:gen_name("register", "hash", "activate/%s")
+   local uid = md5.sumhexa(args.username .. sputnik:get_uid("register") .. os.time())
+   local ticket_id = ("activate/%s"):format(uid)
    local ticket = sputnik:get_node(ticket_id)
    ticket:update{
             prototype = "sputnik/@Account_Activation_Ticket",
@@ -97,13 +98,14 @@ function create_email_activation_ticket(args)
    ticket:save("Sputnik", "Creation of account activation ticket")
 
    -- Email the user
+   local link = "http://" .. sputnik.config.DOMAIN .. sputnik:make_url(ticket_id)
    local status, err = sputnik:sendmail{
       from    = sputnik.config.CONFIRMATION_ADDRESS_FROM,
       to      = args.email,
       subject = node.translator.translate_key("ACCOUNT_ACTIVATION"),
       body    = cosmo.f(node.translator.translate_key("ACTIVATION_MESSAGE_BODY")){
                    site_name       = sputnik.config.DOMAIN,
-                   activation_link = sputnik:make_url(ticket_id)
+                   activation_link = link, 
                 }
    }
    return status==1, err

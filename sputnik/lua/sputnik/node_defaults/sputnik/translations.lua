@@ -588,7 +588,7 @@ COULD_NOT_CONFIRM_NEW_PASSWORD = {
 -----------------------------------------------------------------------------
 
 COULD_NOT_VERIFY_CAPTCHA = {
-   en_US = "Could not verify captcha:"
+   en_US = "Could not verify captcha: "
 }
 
 -- A note telling the user that they need to enter captcha because they are not logged in.

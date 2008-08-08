@@ -130,7 +130,7 @@ function actions.post(node, request, sputnik)
          end
 
          -- test captcha, if configured
-         if sputnik.captcha and not (request.user or request.action == "login") then
+         if sputnik.captcha and not (request.user or request.params.user) then
             local client_ip = request.wsapi_env.REMOTE_ADDR
             local captcha_ok, err = sputnik.captcha:verify(request.POST, client_ip)
             if not captcha_ok then

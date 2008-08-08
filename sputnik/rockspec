@@ -1,7 +1,7 @@
 package = "Sputnik"
-version = "8.07.21-0"
+version = "8.08.08-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/sputnik-8.07.21.tar.gz",
+   url = "http://sputnik.freewisdom.org/files/sputnik-8.08.08.tar.gz",
 }
 description = {
    summary    = "A wiki and a framework for wiki-like applications",
@@ -51,6 +51,7 @@ build = {
         ["sputnik.markup.init"] = "lua/sputnik/markup/init.lua",
 
         ["sputnik.init"] = "lua/sputnik/init.lua",
+        ["sputnik.installer"] = "lua/sputnik/installer.lua",
         ["sputnik.auth.simple"] = "lua/sputnik/auth/simple.lua",
         ["sputnik.auth.errors"] = "lua/sputnik/auth/errors.lua",
 

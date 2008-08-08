@@ -7,6 +7,25 @@ require("sputnik.actions.wiki")
 require("sputnik.i18n")
 require("sputnik.util")
 
+-----------------------------------------------------------------------------
+-- Applies default config values
+-----------------------------------------------------------------------------
+local function apply_defaults(config)
+   config                  = config or {}
+   assert(config.TOKEN_SALT, "TOKEN_SALT must be set")
+   config.ROOT_PROTOTYPE   = config.ROOT_PROTOTYPE or "@Root"
+   config.PASSWORD_SALT    = config.PASSWORD_SALT or "2348979898237082394172309847123"
+   config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "sputnik/config"
+   config.PASS_PAGE_NAME   = config.PASS_PAGE_NAME or "sputnik/passwords"
+   --config.LOGGER = config.LOGGER or "file"
+   --config.LOGGER_PARAMS = config.LOGGER_PARAMS
+   --                       or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
+   return config
+end
+
+-----------------------------------------------------------------------------
+-- Code to track globals
+-----------------------------------------------------------------------------
 if STRICT then
    local exported={export = true}
    local mt = getmetatable(_M) or {}
@@ -24,25 +43,28 @@ if STRICT then
 end
 
 -----------------------------------------------------------------------------
+-- Sets up Sputnik in the current or specified directory
+-----------------------------------------------------------------------------
+function setup(dir)
+   require("sputnik.installer")
+   sputnik.installer.make_wsapi_script(dir, "kepler/htdocs/sputnik.ws")
+   sputnik.installer.make_cgi_file(dir, "sputnik.cgi")
+end
+
+-----------------------------------------------------------------------------
 -- THE SPUTNIK CLASS  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 -----------------------------------------------------------------------------
 local Sputnik = {}
 local Sputnik_mt = {__metatable = {}, __index = Sputnik}
+
+
 
 -----------------------------------------------------------------------------
 -- Creates a new instance of Sputnik.
 -----------------------------------------------------------------------------
 function new(config)
    -- Set up default configuration variables
-   config = config or {}
-   config.ROOT_PROTOTYPE = config.ROOT_PROTOTYPE or "@Root"
-   config.SECRET_CODE = config.SECRET_CODE or "2348979898237082394172309847123"
-   config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "sputnik/config"
-   config.PASS_PAGE_NAME = config.PASS_PAGE_NAME or "sputnik/passwords"
-   --config.LOGGER = config.LOGGER or "file"
-   --config.LOGGER_PARAMS = config.LOGGER_PARAMS
-   --                       or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
-
+   config = apply_defaults(config)
    -- Create and return the new initialized Sputnik instance
    local obj = setmetatable({}, Sputnik_mt)
    obj:init(config)
@@ -159,6 +181,7 @@ function Sputnik:init(initial_config)
       
    -- setup authentication
    self.auth_mod = require(self.config.AUTH_MODULE or "sputnik.auth.simple")
+   self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
    
    -- setup wrappers
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      
@@ -543,7 +566,7 @@ end
 -- Generates a hash for a POST field name.
 -----------------------------------------------------------------------------
 function Sputnik:hash_field_name(field_name, token)
-   return "field_"..md5.sumhexa(field_name..token..self.config.SECRET_CODE)
+   return "field_"..md5.sumhexa(field_name..token..self.config.TOKEN_SALT)
 end
 
 -----------------------------------------------------------------------------
@@ -680,6 +703,7 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:run(request, response)
    self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
+   self.saci:reset_cache()
 
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
@@ -820,21 +844,21 @@ function Sputnik:wsapi_run(wsapi_env)
    require("wsapi.request")
    local request = wsapi.request.new(wsapi_env)
    request.wsapi_env = wsapi_env
+
    require("wsapi.response")
    local response = wsapi.response.new()
+
    local success, error_message = self:protected_run(request, response)
    if not success then
       response = wsapi.response.new()
       response:write(error_message)
    end
-
    -- Change the HTTP status code to 302 is a location header is set
    if response.headers["Location"] then
       if response.status < 300 then
          response.status = 302
       end
    end
-
    return response:finish()
 end
 

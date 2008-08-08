@@ -36,16 +36,18 @@ function new(sputnik, params)
    -- Set up default parameters
    params = params or {}
    params.node = params.node or "sputnik/passwords"
-   params.salt = params.salt or sputnik.config.SECRET_CODE
+   params.password_salt = params.password_salt or sputnik.config.PASSWORD_SALT
+   params.token_salt = params.token_salt or sputnik.config.TOKEN_SALT
    params.recent = params.recent or (14 * 24 * 60 * 60)
 
    local obj = setmetatable({}, Simple_mt)
    obj.sputnik = sputnik
    obj.node = params.node
-   obj.salt = params.salt
+   obj.password_salt = params.password_salt
+   obj.token_salt = params.token_salt
    obj.noauto = params.NO_AUTO_REGISTRATION
    obj.recent = params.recent
-
+   obj.users = load_users(obj.sputnik, obj.node)
    return obj
 end
 
@@ -59,8 +61,7 @@ end
 function Simple:user_exists(username)
    if type(username) ~= "string" then return false end
    username=username:lower()
-   local users = load_users(self.sputnik, self.node)
-   return type(users[username]) == "table"
+   return type(self.users[username]) == "table"
 end
 
 ------------------------------------------------------------------
@@ -71,7 +72,7 @@ end
 -- @return token a hashed token representing the given timestamp
 
 function Simple:timestamp_token(timestamp)
-   return md5.sumhexa(timestamp .. self.salt)
+   return md5.sumhexa(timestamp .. self.token_salt)
 end
 
 ------------------------------------------------------------------
@@ -84,13 +85,12 @@ end
 
 function Simple:authenticate(username, password)
    username = username:lower()
-   local users = load_users(self.sputnik, self.node)
-   local entry = users[username]
+   local entry = self.users[username]
 
    if entry then
-      local hash = get_salted_hash(entry.creation_time, self.salt, password)
+      local hash = get_salted_hash(entry.creation_time, self.password_salt, password)
       if hash == entry.hash then 
-         return entry.display, user_token(username, self.salt, entry.hash)
+         return entry.display, user_token(username, self.token_salt, entry.hash)
       else
          return nil, errors.wrong_password(username)
       end
@@ -109,11 +109,10 @@ end
 
 function Simple:validate_token(username, token)
    username = username:lower()
-   local users = load_users(self.sputnik, self.node)
-   local entry = users[username]
+   local entry = self.users[username]
 
    if self:user_exists(username) then
-      if user_token(username, self.salt, entry.hash) == token then
+      if user_token(username, self.token_salt, entry.hash) == token then
          return entry.display
       else
          return false, errors.wrong_password(username)
@@ -132,8 +131,7 @@ end
 
 function Simple:user_is_recent(username)
    username = username:lower()
-   local users = load_users(self.sputnik, self.node)
-   local entry = users[username]
+   local entry = self.users[username]
 
    if entry then
       local now = os.time()
@@ -165,7 +163,7 @@ function Simple:add_user(username, password, metadata)
    metadata = metadata or {}
    metadata.creation_time = now
    metadata.display = username
-   metadata.hash = get_salted_hash(now, self.salt, password)
+   metadata.hash = get_salted_hash(now, self.password_salt, password)
    username = username:lower()
    if username == "admin" then
       metadata.is_admin = "true"
@@ -186,6 +184,7 @@ function Simple:add_user(username, password, metadata)
    }
    password_node = self.sputnik:update_node_with_params(password_node, params)
    password_node:save(username, "Added new user: " .. username, {minor="yes"})
+   self.users = load_users(self.sputnik, self.node)
    return true
 end
 
@@ -198,9 +197,8 @@ end
 function Simple:get_metadata(username, key)
    if not username or username=="" then return nil end
    username=username:lower()
-   local users = load_users(self.sputnik, self.node)
-   if users[username] then 
-      return users[username][key]
+   if self.users[username] then 
+      return self.users[username][key]
    else
       return errors.no_such_user(username)
    end

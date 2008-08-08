@@ -703,7 +703,7 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:run(request, response)
    self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
-   self.saci:reset_cache()
+   if self.saci.reset_cache then self.saci:reset_cache() end
 
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)

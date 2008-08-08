@@ -225,4 +225,13 @@ SINGLE_PHOTO = [==[
   <a href="$next_link" style="text-decoration: none;">&gt;</a>
 ]==]
 
+FOR_THUMB = [[
+   <style type="css">
+     a:link img {border-style: none;}     
+   </style>
+   <div style="width: $width{}px">
+$html
+   </div>"
+]]
+
 ]=========]

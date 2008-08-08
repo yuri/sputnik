@@ -11,8 +11,10 @@ allow(all_users, "login")
 ]],
    actions = [[
       show="wiki.show_users"
+      save="wiki.save_and_reload"
    ]]
 }
 NODE.content=[============[
 USERS = {}
 ]============]
+

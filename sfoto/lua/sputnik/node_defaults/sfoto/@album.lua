@@ -9,7 +9,9 @@ show_content='sfoto.show_album_content'
 ]]
 NODE.fields = [[
 content.activate = "lua"
+sfoto_type = {2.1, proto="fallback"}
 ]]
+NODE.sfoto_type = "album"
 
 NODE.child_defaults = [=[
    any = [[

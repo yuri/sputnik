@@ -1,10 +1,13 @@
+-----------------------------------------------------------------------------
+-- Implements Sputnik actions for a photoalbum / blog combo.
+-----------------------------------------------------------------------------
 module(..., package.seeall)
 
-local util = require"sputnik.util"
+local ITEMS_PER_ROW = 5
 
+local util = require"sputnik.util"
 local imagegrid = require"sfoto.imagegrid"
 
-local ITEMS_PER_ROW = 5
 
 -----------------------------------------------------------------------------
 -- Given a string in a prefix/YYYY/MM/DD-xyz or prefix/YYYY-MM-DD-xyz format,
@@ -24,7 +27,7 @@ end
 
 -----------------------------------------------------------------------------
 -- Maps ids to actual image URLs, assuming that the images are stored outside
--- Sputnik.
+-- Sputnik.  "id" can be supplied as a string or already parsed into a table.
 -----------------------------------------------------------------------------
 local function photo_url(id, size)
    local LOCAL_MODE = false
@@ -32,13 +35,22 @@ local function photo_url(id, size)
       return "http://localhost/image.jpg"
    end
 
-   local parsed = parse_id(id)
+   local parsed
+   if type(id) == "table" then
+      parsed = id
+   else
+      parsed = parse_id(id)
+   end
    id = parsed.year.."-"..parsed.month.."-"..parsed.date.."-"..parsed.rest
 
    local album_base = "http://media.freewisdom.org/freewisdom/albums/"
    local full_size_base = "http://media.freewisdom.org/freewisdom/full_size/"
    if size=="original" then
       return full_size_base.."/"..id..".JPG"
+   elseif size=="blog_thumb" then
+      return "http://media.freewisdom.org/blog_thumbs/"
+             ..parsed.year.."/"..parsed.month.."/"..parsed.date.."/"..parsed.rest
+             ..".jpg"
    elseif size=="thumb" then
       return album_base..id..".thumb.jpg"
    elseif size=="2x" or size=="3x" or size=="4x" then
@@ -134,7 +146,6 @@ actions.show_photo_content = function(node, request, sputnik)
                   }
 end
 
-
 -----------------------------------------------------------------------------
 -- Returns the HTML (complete page) for displaying a single photo.
 -----------------------------------------------------------------------------
@@ -143,26 +154,13 @@ actions.show_photo = function(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
-
--- MOVE TO TEMPLATES --------------------------------------------------------
-FOR_THUMB = [[
-   <style type="css">
-     a:link img {border-style: none;}     
-   </style>
-   <div style="width: $width{}px">
-$html
-   </div>"
-]]
-
 -----------------------------------------------------------------------------
 -- Returns the HTML (without the wrapper) for displaying a blog post.
 -----------------------------------------------------------------------------
 actions.show_entry_content = function(node, request, sputnik)
    -- figure out if we want to add a title
-   local title = ""
-   if request.params.show_title then
-      title = "<h1>"..node.title.."</h1>\n\n"
-   end
+   local title = request.params.show_title and "" 
+                 or "<h1>"..node.title.."</h1>\n\n"
 
    -- handle image grids
    local gridder = imagegrid.new(node, photo_url, sputnik)
@@ -172,7 +170,10 @@ actions.show_entry_content = function(node, request, sputnik)
    -- decide if we want to put a width-limited div around it (for thumbnails)
    local html = title..node.markup.transform(content)
    if request.params.width then
-      html = cosmo.f(FOR_THUMB){width=request.params.width, html=html}
+      html = cosmo.f(node.templates.FOR_THUMB){
+                width = request.params.width, 
+                html  = html
+             }
    end
 
    return html
@@ -187,7 +188,10 @@ actions.show_entry = function(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
-
+-----------------------------------------------------------------------------
+-- Groups items into buckets, e.g., for the purpose of grouping photos into
+-- rows.
+-----------------------------------------------------------------------------
 function group(list, field, items_per_bucket)
    local buckets = {}
    local bucket = {[field] = {}}
@@ -208,21 +212,21 @@ end
 -- Returns the HTML (without the wrapper) for displaying an album.
 -----------------------------------------------------------------------------
 actions.show_album_content = function(node, request, sputnik)
-   local num_hidden = 0
-   local rows = {}
-   local row = {photos={}}
-
-   local photos, num_hidden = items_user_can_see(node.content.photos, request, sputnik)
+   -- select viewable photos
+   local photos, num_hidden = items_user_can_see(node.content.photos,
+                                                 request, sputnik)
+   -- attach URLs to them
    for i, photo in ipairs(photos) do
       photo.thumb = photo_url(node.id.."/"..photo.id, "thumb")
    end
+   -- group into rows
+   local rows = group(photos, "photos", ITEMS_PER_ROW)
 
-   rows = group(photos, "photos", ITEMS_PER_ROW)
+   -- figure out if we need a title (for AHAH)
+   local title = request.params.show_title and ""
+                 or "<h1>"..node.title.."</h1>\n\n"
 
-   local title = ""
-   if request.params.show_title then
-      title = "<h1>"..node.title.."</h1>\n\n"
-   end
+   -- format the output
    return title..cosmo.f(node.templates.ALBUM){
                     album_url = sputnik:make_url(node.id),
                     rows = rows,
@@ -233,20 +237,27 @@ actions.show_album_content = function(node, request, sputnik)
                  }
 end
 
+-----------------------------------------------------------------------------
+-- Returns the HTML (complete page) for displaying an album.
+-----------------------------------------------------------------------------
 actions.show_album = function(node, request, sputnik)
    node.inner_html = actions.show_album_content(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
-
+------------------- MOVE ----------------------------------------------------
 tag_expander = {
    rio = "brazil",
    paris = "france",
    ["france-other"] = "france",
    amiens = "france",
    vladivostok="russia",
-}
+} ------------------- MOVE --------------------------------------------------
 
+-----------------------------------------------------------------------------
+-- Checks if item has the specified tag, considering the expansion of the
+-- tags (i.e., "brazil" matches "rio").
+-----------------------------------------------------------------------------
 local function matches_tag(item, tag)
    if not tag then
       return true
@@ -262,6 +273,9 @@ local function matches_tag(item, tag)
    return false
 end
 
+-----------------------------------------------------------------------------
+-- Checks if the album or it's photos have the specified tag.
+-----------------------------------------------------------------------------
 local function album_matches_tag(album, tag)
    if not tag then 
       return true
@@ -274,38 +288,53 @@ local function album_matches_tag(album, tag)
    return false
 end
 
-function actions.show_index_content(node, request, sputnik)
-   local root_id = node.id:match("[^%/]*")
-   local tag = request.params.tag
-   local items = {} --node.content.data
 
-   for k,v in pairs(sputnik.saci:get_nodes_by_prefix(node.id, 50)) do
-      v.subid = v.id:sub(root_id:len()+2)
-      if v.prototype == "sfoto/@album" then
-          v.type = "album"
-          if album_matches_tag(v, tag) then
-             table.insert(items, v)
-          end
+-----------------------------------------------------------------------------
+-- Filters a list of icons (albums or posts) by a tag.
+-----------------------------------------------------------------------------
+local function filter_by_tag(items, tag)
+   local tag_item = {}
+   for i,v in ipairs(items) do
+      if v.sfoto_type == "album" then
+         if album_matches_tag(v, tag) then
+            table.insert(tag_items, v)
+         end
       else
-          v.type = "blog"
-          if matches_tag(v, tag) then
-             table.insert(items, v)
-          end
+         if matches_tag(v, tag) then
+            table.insert(tag_items, v)
+         end
       end
    end
+   return tag_items
+end
 
-   --for i, m in ipairs(MONTHS) do m.short_name = m.name:sub(1,3):lower() end
+-----------------------------------------------------------------------------
+-- Shows the HTML (just the content) for an index page.
+-----------------------------------------------------------------------------
+function actions.show_index_content(node, request, sputnik)
 
-   local reverse_url
-   if request.params.ascending then
-      table.sort(items, function(x,y) return x.id < y.id end)
-      reverse_url = sputnik:make_url(node.id)
-   else
-      table.sort(items, function(x,y) return x.id > y.id end)
-      reverse_url = sputnik:make_url(node.id, nil, {ascending='1'})
+   local nodes = sputnik.saci:get_nodes_by_prefix(node.id, 2000)
+
+   local tag = request.params.tag
+   -- get matching items
+   local items = {}
+   for k,v in pairs(nodes) do
+      table.insert(items, v)
+   end
+   items = items_user_can_see(items, request, sputnik)
+   if tag then
+      items = filter_by_tag(items, tag)
    end
 
-   local odd = "odd"
+   local reverse_url = request.params.ascending and sputnik:make_url(node.id)
+                       or sputnik:make_url(node.id, nil, {ascending='1'})
+
+   local sorter = request.params.ascending 
+                  and function(x,y) return x.id < y.id end
+                  or function(x,y) return x.id > y.id end
+   table.sort(items, sorter)
+
+   local oddeven = util.new_cycle{"odd", "even"}
    local cur_date = ""
    local show_date = ""
 
@@ -320,8 +349,7 @@ function actions.show_index_content(node, request, sputnik)
       }
    end
 
-   local user_access_level = sputnik.auth:get_metadata(request.user, "access") or "0"
-   
+   -- separate items by month
    local items_by_month = {}
    for i, item in ipairs(items) do
       local month = parse_id(item.id).month
@@ -329,6 +357,7 @@ function actions.show_index_content(node, request, sputnik)
       table.insert(items_by_month[month], item)
    end
  
+   -- make a list of months for which we have items
    local months = {}
    for i, name in ipairs(MONTHS) do
       local month = {
@@ -338,12 +367,37 @@ function actions.show_index_content(node, request, sputnik)
       }
       if items_by_month[month.id] then
          month.items = items_by_month[month.id]
+         --month.rows = group(month.items, "items", ITEMS_PER_ROW)
          if request.params.ascending then
             table.insert(months, month)
          else 
             table.insert(months, 1, month) -- insert in front
          end
       end
+   end
+
+   local function decorate_item(item)
+      local parsed = parse_id(item.id)
+      item.if_blog = cosmo.c(item.sfoto_type=="post"){}
+      item.if_album = cosmo.c(item.sfoto_type~="post"){}
+      if item.sfoto_type == "post" then
+          item.url = sputnik:make_url(item.id)
+          item.content_url = sputnik:make_url(item.id, "show_content", {show_title="1"})
+          item.blog_thumb = photo_url(item.id, "blog_thumb")
+      else
+          item.url = sputnik:make_url(item.id)
+          item.content_url = sputnik:make_url(item.id, "show_content", {show_title="1"})
+          item.thumbnail = photo_url(item.id.."/"..item.thumb, "thumb")
+      end
+
+      item.show_date = (cur_date ~= parsed.date) and parsed.date
+                       or "&nbsp;"
+
+      if cur_date ~= parsed.date then
+         oddeven:next()
+         cur_date = parsed.date
+      end
+      item.odd = oddeven:get()
    end
 
    return cosmo.f(node.templates.INDEX){
@@ -356,56 +410,31 @@ function actions.show_index_content(node, request, sputnik)
                                              month_id = month.id, 
                                              do_rows = function()
                                                 local row = make_row()
+                                                -- go through this month's items, yielding rows
                                                 for i, item in ipairs(month.items) do
                                                    item.row_id = row.row_id
-                                                   local parsed = parse_id(item.id)
-                                                   if parsed.month==month.id then
-                                                          item.if_blog = cosmo.c(item.type=="blog"){}
-                                                          item.if_album = cosmo.c(item.type~="blog"){}
-                                                          if item.type == "blog" then
-                                                              item.url = sputnik:make_url(item.id)
-                                                              item.content_url = sputnik:make_url(item.id, "show_content", {show_title="1"})
-                                                              item.blog_thumb = "http://media.freewisdom.org/blog_thumbs/"..item.subid..".jpg"
-                                                          else
-                                                              item.url = sputnik:make_url(item.id)
-                                                              item.content_url = sputnik:make_url(item.id, "show_content", {show_title="1"})
-                                                              item.thumbnail = photo_url(item.id.."/"..item.thumb, "thumb")
-                                                              
-                                                              if user_access_level < (item.private or "0") then
-                                                                 item.thumbnail = sputnik:make_url("sfoto/lock.png")
-                                                                 item.title = "Login to see"
-                                                              end
-                                                          end
-                                                          if cur_date == parsed.date then
-                                                             show_date = "&nbsp;"
-                                                          else
-                                                             if odd == "odd" then odd = "even" else odd = "odd" end
-                                                             cur_date = parsed.date
-                                                             show_date = cur_date
-                                                          end
-                                                          item.odd = odd
-                                                          table.insert(row.items, item)
-                                                          table.insert(row.dates, {date=show_date, odd=odd})
-                                                          if #(row.items) == 5 then
-                                                             row.do_date_cells = {}
-                                                             cosmo.yield(row)
-                                                             row = make_row()
-                                                          end
-                                                      end
-                                                   end
-                                                   local num_items = #(row.items)
-                                                   if num_items > 0 then
-                                                      if num_items < ITEMS_PER_ROW then
-                                                         if odd == "odd" then odd = "even" else odd = "odd" end
-                                                      end
-                                                      row.if_blanks = cosmo.c(num_items <= ITEMS_PER_ROW) {
-                                                                         blanks = ITEMS_PER_ROW + 1 - num_items,
-                                                                         odd = odd,
-                                                                         width = 170*(ITEMS_PER_ROW + 1 - num_items),
-                                                                      }
+                                                   decorate_item(item)
+                                                   table.insert(row.items, item)
+                                                   table.insert(row.dates, {date=item.show_date, odd=item.odd})
+                                                   if #(row.items) == 5 then
                                                       cosmo.yield(row)
+                                                      row = make_row()
                                                    end
-                                                end                                                
+                                                end
+                                                -- check if we have a partial row left
+                                                local num_items = #(row.items)
+                                                if num_items > 0 then
+                                                   if num_items < ITEMS_PER_ROW then
+                                                      oddeven:next()
+                                                   end
+                                                   row.if_blanks = cosmo.c(num_items <= ITEMS_PER_ROW) {
+                                                                      blanks = ITEMS_PER_ROW + 1 - num_items,
+                                                                      odd = oddeven:get(),
+                                                                      width = 170*(ITEMS_PER_ROW + 1 - num_items),
+                                                                   }
+                                                   cosmo.yield(row)
+                                                end
+                                             end                                                
                                           }
                                        end
                                     end    
@@ -417,7 +446,6 @@ end
 --cache = versium.filedir.new{"/tmp/cache/"} --sqlite3.new{"/tmp/cache.db"}
 
 actions.show = function(node, request, sputnik)
-   print("foo")
    if sputnik.app_cache and false then
        local tracker = sputnik.saci:get_node_info("sfoto_tracker")
        local key = node.id.."|"..request.query_string.."|"..(request.user or "Anon")

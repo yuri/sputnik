@@ -9,15 +9,22 @@ return sputnik.new_wsapi_run_fn{
    VERSIUM_PARAMS = { '$dir/wiki-data/' },
    BASE_URL       = '/sputnik.ws',
    PASSWORD_SALT  = '$password_salt',
-   LOCAL_SALT     = '$local_salt',
+   TOKEN_SALT     = '$token_salt',
 }
 ]]
 
 CGI_TEMPLATE = "#! /bin/bash $dir/bin/wsapi.cgi"..WS_SCRIPT_TEMPLATE
 
-CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
-math.randomseed(os.time())
+CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+local password_salt = ""
+local token_salt = ""
+
+function reset_salts()
+   math.randomseed(os.time())
+   password_salt = make_salt()
+   token_salt = make_salt()
+end
 
 function make_salt(length)
    local buffer = ""
@@ -48,8 +55,8 @@ function make_script(dir, subpath, template)
    end
    local content = cosmo.f(template){
                       dir           = dir, 
-                      password_salt = make_salt(), 
-                      local_salt    = make_salt()
+                      password_salt = password_salt,
+                      token_salt    = token_salt,
                    }
    out:write(content)
    out:close()

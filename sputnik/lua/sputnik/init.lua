@@ -47,6 +47,7 @@ end
 -----------------------------------------------------------------------------
 function setup(dir)
    require("sputnik.installer")
+   sputnik.installer.reset_salts()
    sputnik.installer.make_wsapi_script(dir, "kepler/htdocs/sputnik.ws")
    sputnik.installer.make_cgi_file(dir, "sputnik.cgi")
 end

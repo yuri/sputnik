@@ -1,0 +1,25 @@
+package    = 'Sputnik-Medialike'
+versions   = {
+   {'8.08.08', 'August 8, 2008',  'first realease as a rock'},
+}
+summary    = 'A medialike plugin for Sputnik'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+   Sputnik-Medialike allows Sputnik to use Hisham Muhammad's "medialike"
+   library instead of markdown.
+]]
+
+license    = 'MIT/X11'
+download   = 'http://sputnik.freewisdom.org/files/sputnik-medialike-$version.tar.gz'
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+  'medialike == 0.03',
+]]
+
+-------------------------------------------------------------------------------
+
+
+

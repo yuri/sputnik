@@ -223,7 +223,7 @@ function FileDirVersium:save_version(id, data, author, comment, extra, timestamp
    local new_version_id = string.format("%06d", #history + 1)
    util.write_file(node_path.."/"..new_version_id, data, id)
    -- generate and save the new index
-   timestamp = os.date("!%Y-%m-%d %H:%M:%S", timestamp) -- default to current time   
+   timestamp = timestamp or os.date("!%Y-%m-%d %H:%M:%S") -- default to current time   
    local extra_buffer = ""
    for k,v in pairs(extra or {}) do
       extra_buffer = extra_buffer..string.format("\n [%q] = %q, ", k, v)

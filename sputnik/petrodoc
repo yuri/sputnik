@@ -1,5 +1,6 @@
 package    = 'Sputnik'
 versions   = {
+   {'8.08.11', 'August 11, 2008',  'fixed the generation of the sputnik.cgi file'},
    {'8.08.08', 'August 8, 2008',  '.reload action; fixing the registration system; fixing captcha logic; separating password and token salts'},
    {'8.07.21', 'July 21, 2008',  'lots of small bug fixes'},
    {'8.07.07', 'July 7, 2008',  'way too many fixes to list'},

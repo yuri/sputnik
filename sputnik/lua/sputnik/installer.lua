@@ -13,7 +13,15 @@ return sputnik.new_wsapi_run_fn{
 }
 ]]
 
-CGI_TEMPLATE = "#! /bin/bash $dir/bin/wsapi.cgi"..WS_SCRIPT_TEMPLATE
+CGI_TEMPLATE = [[#! /bin/bash $dir/bin/wsapi.cgi
+require('sputnik')
+return sputnik.new_wsapi_run_fn{
+   VERSIUM_PARAMS = { '$dir/wiki-data/' },
+   BASE_URL       = '/usr/lib/cgi-bin/sputnik.cgi',
+   PASSWORD_SALT  = '$password_salt',
+   TOKEN_SALT     = '$token_salt',
+}
+]]
 
 
 CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

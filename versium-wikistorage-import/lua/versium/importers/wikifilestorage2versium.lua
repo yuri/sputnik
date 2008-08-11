@@ -20,7 +20,7 @@ function import(source_dir, dest_dir, password_file)
    local wikifilestorage = require("versium.importers.wikifilestorage").open(source_dir)
    local storage  = wikistorage.open(wikifilestorage)
    
-   local vers = versium.filedir.new{dir=dest_dir}
+   local vers = versium.filedir.new{dest_dir}
 
    for node in lfs.dir(source_dir) do
       print("============= "..node.." =========================")

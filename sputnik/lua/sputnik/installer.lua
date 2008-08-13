@@ -17,7 +17,7 @@ CGI_TEMPLATE = [[#! /bin/bash $dir/bin/wsapi.cgi
 require('sputnik')
 return sputnik.new_wsapi_run_fn{
    VERSIUM_PARAMS = { '$dir/wiki-data/' },
-   BASE_URL       = '/usr/lib/cgi-bin/sputnik.cgi',
+   BASE_URL       = '/cgi-bin/sputnik.cgi',
    PASSWORD_SALT  = '$password_salt',
    TOKEN_SALT     = '$token_salt',
 }

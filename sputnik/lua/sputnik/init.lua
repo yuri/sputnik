@@ -89,6 +89,10 @@ function Sputnik:init(initial_config)
    if initial_config.LOGGER then
       require("logging."..initial_config.LOGGER)
       self.logger = logging[initial_config.LOGGER](unpack(initial_config.LOGGER_PARAMS))
+      if initial_config.LOGGER_LEVEL then 
+         require("logging")
+         self.logger:setLevel(logging[initial_config.LOGGER_LEVEL])
+      end
    else
       self.logger = {
          debug = function(self, level, message) end, -- do nothing
@@ -806,6 +810,7 @@ end
 -- Handles a request safely.
 -----------------------------------------------------------------------------
 function Sputnik:protected_run(request, response)
+   self.logger:debug("protected_run")
    local function mypcall(fn, ...)
       local params = {...} -- to keep the inner function from being confused
       return xpcall(function()  return fn(unpack(params)) end,
@@ -826,12 +831,24 @@ function Sputnik:protected_run(request, response)
                    ..") is not writable.<br/> Please fix directory permissions." -- ::LOCALIZE::
       end
 
-      return success, string.format([[
-       <br/>
-       <span style="color:red; font-size: 19pt;">%s</span></br><br/><br/>
-       Error details: <pre><b><code>%s</code></b></pre><br/>
-       <pre><code>%s</code></pre>
-      ]], message, err[1], err[2])
+      self.logger:error(err[1])
+      self.logger:error(err[2])
+      
+      if self.config.SHOW_STACK_TRACE then
+         return success, string.format([[
+            <br/>
+            <span style="color:red; font-size: 19pt;">%s</span></br><br/><br/>
+            Error details: <pre><b><code>%s</code></b></pre><br/>
+            <pre><code>%s</code></pre>
+         ]], message, err[1], err[2])
+      else
+         return success, string.format([[
+            <br/>
+            <span style="color:red; font-size: 19pt;">%s</span></br><br/><br/>
+            (If you are the admin for this site, you can turn on stack trace display
+             by setting SHOW_STACK_TRACE parameter to true.)
+         ]], message, err[1])
+      end
    end
 end
 

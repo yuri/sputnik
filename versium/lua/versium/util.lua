@@ -94,7 +94,7 @@ function read_file_if_exists(path)
 end
 
 -----------------------------------------------------------------------------
--- Converts a versium time stamp into the requested format.  Users some code
+-- Converts a versium time stamp into the requested format.  Uses some code
 -- from http://lua-users.org/wiki/TimeZone)
 --
 -- @param timestamp      Versium timestamp (string) 
@@ -110,8 +110,10 @@ end
 function format_time(timestamp, format, tzoffset, tzname)
    if tzoffset == "local" then  -- calculate local time zone (for the server)
       local now = os.time()
-      local timezone = os.difftime(now, os.time(os.date("!*t", now)))
-      local h, m = math.modf(timezone / 3600)
+      local local_t = os.date("*t", now)
+      local utc_t = os.date("!*t", now)
+      local delta = (local_t.hour - utc_t.hour)*60 + (local_t.min - utc_t.min)
+      local h, m = math.modf( delta / 60)
       tzoffset = string.format("%+.4d", 100 * h + 60 * m)
    end
    tzoffset = tzoffset or "GMT"

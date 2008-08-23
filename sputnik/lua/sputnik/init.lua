@@ -6,6 +6,7 @@ require("saci")
 require("sputnik.actions.wiki")
 require("sputnik.i18n")
 require("sputnik.util")
+require("wsapi.util")
 
 -----------------------------------------------------------------------------
 -- Applies default config values
@@ -254,7 +255,7 @@ function Sputnik:make_url(node_name, action, params, anchor)
    if not node_name or node_name=="" then
       node_name = self.config.HOME_PAGE
    end
-   node_name = self:dirify(node_name)
+   node_name = wsapi.util.url_encode(self:dirify(node_name))
    if action and action~="show" then 
       node_name = node_name.."."..action
    end
@@ -266,7 +267,7 @@ function Sputnik:make_url(node_name, action, params, anchor)
    if params and next(params) then
       local link = self.config.BASE_URL.."?p="..node_name
       for k, v in pairs(params or {}) do
-         link = link.."&"..k.."="..(v or "")
+         link = link.."&"..wsapi.util.url_encode(k).."="..wsapi.util.url_encode(v or "")
       end
       return self:escape(link..anchor)
    elseif node_name==self.config.HOME_PAGE then

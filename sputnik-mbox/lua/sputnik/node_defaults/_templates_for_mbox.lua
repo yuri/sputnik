@@ -1,7 +1,10 @@
-title="Templates:MBox"
-summary="The default version"
-prototype="@Lua_Config"
-content=[=========[
+module(..., package.seeall)
+NODE = {
+   title="Templates:MBox",
+   summary="The default version",
+   prototype="@Lua_Config",
+}
+NODE.content=[=========[
 
 
 THREAD = [====[
@@ -14,6 +17,7 @@ THREAD = [====[
   }
   .email_address {
     font-family: monospace;
+    color: #666;
   }
   .email_date {
     font-size: 140%;
@@ -39,7 +43,7 @@ THREAD = [====[
     border: 1px solid orange;
     background: #eee;
     margin: 0 0 0 0;
-    padding: 3 3 3 15;
+    padding: 3px 10px 3px 15px;
   }
 
   blockquote {
@@ -52,18 +56,17 @@ THREAD = [====[
  $do_messages[=[
      <div class="email_message">
       <div class="email_header">
-       <span class="email_from">$name</span>&nbsp;
-       <span class="email_date">on $date</span><br/>
-       <span class="email_address">&lt;$email&gt;</span>
+       <span class="email_address">$date, &lt;$email&gt;</span><br/>
+       <span class="email_from">$name</span>
 
 
        $do_attachments[[
-	  <div class="email_attachment">
-            Attachment: <a href="$url">$name</a> ($size)
-          </div>
+        <div class="email_attachment">
+         Attachment: <a href="$url">$name</a> ($size)
+        </div>
        ]]      
       </div>
-       $body
+       <pre>$body</pre>
   
        <br/>
      </div>
@@ -71,6 +74,5 @@ THREAD = [====[
 
 </div>
 
-$after
 ]====]
 ]=========]

@@ -1,12 +1,20 @@
+-----------------------------------------------------------------------------
+-- Defines utility functions for Sputnik.
+--
+-- (c) 2007, 2008  Yuri Takhteyev (yuri@freewisdom.org)
+-- License: MIT/X, see http://sputnik.freewisdom.org/en/License
+-----------------------------------------------------------------------------
+
 module(..., package.seeall)
 
----------------------------------------------------------------------------------------------------
--- Splits a string on a delimiter.  Adapted from http://lua-users.org/wiki/SplitJoin.
+-----------------------------------------------------------------------------
+-- Splits a string on a delimiter. 
+-- Adapted from http://lua-users.org/wiki/SplitJoin.
 -- 
 -- @param text           the text to be split.
 -- @param delimiter      the delimiter.
 -- @return               unpacked values.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function split(text, delimiter)
    local list = {}
    local pos = 1
@@ -26,46 +34,90 @@ function split(text, delimiter)
    return unpack(list)
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Escapes a text for using in a text area.
 -- 			
 -- @param text           the text to be escaped.
 -- @return               the escaped text.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function escape(text) 
    text = text or ""
-   return text:gsub("&", "&amp;"):gsub(">","&gt;"):gsub("<","&lt;"):gsub("\"", "&quot;")
+   text = text:gsub("&", "&amp;"):gsub(">","&gt;"):gsub("<","&lt;")
+   return text:gsub("\"", "&quot;")
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Escapes a URL.
 -- 
 -- @param text           the URL to be escaped.
 -- @return               the escaped URL.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function escape_url(text) 
    return escape(text):gsub(" ","%%20")
 end
 
----------------------------------------------------------------------------------------------------
--- Turns a string into something that can be used as a page name, converting convert ? + = % ' " / 
--- \ and spaces to '_'.  Note this isn't enought to ensure legal win2k names, since we _are_ 
--- allowing [ ] + < > : ; *, but we'll rely on versium to escape those later.
+-----------------------------------------------------------------------------
+-- A template for cosmo error messages.
+-----------------------------------------------------------------------------
+COSMO_ERROR_TEMPLATE = [[
+<span style="color:red; size=200%%; font-weight: bold">
+  Error in Cosmo Template:
+</span><br/><br/>
+<sp style="color:#660000; size=150%%; font-weight: bold">Template</p>
+<pre><code>%s</code></pre>
+<p style="color:#660000; size=150%%; font-weight: bold">Values</p>
+<pre><code>%s</code></pre>
+<p style="color:#660000; size=150%%; font-weight: bold">Message</p>
+<pre><code>%s</code></pre>
+]]
+
+-----------------------------------------------------------------------------
+-- Like cosmo.f() but returns an HTMLized message in case of error.
+--
+-- @param template       a cosmo template.
+-----------------------------------------------------------------------------
+function f(template)
+   local fn = cosmo.f(template)
+   return function(values)
+      local function error_handler (err)
+               local values_as_str = ""
+               for k,v in pairs(values) do
+                  values_as_str = values_as_str..k..": <"..type(v)..">\n"
+               end
+               return string.format(COSMO_ERROR_TEMPLATE, escape(template),
+                                    escape(values_as_str),
+                                    escape(err:gsub("\nstack traceback:.*$", "")))
+      end
+      local ok, result_or_error = xpcall(function() return fn(values) end,
+                                         error_handler)
+      return result_or_error, ok
+   end
+end
+
+-----------------------------------------------------------------------------
+-- Turns a string into something that can be used as a page name, converting
+-- - ? + = % ' " / \ and spaces to '_'.  Note this isn't enought to ensure
+-- legal win2k names, since we _are_ allowing [ ] + < > : ; *, but we'll rely
+-- on versium to escape those later.
 -- 
 -- @param text           the string to be dirified.
 -- @return               the dirified string.
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 function dirify(text)
    local pattern = [[[%?%+%=%%%s%'%"%\]+]]
-   text = text or ""
-   return text:gsub(pattern, "_")
+   return (text or ""):gsub(pattern, "_")
 end
 
----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
 -- Returns value1 if condition is true and value2 otherwise.  Note that if 
 -- expressions are passed for value1 and value2, then they will be evaluated
 -- _before_ the choice is made.
----------------------------------------------------------------------------------------------------
+--
+-- @param condition      a boolean value
+-- @param value1         the value that gets returned in case of true
+-- @param value2         the value that gets returned in case of false
+-- @return               either value1 or value2
+-----------------------------------------------------------------------------
 function choose(condition, value1, value2)
    if condition then
       return value1
@@ -74,9 +126,12 @@ function choose(condition, value1, value2)
    end
 end
 
-
 -----------------------------------------------------------------------------
 -- Sends email on Sputnik's behalf.
+--
+-- @param args           a table of parameters
+-- @param sputnik        an instance of Sputnik
+-- @return               status (boolean) and possibly an error message
 -----------------------------------------------------------------------------
 function sendmail(args, sputnik)
    assert(args.to, "No recepient specified")
@@ -104,6 +159,7 @@ function sendmail(args, sputnik)
 end
 
 -----------------------------------------------------------------------------
+-- A cycle class.
 ----------------------------------------------------------------------------- 
 local Cycle = {}
 local Cycle_mt = {__metatable = {}, __index = Cycle}

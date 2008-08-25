@@ -227,11 +227,7 @@ RSS = [===[<rss version="2.0">
 ]===]
 
 LIST_OF_ALL_PAGES = [===[
-       <H2>Regular Nodes</H2>
-       $do_regular_nodes[[<a href="$url">$name</a><br/>]]
-
-       <H2>Special Nodes</H2>
-       $do_special_nodes[[<a href="$url">$name</a><br/>]]
+       $do_nodes[[<a href="$url">$name</a><br/>]]
 ]===]
 
 

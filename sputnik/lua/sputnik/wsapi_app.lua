@@ -95,7 +95,8 @@ end
 function new(config)
 
    local ok, logger, my_sputnik
-   ok, logger = htmlized_pcall(util.make_logger, config, nil, config.LOGGER,
+   ok, logger = htmlized_pcall(util.make_logger, config, nil, nil,
+                               config.LOGGER,
                                config.LOGGER_PARAMS, config.LOGGER_LEVEL)
    if not ok then
       local error_message = logger

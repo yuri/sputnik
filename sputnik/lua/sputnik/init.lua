@@ -64,7 +64,7 @@ function new(config, logger)
    config = apply_defaults(config)
    -- Create and return the new initialized Sputnik instance
    local obj = setmetatable({logger=logger or util.make_logger()}, Sputnik_mt)
-   obj:init(config1)
+   obj:init(config)
    return obj
 end
 

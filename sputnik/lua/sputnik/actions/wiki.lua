@@ -8,6 +8,7 @@
 -----------------------------------------------------------------------------
 module(..., package.seeall)
 
+require("coxpcall")
 require("cosmo")
 require("versium.util")
 require("saci.sandbox")
@@ -520,7 +521,10 @@ function get_visible_nodes(sputnik, user)
    local nodes = {}
    for i, node in pairs(sputnik.saci:get_nodes_by_prefix()) do
       sputnik:prime_node(node)
-      sputnik:activate_node(node)
+      local ok, err = copcall(sputnik.activate_node, sputnik, node)
+      if not ok then
+         error("Could not load node '"..node.id.."'!\n"..err)
+      end
       if node:check_permissions(user, "show") then
          table.insert(nodes, node)
       end

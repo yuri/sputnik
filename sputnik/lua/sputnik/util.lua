@@ -159,6 +159,28 @@ function sendmail(args, sputnik)
 end
 
 -----------------------------------------------------------------------------
+-- Creates a logger instance.
+-----------------------------------------------------------------------------
+function make_logger(module_name, params, level)
+   if module_name then
+      require("logging."..module_name)
+      local logger = logging[module_name](unpack(params))
+      if level then 
+         require("logging")
+         logger:setLevel(logging[level])
+      end
+      return logger
+   else
+      return {
+         debug = function(...) end, -- do nothing
+         info  = function(...) end,
+         error = function(...) end,
+         warn  = function(...) end,
+      }
+   end
+end
+
+-----------------------------------------------------------------------------
 -- A cycle class.
 ----------------------------------------------------------------------------- 
 local Cycle = {}

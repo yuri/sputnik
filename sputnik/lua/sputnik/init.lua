@@ -1,15 +1,27 @@
+-----------------------------------------------------------------------------
+-- Defines the main class for Sputnik - an extensible wiki implemented in Lua.
+-- (For usage, see sputnik.wsapi_app.)
+--
+-- (c) 2007, 2008  Yuri Takhteyev (yuri@freewisdom.org)
+-- License: MIT/X, see http://sputnik.freewisdom.org/en/License
+-----------------------------------------------------------------------------
+
 module(..., package.seeall)
 
 require("md5")
+require("wsapi.util")
 require("cosmo")
+
 require("saci")
 require("sputnik.actions.wiki")
 require("sputnik.i18n")
 require("sputnik.util")
-require("wsapi.util")
+require("sputnik.wsapi_app")
+
+new_wsapi_run_fn = sputnik.wsapi_app.new  -- for backwards compatibility
 
 -----------------------------------------------------------------------------
--- Applies default config values
+-- Applies default config values.
 -----------------------------------------------------------------------------
 local function apply_defaults(config)
    config                  = config or {}
@@ -25,26 +37,7 @@ local function apply_defaults(config)
 end
 
 -----------------------------------------------------------------------------
--- Code to track globals
------------------------------------------------------------------------------
-if STRICT then
-   local exported={export = true}
-   local mt = getmetatable(_M) or {}
-   setmetatable(_M, mt)
-   mt.__newindex = function (t, n, v)
-     if not exported[n] then
-        error("assign to undeclared variable '"..n.."'", 2)
-     end
-     rawset(t, n, v)
-   end
-   function export(...)
-      for _, v in ipairs{...} do exported[v] = true end
-   end
-   export("new", "new_wsapi_run_fn")
-end
-
------------------------------------------------------------------------------
--- Sets up Sputnik in the current or specified directory
+-- Sets up Sputnik in the current or specified directory.
 -----------------------------------------------------------------------------
 function setup(dir)
    require("sputnik.installer")
@@ -59,47 +52,30 @@ end
 local Sputnik = {}
 local Sputnik_mt = {__metatable = {}, __index = Sputnik}
 
-
-
 -----------------------------------------------------------------------------
 -- Creates a new instance of Sputnik.
+--
+-- @param config         a table of bootstrap configurations.
+-- @param logger         a lualogging-compatible logger or nil.
+-- @return               an instance of Sputnik.
 -----------------------------------------------------------------------------
-function new(config)
+function new(config, logger)
    -- Set up default configuration variables
    config = apply_defaults(config)
    -- Create and return the new initialized Sputnik instance
-   local obj = setmetatable({}, Sputnik_mt)
-   obj:init(config)
+   local obj = setmetatable({logger=logger or util.make_logger()}, Sputnik_mt)
+   obj:init(config1)
    return obj
-end
-
-function new_wsapi_run_fn(config)
-   local my_sputnik = new(config)
-   return  function (...)
-     return my_sputnik:wsapi_run(...)
-   end
 end
 
 -----------------------------------------------------------------------------
 -- Initializes a the new Sputnik instance.
+--
+-- @param initial_config a table representing bootrastrap configurations.
 -----------------------------------------------------------------------------
 function Sputnik:init(initial_config)
    -- setup the logger -- do this before loading user configuration
    self.initial_config = initial_config -- for reloading
-   if initial_config.LOGGER then
-      require("logging."..initial_config.LOGGER)
-      self.logger = logging[initial_config.LOGGER](unpack(initial_config.LOGGER_PARAMS))
-      if initial_config.LOGGER_LEVEL then 
-         require("logging")
-         self.logger:setLevel(logging[initial_config.LOGGER_LEVEL])
-      end
-   else
-      self.logger = {
-         debug = function(self, level, message) end, -- do nothing
-         info  = function(self, level, message) end,
-         error = function(self, level, message) end,
-      }
-   end
 
    --- Turns a string into something that can be used as a node name.
    local dirify = initial_config.DIRIFY_FN or sputnik.util.dirify
@@ -212,7 +188,12 @@ function Sputnik:format_time(timestamp, format, tzoffset, tzname)
                                    tzname or self.config.TIME_ZONE_NAME)
 end
 
---- Returns a small icon for this user.
+-----------------------------------------------------------------------------
+-- Returns a small icon to represent a given user.
+--
+-- @param user           username
+-- @return               a url of an icon
+-----------------------------------------------------------------------------
 function Sputnik:get_user_icon(user)
    self.user_icon_hash = self.user_icon_hash or {}
    if self.user_icon_hash[user] then
@@ -237,29 +218,51 @@ function Sputnik:get_user_icon(user)
    return self:escape(self.user_icon_hash[user])
 end
 
---- Escapes a text for using in a textarea.
-function Sputnik.escape(self, text)
+-----------------------------------------------------------------------------
+-- Escapes a text for using in a textarea.
+--
+-- @param text           text to be escaped.
+-- @return               escaped text.
+-----------------------------------------------------------------------------
+function Sputnik:escape(text)
    return sputnik.util.escape(text)
 end
 
---- Escapes a URL.
-function Sputnik.escape_url (self, text)
-   return sputnik.util.escape_url(text)
+-----------------------------------------------------------------------------
+-- Escapes a URL.
+--
+-- @param url            a URL to be escaped.
+-- @return               the escaped URL
+-----------------------------------------------------------------------------
+function Sputnik:escape_url (url)
+   return sputnik.util.escape_url(url)
 end
 
+-----------------------------------------------------------------------------
+-- Checks if a node with the given ID exists.
+--
+-- @param id             the id of a node.
+-- @return               true or false.
+-----------------------------------------------------------------------------
 function Sputnik:node_exists(id)
    id = self:dirify(id)
    return self.saci:node_exists(id) or pcall(require, "sputnik.node_defaults."..id)
 end
 
 -----------------------------------------------------------------------------
---- Makes a URL from a table of parameters.
+-- Makes a URL from a table of parameters.
+--
+-- @param node_name      a node id.
+-- @param action         action/command as a string.
+-- @param params         query parameters
+-- @param anchor         link anchor
+-- @return               a URL.
 -----------------------------------------------------------------------------
 function Sputnik:make_url(node_name, action, params, anchor)
    if not node_name or node_name=="" then
       node_name = self.config.HOME_PAGE
    end
-   node_name = wsapi.util.url_encode(self:dirify(node_name))
+   node_name = self:dirify(node_name) --wsapi.util.url_encode()
    if action and action~="show" then 
       node_name = node_name.."."..action
    end
@@ -282,7 +285,13 @@ function Sputnik:make_url(node_name, action, params, anchor)
 end
 
 -----------------------------------------------------------------------------
---- Makes a link from a table of parameters.
+-- Makes a link from a table of parameters.
+--
+-- @param node_name      a node id.
+-- @param action         action/command as a string.
+-- @param params         query parameters
+-- @param anchor         link anchor
+-- @return               a URL.
 -----------------------------------------------------------------------------
 function Sputnik:make_link(node_name, action, params, anchor, options)
    assert(node_name)
@@ -304,9 +313,12 @@ function Sputnik:make_link(node_name, action, params, anchor, options)
 end
 
 -----------------------------------------------------------------------------
---- Does a bit of extra activation beyond what SACI does.
+-- Further "activates" a node for use in Sputnik.
+--
+-- @param node           a Saci node.
+-- @return               the same node with some extra methods added.
 -----------------------------------------------------------------------------
-function Sputnik:activate_node(node, params)
+function Sputnik:activate_node(node)
 
    -- setup the page-specific translator
    for i, translation_node in ipairs(node.translations) do
@@ -706,8 +718,12 @@ end
 
 -----------------------------------------------------------------------------
 -- Handles a request.
+--
+-- @param request        a WSAPI request table.
+-- @param response       a WSAPI response table.
+-- @return               the response
 -----------------------------------------------------------------------------
-function Sputnik:run(request, response)
+function Sputnik:handle_request(request, response)
    self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
    if self.saci.reset_cache then self.saci:reset_cache() end
 
@@ -796,89 +812,6 @@ function Sputnik:run(request, response)
    response:set_cookie(self.cookie_name, {value=cookie_value, path="/"})
    response:write(content)
    return response
-end
-
------------------------------------------------------------------------------
--- Handles a request, throwing errors if something goes wrong.
------------------------------------------------------------------------------
-function Sputnik:unprotected_run(request, response)
-   return self:run(request, response)
-end
-
-
------------------------------------------------------------------------------
--- Handles a request safely.
------------------------------------------------------------------------------
-function Sputnik:protected_run(request, response)
-   self.logger:debug("protected_run")
-   local function mypcall(fn, ...)
-      local params = {...} -- to keep the inner function from being confused
-      return xpcall(function()  return fn(unpack(params)) end,
-                    function(e) return {e, require("debug").traceback()} end )
-   end  
-
-   local success, err = mypcall(self.unprotected_run, self, request, response)
-   if success then
-      return success
-   else
-      local message = "Sputnik ran but failed due to an unexpected error." -- ::LOCALIZE::
-
-      -- catch some common errors
-      local dummy, path = string.match(err[1], "Versium storage error: (.*) Can't open file: (.*) in mode w")
-      local dir = self.config.VERSIUM_PARAMS.dir
-      if path and path:sub(1, dir:len()) == dir then
-         message = "Versium's data directory ("..dir
-                   ..") is not writable.<br/> Please fix directory permissions." -- ::LOCALIZE::
-      end
-
-      self.logger:error(err[1])
-      self.logger:error(err[2])
-      
-      if self.config.SHOW_STACK_TRACE then
-         return success, string.format([[
-            <br/>
-            <span style="color:red; font-size: 19pt;">%s</span></br><br/><br/>
-            Error details: <pre><b><code>%s</code></b></pre><br/>
-            <pre><code>%s</code></pre>
-         ]], message, err[1], err[2])
-      else
-         return success, string.format([[
-            <br/>
-            <span style="color:red; font-size: 19pt;">%s</span></br><br/><br/>
-            (If you are the admin for this site, you can turn on stack trace display
-             by setting SHOW_STACK_TRACE parameter to true.)
-         ]], message, err[1])
-      end
-   end
-end
-
------------------------------------------------------------------------------
--- Handles a request coming from WSAPI
------------------------------------------------------------------------------
-
-function Sputnik:wsapi_run(wsapi_env)
-
-   _G.format = string.format -- to work around a bug in wsapi.response
-
-   require("wsapi.request")
-   local request = wsapi.request.new(wsapi_env)
-   request.wsapi_env = wsapi_env
-
-   require("wsapi.response")
-   local response = wsapi.response.new()
-
-   local success, error_message = self:protected_run(request, response)
-   if not success then
-      response = wsapi.response.new()
-      response:write(error_message)
-   end
-   -- Change the HTTP status code to 302 is a location header is set
-   if response.headers["Location"] then
-      if response.status < 300 then
-         response.status = 302
-      end
-   end
-   return response:finish()
 end
 
 -- vim:ts=3 ss=3 sw=3 expandtab

@@ -512,31 +512,37 @@ function actions.rss_for_edits_by_recent_users(node, request, sputnik)
    return actions.rss(node, request, sputnik)  
 end
 
+
+-----------------------------------------------------------------------------
+-- Returns a list of nodes that the specified user is allowed to see.
+-----------------------------------------------------------------------------
+function get_visible_nodes(sputnik, user)
+   local nodes = {}
+   for i, node in pairs(sputnik.saci:get_nodes_by_prefix()) do
+      sputnik:prime_node(node)
+      sputnik:activate_node(node)
+      if node:check_permissions(user, "show") then
+         table.insert(nodes, node)
+      end
+   end
+   table.sort(nodes, function(x,y) return x.id < y.id end)
+   return nodes
+end
+
 -----------------------------------------------------------------------------
 -- Returns a list of nodes.
 -----------------------------------------------------------------------------
 function actions.list_nodes(node, request, sputnik)
-   local node_names = sputnik:get_node_names()
-   table.sort(node_names)
-   local function yield_node(name) 
-      cosmo.yield{name=name, url=sputnik.config.NICE_URL..name}
-   end
-   local special_prefix = "^[_@]"
-   node.inner_html = cosmo.f(node.templates.LIST_OF_ALL_PAGES){
-                        do_regular_nodes = function()
-                                              for i, name in ipairs(node_names) do
-                                                 if not string.match(name, special_prefix) then
-                                                    yield_node(name)
-                                                 end
-                                              end
-                                           end,   
-                        do_special_nodes = function()
-                                              for i, name in ipairs(node_names) do
-                                                 if string.match(name, special_prefix) then
-                                                    yield_node(name)
-                                                 end
-                                              end
-                                           end,
+   local nodes = get_visible_nodes(sputnik, request.user)
+   node.inner_html = util.f(node.templates.LIST_OF_ALL_PAGES){
+                        do_nodes = function()
+                                      for i, node in ipairs(nodes) do
+                                         cosmo.yield {
+                                            name  = node.id,
+                                            url = sputnik.config.NICE_URL..node.id
+                                         }
+                                      end
+                        end,
                      }
    return node.wrappers.default(node, request, sputnik)
 end
@@ -545,28 +551,25 @@ end
 -- Returns an XML sitemap for this wiki.
 -----------------------------------------------------------------------------
 function actions.show_sitemap_xml(node, request, sputnik)
-   local node_names = sputnik:get_node_names()
+   local nodes = get_visible_nodes(sputnik, request.user)
    return cosmo.f(node.templates.SITEMAP_XML){
       do_urls = function()
-          for i, name in ipairs(node_names) do
-             if string.match(name, "^[%a%d]") then
-                local priority, url
-                
-                if name == sputnik.config.HOME_PAGE then
-                   url = sputnik.config.HOME_PAGE_URL
-                   priority = "0.9"
-                else
-                   url = sputnik.config.NICE_URL..name
-                   priority = "0.1"
-                end
-                cosmo.yield{
-                   url = "http://"..sputnik.config.DOMAIN..url,
-                   lastmod = sputnik:format_time(sputnik.repo:get_node_info(name).timestamp, 
-                                                "%Y-%m-%dT%H:%M:%S+00:00", "+00:00"),
-                   changefreq = "weekly",
-                   priority = priority
-                }
+          for i, node in ipairs(nodes) do
+             local priority, url
+             if name == sputnik.config.HOME_PAGE then
+                url = sputnik.config.HOME_PAGE_URL
+                priority = "0.9"
+             else
+                url = sputnik.config.NICE_URL..node.id
+                priority = "0.1"
              end
+             cosmo.yield{
+                url = "http://"..sputnik.config.DOMAIN..url,
+                lastmod = sputnik:format_time(sputnik.repo:get_node_info(node.id).timestamp, 
+                                             "%Y-%m-%dT%H:%M:%S+00:00", "+00:00"),
+                changefreq = "weekly",
+                priority = priority
+             }
           end
       end,   
    }, "text/xml"
@@ -940,7 +943,7 @@ function wrappers.default(node, request, sputnik)
 
    local nav_sections, nav_subsections = get_nav_bar(node, sputnik)
 
-   return cosmo.f(node.templates.MAIN){  
+   return util.f(node.templates.MAIN){  
       site_title       = sputnik.config.SITE_TITLE or "",
       title            = sputnik:escape(node.title),
       if_no_index      = cosmo.c((not request.is_indexable) or is_old){},

@@ -164,7 +164,8 @@ end
 function make_logger(module_name, params, level)
    if module_name then
       require("logging."..module_name)
-      local logger = logging[module_name](unpack(params))
+      local logger, err = logging[module_name](unpack(params))
+      assert(logger, "Could not initialize logger: "..err)
       if level then 
          require("logging")
          logger:setLevel(logging[level])

@@ -8,6 +8,7 @@ module(..., package.seeall)
 
 require("sputnik")
 local util = require("sputnik.util")
+require("coxpcall")
 
 -----------------------------------------------------------------------------
 -- An auxiliary functions to catch common errors and provide a better message
@@ -54,7 +55,7 @@ local HTML_MESSAGE_WITHOUT_STACK_TRACE = [[
 -- @return               the result of fn(...) or an error message.
 -----------------------------------------------------------------------------
 local function htmlized_pcall (fn, config, logger, request, ...)
-   local success, result_or_error = xpcall(fn, function(e) return e end, ...)
+   local success, result_or_error = coxpcall(fn, function(e) return e end, ...)
    if success then
       return true, result_or_error
    else

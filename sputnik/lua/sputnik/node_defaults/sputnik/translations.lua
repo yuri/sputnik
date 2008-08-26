@@ -258,7 +258,7 @@ SHOW_ADVANCED_OPTIONS = {
 HIDE_ADVANCED_OPTIONS = {
    en_US = "Hide Advanced Options",
    ru    = "спрятать дополнительный опции",
-   pt_BR = "Tirar Opções Avançadas",
+   pt_BR = "Ocultar Opções Avançadas",
 }
 
 -- A label for the "category" parameter

@@ -19,7 +19,8 @@ account will be special - you will be able to use it to edit pages that are
 not editable by other users.  You can also create a "regular" account for
 yourself, calling it something like "Bob" or "Andre".
 
-After that, logged in as "Admin", you can do some customizations.
+After that, logged in as "Admin", you can do some customizations.  See
+[[sputnik]] for the complete list of options, but here are some basic ideas:
 
 Edit [[sputnik/config.edit]] page to change the title of your wiki, set the domain
 of your server, a URL for your logo, etc.  While there, you can also edit the

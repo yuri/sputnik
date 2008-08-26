@@ -415,7 +415,7 @@ PREVIEW = {
 SAVE = {
    en_US = "save",
    ru    = "сохранить",
-   pt_BR = "Salvar",
+   pt_BR = "Guardar",
 }
 
 -- The label for the "cancel" button in the edit forms. 

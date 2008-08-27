@@ -44,7 +44,7 @@ MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   
    <div id="login"> <!--login and search (in the upper right corner) -->
     $if_search[[    <form action="$base_url" style="margin-right: 0px; padding-right: 0px;">
-     <input class="hidden" type="hidden" name="p" value="_search"/>
+     <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
      <input class="search_box" type="text" name="q" size="16" value="$search_box_content"/>
      <input class="small_submit" type="submit" name="Search" value="_(SEARCH)" 
             title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>]]    

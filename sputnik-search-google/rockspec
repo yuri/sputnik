@@ -1,0 +1,27 @@
+package = "Sputnik-Search-Google"
+version = "8.08.25-0"
+source = {
+   url = "http://sputnik.freewisdom.org/files/sputnik-search-google-8.08.25.tar.gz",
+}
+description = {
+   summary    = "A google search plugin for Sputnik.",
+   detailed   = [===[]===],
+   license    =  "MIT/X11",
+   homepage   = "",
+   maintainer = "Yuri Takhteyev (yuri@freewisdom.org)",
+}
+dependencies = {
+}
+build = {
+  type = "none",
+  install = {
+     lua = {        ["sputnik.node_defaults._search"] = "lua/sputnik/node_defaults/_search.lua",
+
+
+        ["sputnik.actions.search"] = "lua/sputnik/actions/search.lua",
+
+
+     }
+  }
+}
+

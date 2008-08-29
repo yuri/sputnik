@@ -1,0 +1,22 @@
+package    = 'Sputnik-Search-Google'
+versions   = {
+   {'8.08.25', 'August 25, 2008',  'initial release for earth'},
+}
+summary    = 'A google search plugin for Sputnik.'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+]]
+
+license    = 'MIT/X11'
+download   = 'http://sputnik.freewisdom.org/files/sputnik-search-google-$version.tar.gz'
+push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+]]
+
+-------------------------------------------------------------------------------
+
+
+

@@ -99,6 +99,8 @@ repository['sputnik-luausers'] = {}                                -- later
 repository['sputnik-medialike'] = {}
 repository['sputnik-medialike']['8.08.08-0']= {{arch='rockspec'}}  -- up2date
 
+repository['sputnik-search-google'] = {}
+repository['sputnik-search-google']['8.08.25-0']   = {{arch='rockspec'}}  -- up2date
 
 
 

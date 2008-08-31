@@ -7,73 +7,63 @@ local util = require"sputnik.util"
 local sorttable = require"sputnik.javascript.sorttable"
 
 TEMPLATE = [[
-<table class="sortable" width="100%">
-     <thead>
-      <tr>
-       <th>Node ID</th>
-       <th>Backlinks</th>
-       <th>Modification Time</th>
-      </tr>
-     </thead>
-     $do_nodes[=[
-      <tr>
-       <td width="200px"><a title="$title" href="$url">$name</a></td>
-       <td width="20px">$backlinks</td>
-       <td width="50px">$time</td>
-      </tr>
-     ]=]
-</table>
-
+$do_nodes[=[
+  <p><a title="$title" href="$url">$name</a> - <i>$backlinks, $time</i></p>
+  <p>$snippet</p>
+]=]
 ]]
 
-actions.show_results = function(node, request, sputnik)
-   local query = {}
-   for term in (request.params.q or ""):lower():gmatch("%w+") do
-      query[term] = {}
-   end
-   node.title = 'Search for "'..request.params.q..'"'
-   local backlinks = {}
-   for i, node in ipairs(wiki.get_visible_nodes(sputnik, nil)) do
-      if node.content and type(node.content)=="string" then
-         for word in node.content:lower():gmatch("%w+") do
-            if query[word] then
-               query[word][node.id] = node
-            end
-         end
-         for id in node.content:gmatch("%[%[([^%]]*)%]%]") do
-            backlinks[id] = (backlinks[id] or 0) + 1
-         end
-      end
-   end
-   local nodes = {}
-   for term, matches in pairs(query) do
-      for id, node in pairs(matches) do
-         nodes[id] = node
-      end
-   end
-   local ordered_nodes = {}
-   for id, node in pairs(nodes) do
-      for term, _ in pairs(query) do
-         if not query[term][node.id] then
-            nodes[id] = nil
+function rank_hits(hits, node_map, sputnik)
+   local weights = {}   -- weight for each node ID
+   local node_ids = {}  -- a list of node ids (to be sorted eventually)
+   for id, node in pairs(node_map) do
+      for term, hits_for_term in pairs(hits) do
+         if hits_for_term[id] then 
+            weights[id] = (weights[id] or 0) + 5 + hits_for_term[id]
          end 
       end
-      if nodes[id] then
-         table.insert(ordered_nodes, node)
+      if weights[id] then
+         table.insert(node_ids, id)
       end
    end
-   nodes = ordered_nodes
-   table.sort(nodes, function(x,y) return x.id < y.id end)
+   table.sort(node_ids, function(x,y) return weights[x] > weights[y] end)
+   return node_ids, weights
+end
+
+function get_snippets(hits, node_map)
+   local snippets = {}
+   local snippets_for_node
+   for id, node in pairs(node_map) do
+      snippets_for_node = {}
+      for word in node.content:lower():gmatch("[%w_0-9]+") do
+         --print(word, hits[word])
+         if hits[word] then
+            table.insert(snippets_for_node, word)
+         end
+      end
+      snippets[id] = table.concat(snippets_for_node, " ")
+   end
+   return snippets
+end
+
+
+actions.show_results = function(node, request, sputnik)
+   local hits, node_map = sputnik.saci:find_nodes(request.params.q or "", 
+                                                  {"title", "content"})
+   local node_ids, weights = rank_hits(hits, node_map, sputnik)
+   local snippets = get_snippets(hits, node_map)
+   node.title = 'Search for "'..(request.params.q or "")..'"'
    node:add_javascript_snippet(sorttable.script)
    node.inner_html = util.f(TEMPLATE){
                         do_nodes = function()
-                                      for i, node in ipairs(nodes) do
-                                         local metadata = sputnik.saci:get_node_info(node.id)
+                                      for i, id in ipairs(node_ids) do
+                                         local metadata = sputnik.saci:get_node_info(id)
                                          cosmo.yield {
-                                            name = node.id,
-                                            title = node.title,
-                                            url = sputnik.config.NICE_URL..node.id,
-                                            backlinks = backlinks[node.id] or 0,
+                                            name = id:gsub("_", " "),
+                                            title = node_map[id].title,
+                                            url = sputnik.config.NICE_URL..id,
+                                            backlinks = weights[id] or 0,
+                                            snippet = snippets[id],
                                             time = sputnik:format_time(metadata.timestamp, "%Y/%m/%d")
                                          }
                                       end

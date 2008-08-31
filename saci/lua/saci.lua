@@ -228,7 +228,7 @@ function Saci:get_node_history(id, prefix, limit)
 end
 
 -----------------------------------------------------------------------------
--- Retrieves multiple data nodes from Versium and retuns Saci nodes created
+-- Retrieves multiple data nodes from Versium and returns Saci nodes created
 -- from them.  If Versium returns an empty table, then Saci will also return
 -- an empty table.  This function always returns the most recent version of 
 -- each node
@@ -238,21 +238,101 @@ end
 --                       by node name.
 -----------------------------------------------------------------------------
 function Saci:get_nodes_by_prefix(prefix, limit)
-   local versium_nodes = {}
-   -- Get the nodes, either all at once, of one by one
-   if self.versium.get_nodes_by_prefix then
-      versium_nodes = self.versium:get_nodes_by_prefix(prefix, limit)
-   else
-      for i, id in ipairs(self.versium:get_node_ids(prefix, limit)) do
-         versium_nodes[id] = self.versium:get_node(id)
-      end
-   end
-
+   local versium_nodes = self:get_versium_nodes_by_prefix(prefix, limit)
    local nodes = {}
-   for id, data in pairs(versium_nodes) do
-      nodes[id] = self:make_node(data, id)
+   for i, vnode in ipairs(versium_nodes) do
+      nodes[id] = self:make_node(vnode.data, vnode.id)
    end
    return nodes
 end
+
+-----------------------------------------------------------------------------
+-- Retrieves multiple data nodes from Versium, and returns them _without_
+-- creating Saci nodes from them.
+--
+-- @param prefix         the desired node prefix
+-- @return               a table containing the returned versium nodes,
+--                       indexed by node name.
+-----------------------------------------------------------------------------
+function Saci:get_versium_nodes_by_prefix(prefix, limit)
+   -- Get the nodes, either all at once, of one by one   
+   if self.versium.get_nodes_by_prefix then
+      return self.versium:get_nodes_by_prefix(prefix, limit)
+   else
+      local versium_nodes = {}
+      for i, id in ipairs(self.versium:get_node_ids(prefix, limit)) do
+         versium_nodes[id] = self.versium:get_node(id)
+      end
+      return versium_nodes
+   end
+end
+
+-----------------------------------------------------------------------------
+-- Returns a list of Saci nodes with fields matching the query.
+--
+-- @param query          a query as a string, with implicit "or" and with
+--                       negatable terms, e.g., "lua git -storage"
+-- @param fields         a list of fields to search.
+-- @param prefix         a prefix within which to search.
+-----------------------------------------------------------------------------
+function Saci:find_nodes(query, fields, prefix)
+   query = " "..query.." "
+   fields = fields or {"content"}
+   local QUERY_TERM = "%s([%w0-9_]+)"
+   local NEGATED_TERM = "%s%-([%w0-9_]+)"
+   local found = {}    -- hits for each query term
+   local snippets = {} -- match snippets
+   for term in query:gmatch(QUERY_TERM)   do found[term] = {} end
+   for term in query:gmatch(NEGATED_TERM) do found[term] = nil end
+   local node_map = {} -- maps node ids to actual nodes
+
+   -- find nodes matching positive terms
+   local i, matched, node, value
+   for id, vnode in pairs(self:get_versium_nodes_by_prefix(prefix)) do
+      -- first check if any of the terms is present anywhere in the node
+      matched = false
+      for term, _ in pairs(found) do
+         if vnode:match(term) then
+            matched = true
+            break
+         end
+      end
+      if matched then -- ok, one of the terms is somewhere there, let's look
+         node = self:make_node(vnode, id)
+         for _, field in ipairs(fields) do
+            value = node[field]
+            if value and type(value)=="string" then
+               value = " "..value:lower().." "
+               for term, hits_for_term in pairs(found) do
+                  i = 0 
+                  value:gsub("%W("..term..")%W", function(x) i = i + 1 end)
+                  if i > 0 then
+                     hits_for_term[id] = i
+                     node_map[id] = node
+                  end
+               end
+            end
+         end
+      end
+   end
+
+   -- check matched nodes for for negative terms
+   for term in query:gmatch(NEGATED_TERM) do
+      for id, node in pairs(node_map) do
+         for _, field in ipairs(fields) do
+            if (" "..(node[field] or " ").." "):match("%W("..term..")%W") then
+               node_map[id] = nil
+            end
+         end
+      end
+   end
+
+   -- return hits and nodes
+   return found, node_map
+
+   --
+
+end
+
 
 -- vim:ts=3 ss=3 sw=3 expandtab

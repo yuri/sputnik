@@ -313,3 +313,20 @@ function Node:get_parent_id()
    local parent_id, rest = string.match(self.id, "^(.+)/(.-)$")
    return parent_id, rest
 end
+
+function Node:multimatch(fields, patterns, match_case)
+   local value
+   for _, field in ipairs(fields) do
+      value = self[field]
+      if value and type(value)=="string" then
+         --value = " "..value:lower().." "
+         if not match_case then
+            value = value:lower()
+         end
+         for __, pattern in ipairs(patterns) do
+            if value:match(pattern) then return true end
+         end
+      end
+   end
+end
+

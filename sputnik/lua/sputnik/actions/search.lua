@@ -13,7 +13,7 @@ $do_nodes[=[
 ]=]
 ]]
 
-function rank_hits(hits, node_map, sputnik)
+function rank_hits(node, sputnik)
    local weights = {}   -- weight for each node ID
    local node_ids = {}  -- a list of node ids (to be sorted eventually)
    for id, node in pairs(node_map) do
@@ -48,22 +48,22 @@ end
 
 
 actions.show_results = function(node, request, sputnik)
-   local hits, node_map = sputnik.saci:find_nodes(request.params.q or "", 
-                                                  {"title", "content"})
-   local node_ids, weights = rank_hits(hits, node_map, sputnik)
-   local snippets = get_snippets(hits, node_map)
+   local nodes = sputnik.saci:query_nodes({"title", "content"},
+                                           request.params.q or "")
+   local weights = {} --rank_hits(nodes, sputnik)
+   --local snippets = get_snippets(hits, node_map)
    node.title = 'Search for "'..(request.params.q or "")..'"'
    node:add_javascript_snippet(sorttable.script)
    node.inner_html = util.f(TEMPLATE){
                         do_nodes = function()
-                                      for i, id in ipairs(node_ids) do
-                                         local metadata = sputnik.saci:get_node_info(id)
+                                      for i, node in ipairs(nodes) do
+                                         local metadata = sputnik.saci:get_node_info(node.id)
                                          cosmo.yield {
-                                            name = id:gsub("_", " "),
-                                            title = node_map[id].title,
-                                            url = sputnik.config.NICE_URL..id,
-                                            backlinks = weights[id] or 0,
-                                            snippet = snippets[id],
+                                            name = node.id:gsub("_", " "),
+                                            title = node.title,
+                                            url = sputnik.config.NICE_URL..node.id,
+                                            backlinks = weights[node.id] or 0,
+                                            snippet = "", --snippets[id],
                                             time = sputnik:format_time(metadata.timestamp, "%Y/%m/%d")
                                          }
                                       end

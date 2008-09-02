@@ -267,6 +267,7 @@ function Saci:get_versium_nodes_by_prefix(prefix, limit)
    end
 end
 
+
 -----------------------------------------------------------------------------
 -- Returns a list of Saci nodes with fields matching the query.
 --
@@ -275,63 +276,60 @@ end
 -- @param fields         a list of fields to search.
 -- @param prefix         a prefix within which to search.
 -----------------------------------------------------------------------------
-function Saci:find_nodes(query, fields, prefix)
+function Saci:find_nodes(fields, patterns, prefix)
+   assert(fields)
+   assert(patterns)
+   if type(fields) == "string" then fields = {fields} end
+   if type(patterns) == "string" then patterns = {patterns} end
+   local nodes = {}
+   -- find nodes matching the patterns
+   local basic_match, matched, node, value
+
+   local function basic_match(vnode) -- check if the pattern matches raw node
+      for _, pattern in ipairs(patterns) do
+         if vnode:lower():match(pattern) then return true end
+      end
+      return false
+   end
+
+   for id, vnode in pairs(self:get_versium_nodes_by_prefix(prefix)) do
+      if basic_match(vnode) then -- ok, the pattern is somewhere there, let's look
+         node = self:make_node(vnode, id)
+         if node:multimatch(fields, patterns) then
+            table.insert(nodes, node)
+         end
+      end
+   end
+
+   return nodes
+end      
+
+function Saci:query_nodes(fields, query, prefix)   
    query = " "..query.." "
    fields = fields or {"content"}
-   local QUERY_TERM = "%s([%w0-9_]+)"
-   local NEGATED_TERM = "%s%-([%w0-9_]+)"
-   local found = {}    -- hits for each query term
-   local snippets = {} -- match snippets
-   for term in query:gmatch(QUERY_TERM)   do found[term] = {} end
-   for term in query:gmatch(NEGATED_TERM) do found[term] = nil end
-   local node_map = {} -- maps node ids to actual nodes
-
-   -- find nodes matching positive terms
-   local i, matched, node, value
-   for id, vnode in pairs(self:get_versium_nodes_by_prefix(prefix)) do
-      -- first check if any of the terms is present anywhere in the node
-      matched = false
-      for term, _ in pairs(found) do
-         if vnode:match(term) then
-            matched = true
-            break
+   local positive_terms = {}
+   local negative_terms = {}
+   for term in query:gmatch("%S+") do
+      if term:match("%:") then
+         local key, value = term:match("^(%w+):(.+)")
+         if key == "prefix" then
+            prefix=value
          end
-      end
-      if matched then -- ok, one of the terms is somewhere there, let's look
-         node = self:make_node(vnode, id)
-         for _, field in ipairs(fields) do
-            value = node[field]
-            if value and type(value)=="string" then
-               value = " "..value:lower().." "
-               for term, hits_for_term in pairs(found) do
-                  i = 0 
-                  value:gsub("%W("..term..")%W", function(x) i = i + 1 end)
-                  if i > 0 then
-                     hits_for_term[id] = i
-                     node_map[id] = node
-                  end
-               end
-            end
-         end
+      elseif term:sub(1,1)=="-" then
+         table.insert(negative_terms, "%W("..term:sub(2)..")%W")
+      else
+         table.insert(positive_terms, "%W("..term..")%W")
       end
    end
 
-   -- check matched nodes for for negative terms
-   for term in query:gmatch(NEGATED_TERM) do
-      for id, node in pairs(node_map) do
-         for _, field in ipairs(fields) do
-            if (" "..(node[field] or " ").." "):match("%W("..term..")%W") then
-               node_map[id] = nil
-            end
-         end
+   local nodes = self:find_nodes(fields, positive_terms, prefix)
+   local nodes_without_negatives = {}
+   for i, node in ipairs(nodes) do
+      if not node:multimatch(fields, negative_terms) then
+         table.insert(nodes_without_negatives, node)
       end
    end
-
-   -- return hits and nodes
-   return found, node_map
-
-   --
-
+   return nodes_without_negatives
 end
 
 

@@ -240,8 +240,8 @@ end
 function Saci:get_nodes_by_prefix(prefix, limit)
    local versium_nodes = self:get_versium_nodes_by_prefix(prefix, limit)
    local nodes = {}
-   for i, vnode in ipairs(versium_nodes) do
-      nodes[id] = self:make_node(vnode.data, vnode.id)
+   for id, vnode in pairs(versium_nodes) do
+      nodes[id] = self:make_node(vnode, id)
    end
    return nodes
 end

@@ -120,9 +120,9 @@ INDEX = [======[
   | jump to: 
   $months[[ <a href="#month_$id" style="text-decoration: none">$short_name</a>]]
  </tr>
- $do_months[=[ 
-  <tr><th colspan="6" class="date" style="background: #333333; color: white;">$month<a name="month_$month_id"></a></th></tr>
-  $do_rows[==[
+ $months[=[ 
+  <tr><th colspan="6" class="date" style="background: #333333; color: white;">$name $year<a name="month_$id"></a></th></tr>
+  $rows[==[
    <tr>
     $dates[===[
      <th class="$odd date">$date</th>

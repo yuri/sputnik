@@ -27,7 +27,8 @@ local function apply_defaults(config)
    config                  = config or {}
    assert(config.TOKEN_SALT, "TOKEN_SALT must be set")
    config.ROOT_PROTOTYPE   = config.ROOT_PROTOTYPE or "@Root"
-   config.PASSWORD_SALT    = config.PASSWORD_SALT or "2348979898237082394172309847123"
+   config.PASSWORD_SALT    = config.PASSWORD_SALT 
+                             or "2348979898237082394172309847123"
    config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "sputnik/config"
    config.PASS_PAGE_NAME   = config.PASS_PAGE_NAME or "sputnik/passwords"
    --config.LOGGER = config.LOGGER or "file"
@@ -246,7 +247,8 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:node_exists(id)
    id = self:dirify(id)
-   return self.saci:node_exists(id) or pcall(require, "sputnik.node_defaults."..id)
+   return self.saci:node_exists(id) or pcall(require, 
+                                             "sputnik.node_defaults."..id)
 end
 
 -----------------------------------------------------------------------------
@@ -274,7 +276,8 @@ function Sputnik:make_url(node_name, action, params, anchor)
    if params and next(params) then
       local link = self.config.BASE_URL.."?p="..node_name
       for k, v in pairs(params or {}) do
-         link = link.."&"..wsapi.util.url_encode(k).."="..wsapi.util.url_encode(v or "")
+         link = link.."&"..wsapi.util.url_encode(k).."="
+                         ..wsapi.util.url_encode(v or "")
       end
       return self:escape(link..anchor)
    elseif node_name==self.config.HOME_PAGE then
@@ -323,13 +326,14 @@ function Sputnik:activate_node(node)
    -- setup the page-specific translator
    for i, translation_node in ipairs(node.translations) do
       local translations = self:get_node(translation_node).content
-      assert(type(translations) == "table", "Could not load translation node")
+      assert(type(translations) == "table",
+             "Could not load translation node")
       for k, translation in pairs(translations) do
          node.translations[k] = translation
       end
     end
     node.translator = sputnik.i18n.make_translator(node.translations,
-                                                   self.config.INTERFACE_LANGUAGE)
+                                              self.config.INTERFACE_LANGUAGE)
     
    -- translate the templates
    for i, template_node in ipairs(node.templates) do

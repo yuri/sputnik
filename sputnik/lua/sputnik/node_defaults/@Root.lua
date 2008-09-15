@@ -111,20 +111,14 @@ values.  Handle with care.
 ]===],
 permissions=[[
    deny(all_users, all_actions)
-   allow(all_users, "show")
-   allow(all_users, "edit")
-   allow(all_users, "save")
-   allow(all_users, "preview")
-   allow(all_users, "cancel")
+   allow(all_users, show)  -- show, show_content, cancel
+   allow(all_users, edit_and_save) -- edit, save, preview
    allow(all_users, "post")  --needed for login
    allow(all_users, "login")
-   allow(all_users, "history")
+   allow(all_users, history_and_diff)
    allow(all_users, "rss")
-   allow(all_users, "diff")
    allow(all_users, "xml")
-   allow(all_users, "show_content")
-   --deny(Anonymous, "edit")
-   --deny(Anonymous, "save")
+   --deny(Anonymous, edit_and_save)
    allow(Admin, "reload")
 ]]
 }

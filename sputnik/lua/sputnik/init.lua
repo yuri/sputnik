@@ -168,7 +168,10 @@ function Sputnik:init(initial_config)
    self.saci.permission_groups.Admin = function(user)
       return user and self.auth:get_metadata(user, "is_admin") == "true"
    end
-   
+   self.saci.permission_groups.edit_and_save = {"save", "edit", "preview"}
+   self.saci.permission_groups.show = {"show", "show_content", "cancel"}
+   self.saci.permission_groups.history_and_diff = {"history", "diff"}
+
    -- setup wrappers
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      
 end

@@ -80,6 +80,7 @@ function new(args)
    node.id = args.id
    assert(args.repository)
    node.repository = args.repository
+   node.saci = node.repository
 
    node.raw_values = saci.sandbox.new():do_lua(args.data)
    assert(rawget(node, "raw_values"), "the sandbox should give us a table")
@@ -294,6 +295,46 @@ function Node:save(author, comment, extra)
    author = author or ""
    self.repository:save_node(self, author, comment, extra)
 end
+
+
+-----------------------------------------------------------------------------
+-- Checks if the user is allowed to perform a named action.
+--
+-- @param user           user ID
+-- @param action         action ID
+-- @return               true or false
+-----------------------------------------------------------------------------
+function Node:check_permissions(user, action)
+   if not self.permissions then return true end
+   
+   -- checks membership in groups
+   local function member(item, group)
+      if     type(group) == "function" then return group(item)
+      elseif type(group) == "table"    then return group[item]
+      elseif type(group) == "string"   then return group == item
+      else   error("expected a string, a table or a function")
+      end
+   end
+
+   -- keeps the allowed/not allowed state
+   local has_permission = true
+   -- toggles the the state
+   local function set(user_group, action_group, value)
+      if member(user, user_group) and member(action, action_group) then
+         has_permission = value
+      end
+   end
+
+   -- setup the sandbox   
+   local sandbox = saci.sandbox.new(self.saci.permission_groups)
+   sandbox:add_values{
+      allow = function (user, action) set(user, action, true) end,
+      deny  = function (user, action) set(user, action, false) end,
+   }
+   sandbox:do_lua(self.permissions)
+   return has_permission
+end     
+
 
 -----------------------------------------------------------------------------
 -- Returns a child node, if they are defined.

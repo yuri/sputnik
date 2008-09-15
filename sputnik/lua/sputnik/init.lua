@@ -165,6 +165,9 @@ function Sputnik:init(initial_config)
    -- setup authentication
    self.auth_mod = require(self.config.AUTH_MODULE or "sputnik.auth.simple")
    self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
+   self.saci.permission_groups.Admin = function(user)
+      return user and self.auth:get_metadata(user, "is_admin") == "true"
+   end
    
    -- setup wrappers
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      
@@ -362,74 +365,7 @@ function Sputnik:activate_node(node)
       local mod_name, dot_action = sputnik.util.split(v, "%.")
       node.actions[k] = action_loader.load(mod_name)[dot_action]
    end
-   
-   -- create a function to check permissions ---------------------------
-   node.check_permissions = function(node, user, action)
-      local all_users = {}
-      local all_actions = {}
-      local has_permission = true
 
-      -- This function handles toggling the actual allow state
-      local function set(suser, saction, svalue)
-         local is_user, is_action
-
-         -- Resolve the user side of the permission
-         if type(suser) == "function" then
-            is_user = suser(user, self.auth)
-         else
-            is_user = (suser == user) or (suser == all_users)
-         end
-
-         -- Resolve the action
-         if type(saction) == "function" then
-            is_action = saction(action)
-         else
-            is_action = (saction == action) or (saction == all_actions)
-         end
-
-         if is_user and is_action then
-            has_permission = svalue
-         end
-      end
-
-      local function allow(suser, saction) 
-         set(suser, saction, true)
-      end
-      local function deny(suser, saction)
-         set(suser, saction, false)
-      end
-      if node.permissions then
-         local sandbox = {
-            all_users = all_users,
-            all_actions = all_actions,
-            allow = function(suser, saction)
-               set(suser, saction, true)
-            end,
-            deny = function(suser, saction)
-               set(suser, saction, false)
-            end,
-            Authenticated = function(user, auth)
-               return user ~= nil
-            end,
-            Anonymous = function(user, auth)
-               return not user
-            end,
-            Admin = function(user, auth)
-               if user then
-                  return auth:get_metadata(user, "is_admin") == "true"
-               else
-                  return false
-               end
-            end,
-         }
-         local func = assert(loadstring(node.permissions))
-         setfenv(func, sandbox)
-         local succ,err = assert(pcall(func))
-      end
-
-      return has_permission
-   end     
-   
    -- set wrappers -----------------------------------------------------
    node.wrappers = self.wrappers
    

@@ -29,9 +29,16 @@ function new(module_name, versium_params, root_prototype_id)
    module_name = module_name
    local versium_module = require(module_name)
    repo.versium = versium_module.new(versium_params)
+   repo.permission_groups = {
+      all_users     = function(user)   return true end,
+      Authenticated = function(user)   return user ~= nil end,
+      Anonymous     = function(user)   return not user end,
+      all_actions   = function(action) return true end,
+   }
    repo:reset_cache()
    return repo
 end
+
 
 function Saci:reset_cache()
    self.cache = {}

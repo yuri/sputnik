@@ -106,7 +106,6 @@ GENERIC_ATTRIBUTES = {
 -----------------------------------------------------------------------------
 -- The class table for the XSS Filter.
 -----------------------------------------------------------------------------
-XSSFilter = {}
 
 local XSSFilter = {}
 local XSSFilter_mt = {__metatable = {}, __index = XSSFilter}

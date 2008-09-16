@@ -218,11 +218,11 @@ MIXED_ALBUM = [====[
 ]====]
 
 SINGLE_PHOTO = [==[
-  <a href="$next_link" title="$note"><img src="$photo_url"/></a>
+  <a href="$next_link#title" title="$note"><img src="$photo_url"/></a>
   <br/>
-  <a href="$prev_link" style="text-decoration: none;">&lt;</a>
+  <a href="$prev_link#title" style="text-decoration: none;">&lt;</a>
   <a href="$original_size">original size</a> (large image)
-  <a href="$next_link" style="text-decoration: none;">&gt;</a>
+  <a href="$next_link#title" style="text-decoration: none;">&gt;</a>
 ]==]
 
 FOR_THUMB = [[

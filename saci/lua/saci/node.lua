@@ -307,10 +307,17 @@ end
 function Node:check_permissions(user, action)
    if not self.permissions then return true end
    
+   local function in_table(tab, item)
+      for i,v in ipairs(tab) do
+         if v==item then return true end
+      end
+      return false
+   end
+   
    -- checks membership in groups
    local function member(item, group)
       if     type(group) == "function" then return group(item)
-      elseif type(group) == "table"    then return group[item]
+      elseif type(group) == "table"    then return in_table(group, item)
       elseif type(group) == "string"   then return group == item
       else   error("expected a string, a table or a function")
       end

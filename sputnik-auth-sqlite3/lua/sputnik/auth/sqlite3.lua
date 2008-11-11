@@ -54,13 +54,17 @@ function new(sputnik, params)
 	assert(con, errors.initialization_error("Could not connect to SQLite database"))
 
    params.prefix = params.prefix or "auth_"
-   params.salt = params.salt or sputnik.config.SECRET_CODE
+   params.password_salt = params.password_salt or sputnik.config.PASSWORD_SALT
+   params.token_salt = params.token_salt or sputnik.config.TOKEN_SALT
    params.recent = params.recent or (14 * 24 * 60 * 60)
+
+   assert(params.token_salt, errors.initialization_error("Cannot proceed without token salt"))
 
    -- Create the new object
 	local obj = {
       con = con,
-      salt = params.salt,
+      password_salt = params.password_salt,
+      token_salt = params.token_salt,
       recent = params.recent,
    }
 	setmetatable(obj, Auth_mt)
@@ -154,7 +158,7 @@ end
 -- @return token a hashed token representing the given timestamp
 
 function Auth:timestamp_token(timestamp)
-   return md5.sumhexa(timestamp .. self.salt)
+   return md5.sumhexa(timestamp .. self.token_salt)
 end
 
 ------------------------------------------------------------------
@@ -175,7 +179,7 @@ function Auth:authenticate(username, password)
    local time = cur:fetch("*a")
    cur:close()
 
-   local hash = get_salted_hash(time, self.salt, password)
+   local hash = get_salted_hash(time, self.password_salt, password)
    local cmd = self:prepare(self.queries.USER_AUTH, username, hash)
    local cur = self.con:execute(cmd)
    local row = cur:fetch("*a")
@@ -188,7 +192,7 @@ function Auth:authenticate(username, password)
    cur:close()
 
    if row and (tonumber(row) == 1) then
-      return display, user_token(username, self.salt, hash)
+      return display, user_token(username, self.token_salt, hash)
    else
       return nil, errors.wrong_password(username)
    end
@@ -210,7 +214,7 @@ function Auth:validate_token(username, token)
    cur:close()
    
    if row then
-      local hash = user_token(username, self.salt, row.password)
+      local hash = user_token(username, self.token_salt, row.password)
       if token == hash then
          -- Get the display name for this user
          local cmd = self:prepare(self.queries.GET_META, username, "display")
@@ -265,7 +269,7 @@ function Auth:add_user(username, password, metadata)
       return nil, errors.user_already_exists(username)
    end
 
-   local pwhash = get_salted_hash(now, self.salt, password)
+   local pwhash = get_salted_hash(now, self.password_salt, password)
    metadata = metadata or {}
    metadata.creation_time = now
    metadata.display = username

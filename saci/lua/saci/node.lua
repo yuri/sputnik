@@ -350,10 +350,20 @@ end
 -- @return               an instance of Node or nil.
 -----------------------------------------------------------------------------
 function Node:get_child(id)
-   if self.child_defaults and self.child_defaults[id] then
+   if not self.child_defaults then return end
+   if self.repository:node_exists(self.id.."/"..id) then
+      return nil
+   end
+   if self.child_defaults[id] then
       return self.repository:make_node(self.child_defaults[id], self.id.."/"..id)
-   elseif self.child_defaults and self.child_defaults.any then
+   elseif self.child_defaults.any then
       return self.repository:make_node(self.child_defaults.any, self.id.."/"..id)
+   elseif self.child_defaults.patterns then
+      for i, pattern in ipairs(self.child_defaults.patterns) do
+         if id:match(pattern[1]) then
+            return self.repository:make_node(pattern[2], self.id.."/"..id)
+         end
+      end
    end
 end
 

@@ -9,3 +9,9 @@ NODE.actions = [[
 show="sfoto.show"
 ]]
 
+NODE.child_defaults = [[
+--patterns = {
+--   {"%/brazil%/", 'prototype="sfoto/@index"'}
+--}
+any = 'prototype="sfoto/@index"'
+]]

@@ -137,12 +137,42 @@ actions.show_album = function(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
+function get_visible_items_by_tag(sputnik, user, id, tag)
+   local function make_key(tag)
+      return (user or "Anon").."/"..tag
+   end
+   if not TAG_CACHE then
+      TAG_CACHE = {}
+      if not TAG_CACHE[user] then
+         local items = wiki.get_visible_nodes(sputnik, user, id)
+         for i, item in ipairs(items) do
+            if item.tags then
+               for tag in item.tags:gmatch("%S*") do
+                  local key = make_key(tag)
+                  TAG_CACHE[key] = TAG_CACHE[key] or {}
+                  table.insert(TAG_CACHE[key], item)
+               end
+            end
+         end
+         TAG_CACHE[user] = true
+      end
+   end
+   return TAG_CACHE[make_key(tag)] or {}
+end
+
 -----------------------------------------------------------------------------
 -- Shows the HTML (just the content) for an index page.
 -----------------------------------------------------------------------------
 function actions.show_index_content(node, request, sputnik)
-   local items = wiki.get_visible_nodes(sputnik, request.user, node.id)
-   items = sfoto.filter_by_tag(items)
+   local items
+   if node.id:match("/[a-z]") then
+      local section, tag
+      node.id, section, tag = node.id:match("(.-)/(.-)/(.*)")
+      items = get_visible_items_by_tag(sputnik, request.user, node.id, tag)
+   else
+      items = wiki.get_visible_nodes(sputnik, request.user, node.id)
+   end
+   --items = sfoto.filter_by_tag(items, tag)
 
    local months, url_for_reversing
    if request.params.ascending then

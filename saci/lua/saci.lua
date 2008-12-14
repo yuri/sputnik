@@ -31,7 +31,7 @@ function new(module_name, versium_params, root_prototype_id)
    repo.versium = versium_module.new(versium_params)
    repo.permission_groups = {
       all_users     = function(user)   return true end,
-      Authenticated = function(user)   return user ~= nil end,
+      Authenticated = function(user)   return user ~= nil and user:len() > 0 end,
       Anonymous     = function(user)   return not user end,
       all_actions   = function(action) return true end,
    }

@@ -22,7 +22,8 @@ actions.show_photo_content = function(node, request, sputnik)
    local parent_id, short_id = node:get_parent_id()
    local parent = sputnik:get_node(parent_id) 
    local user_access = sputnik.auth:get_metadata(request.user, "access")
-   local photos = sfoto.visible_photos(parent.content.photos, user_access or "0")
+   local photos = sfoto.visible_photos(parent.content.photos, request.user,
+                                       sputnik)
 
    -- find the requested photo among them or post an error message
    local this_photo
@@ -106,7 +107,7 @@ actions.show_album_content = function(node, request, sputnik)
    -- select viewable photos
    local user_access = sputnik.auth:get_metadata(request.user, "access")
    local photos, num_hidden = sfoto.visible_photos(node.content.photos,
-                                                   user_access or "0")   
+                                                   request.user, sputnik)   
    -- attach URLs to them
    for i, photo in ipairs(photos) do
       photo.thumb = sfoto.photo_url(node.id.."/"..photo.id, "thumb")
@@ -144,7 +145,7 @@ function get_visible_items_by_tag(sputnik, user, id, tag)
    if not TAG_CACHE then
       TAG_CACHE = {}
       if not TAG_CACHE[user] then
-         local items = wiki.get_visible_nodes(sputnik, user, id)
+         local items = get_visible_nodes_lazily(sputnik, user, id)
          for i, item in ipairs(items) do
             if item.tags then
                for tag in item.tags:gmatch("%S*") do
@@ -160,6 +161,20 @@ function get_visible_items_by_tag(sputnik, user, id, tag)
    return TAG_CACHE[make_key(tag)] or {}
 end
 
+function get_visible_nodes_lazily(sputnik, user, id)
+   if not SFOTO_NODE_CACHE then
+      SFOTO_NODE_CACHE = {}
+   end
+   local key = (user or "Anon").."/"..id
+   if SFOTO_NODE_CACHE[key] then
+      return SFOTO_NODE_CACHE[key]
+   else
+      local nodes = wiki.get_visible_nodes(sputnik, user, id, {lazy=true})
+      SFOTO_NODE_CACHE[key] = nodes
+      return nodes
+   end
+end
+
 -----------------------------------------------------------------------------
 -- Shows the HTML (just the content) for an index page.
 -----------------------------------------------------------------------------
@@ -167,12 +182,12 @@ function actions.show_index_content(node, request, sputnik)
    local items
    if node.id:match("/[a-z]") then
       local section, tag
+      print(node.id)
       node.id, section, tag = node.id:match("(.-)/(.-)/(.*)")
       items = get_visible_items_by_tag(sputnik, request.user, node.id, tag)
    else
-      items = wiki.get_visible_nodes(sputnik, request.user, node.id)
+      items = get_visible_nodes_lazily(sputnik, request.user, node.id)
    end
-   --items = sfoto.filter_by_tag(items, tag)
 
    local months, url_for_reversing
    if request.params.ascending then
@@ -182,7 +197,7 @@ function actions.show_index_content(node, request, sputnik)
       url_for_reversing = sputnik:make_url(node.id, nil, {ascending='1'})
       months = sfoto.make_calendar(items, sputnik)
    end
-   
+
    return cosmo.f(node.templates.INDEX){
                         reverse_url = url_for_reversing,
                         months      = months
@@ -197,11 +212,12 @@ end
 -- Handles the basic "show" request with caching.
 -----------------------------------------------------------------------------
 actions.show = function(node, request, sputnik)
-   if sputnik.app_cache and false then
-       local tracker = sputnik.saci:get_node_info("sfoto_tracker")
+   if sputnik.app_cache then
+       --local tracker = sputnik.saci:get_node_info("sfoto_tracker")
        local key = node.id.."|"..request.query_string.."|"..(request.user or "Anon")
        cached_info = sputnik.app_cache:get_node_info(key) or {}
-       if (not cached_info.timestamp) or (cached_info.timestamp < tracker.timestamp) then
+       --if (not cached_info.timestamp) or (cached_info.timestamp < tracker.timestamp) then
+       if not cached_info.timestamp then
           node.inner_html = actions.show_index_content(node, request, sputnik)
           sputnik.app_cache:save_version(key, node.inner_html, "sfoto")
        else

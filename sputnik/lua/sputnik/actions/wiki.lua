@@ -516,14 +516,18 @@ end
 -----------------------------------------------------------------------------
 -- Returns a list of nodes that the specified user is allowed to see.
 -----------------------------------------------------------------------------
-function get_visible_nodes(sputnik, user, prefix)
+function get_visible_nodes(sputnik, user, prefix, options)
    local nodes = {}
    local num_hidden = 0
    for i, node in pairs(sputnik.saci:get_nodes_by_prefix(prefix)) do
-      sputnik:prime_node(node)
-      local ok, err = copcall(sputnik.activate_node, sputnik, node)
-      if not ok then
-         error("Could not load node '"..node.id.."'!\n"..err)
+      if not options or not options.lazy then
+         sputnik:prime_node(node)
+         local ok, err = copcall(sputnik.activate_node, sputnik, node)
+         --sputnik:activate_node(node)
+         local ok = true
+         if not ok then
+            error("Could not load node '"..node.id.."'!\n"..err)
+         end
       end
       if node:check_permissions(user, "show") then
          table.insert(nodes, node)

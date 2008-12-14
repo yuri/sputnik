@@ -1,5 +1,7 @@
 module(..., package.seeall)
 
+require("sfoto")
+
 local Gridder = {}
 local Gridder_mt = {__metatable = {}, __index = Gridder}
 
@@ -83,8 +85,8 @@ function Gridder:flexgrid(image_code)
                left       = pixify(2 + (width + dwidth) * (i-1)),
                top        = pixify(y),
                title      = photo.title or "",               
-               photo_url  = self.photo_url(photo.id, 
-                                           photo.size>1 and string.format("%dx", photo.size) or "thumb"),
+               photo_url  = sfoto.photo_url("photos/"..photo.id, 
+                                            photo.size>1 and string.format("%dx", photo.size) or "thumb"),
                link       = self.sputnik:make_url("albums/"..photo.id),
             })
          end
@@ -127,7 +129,7 @@ function Gridder:simplegrid(image_code)
    for i, row in ipairs(self.rows) do
       row.photos = row
       for j, photo in ipairs(row) do
-         photo.photo_url = self.photo_url(photo.id, "thumb")
+         photo.photo_url = sfoto.photo_url(photo.id, "thumb")
          photo.link = self.sputnik:make_url("albums/"..photo.id)
       end
    end

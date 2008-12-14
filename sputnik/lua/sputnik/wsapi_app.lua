@@ -95,19 +95,28 @@ end
 -----------------------------------------------------------------------------
 function new(config)
 
-   local ok, logger, my_sputnik
+   local ok, logger, my_sputnik, error_message
    ok, logger = htmlized_pcall(util.make_logger, config, nil, nil,
                                config.LOGGER,
                                config.LOGGER_PARAMS, config.LOGGER_LEVEL)
    if not ok then
-      local error_message = logger
+      error_message = logger
       return new_error_app_function(error_message)
    end
 
    ok, my_sputnik = htmlized_pcall(sputnik.new, config, logger, nil,
                                    config, logger)
    if not ok then
-      local error_message = my_sputnik
+      error_message = my_sputnik
+      return new_error_app_function(error_message)
+   end
+
+   if ok and config.INIT_FUNCTION then
+      ok, error_message = htmlized_pcall(config.INIT_FUNCTION, config, logger, nil,
+                          my_sputnik, config)
+   end
+
+   if not ok then
       return new_error_app_function(error_message)
    end
 
@@ -137,6 +146,7 @@ function new(config)
             response.status = 302
          end
       end
+
       return response:finish()
    end
 end

@@ -55,6 +55,16 @@ INDEX = [======[
 .blog:hover {
    background: #ffd;
 }
+
+sfoto_blog_title {
+   style="margin-top: 0px; height: 50px;
+}
+table.sfoto_toolbar { border:none; margin: 0; padding: 0; }
+.sfoto_toolbar tr { margin: 0; padding: 0; }
+.sfoto_toolbar tr td { vertical-align: middle; border: none; color: gray; margin: 0; padding: 0; padding-right: .5em;    }
+.sfoto_toolbar tr td a {  color: white; text-decoration: none; }
+.sfoto_toolbar tr td a:hover {  color: yellow; }
+
 </style>
 
 <script type="text/javascript">/* <![CDATA[ */
@@ -134,7 +144,7 @@ INDEX = [======[
      <td class="$odd" style="min-width: 160px;">
       $if_blog[====[
        <a class="blog" href="$url" onclick="showBlog('$row_id', '$url', '$content_url'); return false;">
-        <p style="margin-top: 0px; height: 50px">$title </p>
+        <p class="sfoto_blog_title">$title </p>
         <center><img src="$blog_thumb"/></center>
        </a>
       ]====]
@@ -147,15 +157,8 @@ INDEX = [======[
     $if_blanks[[<td class="$odd" colspan="$blanks">&nbsp;</td>]]
    </tr>
    <tr>
-    <th colspan="6" style="background: #333333; color: white;">
+    <td colspan="6" style="background: #333333; color: white;">
      <div id="controller_$row_id" style="display:none;">
-      <style>
-       table.sfoto_toolbar { border:none; margin: 0; padding: 0; }
-       .sfoto_toolbar tr { margin: 0; padding: 0; }
-       .sfoto_toolbar tr td { vertical-align: middle; border: none; color: gray; margin: 0; padding: 0; padding-right: .5em;    }
-       .sfoto_toolbar tr td a {  color: white; text-decoration: none; }
-       .sfoto_toolbar tr td a:hover {  color: yellow; }
-      </style>
       <table class="sfoto_toolbar">
        <tr>
         <td><a href="#" onclick="hideBlog('$row_id'); return false;" style="font-size: 200%;">&#10799;</a></td>
@@ -170,7 +173,7 @@ INDEX = [======[
      <div id="controller2_$row_id" style="display:none; color: white;">
       <a href="#" onclick="hideBlog('$row_id'); return false;" style="text-decoration:none; color:white; color: yellow;">hide</a>
      </div>
-    </th>
+    </td>
    </tr>
   ]==]
 ]=]

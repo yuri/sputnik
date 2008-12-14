@@ -171,6 +171,7 @@ function Sputnik:init(initial_config)
    self.saci.permission_groups.edit_and_save = {"save", "edit", "preview"}
    self.saci.permission_groups.show = {"show", "show_content", "cancel"}
    self.saci.permission_groups.history_and_diff = {"history", "diff"}
+   self.saci.permission_groups.show_etc = {"show", "show_content", "cancel", "history", "diff"}
 
    -- setup wrappers
    self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      
@@ -673,6 +674,7 @@ function Sputnik:handle_request(request, response)
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
 
+   
    local node, stub = self:get_node(request.node_name, request.params.version)
   
    if stub and self.config.PROTOTYPE_PATTERNS then

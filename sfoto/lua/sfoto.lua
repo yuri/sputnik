@@ -274,15 +274,21 @@ end
 -- Returns a list of items that the user is allowed to see and the number of
 -- excluded items.
 -----------------------------------------------------------------------------
-function visible_photos(photos, user_access_level)
+function visible_photos(photos, user, sputnik)
    local viewable_items = {}
    local num_hidden = 0
-   for i, item in ipairs(photos) do
-      if user_access_level >= (item.private or "0") then
-         table.insert(viewable_items, item)
+   for i, photo in ipairs(photos) do
+      if can_see_photo(photo, user, sputnik) then
+         table.insert(viewable_items, photo)
       else
          num_hidden = num_hidden + 1
       end
    end
    return viewable_items, num_hidden
+end
+
+function can_see_photo(photo, user, sputnik)
+   return (not photo.groups) or
+          sputnik.auth:get_metadata(user, photo.groups) == "true"
+
 end

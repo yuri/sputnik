@@ -163,7 +163,9 @@ function Saci:get_node(id, version)
    -- the parent didn't give us anything.  proceed to the normal method.
    local data = self.versium:get_node(id, version)
    if data then
-      return self:make_node(data, id)
+      local node = self:make_node(data, id)
+      self.cache[cache_key] = node
+      return node
    end
 
    -- no luck, check if we have a fallback function
@@ -247,8 +249,15 @@ end
 function Saci:get_nodes_by_prefix(prefix, limit)
    local versium_nodes = self:get_versium_nodes_by_prefix(prefix, limit)
    local nodes = {}
+   local cache = self.cache
    for id, vnode in pairs(versium_nodes) do
-      nodes[id] = self:make_node(vnode, id)
+      if cache[id] then
+         nodes[id] = cache[id]
+      else
+         local node = self:make_node(vnode, id) 
+         nodes[id] = node
+         cache[id] = node
+      end
    end
    return nodes
 end

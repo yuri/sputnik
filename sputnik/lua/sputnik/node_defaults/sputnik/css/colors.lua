@@ -87,11 +87,24 @@ TD                    {                                                         
 
 
 
-INPUT, SELECT         {                          background: $FORM_BG;             BORDER:        1px solid  $FORM_BORDER; }
-INPUT.readonly        {                          background: $FORM_BG_READONLY;    BORDER:        1px solid  $FORM_BORDER; }
-INPUT.checkbox        {                          background: $FORM_BG;             BORDER:        1px solid  $FORM_BORDER; }
-TEXTAREA              {                          background: $FORM_BG;             BORDER:        1px solid  $FORM_BORDER; }
-INPUT.submit          {                          background: $FORM_BG_SUBMIT;      BORDER:        1px outset $FORM_BORDER; }
+input, select, textarea {
+ background: $FORM_BG;
+ border:        2px solid  $GRAY; 
+}
+input.readonly {
+ background: $FORM_BG_READONLY;
+}
+
+input.submit {
+ background: $FORM_BG_SUBMIT;
+}
+
+.active_input {
+  border: 2px solid $NAVBAR;
+}
+
+
+
 A.button              {                          background: $FORM_BG_SUBMIT;      BORDER:        1px outset $FORM_BORDER; 
     color: black; text-decoration: none;                                                                               
 }
@@ -100,6 +113,9 @@ INPUT.small_submit    {                          background: $FORM_BG_SUBMIT;   
 
 .error_message        {                                                            BORDER:        2px solid  red;          }
 .content .preview     {                                                            BORDER:        3px dashed $NAV_BAR;     }
+
+
+
 ]]
 ]===]
 

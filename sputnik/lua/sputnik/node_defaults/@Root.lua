@@ -64,22 +64,24 @@ config       = [[
 ]],
 edit_ui = [[
 -------------------------- basic fields ----------------
-page_params_hdr = {1.0, "header"}
 page_name       = {1.1, "readonly_text"}
 title           = {1.2, "text_field"}
--------------------------- advanced fields -------------
-show_advanced   = {2.0, "show_advanced", no_label=true}
-category        = {2.1, "text_field", advanced=true}
-prototype       = {2.2, "text_field", advanced=true}
---- the content of the page ----------------------------
-content_hdr     = {3.0, "header"}
-content         = {3.1, "textarea", rows=15, 
-                                        no_label=true}
---- info about the edit --------------------------------
-edit_info_hdr   = {4.0, "header"} 
-minor           = {4.1, "checkbox", value=false}
-summary         = {4.2, "textarea", rows=3}
 
+-------------------------- advanced fields -------------
+advanced_section = {2.0, "div_start", id="foo"}
+ category        = {2.1, "text_field"}
+ prototype       = {2.2, "text_field"}
+advanced_section_end = {2.3, "div_end"}
+
+--- the content of the page ----------------------------
+content_section  = {3.00, "div_start", id="content_section", open="true"}
+ content         = {3.01, "textarea", rows=15, no_label=true}
+content_section_end = {3.02, "div_end"}
+--- info about the edit --------------------------------
+edit_info_section  = {4.00, "div_start", id="edit_info_section", open="true"} 
+ minor            = {4.1, "checkbox", value=false}
+ summary         = {4.2, "textarea", rows=3}
+edit_info_section_end = {4.3, "div_end"}
 ]],
 admin_edit_ui = [[
 -------------------------- basic fields ----------------
@@ -87,7 +89,7 @@ admin_edit_ui = [[
 page_name       = {1.1, "readonly_text"}
 title           = {1.2, "text_field"}
 -------------------------- advanced fields -------------
-advanced_section = {2.0, "div_start", id="foo"}
+advanced_section = {2.0, "div_start", id="advanced_section"}
  category        = {2.01, "text_field"}
  prototype       = {2.02, "text_field"}
  permissions     = {2.03, "textarea", rows=3}
@@ -95,7 +97,7 @@ advanced_section = {2.0, "div_start", id="foo"}
  config          = {2.05, "textarea", div_class="editlua", rows=3}
 advanced_section_end = {2.06, "div_end"}
 
-html_section     = {2.100, "div_start", id="html_parameters", state="open"}
+html_section     = {2.100, "div_start", id="html_section", state="open"}
  html_main       = {2.101, "textarea", rows=3 }
  html_head       = {2.102, "textarea", rows=3 }
  html_body       = {2.103, "textarea", rows=3 }
@@ -108,7 +110,7 @@ html_section     = {2.100, "div_start", id="html_parameters", state="open"}
  html_footer     = {2.110, "textarea", rows=3 }
 html_section_end = {2.111, "div_end"}
 
-guru_section     = {2.30, "div_start", id="foo2"}
+guru_section     = {2.30, "div_start", id="guru_section"}
  templates       = {2.31, "text_field"}
  translations    = {2.32, "text_field"}
  fields          = {2.33, "textarea", div_class="editlua", rows=3}
@@ -118,13 +120,14 @@ guru_section_end = {2.36, "div_end"}
 
 --- the content of the page ----------------------------
 content_section  = {3.00, "div_start", id="content_section", open="true"}
- content         = {3.01, "textarea", rows=27, no_label=true}
+ content         = {3.01, "textarea", rows=15, no_label=true}
 content_section_end = {3.02, "div_end"}
 
 --- info about the edit --------------------------------
-edit_info_hdr    = {4.0, "header"} 
-minor            = {4.1, "checkbox", value=false}
-summary         = {4.2, "textarea", rows=3}
+edit_info_section  = {4.00, "div_start", id="edit_info_section", open="true"} 
+ minor            = {4.1, "checkbox", value=false}
+ summary         = {4.2, "textarea", rows=3}
+edit_info_section_end = {4.3, "div_end"}
 ]],
 content=[===[
 

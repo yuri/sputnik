@@ -252,8 +252,8 @@ EDIT_FORM_CONTENT_SECTION = {
 EDIT_FORM_CONTENT = EDIT_FORM_CONTENT_SECTION
 
 -- A lable for the section of the form that deals with user id, minor parameter and edit summary
-EDIT_FORM_EDIT_INFO_HDR = {
-   en_US = "About this Edit",
+EDIT_FORM_EDIT_INFO_SECTION = {
+   en_US = "About This Edit",
    ru    = "О ваших изменениях",
    pt_BR = "Sobre esta edição",
 }

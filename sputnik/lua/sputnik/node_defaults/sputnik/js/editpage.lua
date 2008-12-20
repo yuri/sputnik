@@ -15,7 +15,6 @@ NODE.permissions = [[
 
 NODE.content = [======[
 
-
 $(document).ready(function() {
 		// Store the timer id
 		var timerId = 0;
@@ -48,5 +47,12 @@ $(document).ready(function() {
 				var selector = "#" + this.id.substring(8);
 				$(selector).hide();
                 });
+
+        $(".field input, .field textarea").focus(function() {
+                $(this).addClass("active_input");
+                }).blur(function() {
+                $(this).removeClass("active_input");
+                });
+
 })
 ]======]

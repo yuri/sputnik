@@ -43,7 +43,7 @@ SUBMENU_FG      = WHITE
 HEADER               = THIRD:shade(.1)
 H_LINE               = THIRD:shade(.1)
 
-FORM_BG              = SECOND:desaturate_to(.6):tint(.9)
+FORM_BG              = WHITE --SECOND:desaturate_to(.6):tint(.9)
 FORM_BG_SUBMIT       = SECOND:desaturate_to(.8):tint(.3)
 FORM_BG_READONLY     = SECOND:desaturate_to(.2):tint(.7)
 FORM_BORDER          = SECOND

@@ -5,6 +5,29 @@ NODE = {
    category="_special_pages",
    prototype="@Lua_Config",
 }
+
+NODE.fields = [[
+main         = {0.78, proto="concat", activate="lua"  }
+head         = {0.781, proto="concat", activate="lua"  }
+body         = {0.782, proto="concat", activate="lua"  }
+]]
+
+NODE.admin_edit_ui = [[
+main         = {3.001, "editor", rows=3 }
+head         = {3.002, "editor", rows=3 }
+body         = {3.003, "editor", rows=3 }
+]]
+
+
+NODE.search_form = [===[
+
+
+]===]
+
+
+
+
+
 NODE.content=[=====[--- this is the template that generates the outer tags of the page ---
 
 TRANSLATIONS = "Translations:Main"
@@ -13,115 +36,7 @@ TRANSLATIONS = "Translations:Main"
 ------- BASIC TEMPLATES --------------------------------------------------------
 --------------------------------------------------------------------------------
 
-MAIN = [===[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
 
- <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]
-  <title>$site_title: $title</title>
-  <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/css/yui_reset.css'}" media="screen"/>
-  <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/css/layout.css'}" media="screen"/>
-  <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/css/colors.css'}" media="screen"/>
-
-  $do_css_links[[
-   <link type="text/css" rel="stylesheet" href="$href" media="$media"/>]]
-  $do_css_snippets[[
-   <style type="text/css" media="$media">$snippet</style>]]
-  $do_javascript_links[[
-   <script type="text/javascript" src="$href"></script>]]
-  $do_javascript_snippets[=[
-   <script type="text/javascript">/* <![CDATA[ */ $snippet /* ]]> */</script>]=] 
-
-  <link rel="shortcut icon" href="$favicon_url"/>
-  <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
-  <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>
- </head>
-
- <body>
-  <div id='doc3'>
-  
-   <div id="login"> <!--login and search (in the upper right corner) -->
-    $if_search[[    <form action="$base_url" style="margin-right: 0px; padding-right: 0px;">
-     <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
-     <input class="search_box" type="text" name="q" size="16" value="$search_box_content"/>
-     <input class="small_submit" type="submit" name="Search" value="_(SEARCH)" 
-            title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>]]    
-    $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
-    $if_not_logged_in[[_(LOGIN_OR_REGISTER)]]
-    <a $site_rss_link><img src="$make_url{'icons/feed_medium.png'}" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)" alt="_(LARGE_RSS_ICON)" /></a>
-   </div>
-   
-   <div id="logo">
-    <a class="logo" href="$home_page_url">
-     <img src="$logo_url" alt="_(LOGO)" /> 
-    </a>
-   </div>
-   
-   <div id='hd'><!--navigation bar --> 
-    <ul id='menu'>   $do_nav_sections[=[
-     <li class='$class' id='$id'>
-      <a $link>$title</a>
-      <ul class='$class'> <!-- ul.back will be hidden via CSS -->
-       $subsections[[<li class='$class'><a $link>$title</a></li>]]
-       <li style="display:none">&nbsp;</li>
-      </ul>
-     </li>]=]
-    </ul>
-      <div id="breadcrumbs">
-       $if_multipart_id[=[
-       <ul>
-        $do_breadcrumb[[<li class="$class"><a $link>$title</a></li>]],[[<li class="$class">▹ <a $link>$title</a></li>]]
-        <li style="display:none">&nbsp;</li>
-       </ul>
-       ]=]
-       <span class="toolbar">
-       $if_can_edit[[
-       <a $edit_link title="_(EDIT)"> 
-        <img src="$make_url{'icons/edit.png'}" alt="_(EDIT_ICON)"/>
-       </a>
-       ]]
-       $if_can_see_history[[
-       <a $history_link title="_(HISTORY)">
-        <img src="$make_url{'icons/history.png'}" alt="_(HISTORY_ICON)"/>
-       </a>
-       ]]
-       $if_can_see_feed[[
-       <a $node_rss_link title="_(RSS_FOR_EDITS_TO_THIS_NODE)">
-        <img src="$make_url{'icons/feed.png'}" alt="_(SMALL_RSS_ICON)" />
-       </a>
-       ]]
-       </span>
-
-      </div>
-   </div>
- 
-   <div id='bd'><!--the body, consisting of the page and the sidebar--> 
-    <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]><!--this just marks the page as "main" -->
-     <div class="yui-b" id='page'>
-
-      <h1 class="title">
-        $if_title_icon[[<img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/> ]]
-        <a name="title" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
-      </h1>
-
-      $do_messages[[<p class="$class">$message</p>]]
-
-      <div class='content'>$content</div>
-      
-     </div>  <!-- end of div .yui-b#page -->     
-    </div>  <!-- end of div #yui-main (end of body)-->
-
-    <!--div class="yui-b" id="sidebar">$sidebar</div-->
-    
-   </div>  <!-- end of div #bd -->
-   _(POWERED_BY_SPUTNIK) | <a style="font-size: .7em" href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a>
-  </div> <!-- end of div.yui-t4#doc2 -->
-  <br/>
- </body>
-</html>
-]===]
 
 --------------------------------------------------------------------------------
 ------- HISTORY, ETC -----------------------------------------------------------
@@ -162,7 +77,7 @@ HISTORY = [===[
             </td>
             <td width="5px" $if_minor[[bgcolor="#f0f0f0"]]>
              <input class="diff_radio" type="radio" value="$version" name="version"/>
-            </td>
+	            </td>
             <td width="400px" $if_minor[[bgcolor="#f0f0f0"]]>
              _(AUTHOR_SAVED_VERSION) $if_summary[[<ul><li>$summary</li></ul>]]
             </td>
@@ -250,32 +165,11 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 EDIT = [===[
    
-      <form method="post" enctype="multipart/form-data" action="$action_url">
+      <form class="edit" method="post" enctype="multipart/form-data" action="$action_url">
        $captcha
        <script type="text/javascript">
         /* <![CDATA[ */
-         function toggleElements(class_name) {
-            var re = new RegExp('\\b' + "advanced_field" + '\\b');
-            var els = document.getElementsByTagName("div");
-            for(var i=0,j=els.length; i<j; i++) {
-               var elem = els[i];
-               if(re.test(elem.className)) {
-                  if (elem.style.display=="block") {
-                     elem.style.display = "none";
-                     document.getElementById("toggle_advanced_fields").innerHTML="_(SHOW_ADVANCED_OPTIONS)"
-                  } else {
-                     elem.style.display = "block";
-                     document.getElementById("toggle_advanced_fields").innerHTML="_(HIDE_ADVANCED_OPTIONS)"
-                  }
-               }
-            }
-         }
-         function expandTextArea() {
-            var elem = document.getElementById("main_text_area");
-            elem.style.width="1200px";
-            elem.style.height="800px";
-            elem.style.margin="10px 10px 10px -100px";
-         }
+
         /* ]]> */
        </script>
        <input class="hidden" type="hidden" name="p" value="$node_name.post"/>
@@ -300,15 +194,16 @@ EDIT = [===[
 EDIT_FORM_HEADER        = [[<a name="$anchor"></a><h2>$label</h2>]]
 EDIT_FORM_NOTE          = [[<h3>$label</h3>]]
 EDIT_FORM_LABEL         = [[<label>$label</label>]]
+EDIT_FORM_INLINE_LABEL  = [[<label class="inline">$label</label>]]
 EDIT_FORM_FILE          = [[<input type="file" value="$value" name="$name"/>]]
 EDIT_FORM_HONEYPOT      = [[<input type="text" value="$value" name="$name"/>]]
-EDIT_FORM_TEXT_FIELD    = [[<input type="text" value="$value" name="$name"/>]]
+EDIT_FORM_TEXT_FIELD    = [[<input type="text" value="$value" name="$name" class="textfield"/>]]
 EDIT_FORM_HIDDEN        = [[<input type="hidden" class="hidden" value="$value" name="$name"/>]]
-EDIT_FORM_READONLY_TEXT = [[<input type="text" value="$value" name="$name" class="readonly" readonly="readonly" />]]
-EDIT_FORM_PASSWORD      = [[<input type="password" value="$value" name="$name" size="20"></input>]]
-EDIT_FORM_TEXTAREA      = [[<textarea class="small resizeable" name="$name" cols="70" rows="$rows">$value</textarea>]]
-EDIT_FORM_EDITOR        = [[<textarea class="resizeable" name="$name" cols="100" rows="$rows">$value</textarea>]]
-EDIT_FORM_BIG_TEXTAREA  = [[<textarea class="editor resizeable" name="$name" id="main_text_area" cols="100" rows="$rows">$value</textarea><br/>
+EDIT_FORM_READONLY_TEXT = [[<input type="text" value="$value" name="$name" class="readonly textfield" readonly="readonly" />]]
+EDIT_FORM_PASSWORD      = [[<input type="password" value="$value" name="$name" size="20" class="textfield"></input>]]
+EDIT_FORM_TEXTAREA      = [[<textarea class="resizeable" name="$name" cols="80" rows="$rows">$value</textarea>]]
+EDIT_FORM_EDITOR        = [[<textarea class="resizeable" name="$name" cols="80" rows="$rows">$value</textarea>]]
+EDIT_FORM_BIG_TEXTAREA  = [[<textarea class="editor resizeable" name="$name" id="main_text_area" cols="80" rows="$rows">$value</textarea><br/>
                             <a href="#" onclick="expandTextArea(); return false;">expand</a>]]
 EDIT_FORM_CHECKBOX      = [[<input class="checkbox" style="border:1px solid black" 
                                    type="checkbox" name="$name" value="yes"
@@ -319,7 +214,7 @@ EDIT_FORM_SELECT        = [[<select name="$name" tabindex="$tab_index">
                             </select>]]
 EDIT_FORM_SHOW_ADVANCED = [[<a id="more_fields" href="#" class="local" onclick="toggleElements('advanced_field')">
                              <div id="toggle_advanced_fields">_(SHOW_ADVANCED_OPTIONS)</div></a>]]
-EDIT_FORM_DIV_START = [=[$do_collapse[[<span id="trigger_$id" class="ctrigger $state">$label</span>]]<div id="$id" class="$class">]=]
+EDIT_FORM_DIV_START = [=[<h2>$do_collapse[[<span id="trigger_$id" class="ctrigger $state">$label</span></h2>]]<div id="$id" class="$class">]=]
 EDIT_FORM_DIV_END = [[</div>]] 
 
 LOGIN_FORM              = [===[

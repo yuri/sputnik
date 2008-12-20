@@ -47,6 +47,6 @@ $(document).ready(function() {
 		$("span.ctrigger.closed").each(function() {
 				var selector = "#" + this.id.substring(8);
 				$(selector).hide();
-				});
+                });
 })
 ]======]

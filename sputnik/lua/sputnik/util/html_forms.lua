@@ -19,27 +19,33 @@ function make_html_form(form_params)
       checkbox = function(field)
                     local isset = field.value
                     if type(isset)=="string" then isset = isset:len() > 0 end
-                    field.if_checked = cosmo.c(isset){}; 
+                    field.if_checked = cosmo.c(isset){}
+                    field.inline = true
                  end,
       div_start = function(field)
          field.no_label = true
          field.class = "collapse"
 
          function field.do_collapse()
-            if field.label then
-               cosmo.yield{
-                  label = label,
-                  state = field.open and "open" or "closed",
-               }
-            end
+            cosmo.yield{
+               state = field.open and "open" or "closed",
+            }
          end
       end,
       div_end = function(field)
          field.no_label = true
       end,
-      checkbox = function(field) field.if_checked = cosmo.c(field.value){}; end,
       header   = function(field) field.no_label = true; end,
       note     = function(field) field.no_label = true; end,
+      text_field = function(field)
+                    field.inline = true
+                 end,
+      password = function(field)
+                    field.inline = true
+                 end,
+      readonly_text = function(field)
+                    field.inline = true
+                 end,
       textarea = function(field) 
                     local num_lines = 0
                     string.gsub(field.value, "\n", function() num_lines = num_lines + 1 end)
@@ -81,9 +87,7 @@ function make_html_form(form_params)
       local name       = field.name
       local template   = form_params.templates["EDIT_FORM_"..field_type:upper()]
       
-      if field_type ~= "div_start" then
-         field.label = form_params.translator.translate_key("EDIT_FORM_"..name:upper())
-      end
+      field.label = form_params.translator.translate_key("EDIT_FORM_"..name:upper())
 
       field.name   = form_params.hash_fn(name)
       field.anchor = name
@@ -100,7 +104,11 @@ function make_html_form(form_params)
       end
 
       if not field.no_label then
-         field.html = cosmo.fill(form_params.templates.EDIT_FORM_LABEL, field)
+         if field.inline then
+            field.html = cosmo.fill(form_params.templates.EDIT_FORM_INLINE_LABEL, field)
+         else
+            field.html = cosmo.fill(form_params.templates.EDIT_FORM_LABEL, field)
+         end
       end
       field.html = field.html..cosmo.fill(template, field)
 
@@ -110,6 +118,9 @@ function make_html_form(form_params)
          field.div_class = field.div_class.." ctrlHolder"
          if field.advanced then
             field.div_class = field.div_class.." advanced_field"
+         end
+         if field_type ~= "header" then
+            field.div_class = field.div_class.." field"
          end
          html = html.."       <div class='"..field.div_class.."'>"..field.html.."       </div>\n"
       end

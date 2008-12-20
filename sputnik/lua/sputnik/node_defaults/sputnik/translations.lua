@@ -20,10 +20,22 @@ FALLBACKS = {
 -----------------------------------------------------------------------------
 
 -- The login link
-LOGIN_OR_REGISTER = {
-   en_US = "<a $login_link>Login</a> or <a $register_link>register</a>",
-   ru    = "<a $login_link>Представиться</a> или <a $register_link>зарегистрироваться</a>",     
-   pt_BR = "<a $login_link>Login</a> | <a $register_link>Criar conta</a>",
+LOGIN = {
+   en_US = "Login",
+   ru    = "Представиться",     
+   pt_BR = "Login",
+}
+
+OR = {
+   en_US = "or",
+   ru    = "или",     
+   pt_BR = "ou",
+}
+
+REGISTER = {
+   en_US = "register",
+   ru    = "зарегистрироваться",     
+   pt_BR = "Criar conta",
 }
 
 -- The login button
@@ -178,14 +190,66 @@ EDIT_FORM_TITLE = {
    pt_BR = "Título da Página",
 }
 
+-- A label for the section of the form with advanced parameters
+EDIT_FORM_ADVANCED_SECTION = {
+   en_US = "Advanced Fields",
+   ru    = "Дополнительные поля",
+   pt_BR = "Campos avançados",
+}
+
+-- A label for the section of the form with even more advanced parameters
+EDIT_FORM_GURU_SECTION = {
+   en_US = "Guru Fields",
+   ru    = "Поля для гуру",
+   pt_BR = "Campos ainda mais avançados",
+}
+
+-- A label for the section of the form with html templates
+EDIT_FORM_HTML_SECTION = {
+   en_US = "HTML Fields",
+   ru    = "Поля HTML",
+   pt_BR = "Campos HTML",
+}
+
+EDIT_FORM_HTML_MAIN = {
+   en_US = "Main",
+}
+EDIT_FORM_HTML_HEAD = {
+   en_US = "Head",
+}
+EDIT_FORM_HTML_BODY = {
+   en_US = "Body",
+}
+EDIT_FORM_HTML_HEADER = {
+   en_US = "Header",
+}
+EDIT_FORM_HTML_MENU = {
+   en_US = "Menu",
+}
+EDIT_FORM_HTML_LOGO = {
+   en_US = "Logo",
+}
+EDIT_FORM_HTML_SEARCH = {
+   en_US = "Search",
+}
+EDIT_FORM_HTML_PAGE = {
+   en_US = "Page",
+}
+EDIT_FORM_HTML_SIDEBAR = {
+   en_US = "Sidebar",
+}
+EDIT_FORM_HTML_FOOTER = {
+   en_US = "Footer",
+}
+
 -- A label for the section of the form where the user will edit the page content
-EDIT_FORM_CONTENT_HDR = {
+EDIT_FORM_CONTENT_SECTION = {
    en_US = "Page Content",
    ru    = "Содержание страницы",
    pt_BR = "Conteúdo da página",
 }
 
-EDIT_FORM_CONTENT = EDIT_FORM_CONTENT_HDR
+EDIT_FORM_CONTENT = EDIT_FORM_CONTENT_SECTION
 
 -- A lable for the section of the form that deals with user id, minor parameter and edit summary
 EDIT_FORM_EDIT_INFO_HDR = {

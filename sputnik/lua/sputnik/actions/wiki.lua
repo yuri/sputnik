@@ -953,10 +953,14 @@ function wrappers.default(node, request, sputnik)
 
    local nav_sections, nav_subsections = get_nav_bar(node, sputnik)
 
-   return util.f(node.templates.MAIN){  
+   local values = {
       site_title       = sputnik.config.SITE_TITLE or "",
       title            = sputnik:escape(node.title),
       if_no_index      = cosmo.c((not request.is_indexable) or is_old){},
+      do_css_links     = node.css_links,
+      do_css_snippets  = node.css_snippets,
+      do_javascript_links = node.javascript_links,
+      do_javascript_snippets  = node.javascript_snippets,
       if_old_version   = cosmo.c(is_old){
                             version      = request.params.version,
                          },
@@ -967,21 +971,16 @@ function wrappers.default(node, request, sputnik)
       register_link    = sputnik:make_link("sputnik/register"),
       if_logged_in     = cosmo.c(request.user){ user = sputnik:escape(request.user) },
       if_not_logged_in = cosmo.c(not request.user){},
-      if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){
-                            base_url    = sputnik.config.BASE_URL,
-                            search_page = sputnik.config.SEARCH_PAGE,
-                            search_box_content = sputnik.config.SEARCH_CONTENT or "", 
-                         },
+      if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){},
+      base_url         = sputnik.config.BASE_URL,
+      search_page      = sputnik.config.SEARCH_PAGE,
+      search_box_content = sputnik.config.SEARCH_CONTENT or "", 
       content          = node.inner_html,
       sidebar          = "",
       do_messages      = node.messages,
 
       do_nav_sections  = nav_sections,
       do_nav_subsections = nav_sections.current_section,
-      do_css_links     = node.css_links,
-      do_css_snippets  = node.css_snippets,
-      do_javascript_links = node.javascript_links,
-      do_javascript_snippets  = node.javascript_snippets,
       do_breadcrumb    = get_breadcrumbs(node, sputnik),
       if_multipart_id  = cosmo.c(node.id:match("/")){},
 
@@ -1006,7 +1005,23 @@ function wrappers.default(node, request, sputnik)
       favicon_url      = sputnik.config.FAVICON_URL,
       -- icons are urls of images
       if_title_icon    = cosmo.c(node.icon and node.icon~=""){title_icon = sputnik:make_url(node.icon)},
-   }, "text/html"
+   }
+
+   local function translate_and_fill(template, values)
+      return cosmo.fill(node.translator.translate(template), values)
+   end
+
+   values.head = translate_and_fill(node.html_head, values)
+   values.menu = translate_and_fill(node.html_menu, values)
+   values.logo = translate_and_fill(node.html_logo, values)
+   values.search = translate_and_fill(node.html_search, values)
+   values.page = translate_and_fill(node.html_page, values)
+   values.sidebar = translate_and_fill(node.html_sidebar, values)
+   values.header = translate_and_fill(node.html_header, values)
+   values.footer = translate_and_fill(node.html_footer, values)
+   values.body = translate_and_fill(node.html_body, values)
+
+   return cosmo.fill(node.html_main, values), "text/html"
 end
 
 -- vim:ts=3 ss=3 sw=3 expandtab

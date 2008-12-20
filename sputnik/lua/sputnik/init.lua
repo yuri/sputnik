@@ -343,12 +343,17 @@ function Sputnik:activate_node(node)
                                               self.config.INTERFACE_LANGUAGE)
     
    -- translate the templates
-   for i, template_node in ipairs(node.templates) do
-      local templates = self:get_node(template_node).content
+   for i, template_node_id in ipairs(node.templates) do
+      local template_node = self:get_node(template_node_id)
+      local templates = template_node.content
+      --templates.MAIN = template_node.main
+      --templates.HEAD = template_node.head
+      --templates.BODY = template_node.body
       assert(type(templates) == "table", "Could not load templates node")
       for k, template in pairs(templates) do
          node.templates[k] = node.translator.translate(template)
       end
+      
    end
    
    -- load the actions (turn them into callable functions)

@@ -48,11 +48,11 @@ $(document).ready(function() {
 				$(selector).hide();
                 });
 
-        $(".field input, .field textarea").focus(function() {
+        $(".field input, .field textarea").not(".submit").focus(function() {
                 $(this).addClass("active_input");
                 }).blur(function() {
                 $(this).removeClass("active_input");
                 });
-
 })
+
 ]======]

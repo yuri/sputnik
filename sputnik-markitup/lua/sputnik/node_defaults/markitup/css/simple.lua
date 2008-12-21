@@ -10,47 +10,7 @@ NODE.content = [=[
 // markItUp! Universal MarkUp Engine, JQuery plugin
 // By Jay Salvat - http://markitup.jaysalvat.com/
 // ------------------------------------------------------------------*/
-.markItUp * {
-	margin:0px; padding:0px;
-}
-.markItUp a:link,
-.markItUp a:visited {
-	color:#000;
-	text-decoration:none;
-}
-.markItUp  {
-	width:700px;
-	margin:5px 0 5px 0;
-}
-.markItUpContainer  {
-	font:11px Verdana, Arial, Helvetica, sans-serif;
-}
-.markItUpEditor {
-	font:12px 'Courier New', Courier, monospace;
-	padding:5px;
-	width:690px;
-	height:320px;
-	clear:both; display:block;
-	line-height:18px;
-	overflow:auto;
-}
-.markItUpPreviewFrame	{
-	overflow:auto;
-	background-color:#FFFFFF;
-	width:99.9%;
-	height:350px;
-}
-.markItUpFooter {
-	width:100%;
-}
-.markItUpResizeHandle {
-	overflow:hidden;
-	width:22px; height:5px;
-	margin-left:auto;
-	margin-right:auto;
-	background-image:url($make_url{node = "markitup/images/simple/handle", action="png"}); 
-	cursor:n-resize;
-}
+
 /***************************************************************************************/
 /* first row of buttons */
 .markItUpHeader ul li	{
@@ -62,7 +22,7 @@ NODE.content = [=[
 	display:block;
 }
 .markItUpHeader ul .markItUpDropMenu {
-	background:transparent url$make_url{node = "markitup/images/simple/menu", action="png"}) no-repeat 115% 50%;
+	background:transparent url($make_url{node = "markitup/images/simple/menu", action="png"}) no-repeat 115% 50%;
 	margin-right:5px;
 }
 .markItUpHeader ul .markItUpDropMenu li {

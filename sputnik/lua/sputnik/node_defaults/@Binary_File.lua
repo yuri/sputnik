@@ -42,8 +42,8 @@ content = nil
 file_upload = {1.30, "file"}
 file_description = {1.31, "text_field"}
 file_copyright = {1.32, "text_field"}
-file_name = {1.33, "text_field", advanced = true}
-file_type = {1.34, "text_field", advanced = true}
-file_size = {1.35, "text_field", advanced = true}
+file_name = {1.33, "text_field"}
+file_type = {1.34, "text_field"}
+file_size = {1.35, "text_field"}
 ]=],
 }

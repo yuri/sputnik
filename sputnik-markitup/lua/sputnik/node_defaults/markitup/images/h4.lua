@@ -8,6 +8,11 @@ NODE = {
 	file_size = "293",
 }
 
-NODE.content = "‰PNG\r\
-\
-\000\000\000\rIHDR\000\000\000\000\000\000\000\000\000µú7ê\000\000\000gAMA\000\000¯È7Šé\000\000\000tEXtSoftware\000Adobe ImageReadyqÉe<\000\000\000·IDAT(Ï½Ğ±\rƒ0PK4‰Š*WD×ÑQ!7®Ü¸¡ˆda‚› d‚Û€	Ø€	n\rr'¤¢D×XúOß>›Õœ¹DŠ¬3¬¦{vô	šÒ¯!Jäİk,[\\âü	8î6€/˜ë<¤ŸÃèG7vs«\000Ÿ`k®ĞKH\r-ß-,/Å’SA|(k[ÙbÊ§¬IÀ‹K\000d?åœ}¯ğ¤OãV×ÄXË·õ22tİWŸÏP®ñÌ÷”\000\000\000\000IEND®B`‚"
+NODE.content = [[
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U
+29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAC3SURBVCjPvdCxDYMwEAVQSxQ0CImKKldE19
+FRITeu3LihiGQGYYKbIBtkgtuACdiACW4NcgEnpKJE11j6T98+m9Wcj7kERIqsM6ymHwJ7dvQJmhv
+SryFK5N1rLFtc4gT8Bx4JOO42gC+Y6wM8pJ/D6Ec3dnOrAJ9ga64O0EtIDS3fBS0sGi/FklMCQXwC
+jQIoa1vZYsqnrEnAi0sAGWQ/5Zx9r/CkT+NW18QBWMu39TIydN1Xn88bUK7xEQPM95QAAAAASUVOR
+K5CYII=
+]]

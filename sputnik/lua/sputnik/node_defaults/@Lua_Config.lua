@@ -1,6 +1,7 @@
 module(..., package.seeall)
 
 NODE = {
+   prototype = "@Text_Config",
    title="@Lua_Config (Prototype for Lua Config Files)",
    fields = [[content.activate = "lua"]],
    permissions = [[

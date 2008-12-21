@@ -15,6 +15,15 @@ allow(all_users, "history")
    icon = "icons/system.png",
 }
 
+NODE.edit_ui = [[
+content         = {3.01, "textarea", rows=15, no_label=true}
+]]
+
+NODE.admin_edit_ui = [[
+content         = {3.01, "textarea", rows=15, no_label=true}
+]]
+
+
 NODE.content=[===[
 The content of this page is ignored but it's fields are inherited by 
 some of the other pages of this wiki.

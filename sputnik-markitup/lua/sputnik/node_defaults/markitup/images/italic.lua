@@ -8,6 +8,9 @@ NODE = {
 	file_size = "223",
 }
 
-NODE.content = "‰PNG\r\
-\
-\000\000\000\rIHDR\000\000\000\000\000\000\000\000\000µú7ê\000\000\000gAMA\000\000¯È7Šé\000\000\000tEXtSoftware\000Adobe ImageReadyqÉe<\000\000\000qIDAT(ÏcøÏ€2P[AvCê‡„ÿ‘‚à4!îAäÿÀœ&Ä„ÿ÷ÿ€ÇŠ	AÿÝàQàóÀó¿m\000N^®ÿm>àñ…ã—ÿFð(°x`ñ_+\000§3Óÿÿq”Iƒîµò$7Ð8.0!\000`ÿ;c«§\000\000\000\000IEND®B`‚"
+NODE.content = [[
+iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAQAAAC1+jfqAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U
+29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAABxSURBVCjPY/jPgB8yUFtBdkPqh4T/kR+CD+
+A0Ie5B5P/ABJwmxBiE//f/gMeKkAlB/90W4FHg88Dzv20ATgVeBq7/bT7g8YXjBJf/RgvwKLB4YPF
+fKwCnAjMH0/8a/3EGlEmD7gG1A/IHJDfQOC4wIQALYP87Y6unEgAAAABJRU5ErkJggg==
+]]

@@ -75,7 +75,7 @@ advanced_section_end = {2.3, "div_end"}
 
 --- the content of the page ----------------------------
 content_section  = {3.00, "div_start", id="content_section", open="true"}
- content         = {3.01, "textarea", rows=15, no_label=true}
+ content         = {3.01, "editor", rows=15, no_label=true}
 content_section_end = {3.02, "div_end"}
 --- info about the edit --------------------------------
 edit_info_section  = {4.00, "div_start", id="edit_info_section", open="true"} 
@@ -120,7 +120,7 @@ guru_section_end = {2.36, "div_end"}
 
 --- the content of the page ----------------------------
 content_section  = {3.00, "div_start", id="content_section", open="true"}
- content         = {3.01, "textarea", rows=15, no_label=true}
+ content         = {3.01, "editor", rows=15, no_label=true}
 content_section_end = {3.02, "div_end"}
 
 --- info about the edit --------------------------------
@@ -180,6 +180,11 @@ NODE.html_head = [==[
         href="$make_url{'sputnik/css/layout.css'}" media="screen"/>
   <link type="text/css" rel="stylesheet"
         href="$make_url{'sputnik/css/colors.css'}" media="screen"/>
+  <link rel="stylesheet" type="text/css"
+        href="$make_url{'markitup/css/simple.css'}" />
+  <link rel="stylesheet" type="text/css"
+        href="$make_url{'markitup/css/markdown.css'}" />
+
   $do_css_links[[
    <link type="text/css" rel="stylesheet" href="$href" media="$media"/>
   ]]
@@ -192,6 +197,8 @@ NODE.html_head = [==[
   $do_javascript_snippets[=[
    <script type="text/javascript">/* <![CDATA[ */ $snippet /* ]]> */</script>
   ]=] 
+  <script type="text/javascript" src='$make_url{"markitup/js/markitup.js"}'></script>
+  <script type="text/javascript" src='$make_url{"markitup/js/markdown.js"}'></script>
   <link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>

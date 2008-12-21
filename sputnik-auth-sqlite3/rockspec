@@ -12,7 +12,7 @@ description = {
    maintainer = "Yuri Takhteyev (yuri@freewisdom.org)",
 }
 dependencies = {
-  'luasql-sqlite3 >= 2.2.0rc1-1',
+  'luasql-sqlite3 >= 2.2.0',
   'versium >= 8.07.21',
 }
 build = {

@@ -1,5 +1,6 @@
 package    = 'Sputnik-Auth-SQLite3'
 versions   = {
+   {'8.07.25', 'Sept 29, 2008',    'fixed the dependency in the rockspec'},
    {'8.07.25', 'July 25, 2008',    'the first release'},
 }
 summary    = 'SQLite3-based authentication module for Sputnik'
@@ -21,7 +22,7 @@ rss        = homepage.."releases.rss"
 --------------------------------------------------------------------------------
 
 dependencies = [[
-  'luasql-sqlite3 >= 2.2.0rc1-1',
+  'luasql-sqlite3 >= 2.2.0',
   'versium >= 8.07.21',
 ]]
 

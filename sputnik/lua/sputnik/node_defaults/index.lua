@@ -7,7 +7,7 @@ NODE = {
 NODE.content=[===[
 
 Congratulations, you just installed
-[Sputnik](http://www.freewisdom.org/projects/sputnik/)!  
+[Sputnik](http://sputnik.freewisdom.org/)!  
 
 What's next? 
 

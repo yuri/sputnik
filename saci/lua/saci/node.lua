@@ -143,7 +143,11 @@ end
 -- A simpler inheritance rule that only uses the prototype's value if own
 -- value is not defined.
 function inheritance_rules.fallback(proto_value, own_value)
-   return own_value or proto_value
+   if own_value and own_value~="" then
+      return own_value
+   else
+      return proto_value
+   end
 end
 
 inheritance_rules.default = inheritance_rules.fallback -- set a default

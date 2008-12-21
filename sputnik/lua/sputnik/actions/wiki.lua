@@ -749,7 +749,7 @@ end
 -- Shows the _content_ of the node shown as 'code'.
 -----------------------------------------------------------------------------
 function actions.show_content_as_code(node, request, sputnik)
-   local escaped = sputnik:escape(node.content) 
+   local escaped = sputnik:escape(node.raw_values.content) 
    return "<pre><code>"..escaped.."</code></pre>"
 end
 

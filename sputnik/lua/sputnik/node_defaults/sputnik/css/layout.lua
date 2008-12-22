@@ -86,10 +86,19 @@ body {
 }
 #menu_bar ul#menu li a    {                                 
  padding    :   .3em   1em 0.3em   1em;
- position   : relative; 
- font-size  : 140%; 
+ position   : relative;
  text-decoration: none;
 }
+
+ul#menu li {
+ font-size  : 140%; 
+}
+
+ul#menu li ul li {
+ font-size  : 80%; 
+}
+
+
 #menu_bar ul#menu li ul {
  margin     :    0em   0em   0em   0em;
  padding    :   .8em   0em  .4em   0em;
@@ -114,19 +123,43 @@ body {
  display    : inline;
  list-style-type: none;
 }
+
+#sidebar ul#menu {
+ margin: 1em 0 0 0;
+ list-style-type: none;
+}
+
+#sidebar ul#menu, #sidebar ul#menu li {
+ padding: 0 0 0 0;
+}
+
+#sidebar ul#menu li a {
+ padding: 0.3em .2em .3em 1em;
+ margin: 0 0 0 0;
+ display: block;
+ width: 80%;
+}
+
+#sidebar ul#menu li ul {
+ padding: 0 0.5em 0 1em;
+}
+
 #menu_bar ul#menu li ul li a {
  margin     :    0em  .5em   0em  .5em; 
  padding    :    0em  .2em   0em  .2em;
  font-size  : 100%;
  font-family: Verdana, sans-serif;
  font-weight: bold;
+}
+
+ul#menu li a, ul#menu li ul li a {
  text-decoration:none;
 }
 
 /* "BODY"           */
 #bd {
  margin:    0em   0em   0em   0em;
- padding:   0em   0em   0em   2em;
+ padding:   0em   0em   0em   0em;
 }
 #yui-main {
 }

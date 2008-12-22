@@ -191,12 +191,27 @@ NODE.html_head = [==[
   $do_css_snippets[[
    <style type="text/css" media="$media">$snippet</style>
   ]]
+
+  <script type="text/javascript" src="$make_url{'jquery.js'}"></script>
   $do_javascript_links[[
    <script type="text/javascript" src="$href"></script>
   ]]
   $do_javascript_snippets[=[
    <script type="text/javascript">/* <![CDATA[ */ $snippet /* ]]> */</script>
   ]=] 
+
+<script>
+$(document).ready(function(){
+ $("#sidebar ul#menu ul.back").slideUp()
+ $("#sidebar ul#menu > li > a").click(function(){
+  $("#sidebar ul#menu li ul").slideUp();
+  $(this).siblings("ul").slideToggle();
+  return false;
+ });
+});
+</script>
+
+
   <script type="text/javascript" src='$make_url{"markitup/js/markitup.js"}'></script>
   <script type="text/javascript" src='$make_url{"markitup/js/markdown.js"}'></script>
   <link rel="shortcut icon" href="$favicon_url"/>
@@ -206,11 +221,11 @@ NODE.html_head = [==[
 
 NODE.html_menu = [==[
    <!--navigation bar --> 
-    <ul id='menu'>   $do_nav_sections[=[
-     <li class='$class' id='$id'>
+    <ul id='menu' class="level1">   $do_nav_sections[=[
+     <li class='$class level1' id='$id'>
       <a $link>$title</a>
-      <ul class='$class'> <!-- ul.back will be hidden via CSS -->
-       $subsections[[<li class='$class'><a $link>$title</a></li>]]
+      <ul class='$class level2'> <!-- ul.back will be hidden via CSS -->
+       $subsections[[<li class='$class level2'><a $link>$title</a></li>]]
        <li style="display:none">&nbsp;</li>
       </ul>
      </li>]=]
@@ -282,7 +297,7 @@ NODE.html_header = [===[
 ]===]
 
 NODE.html_body = [===[
-  <div id='doc3' class='yui-t0'>
+  <div id='doc3' class='yui-t1'>
    <div id='hd'>
     $header
    </div>
@@ -303,8 +318,7 @@ NODE.html_body = [===[
   <br/>
 ]===]
 
-NODE.html_sidebar = [==[
-   $menu
+NODE.html_sidebar = [==[$menu
 ]==]
 
 NODE.html_footer = [===[

@@ -62,13 +62,34 @@ H2                    { COLOR: $HEADER;                                         
 H3                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 2px dotted $H_LINE;      }
 H4                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 1px dotted $H_LINE;      }
 H5                    { COLOR: $HEADER;                                                                                    }
-ul#menu a             { color: $MENU_TEXT;       background: $MENU_BG;                                                     }
-ul#menu li a:hover    { color: $MENU_TEXT_HOVER;                                                                           }
+ul#menu li a             { color: $MENU_TEXT;       background: $MENU_BG;                                                     }
+
+#sidebar ul#menu li.level1 > a:hover    {
+ color: $MENU_TEXT_HOVER;       
+}
+#menu_bar ul#menu li a:hover    {
+ color: $MENU_TEXT_HOVER;
+}
 ul#menu li.front a    {                          background: $NAVBAR;                                                      }
-ul#menu li ul            {                          background: $NAVBAR;                                                      }
-ul#menu li ul li.front a { color: $WHITE;           background: $SUBMENU_CURRENT_BG;  BORDER:        2px solid  $SUBMENU_CURRENT_BORDER; }
-ul#menu li ul li.back a  { color: $SUBMENU_FG;      background: $SUBMENU_BG;          BORDER:        1px solid  $SUBMENU_BORDER; }
-ul#menu li ul li a:hover { color: $MENU_TEXT_HOVER;                                                                           }
+
+ul#menu li ul li a {
+ background: white;
+ color: black;
+}
+ul#menu li.front ul li a {
+ background: white;
+ color: black;
+}
+
+#menu_bar ul#menu li ul            {                          background: $NAVBAR;                                                      }
+#menu_bar ul#menu li ul li.front a { color: $WHITE;           background: $SUBMENU_CURRENT_BG;  BORDER:        2px solid  $SUBMENU_CURRENT_BORDER; }
+#menu_bar ul#menu li ul li.back a  { color: $SUBMENU_FG;      background: $SUBMENU_BG;          BORDER:        1px solid  $SUBMENU_BORDER; }
+#menu_bar ul#menu li ul li a:hover { color: $MENU_TEXT_HOVER;                                                                           }
+
+#sidebar ul#menu li ul li.front a {
+ font-weight: bold;
+}
+
 
 DEL                   { COLOR: $BLACK;           background: $LIGHT_GRAY;                                                  }
 INS                   { COLOR: $TEXT;            background: $INS;                                                         }

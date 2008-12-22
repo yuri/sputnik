@@ -55,7 +55,9 @@ CSS = [[
 body                  {                          background: $BODY_BG;                                                     }
 
 #bd                   {                          background: $WHITE;               BORDER:        1px solid  $DARK_GRAY;   }
-#sidebar              {                                                            border-right:  1px solid  $NAVBAR;      }
+#sidebar              {
+ /*border-right:  1px solid  $NAVBAR;      */
+}
 H1                    {                                                            BORDER-BOTTOM: 4px solid  $NAVBAR;      }
 H1.title A            { color: black;                                                                                      }
 H2                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 4px solid  $H_LINE;      }

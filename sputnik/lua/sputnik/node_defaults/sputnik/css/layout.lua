@@ -125,7 +125,7 @@ ul#menu li ul li {
 }
 
 #sidebar ul#menu {
- margin: 1em 0 0 0;
+ margin: .3em 0 0 .3em ;
  list-style-type: none;
 }
 

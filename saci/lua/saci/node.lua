@@ -359,7 +359,9 @@ function Node:get_child(id)
       return nil
    end
    if self.child_defaults[id] then
-      return self.repository:make_node(self.child_defaults[id], self.id.."/"..id)
+      return self.repository:make_node(
+                cosmo.fill(self.child_defaults[id], self),
+                self.id.."/"..id)
    elseif self.child_defaults.any then
       return self.repository:make_node(self.child_defaults.any, self.id.."/"..id)
    elseif self.child_defaults.patterns then

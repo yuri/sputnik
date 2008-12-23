@@ -256,7 +256,7 @@ function FileDirVersium:get_node_history(id, prefix, limit)
    if not self:node_exists(id) then return nil end
 
    local raw_history = get_raw_history(self.dir, id)
-   assert(raw_history:len() > 0)
+   assert(raw_history:len() > 0, "Empty history for node '"..id.."'.")
    return parse_history(raw_history, prefix, limit)
 end
 

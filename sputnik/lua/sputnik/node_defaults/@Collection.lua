@@ -1,18 +1,63 @@
 module(..., package.seeall)
 NODE = {
    title      = "@Collection",
-   actions    = [[show = "collections.list_children"]],
+   actions    = [[
+      show = "collections.list_children"
+      rss = "collections.rss"
+      xml = "collections.list_children_as_xml"
+   ]],
+   child_proto = "@Root"
 }
 
 NODE.fields = [=[
-child_proto = {1.1, ""}
+child_proto = {1.1, proto="fallback"}
+content_template = {1.2, proto="fallback"}
+xml_template = {1.3, proto="fallback"}
+]=]
+
+NODE.admin_edit_ui = [=[
+collection_section = {1.401, "div_start", id="collection_section"}
+ child_proto = {1.401, "text_field"}
+ content_template = {1.402, "textarea"}
+ xml_template = {1.403, "textarea"}
+collection_section_end = {1.404, "div_end"}
+]=]
+
+NODE.content_template = [=[
+
+Create <a href="$new_url">new item</a>.
+
+<br/><br/>
+
+<table class="sorttable" width="100%">
+ <thead>
+  <tr>
+   <th>id</th>
+   <th>title</th>
+  </tr>
+ </thead>
+ $do_nodes[[
+  <tr>
+   <td><a href="$url">$id</a></td>
+   <td><a href="$url">$title</a></td>
+  </tr>
+ ]]
+ </table>
+]=]
+
+NODE.xml_template = [=[<?xml version="1.0" encoding="UTF-8"?>
+ <collection id="$id">
+  $do_nodes[[
+  <item id="$id" title="$title"/>
+  ]]
+ </collection>
 ]=]
 
 NODE.child_defaults = [=[
 new = [[ 
-prototype = "$id"
+prototype = "$child_proto"
 title     = "New Item"; 
-actions   = 'save="tickets.save_new"';
+actions   = 'save="collections.save_new"';
 ]]
 ]=]
 

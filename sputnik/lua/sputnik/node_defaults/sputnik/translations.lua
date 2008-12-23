@@ -389,6 +389,22 @@ EDIT_FORM_ADMIN_EDIT_UI = {
    ru    = "Редактирование для админа",
 }
 
+EDIT_FORM_CHILD_PROTO = {
+   en_US = "Child Prototype"
+}
+
+EDIT_FORM_COLLECTION_SECTION = {
+   en_US = "Collection Fields"
+}
+
+EDIT_FORM_CONTENT_TEMPLATE = {
+   en_US = "Content Template"
+}
+
+EDIT_FORM_XML_TEMPLATE = {
+   en_US = "XML Template"
+}
+
 
 -----------------------------------------------------------------------------
 -----  LOGIN  ---------------------------------------------------------------
@@ -413,6 +429,7 @@ EDIT_FORM_PASSWORD = {
    ru    = "Пароль",
    pt_BR = "Senha",
 }
+
 
 -- A note to the user that they must be logged in to edit
 YOU_MUST_BE_LOGGED_IN = {

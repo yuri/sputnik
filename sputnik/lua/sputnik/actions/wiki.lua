@@ -953,6 +953,9 @@ function wrappers.default(node, request, sputnik)
 
    local nav_sections, nav_subsections = get_nav_bar(node, sputnik)
 
+   
+
+
    local values = {
       site_title       = sputnik.config.SITE_TITLE or "",
       title            = sputnik:escape(node.title),
@@ -1006,6 +1009,10 @@ function wrappers.default(node, request, sputnik)
       -- icons are urls of images
       if_title_icon    = cosmo.c(node.icon and node.icon~=""){title_icon = sputnik:make_url(node.icon)},
    }
+
+   for k, v in pairs(node.fields) do
+      values[k] = values[k] or node[k]
+   end
 
    local function translate_and_fill(template, values)
       return cosmo.fill(node.translator.translate(template), values)

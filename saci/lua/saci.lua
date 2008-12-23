@@ -106,7 +106,7 @@ function Saci:deflate(node, fields)
    end
    table.sort(keysort, function(x, y)
                           if fields and fields[x] and fields[y] then
-                             return fields[x][1] < fields[y][1]
+                             return (fields[x][1] or 1000) < (fields[y][1] or 1000)
                           else
                              return x < y
                           end

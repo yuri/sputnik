@@ -182,7 +182,6 @@ function actions.show_index_content(node, request, sputnik)
    local items
    if node.id:match("/[a-z]") then
       local section, tag
-      print(node.id)
       node.id, section, tag = node.id:match("(.-)/(.-)/(.*)")
       items = get_visible_items_by_tag(sputnik, request.user, node.id, tag)
    else

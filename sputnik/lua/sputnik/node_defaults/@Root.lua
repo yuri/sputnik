@@ -292,7 +292,7 @@ NODE.html_header = [===[
    </div>
 
     <div id="menu_bar">
-     $menu
+     <br/><br/>
     </div>
 ]===]
 

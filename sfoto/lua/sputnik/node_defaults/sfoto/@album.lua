@@ -22,6 +22,6 @@ NODE.child_defaults = [=[
 NODE.permissions = [[
 deny(all_users, "edit")
 deny(all_users, "save")
-allow(is_admin, "edit")
-allow(is_admin, "save")
+allow(Admin, "edit")
+allow(Admin, "save")
 ]]

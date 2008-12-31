@@ -445,7 +445,7 @@ end
 function Sputnik:update_node_with_params(node, params)
    node:update(params, node.fields)
    --new_node.name = node.name
-   self:prime_node(node)
+   self:decorate_node(node)
    return node
 end
 

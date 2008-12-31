@@ -5,6 +5,7 @@ repository = {}
 
 ----------------------------------------------------- old -------------------
 repository['cosmo']={}                                             -- remove?
+repository['cosmo']['8.04.14-1']            = {{arch='rockspec'}}  -- test
 
 ----------------------------------------------------- kepler-cvs ------------
 repository['luasql-sqlite3'] = {}       
@@ -102,5 +103,9 @@ repository['sputnik-medialike']['8.08.08-0']= {{arch='rockspec'}}  -- up2date
 repository['sputnik-search-google'] = {}
 repository['sputnik-search-google']['8.08.25-0']   = {{arch='rockspec'}}  -- up2date
 
+repository['luafilesystem'] = {}
+repository['luafilesystem']['1.4.1-1']      = {{arch='rockspec'}}  -- up2date
 
+repository['lpeg'] = {}
+repository['lpeg']['0.9-1']                 = {{arch='rockspec'}}  -- up2date
 

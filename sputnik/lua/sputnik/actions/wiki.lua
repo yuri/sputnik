@@ -15,7 +15,6 @@ require("saci.sandbox")
 
 local util = require("sputnik.util")
 local html_forms = require("sputnik.util.html_forms")
-local date_selector = require("sputnik.util.date_selector")
 
 -----------------------------------------------------------------------------
 -- Creates the HTML for the navigation bar.
@@ -26,9 +25,11 @@ local date_selector = require("sputnik.util.date_selector")
 -----------------------------------------------------------------------------
 function get_nav_bar (node, sputnik)
    assert(node)
+
    local nav_node = sputnik:get_node(sputnik.config.DEFAULT_NAVIGATION_BAR)
+
    local nav = nav_node.content.NAVIGATION
-   local cur_node = sputnik:dirify(node.name)          
+   local cur_node = sputnik:dirify(node.name)
 
    local function matches(id, patterns)
       patterns = patterns or {}
@@ -66,6 +67,7 @@ function get_nav_bar (node, sputnik)
    if not nav.current_section then
       nav[1].class="front"
    end
+
    return nav
 end
 
@@ -320,7 +322,7 @@ function actions.history(node, request, sputnik)
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
             cosmo.yield{
-               version_link = node.links:show{ version = edit.version },
+               version_link = sputnik:make_link(node.id, nil, {version = edit.version}),
                version      = edit.version,
                date         = sputnik:format_time(edit.timestamp, "%Y/%m/%d"),
                time         = sputnik:format_time(edit.timestamp, "%H:%M %z"),
@@ -340,13 +342,6 @@ function actions.history(node, request, sputnik)
    end 
 
    node.inner_html = cosmo.f(node.templates.HISTORY){
-      date_selector = date_selector.make_date_selector{
-                         template = node.templates.DATE_SELECTOR,
-                         current_date = request.params.date,
-                         datelink = function(date)
-                            return node.links:history{date=date}
-                         end
-                      },
       do_revisions  = do_revisions, -- the function defined above
       version       = node.version,
       node_name     = node.name,
@@ -410,12 +405,12 @@ function actions.complete_history(node, request, sputnik)
             local author_display, author_ip_for_link = author_or_ip(edit)
             local is_minor = (edit.minor or ""):len() > 0
             cosmo.yield{
-               version_link = edit.node.links:show{ version = edit.version },
-               diff_link    = edit.node.links:diff{ version=edit.version, other=edit.previous },
+               version_link = sputnik:make_link(edit.id, nil, {version = edit.version}),
+               diff_link    = sputnik:make_link(edit.id, "diff", {version=edit.version, other=edit.previous}),
                diff_icon    = sputnik:make_url("icons/diff", "png"),
-               history_link = edit.node.links:history(),
+               history_link = sputnik:make_link(edit.id, "history"),
                history_icon = sputnik:make_url("icons/history", "png"),
-               latest_link  = edit.node.links:show(),
+               latest_link  = sputnik:make_link(edit.id),
                version      = edit.version,
                if_new_date  = cosmo.c(false){},
                if_edit      = cosmo.c(true){},
@@ -435,15 +430,7 @@ function actions.complete_history(node, request, sputnik)
       end
    end 
 
-   
    node.inner_html = cosmo.f(node.templates.COMPLETE_HISTORY){
-      date_selector = date_selector.make_date_selector{
-                         current_date = request.params.date,
-                         datelink = function(date)
-                            local n = sputnik:pseudo_node(sputnik.config.HISTORY_NODE)
-                            return n.links:show{date=date}
-                         end
-                      },
       do_revisions  = do_revisions, -- function defined above
       version       = node.version,
       base_url      = sputnik.config.BASE_URL,
@@ -480,7 +467,7 @@ function actions.rss(node, request, sputnik)
                          cosmo.yield{
                             link        = "http://" .. sputnik.config.DOMAIN ..
                                           sputnik:escape_url(
-                                             edit.node.urls:show{version=node.version}
+                                             sputnik:make_link(edit.id, "show", {version=node.version})
                                           ),
                             title       = string.format("%s: %s by %s",
                                                         edit.version,
@@ -614,7 +601,6 @@ function actions.edit (node, request, sputnik, etc)
    node:add_javascript_link(sputnik:make_url("sputnik/js/editpage.js"))
    node:add_javascript_link(sputnik:make_url("jquery/textarearesizer.js"))
 
-
    -- select the parameters that should be copied
    local fields = {}
    for field, field_params in pairs(node.fields) do
@@ -683,6 +669,7 @@ function actions.edit (node, request, sputnik, etc)
                         action_url      = sputnik.config.BASE_URL,
                         captcha         = captcha_html,
                      }
+
    return node.wrappers.default(node, request, sputnik)
 end
 
@@ -705,12 +692,12 @@ function actions.diff(node, request, sputnik)
    local this_node_info  = sputnik.saci:get_node_info(node.id, request.params.version)
    node.inner_html  = cosmo.f(node.templates.DIFF){  
                          version1 = request.params.version,
-                         link1    = node.links:show{version=request.params.version},
+                         link1    = sputnik:make_link(node.id, "show", {version=request.params.version}),
                          author1  = author_or_ip(this_node_info),
                          time1    = sputnik:format_time(this_node_info.timestamp, "%H:%M %z"),
                          date1    = sputnik:format_time(this_node_info.timestamp, "%Y/%m/%d"),
                          version2 = request.params.other,
-                         link2    = node.links:show{version=request.params.other},
+                         link2    = sputnik:make_link(node.id, "show", {version=request.params.other}),
                          author2  = author_or_ip(other_node_info),
                          time2    = sputnik:format_time(other_node_info.timestamp, "%H:%M %z"),
                          date2    = sputnik:format_time(other_node_info.timestamp, "%Y/%m/%d"),
@@ -806,7 +793,7 @@ end
 function actions.action_not_found(node, request, sputnik)
    node.inner_html = cosmo.f(node.templates.ACTION_NOT_FOUND){
                         title             = node.title,
-                        url               = node.urls:show(),
+                        url               = sputnik:make_url(node.id),
                         action            = request.action,
                         if_custom_actions = cosmo.c(node.raw_values.actions and node.raw_values.actions:len() > 0){
                                                actions = node.raw_values.actions
@@ -953,9 +940,6 @@ function wrappers.default(node, request, sputnik)
 
    local nav_sections, nav_subsections = get_nav_bar(node, sputnik)
 
-   
-
-
    local values = {
       site_title       = sputnik.config.SITE_TITLE or "",
       title            = sputnik:escape(node.title),
@@ -988,14 +972,14 @@ function wrappers.default(node, request, sputnik)
       if_multipart_id  = cosmo.c(node.id:match("/")){},
 
       -- "links" include "href="
-      show_link        = node.links:show(),
+      show_link        = sputnik:make_link(node.id),
       if_can_edit      = cosmo.c(node:check_permissions(request.user, "edit")){},
-      edit_link        = node.links:edit{version = request.params.version},
+      edit_link        = sputnik:make_link(node.id, "edit", {version = request.params.version}),
       if_can_see_history = cosmo.c(node:check_permissions(request.user, "history")){},
-      history_link     = node.links:history(),
+      history_link     = sputnik:make_link(node.id, "history"),
       if_can_see_feed  = cosmo.c(node:check_permissions(request.user, "rss")){},
-      site_rss_link    = sputnik:pseudo_node(sputnik.config.HISTORY_PAGE).links:rss(),
-      node_rss_link    = node.links:rss(),
+      site_rss_link    = sputnik:make_link(sputnik.config.HISTORY_PAGE, "rss"),
+      node_rss_link    = sputnik:make_link(node.id, "rss"),
       sputnik_link     = "href='http://sputnik.freewisdom.org/'",
       -- urls are just urls
       make_url         = function(args)

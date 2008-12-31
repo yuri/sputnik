@@ -393,18 +393,14 @@ function Sputnik:get_node(id, version, mode)
       node.title = temp_title
       node.raw_values.title = temp_title
    end
-   if mode~="basic" then
-      self:prime_node(node)
-   end
    return node, stub
 end
 
 -----------------------------------------------------------------------------
 -- Adds extra sputnik-specific fields to a node.
 -----------------------------------------------------------------------------
-function Sputnik:prime_node(node)
+function Sputnik:decorate_node(node)
    node.markup = self.markup
-   self:add_links_and_urls(node)
    node.messages = {}
    for i, class in ipairs{"error", "warning", "success", "notice"} do
       node["post_"..class] = function(self, message) 
@@ -435,43 +431,13 @@ function Sputnik:prime_node(node)
       return add(self.css_snippets, href.."|"..media, {snippet = snippet, media = media})
    end
    function node:add_javascript_link(href)
-      return add(self.javascript_links, href, {href=href})
+      add(self.javascript_links, href, {href=href})
    end
    function node:add_javascript_snippet(snippet)
       return add(self.javascript_snippets, snippet, {snippet=snippet})
    end
    return node
 end  
-
------------------------------------------------------------------------------
--- Makes node.urls:foo(params) equivalent to sputnik:make_url(node.name, "foo", 
--- params) and node.links:foo(params) equivalent to sputnik:make_link(
--- node.name, "foo", params) for ANY foo.
------------------------------------------------------------------------------
-function Sputnik:add_links_and_urls(node)
-
-   local make_fn = function (method, key)
-      return function(inner_self, params)
-                -- method is either self.make_link or self.make_url
-                return method(self, node.name, key, params, nil, 
-                              {mark_missing=false})
-      end
-   end
-   node.urls  = { __index = function(table, key) return make_fn(self.make_url, key) end }
-   setmetatable(node.urls, node.urls)
-   node.links = { __index = function(table, key) return make_fn(self.make_link, key) end }
-   setmetatable(node.links, node.links)
-   return node
-end
-
------------------------------------------------------------------------------
--- Generates a node-like table to make urls.
------------------------------------------------------------------------------
-function Sputnik.pseudo_node(self, node_name)
-   local node = {name = node_name }
-   self:add_links_and_urls(node)
-   return node
-end
 
 -----------------------------------------------------------------------------
 --- Updates node with values from params table.
@@ -502,11 +468,8 @@ end
 function Sputnik:get_complete_history(limit, date)
    local edits = {}
    for i, id in ipairs(self:get_node_names()) do
-      local node = Sputnik.pseudo_node(self, id)
-      node.id = id
       for i, edit in ipairs(self:get_history(id, limit, date)) do
          edit.id = id
-         edit.node = node
          table.insert(edits, edit)
       end
    end
@@ -681,6 +644,7 @@ function Sputnik:handle_request(request, response)
 
    
    local node, stub = self:get_node(request.node_name, request.params.version)
+   self:decorate_node(node)
   
    if stub and self.config.PROTOTYPE_PATTERNS then
       -- If an empty stub was returned, check the PROTOTYPE_PATTERNS table to

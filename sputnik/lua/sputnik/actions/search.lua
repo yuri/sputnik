@@ -8,7 +8,7 @@ local sorttable = require"sputnik.javascript.sorttable"
 
 TEMPLATE = [[
 $do_nodes[=[
-  <p><a title="$title" href="$url">$name</a> - <i>$backlinks, $time</i></p>
+  <p><a title="$title" href="$url">$name</a> - $time</p>
   <p>$snippet</p>
 ]=]
 ]]
@@ -62,7 +62,7 @@ actions.show_results = function(node, request, sputnik)
                                             name = node.id:gsub("_", " "),
                                             title = node.title,
                                             url = sputnik.config.NICE_URL..node.id,
-                                            backlinks = weights[node.id] or 0,
+                                            --backlinks = weights[node.id] or 0,
                                             snippet = "", --snippets[id],
                                             time = sputnik:format_time(metadata.timestamp, "%Y/%m/%d")
                                          }

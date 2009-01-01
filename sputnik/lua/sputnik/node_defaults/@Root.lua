@@ -19,6 +19,7 @@ html_menu       = {0.703, proto="fallback"}
 html_logo       = {0.704, proto="fallback"}
 html_search     = {0.705, proto="fallback"}
 html_page       = {0.706, proto="fallback"}
+html_content    = {0.7061, proto="fallback"}
 html_body       = {0.707, proto="fallback"}
 html_header     = {0.708, proto="fallback"}
 html_footer     = {0.708, proto="fallback"}
@@ -106,6 +107,7 @@ html_section     = {2.100, "div_start", id="html_section", state="open"}
  html_logo       = {2.106, "textarea", rows=3 }
  html_search     = {2.107, "textarea", rows=3 }
  html_page       = {2.108, "textarea", rows=3 }
+ html_content    = {2.108, "textarea", rows=3 }
  html_sidebar    = {2.109, "textarea", rows=3 }
  html_footer     = {2.110, "textarea", rows=3 }
 html_section_end = {2.111, "div_end"}
@@ -208,6 +210,18 @@ $(document).ready(function(){
   $(this).siblings("ul").slideToggle();
   return false;
  });
+
+ $("span.ctrigger").click(function () {
+                                var selector = "#" + this.id.substring(8);
+                                $(selector).slideToggle();
+                                $(this).toggleClass("closed");
+                                });
+                // Actually hide all the closed elements
+                $("span.ctrigger.closed").each(function() {
+                                var selector = "#" + this.id.substring(8);
+                                $(selector).hide();
+                });
+
 });
 </script>
 
@@ -272,6 +286,10 @@ NODE.html_page = [==[
       </h1>
       $do_messages[[<p class="$class">$message</p>]]
       <div class='content'>$content</div>
+]==]
+
+NODE.html_content = [==[
+Not used by default.
 ]==]
 
 NODE.html_logo = [==[

@@ -1,16 +1,18 @@
 module(..., package.seeall)
+
 NODE = {
-   title="Templates:MBox",
-   summary="The default version",
-   prototype="@Lua_Config",
+   actions="show='mbox.show'",
+   title = "Mailing List Thread",
+   content = "   "
 }
-NODE.content=[=========[
 
+NODE.permissions = [[
+deny(all, edit_and_save)
+allow(Admin, edit_and_save)
+]]
 
-THREAD = [====[
-
+NODE.html_content = [====[
 <div width='100%'>
-
  <style>
   .email_from {
     font-size: 200%;
@@ -45,7 +47,6 @@ THREAD = [====[
     margin: 0 0 0 0;
     padding: 3px 10px 3px 15px;
   }
-
   blockquote {
     border-left: 2px solid #ddd;
     margin-left: 10px;
@@ -81,6 +82,5 @@ THREAD = [====[
    ]=]
 
 </div>
-
 ]====]
-]=========]
+

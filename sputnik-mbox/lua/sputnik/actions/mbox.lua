@@ -61,25 +61,54 @@ end
 
 actions.show = function(node, request, sputnik)
 
+   --node:add_javascript_link(sputnik:make_url("sputnik/js/editpage.js"))
+
    local messages = mbox.new(node.content)
-   node.inner_html = cosmo.f(node.templates.THREAD){
+   local counts_by_username = {}
+   local closed = ""
+   node.inner_html = cosmo.f(node.html_content){
                         do_messages = function() 
                            for i, m in ipairs(messages) do
                               m = mbox.new_message(m)
                               set_name(m)
                               local attachments = get_attachments(m)
+
+                              local email = m.headers.email:gsub("%s*$", ""):gsub("^%s*", ""):gsub("@", " at ")
+                              local username = email:match("^%S*"):lower()
+                              local user_id = username:gsub("[^a-z]", "_")
+
+                              counts_by_username[user_id] = 1 + (counts_by_username[user_id] or 0)
+
+                              local body_lines = {}
+
+                              local prev = ""
+                              for line in m.body:gmatch("[^\n]*") do
+                                 if line:sub(0,1) == ">" then
+                                    line = "<span class='quote_in_email'>"..sputnik:escape(line).."</span>"
+                                 else
+                                    line = sputnik:escape(line)
+                                 end
+                                 if line~="" or prev=="" then
+                                    table.insert(body_lines, line)
+                                 end
+                                 prev = line
+                              end
+
                               cosmo.yield {
                                     name  = m.headers.name,
-                                    email = m.headers.email:gsub("%s*$", ""):gsub("^%s*", ""),
+                                    email = email,
+                                    closed = closed,
+                                    message_id = string.format("%s_%d", user_id, counts_by_username[user_id]),
+                                    username = username,
                                     date  = m.headers.date, --os.date("!%Y-%m-%d", m:get_from_line_date()),
-                                    body  = sputnik:escape(m.body),
-                                    raw_body = m.body,
+                                    body  = table.concat(body_lines, "\n"),
                                     do_attachments = function()
                                        for j, a in ipairs(attachments) do
                                           cosmo.yield(a)
                                        end
                                     end
                               }
+                              closed = "closed"
                            end
                         end
                      }

@@ -295,9 +295,9 @@ end
 -- @param extra          extra params (optional).
 -- @return               nothing.
 -----------------------------------------------------------------------------
-function Node:save(author, comment, extra)
+function Node:save(author, comment, extra, timestamp)
    author = author or ""
-   self.repository:save_node(self, author, comment, extra)
+   self.repository:save_node(self, author, comment, extra, timestamp)
 end
 
 

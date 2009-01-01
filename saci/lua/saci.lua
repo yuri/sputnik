@@ -212,10 +212,10 @@ end
 -- @param extra          extra params (optional).
 -- @return               nothing
 -----------------------------------------------------------------------------
-function Saci:save_node(node, author, comment, extra)
+function Saci:save_node(node, author, comment, extra, timestamp)
    assert(node.id)
    self.versium:save_version(node.id, self:deflate(node.raw_values, node.fields),
-                             author, comment, extra)
+                             author, comment, extra, timestamp)
 end
 
 -----------------------------------------------------------------------------
@@ -223,13 +223,13 @@ end
 -- prefix (e.g., "2007-12") and/or capped at a certain number.
 --
 -- @param id             the id of the node.
--- @param prefix         [optional] a date prefix (e.g., "2007-12").
+-- @param date_prefix    [optional] a date prefix (e.g., "2007-12").
 -- @param limit          [optional] a maxium number of records to return.
 -- @return               history as a table.
 -----------------------------------------------------------------------------
-function Saci:get_node_history(id, prefix, limit)
+function Saci:get_node_history(id, date_prefix, limit)
    assert(id)
-   local versium_history = self.versium:get_node_history(id, prefix, limit) or {}
+   local versium_history = self.versium:get_node_history(id, date_prefix, limit) or {}
    for i,v in ipairs(versium_history) do
       v.get_node = function() return self:get_node(id, v.version) end
    end

@@ -26,6 +26,7 @@ new_wsapi_run_fn = sputnik.wsapi_app.new  -- for backwards compatibility
 local function apply_defaults(config)
    config                  = config or {}
    assert(config.TOKEN_SALT, "TOKEN_SALT must be set")
+   assert(config.BASE_URL, "BASE_URL must be set")
    config.ROOT_PROTOTYPE   = config.ROOT_PROTOTYPE or "@Root"
    config.PASSWORD_SALT    = config.PASSWORD_SALT 
                              or "2348979898237082394172309847123"
@@ -128,6 +129,7 @@ function Sputnik:init(initial_config)
    assert(config_node, "Failed to retrieve the config node "
                        ..tostring(self.config.CONFIG_PAGE_NAME))
    assert(type(config_node)=="table")
+   --print(config_node.content, "XX", config_node.fields.content.activate)
    for k,v in pairs(config_node.content) do
       self.config[k] = v
    end
@@ -452,8 +454,8 @@ end
 -----------------------------------------------------------------------------
 -- Returns node's history.
 -----------------------------------------------------------------------------
-function Sputnik:get_history(node_name, limit, date)
-   local edits = self.saci:get_node_history(node_name, date, limit)
+function Sputnik:get_history(node_name, limit, date_prefix)
+   local edits = self.saci:get_node_history(node_name, date_prefix, limit)
    if limit then 
       for i=limit, #edits do
          table.remove(edits, i)
@@ -465,12 +467,16 @@ end
 -----------------------------------------------------------------------------
 -- Returns history for all nodes.
 -----------------------------------------------------------------------------
-function Sputnik:get_complete_history(limit, date)
+function Sputnik:get_complete_history(limit, date_prefix, id_prefix)
    local edits = {}
+   local id_prefix = id_prefix or ""
+   local preflen = id_prefix:len()
    for i, id in ipairs(self:get_node_names()) do
-      for i, edit in ipairs(self:get_history(id, limit, date)) do
-         edit.id = id
-         table.insert(edits, edit)
+      if id:sub(1, preflen) == id_prefix then
+         for i, edit in ipairs(self:get_history(id, limit, date_prefix)) do
+            edit.id = id
+            table.insert(edits, edit)
+         end
       end
    end
    table.sort(edits, function(e1, e2) return e1.timestamp > e2.timestamp end)

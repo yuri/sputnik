@@ -358,7 +358,8 @@ end
 function actions.complete_history(node, request, sputnik)
    require("md5")
    local edits = sputnik:get_complete_history(sputnik.config.MAX_ITEMS_IN_HISTORY or 200,
-                                              request.params.date)
+                                              request.params.date,
+                                              request.params.prefix)
 
    -- figure out which revisions are stale so that we could group them with
    -- the later ones.

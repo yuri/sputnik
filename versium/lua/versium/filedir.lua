@@ -73,16 +73,16 @@ end
 --x--------------------------------------------------------------------------
 -- Parses raw history file into a table, filters by timestamp prefix.
 -----------------------------------------------------------------------------
-local function parse_history(raw_history, prefix, limit)
+local function parse_history(raw_history, date_prefix, limit)
    local all_versions = {}
    local more
-   prefix = "" --prefix or ""
-   local preflen = prefix:len()
+   date_prefix = date_prefix or ""
+   local preflen = date_prefix:len()
    local counter = 0
    local f = loadstring(raw_history)
    local environment = {
       add_version = function (values)
-                       if values.timestamp:sub(1, preflen) == prefix then
+                       if values.timestamp:sub(1, preflen) == date_prefix then
                           if counter == limit then
                              more = true
                           else 
@@ -246,17 +246,17 @@ end
 -- exist.
 --
 -- @param id             the id of the node.
--- @param prefix         time prefix.
+-- @param date_prefix    time prefix.
 -- @param limit          the max number of history items to return
 -- @return               a list of tables representing the versions (the list
 --                       will be empty if the node doesn't exist).
 -----------------------------------------------------------------------------
-function FileDirVersium:get_node_history(id, prefix, limit)
+function FileDirVersium:get_node_history(id, date_prefix, limit)
    assert(id)
    if not self:node_exists(id) then return nil end
 
    local raw_history = get_raw_history(self.dir, id)
    assert(raw_history:len() > 0, "Empty history for node '"..id.."'.")
-   return parse_history(raw_history, prefix, limit)
+   return parse_history(raw_history, date_prefix, limit)
 end
 

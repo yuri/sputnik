@@ -29,7 +29,6 @@ local function subject_to_id_and_title(subject)
    subject = subject:gsub("%s+"," "):gsub("^%s+", ""):gsub("%s+$", "") -- trim whitespace
    local id = sputnik.util.dirify(subject):gsub("%[","_"):gsub("%]","_"):gsub("%.", "_")
    --local html_title = subject:gsub("%[", "&rsqb;"):gsub("%]", "&lsqb;")
-   print(subject, id)
    return id, subject  --, html_title 
 end
 
@@ -53,7 +52,6 @@ function run(path, prototype, prefix)
 
    for k, thread in pairs(threads) do
       local id, title = subject_to_id_and_title(thread[1].headers.subject)
-      print(id)
       id = prefix..id
       print(id)
       local node = my_sputnik:get_node(id)
@@ -70,8 +68,8 @@ function run(path, prototype, prefix)
                       prototype = prototype
                     }
          )
-         node:save(m:get_sender_email():match("^%S*").."@...",
-                          "test", {}, os.date("!%Y-%m-%d %H:%M:%S", m:get_from_line_date()))
+         node:save(m:get_sender_email():match("^%S*").."@...", "", {},
+                   os.date("!%Y-%m-%d %H:%M:%S", m:get_from_line_date()))
       end
          
       --local stars = ""

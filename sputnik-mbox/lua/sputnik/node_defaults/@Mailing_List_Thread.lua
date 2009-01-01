@@ -7,7 +7,7 @@ NODE = {
 }
 
 NODE.permissions = [[
-deny(all, edit_and_save)
+deny(all_users, edit_and_save)
 allow(Admin, edit_and_save)
 ]]
 
@@ -66,7 +66,7 @@ NODE.html_content = [====[
 
      <h2>
       <span id="trigger_message_$message_id" class="ctrigger $closed">
-       $username <span class="email_address">($date)</span>
+       <span class="email_address">$date |</span> $username 
       </span>
      </h2>
      <div id="message_$message_id" class="collapse">

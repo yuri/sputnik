@@ -1,6 +1,7 @@
 module(..., package.seeall)
 
 require("mbox")
+local wiki = require("sputnik.actions.wiki")
 
 actions = {}
 
@@ -59,6 +60,11 @@ function get_attachments(m)
    return attachments
 end
 
+actions.show_list_history = function(node, request, sputnik)
+   request.params.prefix = "list/"
+   return wiki.actions.complete_history(node, request, sputnik)
+end
+
 actions.show = function(node, request, sputnik)
 
    --node:add_javascript_link(sputnik:make_url("sputnik/js/editpage.js"))
@@ -100,7 +106,8 @@ actions.show = function(node, request, sputnik)
                                     closed = closed,
                                     message_id = string.format("%s_%d", user_id, counts_by_username[user_id]),
                                     username = username,
-                                    date  = m.headers.date, --os.date("!%Y-%m-%d", m:get_from_line_date()),
+                                    date  = os.date("!%Y-%m-%d %H:%M", m:get_from_line_date()),
+                                    --m.headers.date, --os.date("!%Y-%m-%d", m:get_from_line_date()),
                                     body  = table.concat(body_lines, "\n"),
                                     do_attachments = function()
                                        for j, a in ipairs(attachments) do

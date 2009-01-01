@@ -416,7 +416,7 @@ function actions.complete_history(node, request, sputnik)
                if_edit      = cosmo.c(true){},
                time         = sputnik:format_time(edit.timestamp, "%H:%M %z"),
                if_minor     = cosmo.c(is_minor){},
-               title        = edit.node.id,
+               title        = edit.id,
                author_link  = sputnik:make_link(author_ip_for_link),
                author_icon  = sputnik:get_user_icon(edit.author),
                author       = author_display,

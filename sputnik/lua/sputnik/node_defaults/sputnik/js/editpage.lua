@@ -37,17 +37,6 @@ $(document).ready(function() {
 
 		$('textarea.resizeable:not(.editor)').TextAreaResizer();
 
-		$("span.ctrigger").click(function () {
-				var selector = "#" + this.id.substring(8);
-				$(selector).slideToggle();
-				$(this).toggleClass("closed");
-				});
-		// Actually hide all the closed elements
-		$("span.ctrigger.closed").each(function() {
-				var selector = "#" + this.id.substring(8);
-				$(selector).hide();
-                });
-
         $(".field input, .field textarea").not(".submit").focus(function() {
                 $(this).addClass("active_input");
                 }).blur(function() {

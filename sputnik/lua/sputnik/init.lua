@@ -202,7 +202,7 @@ end
 function Sputnik:get_gravatar_for_email(email)
    if self.config.USE_GRAVATAR then
       return "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
-                .."?s=16&amp;d="
+                .."?s=16&d="
                 ..sputnik.util.escape_url("http://"
                     ..self.config.DOMAIN..self:make_url("icons/user", "png"))
    else

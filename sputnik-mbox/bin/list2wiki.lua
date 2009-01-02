@@ -68,7 +68,7 @@ function run(path, prototype, prefix)
                       prototype = prototype
                     }
          )
-         node:save(m:get_sender_email():match("^%S*").."@...", "", {},
+         node:save(m:get_sender_email():gsub(" at ","@"), "", {},
                    os.date("!%Y-%m-%d %H:%M:%S", m:get_from_line_date()))
       end
          

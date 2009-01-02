@@ -103,6 +103,7 @@ actions.show = function(node, request, sputnik)
                               cosmo.yield {
                                     name  = m.headers.name,
                                     email = email,
+                                    icon = sputnik:get_gravatar_for_email(email:gsub(" at ", "@")),
                                     closed = closed,
                                     message_id = string.format("%s_%d", user_id, counts_by_username[user_id]),
                                     username = username,

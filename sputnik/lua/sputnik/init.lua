@@ -198,6 +198,19 @@ function Sputnik:format_time(timestamp, format, tzoffset, tzname)
                                    tzname or self.config.TIME_ZONE_NAME)
 end
 
+
+function Sputnik:get_gravatar_for_email(email)
+   if self.config.USE_GRAVATAR then
+      return "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
+                .."?s=16&amp;d="
+                ..sputnik.util.escape_url("http://"
+                    ..self.config.DOMAIN..self:make_url("icons/user", "png"))
+   else
+      return self:make_url("icons/user", "png")
+   end
+end
+
+
 -----------------------------------------------------------------------------
 -- Returns a small icon to represent a given user.
 --
@@ -218,11 +231,12 @@ function Sputnik:get_user_icon(user)
       icon = self:make_url("icons/system", "png") 
    elseif self.auth:user_exists(user) then
       local email = self.auth:get_metadata(user, "email")
-      if email and self.config.USE_GRAVATAR then 
-         icon = "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
-                .."?s=16&amp;d=http://"
-                ..self.config.DOMAIN..self:make_url("icons/user", "png")
+      if email then 
+         icon = self:get_gravatar_for_email(email)
       end
+   end
+   if (not icon) and user:match("@") then
+      icon = self:get_gravatar_for_email(user)
    end
    self.user_icon_hash[user] = icon or self:make_url("icons/user", "png")
    return self:escape(self.user_icon_hash[user])

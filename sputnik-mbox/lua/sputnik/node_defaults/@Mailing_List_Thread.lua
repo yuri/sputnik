@@ -66,7 +66,7 @@ NODE.html_content = [====[
 
      <h2>
       <span id="trigger_message_$message_id" class="ctrigger $closed">
-       <span class="email_address">$date |</span> $username 
+       <span class="email_address">$date |</span> <img alt="author" src="$icon"/> $username 
       </span>
      </h2>
      <div id="message_$message_id" class="collapse">

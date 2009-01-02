@@ -288,6 +288,8 @@ local function author_or_ip(edit)
       else
          return "Anonymous", "Anonymous User"
       end
+   elseif edit.author:match("@") then
+      return edit.author:gsub("@.*", "@..."), edit.author:gsub("@", "_at_")
    else
       return edit.author, edit.author
    end

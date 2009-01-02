@@ -52,8 +52,12 @@ end
 -- @param text           the URL to be escaped.
 -- @return               the escaped URL.
 -----------------------------------------------------------------------------
-function escape_url(text) 
-   return escape(text):gsub(" ","%%20")
+
+function escape_url(text)
+   return text:gsub("[^a-zA-Z0-9]",
+                    function(character) 
+                       return string.format("%%%x", string.byte(character))
+                    end)
 end
 
 -----------------------------------------------------------------------------

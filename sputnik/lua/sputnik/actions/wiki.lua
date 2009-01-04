@@ -454,7 +454,9 @@ function actions.rss(node, request, sputnik)
    local title, history
    if request.show_complete_history then
       title = "Recent Wiki Edits" --::LOCALIZE::
-      edits = sputnik:get_complete_history(50)
+      edits = sputnik:get_complete_history(sputnik.config.MAX_ITEMS_IN_HISTORY or 50,
+                                            request.params.date,
+                                            request.params.prefix)
    else
       title = "Recent Edits to '" .. node.title .."'"  --::LOCALIZE::--
       edits = sputnik:get_history(node.name, 50)
@@ -464,18 +466,19 @@ function actions.rss(node, request, sputnik)
       baseurl = sputnik.config.BASE_URL, 
       items   = function()
                    for i, edit in ipairs(edits) do
+                      local author_display, author_ip_for_link = author_or_ip(edit)
                       edit.node = edit.node or node
                       if (not request.params.recent_users_only)
                           or sputnik.auth:user_is_recent(edit.author) then
                          cosmo.yield{
                             link        = "http://" .. sputnik.config.DOMAIN ..
                                           sputnik:escape_url(
-                                             sputnik:make_link(edit.id, "show", {version=node.version})
+                                             sputnik:make_link(edit.id or node.id, "show", {version=node.version})
                                           ),
                             title       = string.format("%s: %s by %s",
                                                         edit.version,
                                                         edit.id or "",
-                                                        edit.author or ""),
+                                                        author_display or ""),
                             ispermalink = "false",
                             guid        = (edit.id or node.name).. "/" .. edit.version,
                             summary     = edit.comment

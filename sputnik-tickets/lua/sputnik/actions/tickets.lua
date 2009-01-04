@@ -48,10 +48,10 @@ actions.list = function(node, request, sputnik)
    node:add_javascript_snippet(sorttable.script)
    node.inner_html = cosmo.f(node.templates.LIST){
                         if_showing_all  = cosmo.c(request.params.show_closed){
-                                             link=node.links:show()
+                                             link=sputnik:make_link(node.id),
                                           },
                         if_showing_open = cosmo.c(not request.params.show_closed){
-                                             link=node.links:show{show_closed="1"}
+                                             link=sputnik:make_link(node.id, "show", {show_closed="1"})
                                           },
                         do_tickets      = function()
                                              for i, ticket in ipairs(tickets) do

@@ -129,12 +129,12 @@ RSS = [===[<rss version="2.0">
  <channel>
   <title>$title</title>
   <description/>
-   <link>$baseurl</link>
+   <link>$channel_url</link>
      $items[[
    <item>
     <link>$link</link>
     <title>$title</title>
-    <guid isPermalink="$ispermalink">$guid</guid>
+    <guid isPermaLink="$ispermalink">$guid</guid>
     <description>$summary</description>
    </item>]]
  </channel>

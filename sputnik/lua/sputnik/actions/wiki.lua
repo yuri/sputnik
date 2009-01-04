@@ -461,9 +461,17 @@ function actions.rss(node, request, sputnik)
       title = "Recent Edits to '" .. node.title .."'"  --::LOCALIZE::--
       edits = sputnik:get_history(node.name, 50)
    end
+
+   local channel_url = "http://"..sputnik.config.DOMAIN
+   if request.show_complete_history then
+      channel_url = channel_url .. HOME_PAGE_URL
+   else
+      channel_url = channel_url .. sputnik:make_url(node.id)
+   end
+
    return cosmo.f(node.templates.RSS){  
       title   = title,
-      baseurl = sputnik.config.BASE_URL, 
+      channel_url = channel_url,
       items   = function()
                    for i, edit in ipairs(edits) do
                       local author_display, author_ip_for_link = author_or_ip(edit)
@@ -471,20 +479,17 @@ function actions.rss(node, request, sputnik)
                       if (not request.params.recent_users_only)
                           or sputnik.auth:user_is_recent(edit.author) then
                          cosmo.yield{
-                            link        = sputnik:escape(
-                                             "http://" .. sputnik.config.DOMAIN ..
-                                             sputnik:make_url(
-                                                edit.id or node.id, 
-                                                "show",
-                                                {version=node.version}
-                                             )
-                                          ),
+                            link        = "http://" .. sputnik.config.DOMAIN ..
+                                           sputnik:make_url(
+                                              edit.id or node.id, 
+                                              "show", {version=edit.version}
+                                           ),
                             title       = string.format("%s: %s by %s",
                                                         edit.version,
                                                         edit.id or "",
                                                         author_display or ""),
                             ispermalink = "false",
-                            guid        = (edit.id or node.name).. "/" .. edit.version,
+                            guid        = (edit.id or node.id).. "/" .. edit.version,
                             summary     = edit.comment
                          }
                       end

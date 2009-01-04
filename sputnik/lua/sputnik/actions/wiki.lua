@@ -464,7 +464,7 @@ function actions.rss(node, request, sputnik)
 
    local channel_url = "http://"..sputnik.config.DOMAIN
    if request.show_complete_history then
-      channel_url = channel_url .. HOME_PAGE_URL
+      channel_url = channel_url .. sputnik.config.HOME_PAGE_URL
    else
       channel_url = channel_url .. sputnik:make_url(node.id)
    end

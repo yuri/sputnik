@@ -25,7 +25,7 @@ function run(wiki_data, path, old_path, prototype, prefix)
    prefix = prefix or "list/"
    local mb = mbox.new()
    mb.list_prefix = LIST_PREFIX_PATTERN.."%s*"
-   print(old_path)
+
    if old_path then
       mb:add_difference(path, old_path)
    else

@@ -139,10 +139,12 @@ local function parse_message(message_s)
       message.body = base64.decode(message.body)
    end
 
-   local encoding = message.headers["content-type"]:match("charset%=(%S*)")
-   if encoding then
-      local cd = iconv.new("UTF8", encoding)
-      message.body = cd:iconv(message.body)
+   if message.headers["content-type"] then
+      local encoding = message.headers["content-type"]:match("charset%=(%S*)")
+      if encoding then
+         local cd = iconv.new("UTF8", encoding)
+         message.body = cd:iconv(message.body)
+      end
    end
 
 
@@ -185,7 +187,6 @@ end
 function MBox:add_difference(filepath_new, filepath_old)
    local f_old = io.open(filepath_old)
    local old_count = 0
-   print(filepath_old)
    for line in f_old:read("*all"):gmatch("\n") do
       old_count = old_count + 1
    end
@@ -195,12 +196,11 @@ function MBox:add_difference(filepath_new, filepath_old)
    local new_count = 0
    for line in f_new:read("*all"):gmatch(".-\n") do
       new_count = new_count + 1
-      if new_count >= old_count then
+      if new_count > old_count then
          new_buffer = new_buffer .. line
       end
    end
    f_new:close()
-   print("["..new_buffer.."]")
    self:add(new_buffer)
 end
 

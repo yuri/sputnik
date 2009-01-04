@@ -1,22 +1,11 @@
 require("mbox")
 require("sputnik")
 
---function dirify(text)
---      return text:gsub("[^%a%d%:%%[%]-]+", "_")
---end
-
 LIST_PREFIX_PATTERN = "%[Sputnik%-list%]"
 
 NODE_TEMPLATE = [[
 title=%q
 proto=%q
-content = [=======[
-%s
-]=======]
-]]
-
-NODE_TEMPLATE_2 = [[
-title=%q
 content = [=======[
 %s
 ]=======]
@@ -28,22 +17,23 @@ local function subject_to_id_and_title(subject)
    subject = subject:gsub(LIST_PREFIX_PATTERN, "") -- remove the list name
    subject = subject:gsub("%s+"," "):gsub("^%s+", ""):gsub("%s+$", "") -- trim whitespace
    local id = sputnik.util.dirify(subject):gsub("%[","_"):gsub("%]","_"):gsub("%.", "_")
-   --local html_title = subject:gsub("%[", "&rsqb;"):gsub("%]", "&lsqb;")
-   return id, subject  --, html_title 
+   return id, subject
 end
 
-function run(path, prototype, prefix)
-
+function run(wiki_data, path, old_path, prototype, prefix)
    prototype = prototype or "@Mailing_List_Thread"
    prefix = prefix or "list/"
    local mb = mbox.new()
    mb.list_prefix = LIST_PREFIX_PATTERN.."%s*"
-   mb:add_file(path)
+   print(old_path)
+   if old_path then
+      mb:add_difference(path, old_path)
+   else
+      mb:add_file(path)      
+   end
 
-   --require"versium.filedir"
-   --local saci = saci.new("versium.filedir", {"/home/yuri/sputnik/wiki-data/"}, "@Root")
    local my_sputnik = sputnik.new{
-                         VERSIUM_PARAMS = { '/home/yuri/sputnik/wiki-data/' },
+                         VERSIUM_PARAMS = { wiki_data },
                          BASE_URL = "",
                          TOKEN_SALT = ""
                       }
@@ -55,7 +45,6 @@ function run(path, prototype, prefix)
       id = prefix..id
       print(id)
       local node = my_sputnik:get_node(id)
-      --node = node or saci:make_node("", "foo")
 
       for i, m in ipairs(thread) do
          local new_content = node.content or ""
@@ -70,14 +59,8 @@ function run(path, prototype, prefix)
          )
          node:save(m:get_sender_email():gsub(" at ","@"), "", {},
                    os.date("!%Y-%m-%d %H:%M:%S", m:get_from_line_date()))
-      end
-         
-      --local stars = ""
-      --for i,v in ipairs(thread) do stars=stars.."*" end
-      --index = index.."\n"..os.date("!%Y-%m-%d", thread[1]:get_from_line_date())
-      --             ..": ".."[[list/"..id.."|"..title:gsub("%]", "\\]").."]] "..stars.."<br/>"
+      end         
    end
-   --ver:save_version("list/recent", string.format(NODE_TEMPLATE_2, "list/Recent", index), "Robot", "test", {}, "2009-02-01 22:22:22")
 end
 
-run(arg[1])
+run(arg[1], arg[2], arg[3])

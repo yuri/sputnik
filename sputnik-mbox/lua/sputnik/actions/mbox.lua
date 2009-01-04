@@ -7,8 +7,7 @@ actions = {}
 
 function set_name(message) 
    message.headers.email, message.headers.name 
-      = string.match(message.headers.from, 
-             "([^%(]*)%(([^%)]*)%)")
+      = message:get_sender_email()
    if not message.headers.name then
       message.headers.name = message.headers.from
    end

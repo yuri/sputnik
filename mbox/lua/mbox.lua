@@ -1,5 +1,9 @@
 module(..., package.seeall)
 
+local base64 = require("base64")
+require"mime"
+require"iconv"
+
 local function parse_headers(headers_s)
    headers_s = "\n" .. headers_s .. "$$$:\n"
    local headers = {}
@@ -38,11 +42,8 @@ end
 FROM_LINE_DATE_PATTERN = "%s(%w*)%s+(%d+)%s+(%d%d):(%d%d):(%d%d)%s+(%d+)$" 
 
 MONTHS = {
-   Jan = "01", Feb = "02",
-   Mar = "03", Apr = "04", May = "05",
-   Jun = "06", Jul = "07", Aug = "08",
-   Sep = "09", Oct = "10", Nov = "11",
-   Dec = "12",
+   Jan = "01", Feb = "02", Mar = "03", Apr = "04", May = "05", Jun = "06",
+   Jul = "07", Aug = "08", Sep = "09", Oct = "10", Nov = "11", Dec = "12",
 }
 
 function Message:get_from_line_date()
@@ -51,7 +52,7 @@ function Message:get_from_line_date()
 end
 
 EMAIL_PATTERNS = {
-   "%<(.-@.-)%>",
+   "%<(.-%@.-)%>",
    "%<(.-%s+at%s+.-)%>",
    "%<(.-)%>",
    "^(.-@.-)%s+",
@@ -63,11 +64,19 @@ EMAIL_PATTERNS = {
 
 function Message:get_sender_email()
    local email
-   --print ("-------"..self.headers.from.."-----")
+   --print("-------"..self.headers.from.."-----")
    for i, patt in ipairs(EMAIL_PATTERNS) do
       email = self.headers.from:match(patt)
       --print(patt, email)
-      if email then return email:lower() end
+      if email then
+         local email_start, email_end = self.headers.from:find(email)
+         local name = self.headers.from:sub(0, email_start-1)
+         if name == "" then
+            name = self.headers.from:sub(email_end+1)
+         end
+         name = name:gsub("^%s*", ""):gsub("%s*$", ""):gsub("^%(", ""):gsub("%)$", "")
+         return email:lower(), name
+      end
    end
 end
 
@@ -99,14 +108,49 @@ function new_message(message_t)
    return setmetatable(message_t, Message_mt)
 end
 
+local mime_decoders = {
+   Q =  mime.decode("quoted-printable"),
+   B =  mime.decode("base64")
+}
+
+local decode_to_utf8 = function(character_encoding, mime_decoder, text)
+   local cd = iconv.new("UTF8", character_encoding)
+   text = mime_decoders[mime_decoder](text)
+   text = cd:iconv(text)
+   return text
+end
+
+local function decode(text)
+   text = text:gsub("%=%?([^%?]*)%?([BQ])%?([^%?]*)%?%=", decode_to_utf8)
+   return text
+end
+
 local function parse_message(message_s)
    local from_line, headers, body = message_s:match("^(.-)\n(.-\n)\n(.*)")
-   return {
+   local message = {
             from_line = from_line,
             headers   = parse_headers(headers or ""),
             body      = body or "",
             raw       = message_s,
           }
+
+   if message.headers["content-transfer-encoding"] == "base64" then
+      --message.headers.subject = base64.decode(message.headers.subject)
+      message.body = base64.decode(message.body)
+   end
+
+   local encoding = message.headers["content-type"]:match("charset%=(%S*)")
+   if encoding then
+      local cd = iconv.new("UTF8", encoding)
+      message.body = cd:iconv(message.body)
+   end
+
+
+   -- "=?ISO-8859-1?Q?Re:_[Sputnik-list]_sputnik_n=E3o_?="
+
+   message.headers.from = decode(message.headers.from)
+   message.headers.subject = decode(message.headers.subject)
+   return message
 end
 
 local MBox = {}
@@ -136,6 +180,28 @@ function MBox:add_file(filepath)
    local f = io.open(filepath)
    self:add(f:read("*all"))
    f:close()
+end
+
+function MBox:add_difference(filepath_new, filepath_old)
+   local f_old = io.open(filepath_old)
+   local old_count = 0
+   print(filepath_old)
+   for line in f_old:read("*all"):gmatch("\n") do
+      old_count = old_count + 1
+   end
+   f_old:close()
+   local f_new = io.open(filepath_new)
+   local new_buffer = ""
+   local new_count = 0
+   for line in f_new:read("*all"):gmatch(".-\n") do
+      new_count = new_count + 1
+      if new_count >= old_count then
+         new_buffer = new_buffer .. line
+      end
+   end
+   f_new:close()
+   print("["..new_buffer.."]")
+   self:add(new_buffer)
 end
 
 function MBox:get_subject_threads()

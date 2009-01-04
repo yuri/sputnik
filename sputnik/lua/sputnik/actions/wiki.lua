@@ -471,9 +471,13 @@ function actions.rss(node, request, sputnik)
                       if (not request.params.recent_users_only)
                           or sputnik.auth:user_is_recent(edit.author) then
                          cosmo.yield{
-                            link        = "http://" .. sputnik.config.DOMAIN ..
-                                          sputnik:escape_url(
-                                             sputnik:make_link(edit.id or node.id, "show", {version=node.version})
+                            link        = sputnik:escape(
+                                             "http://" .. sputnik.config.DOMAIN ..
+                                             sputnik:make_url(
+                                                edit.id or node.id, 
+                                                "show",
+                                                {version=node.version}
+                                             )
                                           ),
                             title       = string.format("%s: %s by %s",
                                                         edit.version,

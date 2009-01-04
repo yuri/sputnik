@@ -34,7 +34,7 @@ local Message_mt = {__metatable = {}, __index = Message}
 
 function Message:get_original_subject()
    if not self.original_subject then
-      self.original_subject = self.headers.subject:gsub("[Rr][Ee][Ss]?%:", ""):gsub("%s", "")
+      self.original_subject = self.headers.subject:gsub("[Rr][Ee][Ss]?%:", "")
    end
    return self.original_subject
 end
@@ -208,7 +208,7 @@ function MBox:get_subject_threads()
    local thread_hash = {}
    for i, message in ipairs(self) do
       message = mbox.new_message(message)
-      local subj = message:get_original_subject():gsub("%s", "") or "NO SUBJECT"
+      local subj = message:get_original_subject():gsub("%s", ""):gsub("%s", "") or "NO SUBJECT"
       message.date = message:get_from_line_date()
       if not thread_hash[subj] then
          thread_hash[subj] = {dates={}}

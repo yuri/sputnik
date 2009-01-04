@@ -41,7 +41,7 @@ function run(wiki_data, path, old_path, prototype, prefix)
    local index = ""
 
    for k, thread in pairs(threads) do
-      local id, title = subject_to_id_and_title(thread[1].headers.subject)
+      local id, title = subject_to_id_and_title(thread[1]:get_original_subject())
       id = prefix..id
       print(id)
       local node = my_sputnik:get_node(id)

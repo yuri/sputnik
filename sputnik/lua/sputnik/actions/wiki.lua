@@ -523,7 +523,7 @@ function get_visible_nodes(sputnik, user, prefix, options)
    local num_hidden = 0
    for i, node in pairs(sputnik.saci:get_nodes_by_prefix(prefix)) do
       if not options or not options.lazy then
-         sputnik:prime_node(node)
+         --sputnik:decorate_node(node)
          local ok, err = copcall(sputnik.activate_node, sputnik, node)
          --sputnik:activate_node(node)
          local ok = true

@@ -24,6 +24,8 @@ html_body       = {0.707, proto="fallback"}
 html_header     = {0.708, proto="fallback"}
 html_footer     = {0.708, proto="fallback"}
 html_sidebar    = {0.709, proto="fallback"}
+http_cache_control = {0.710, proto="fallback"}
+http_expires    = {0.711, proto="fallback"}
 
 content         = {0.8  }
 edit_ui         = {0.9, proto="concat"}
@@ -111,6 +113,11 @@ html_section     = {2.100, "div_start", id="html_section", state="open"}
  html_sidebar    = {2.109, "textarea", rows=3 }
  html_footer     = {2.110, "textarea", rows=3 }
 html_section_end = {2.111, "div_end"}
+
+http_section     = {2.201, "div_start", id="http_section", state="open"}
+ html_cache_control = {2.202, "textarea", rows=3 }
+ html_expires    = {2.203, "textarea", rows=3 }
+http_section_end = {2.209, "div_end"}
 
 guru_section     = {2.30, "div_start", id="guru_section"}
  templates       = {2.31, "text_field"}

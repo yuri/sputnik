@@ -737,6 +737,14 @@ function Sputnik:handle_request(request, response)
    assert(content)
    response.headers["Content-Type"] = content_type or "text/html"
 
+   if node.http_cache_control and node.http_cache_control~="" then
+      node.headers["Cache-Control"] = node.http_cache_control
+   end
+   if node.http_expires then
+      node.headers["Expires"] = os.date("!%a, %d %b %Y %H:%M:%S GMT",
+                                        os.time()+3600*tonumber(node.http_expires))
+   end
+
    -- If we have any custom HTML headers, add them to the response
    for header,value in pairs(node.headers) do
       response.headers[header] = value

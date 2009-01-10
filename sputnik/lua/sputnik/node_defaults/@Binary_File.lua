@@ -9,7 +9,9 @@ show = "binaryfile.show"
 save = "binaryfile.save"
 download = "binaryfile.download"
 ]=],
-permissions = [=[
+   http_cache_control = "max-age=3600",
+   http_expires = "2",
+   permissions = [=[
 allow(all_users, "jpg")
 allow(all_users, "gif")
 allow(all_users, "png")

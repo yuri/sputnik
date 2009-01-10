@@ -6,6 +6,8 @@ NODE = {
    actions=[[css="css.fancy_css"]],
    fields = [[content.activate = nil]],
    permissions=[[allow(all_users, "css")]],
+   http_cache_control = "max-age=3600",
+   http_expires = "2",
 }
 
 NODE.content = [===[

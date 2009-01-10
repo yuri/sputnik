@@ -166,7 +166,7 @@ permissions=[[
 ]]
 }
 
-NODE.html_main = [[
+NODE.html_main = [==[
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -176,31 +176,6 @@ $head
  <body>
 $body
  </body>
-</html>
-]]
-
-NODE.html_head = [==[
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]
-  <title>$site_title: $title</title>
-  <link type="text/css" rel="stylesheet"
-        href="$make_url{'sputnik/css/yui_reset.css'}" media="screen"/>
-  <link type="text/css" rel="stylesheet"
-        href="$make_url{'sputnik/css/layout.css'}" media="screen"/>
-  <link type="text/css" rel="stylesheet"
-        href="$make_url{'sputnik/css/colors.css'}" media="screen"/>
-  <link rel="stylesheet" type="text/css"
-        href="$make_url{'markitup/css/simple.css'}" />
-  <link rel="stylesheet" type="text/css"
-        href="$make_url{'markitup/css/markdown.css'}" />
-
-  $do_css_links[[
-   <link type="text/css" rel="stylesheet" href="$href" media="$media"/>
-  ]]
-  $do_css_snippets[[
-   <style type="text/css" media="$media">$snippet</style>
-  ]]
-
   <script type="text/javascript" src="$make_url{'jquery.js'}"></script>
   $do_javascript_links[[
    <script type="text/javascript" src="$href"></script>
@@ -231,10 +206,32 @@ $(document).ready(function(){
 
 });
 </script>
-
-
   <script type="text/javascript" src='$make_url{"markitup/js/markitup.js"}'></script>
   <script type="text/javascript" src='$make_url{"markitup/js/markdown.js"}'></script>
+</html>
+]==]
+
+NODE.html_head = [==[
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]
+  <title>$site_title: $title</title>
+  <link type="text/css" rel="stylesheet"
+        href="$make_url{'sputnik/css/yui_reset.css'}" media="screen"/>
+  <link type="text/css" rel="stylesheet"
+        href="$make_url{'sputnik/css/layout.css'}" media="screen"/>
+  <link type="text/css" rel="stylesheet"
+        href="$make_url{'sputnik/css/colors.css'}" media="screen"/>
+  <link rel="stylesheet" type="text/css"
+        href="$make_url{'markitup/css/simple.css'}" />
+  <link rel="stylesheet" type="text/css"
+        href="$make_url{'markitup/css/markdown.css'}" />
+
+  $do_css_links[[
+   <link type="text/css" rel="stylesheet" href="$href" media="$media"/>
+  ]]
+  $do_css_snippets[[
+   <style type="text/css" media="$media">$snippet</style>
+  ]]
   <link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>

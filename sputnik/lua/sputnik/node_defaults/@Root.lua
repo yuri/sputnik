@@ -186,12 +186,16 @@ $body
 
 <script>
 $(document).ready(function(){
- $("#sidebar ul#menu ul.back").slideUp()
- $("#sidebar ul#menu > li > a").click(function(){
-  $("#sidebar ul#menu li ul").slideUp();
-  $(this).siblings("ul").slideToggle();
+ $("#sidebar ul#menu > li.back").hover(
+ function(){
+  $(this).children("ul").slideDown();
   return false;
- });
+ },
+ function(){
+  $(this).children("ul").slideUp();
+  return false;
+ }
+);
 
  $("span.ctrigger").click(function () {
                                 var selector = "#" + this.id.substring(8);

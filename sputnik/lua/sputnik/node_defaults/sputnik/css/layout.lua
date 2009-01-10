@@ -129,6 +129,10 @@ ul#menu li ul li {
  list-style-type: none;
 }
 
+#sidebar ul#menu ul.back {
+ display:none
+}
+
 #sidebar ul#menu, #sidebar ul#menu li {
  padding: 0 0 0 0;
 }

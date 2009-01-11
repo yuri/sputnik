@@ -203,6 +203,37 @@ function actions.show_index_content(node, request, sputnik)
                   }
 end
 
+local TEMPLATE = [==[
+<table>
+ <style>
+  td.tag_list_table {vertical-align: top}
+  td.tag_list_table a {text-decoration: none; font-size: 200%}
+ </style>
+$do_groups[=[
+<tr><td colspan="2"><h2>$title</h2></td></tr>
+$items[[
+ <tr><td><a href="$id">
+ <img src="http://media.freewisdom.org/freewisdom/albums/$thumb.thumb.jpg"/>
+ </a></td><td class='tag_list_table'><a href="$make_url{$id}">$title</a></td></tr>
+]]
+]=]
+</table>
+]==]
+
+actions.show_tag_list = function(node, request, sputnik)
+   node.inner_html = cosmo.f(TEMPLATE)  {
+                           make_url         = function(args)
+                              return sputnik:make_url(unpack(args))
+                           end,
+                           do_groups = function()
+                                          for _, group in ipairs(node.content.groups) do
+                                             cosmo.yield(group)
+                                          end
+                           end 
+                        }
+   return node.wrappers.default(node, request, sputnik)
+end
+
 --require"versium.sqlite3"
 --require"versium.filedir"
 --cache = versium.filedir.new{"/tmp/cache/"} --sqlite3.new{"/tmp/cache.db"}

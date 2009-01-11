@@ -18,6 +18,8 @@ require("sputnik.i18n")
 require("sputnik.util")
 require("sputnik.wsapi_app")
 
+local zlib_loaded, zlib = pcall(require, "zlib")
+
 new_wsapi_run_fn = sputnik.wsapi_app.new  -- for backwards compatibility
 
 -----------------------------------------------------------------------------
@@ -736,7 +738,20 @@ function Sputnik:handle_request(request, response)
 
    local cookie_value = (request.user or "").."|"..(request.auth_token or "")
    response:set_cookie(self.cookie_name, {value=cookie_value, path="/"})
-   response:write(content)
+
+   -- gzip compression code borrowed from Ignacio Burgeno
+   if self.config.USE_COMPRESSION and zlib_loaded
+      and string.find(request.wsapi_env["HTTP_ACCEPT_ENCODING"], "gzip") then
+      --zlib.compress(string buffer [, int level] [, int method] [, int windowBits] [, int memLevel] [, int strategy])
+      --that magic came from http://lua-users.org/lists/lua-l/2005-03/msg00221.html
+      local gz_content = zlib.compress(content, 9, nil, 15 + 16)
+      response.headers["Content-Encoding"] = "gzip"
+      response.headers["Content-Length"] = #gz_content
+      response.headers["Vary"] = "accept-encoding"
+      response:write(gz_content)
+   else
+      response:write(content)
+   end
    return response
 end
 

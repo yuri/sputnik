@@ -74,18 +74,15 @@ end
 -- Parses raw history file into a table, filters by timestamp prefix.
 -----------------------------------------------------------------------------
 local function parse_history(raw_history, date_prefix, limit)
-   local all_versions = {}
-   local more
    date_prefix = date_prefix or ""
    local preflen = date_prefix:len()
-   local counter = 0
    local f = loadstring(raw_history)
+   local all_versions = {}
+   local counter = 0
    local environment = {
       add_version = function (values)
-                       if values.timestamp:sub(1, preflen) == date_prefix then
-                          if counter == limit then
-                             more = true
-                          else 
+                       if counter <= limit then
+                          if values.timestamp:sub(1, preflen) == date_prefix then 
                              table.insert(all_versions, values)
                              counter = counter + 1
                           end

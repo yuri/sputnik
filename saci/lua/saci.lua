@@ -229,12 +229,38 @@ end
 -----------------------------------------------------------------------------
 function Saci:get_node_history(id, date_prefix, limit)
    assert(id)
-   local versium_history = self.versium:get_node_history(id, date_prefix, limit) or {}
-   for i,v in ipairs(versium_history) do
-      v.get_node = function() return self:get_node(id, v.version) end
-   end
-   return versium_history
+   return self.versium:get_node_history(id, date_prefix, limit) or {}
 end
+
+function Saci:get_complete_history(id_prefix, date_prefix, limit)
+   local id_prefix = id_prefix or ""
+   if self.versium.get_complete_history then
+      return self.versium:get_complete_history(id_prefix, date_prefix, limit)
+   end
+
+   local edits = {}
+   local preflen = id_prefix:len()
+   local ids = self.versium:get_node_ids(id_prefix or nil, limit or nil)
+   for i, id in ipairs(ids) do
+      if id:sub(1, preflen) == id_prefix then
+         for i, edit in ipairs(self:get_node_history(id, date_prefix, limit)) do
+            edit.id = id
+            table.insert(edits, edit)
+         end
+      end
+   end
+   table.sort(edits, function(e1, e2) return e1.timestamp > e2.timestamp end)
+   if limit then
+      local another_table = {}
+      for i=1,limit do
+         table.insert(another_table, edits[i])
+      end
+      edits = another_table
+   end   
+   return edits
+end
+
+
 
 -----------------------------------------------------------------------------
 -- Retrieves multiple data nodes from Versium and returns Saci nodes created

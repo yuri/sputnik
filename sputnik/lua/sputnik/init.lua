@@ -482,26 +482,7 @@ end
 -- Returns history for all nodes.
 -----------------------------------------------------------------------------
 function Sputnik:get_complete_history(limit, date_prefix, id_prefix)
-   local edits = {}
-   local id_prefix = id_prefix or ""
-   local preflen = id_prefix:len()
-   for i, id in ipairs(self:get_node_names()) do
-      if id:sub(1, preflen) == id_prefix then
-         for i, edit in ipairs(self:get_history(id, limit, date_prefix)) do
-            edit.id = id
-            table.insert(edits, edit)
-         end
-      end
-   end
-   table.sort(edits, function(e1, e2) return e1.timestamp > e2.timestamp end)
-   if limit then
-      local another_table = {}
-      for i=1,limit do
-         table.insert(another_table, edits[i])
-      end
-      edits = another_table
-   end   
-   return edits
+   return self.saci:get_complete_history(id_prefix, date_prefix, limit)
 end
 
 -----------------------------------------------------------------------------

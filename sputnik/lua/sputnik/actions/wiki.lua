@@ -40,8 +40,13 @@ function get_nav_bar (node, sputnik)
       end
    end
 
+   local function remove_quotes(value)
+      return value:gsub("'", ""):gsub('"', ''):gsub("%s+", " ")
+   end
+
    for i, section in ipairs(nav) do
       section.title = section.title or section.id
+      section.accessibility_title = remove_quotes(section.title)
       section.id    = sputnik:dirify(section.id)
       section.link  = sputnik:make_link(section.id)
       section.class = "back"
@@ -49,10 +54,12 @@ function get_nav_bar (node, sputnik)
       if section.id == cur_node or section.id == node.category 
          or matches(node.name, section.patterns) then
          section.class = "front"
+         section.accessibility_title = section.accessibility_title.." (current section)"
          nav.current_section = section
       end
       for j, subsection in ipairs(section) do
          subsection.title = subsection.title or subsection.id
+         subsection.accessibility_title = remove_quotes(subsection.title)
          subsection.id = sputnik:dirify(subsection.id)
          subsection.class = "back"
          subsection.link = sputnik:make_link(subsection.id)
@@ -61,6 +68,8 @@ function get_nav_bar (node, sputnik)
             section.class = "front"
             nav.current_section = section
             subsection.class = "front"
+            subsection.accessibility_title = subsection.accessibility_title
+                                             .." (current subsection)"
          end
       end
    end

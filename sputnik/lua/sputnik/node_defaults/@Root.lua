@@ -243,9 +243,10 @@ NODE.html_menu = [==[
    <!--navigation bar --> 
     <ul id='menu' class="level1">   $do_nav_sections[=[
      <li class='$class level1' id='$id'>
-      <a $link>$title</a>
+      <a title="$accessibility_title" $link>$title</a>
       <ul class='$class level2'> <!-- ul.back will be hidden via CSS -->
-       $subsections[[<li class='$class level2'><a $link>$title</a></li>]]
+       $subsections[[<li class='$class level2'><a 
+                         title="$accessibility_title" $link>$title</a></li>]]
        <li style="display:none">&nbsp;</li>
       </ul>
      </li>]=]
@@ -255,7 +256,8 @@ NODE.html_menu = [==[
 NODE.html_search = [==[
     <form action="$base_url" style="margin-right: 0px; padding-right: 0px;">
      <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
-     <input class="search_box" type="text" name="q" size="16" value="$search_box_content"/>
+     <input class="search_box" type="text" name="q" size="16"
+            title="_(TOOLTIP_FOR_SEARCH_BOX)" value="$search_box_content"/>
      <input class="small_submit" type="submit" name="Search" value="_(SEARCH)" 
             title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>
 ]==]
@@ -271,24 +273,24 @@ NODE.html_page = [==[
        <span class="toolbar">
        $if_can_edit[[
        <a $edit_link title="_(EDIT)"> 
-        <img src="$make_url{'icons/edit.png'}" alt="_(EDIT_ICON)"/>
+        <img src="$make_url{'icons/edit.png'}" alt="_(EDIT)"/>
        </a>
        ]]
        $if_can_see_history[[
        <a $history_link title="_(HISTORY)">
-        <img src="$make_url{'icons/history.png'}" alt="_(HISTORY_ICON)"/>
+        <img src="$make_url{'icons/history.png'}" alt="_(HISTORY)"/>
        </a>
        ]]
        $if_can_see_feed[[
        <a $node_rss_link title="_(RSS_FOR_EDITS_TO_THIS_NODE)">
-        <img src="$make_url{'icons/feed.png'}" alt="_(SMALL_RSS_ICON)" />
+        <img src="$make_url{'icons/feed.png'}" alt="_(RSS_FOR_EDITS_TO_THIS_NODE)" />
        </a>
        ]]
        </span>
       </div>
       <h1 class="title">
         $if_title_icon[[<img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/> ]]
-        <a name="title" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
+        <a name="title" title="_(CURRENT_PAGE)" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
       </h1>
       $do_messages[[<p class="$class">$message</p>]]
       <div class='content'>$content</div>
@@ -309,7 +311,8 @@ NODE.html_header = [===[
     $if_search[[$search]]
     $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
     $if_not_logged_in[[<a $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
-    <a $site_rss_link><img src="$make_url{'icons/feed_medium.png'}" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)" alt="_(LARGE_RSS_ICON)" /></a>
+    <a $site_rss_link><img src="$make_url{'icons/feed_medium.png'}" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)"
+      alt="_(RSS_FOR_EDITS_TO_THIS_WIKI)" /></a>
    </div>   
    <div id="logo">
     $logo
@@ -322,7 +325,7 @@ NODE.html_header = [===[
 
 NODE.html_body = [===[
   <div id='doc3' class='yui-t0'>
-   <div id='hd'
+   <div id='hd'>
     $header
    </div>
    <div id='bd'>

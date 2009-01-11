@@ -101,6 +101,24 @@ TOOLTIP_FOR_SEARCH = {
    pt_BR = "Busca nessa wiki",
 }
 
+TOOLTIP_FOR_SEARCH_BOX = {
+   en_US = "Search query",
+   ru    = "Термины поиска",
+}
+
+CURRENT_SECTION = {
+   en_US = "Current section"
+}
+
+CURRENT_SUBSECTION = {
+   en_US = "Current subsection"
+}
+
+CURRENT_PAGE = {
+   en_US = "Current page"
+}
+
+
 -----------------------------------------------------------------------------
 -----  MISC ACTIONS  --------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -561,25 +579,6 @@ RSS_FOR_EDITS_TO_THIS_NODE = {
    en_US = "RSS for edits to this node",
    ru    = "RSS-лента изменение этой станицы",
 }
-
-LARGE_RSS_ICON = { 
-   en_US = "Large RSS Icon",
-   ru    = "Большой значок RSS"
-}
-
-SMALL_RSS_ICON = { 
-   en_US = "Small RSS Icon",
-   ru    = "Maленький значок RSS"
-}
-
-EDIT_ICON = {
-   en_US = "Edit Icon",
-}
-
-HISTORY_ICON = {
-   en_US = "History Icon",
-}
-
 
 -----------------------------------------------------------------------------
 -----  REGISTRATION  --------------------------------------------------------

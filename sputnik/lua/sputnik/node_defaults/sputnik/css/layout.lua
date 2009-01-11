@@ -452,6 +452,9 @@ span.ctrigger.closed {
 .yui-t0 #sidebar {
   display: none;
 }
+.yui-t0 #page {
+  margin-left: 3em;
+}
 
 ]===]
 

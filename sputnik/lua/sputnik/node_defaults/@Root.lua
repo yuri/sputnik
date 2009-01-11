@@ -316,13 +316,13 @@ NODE.html_header = [===[
    </div>
 
     <div id="menu_bar">
-     <br/><br/>
+     $menu<!--br/><br/-->
     </div>
 ]===]
 
 NODE.html_body = [===[
-  <div id='doc3' class='yui-t1'>
-   <div id='hd'>
+  <div id='doc3' class='yui-t0'>
+   <div id='hd'
     $header
    </div>
    <div id='bd'>
@@ -342,7 +342,7 @@ NODE.html_body = [===[
   <br/>
 ]===]
 
-NODE.html_sidebar = [==[$menu
+NODE.html_sidebar = [==[
 ]==]
 
 NODE.html_footer = [===[

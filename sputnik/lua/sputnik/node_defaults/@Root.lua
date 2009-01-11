@@ -223,10 +223,6 @@ NODE.html_head = [==[
         href="$make_url{'sputnik/css/layout.css'}" media="screen"/>
   <link type="text/css" rel="stylesheet"
         href="$make_url{'sputnik/css/colors.css'}" media="screen"/>
-  <link rel="stylesheet" type="text/css"
-        href="$make_url{'markitup/css/simple.css'}" />
-  <link rel="stylesheet" type="text/css"
-        href="$make_url{'markitup/css/markdown.css'}" />
 
   $do_css_links[[
    <link type="text/css" rel="stylesheet" href="$href" media="$media"/>

@@ -186,13 +186,9 @@ $body
 
 <script>
 $(document).ready(function(){
- $("#sidebar ul#menu > li.back").hover(
+ $("#sidebar ul#menu > li > a ").click(
  function(){
-  $(this).children("ul").slideDown();
-  return false;
- },
- function(){
-  $(this).children("ul").slideUp();
+  $(this).siblings("ul").slideToggle();
   return false;
  }
 );

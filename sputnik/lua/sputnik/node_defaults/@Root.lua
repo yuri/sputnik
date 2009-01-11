@@ -112,11 +112,12 @@ html_section     = {2.100, "div_start", id="html_section", state="open"}
  html_content    = {2.108, "textarea", rows=3 }
  html_sidebar    = {2.109, "textarea", rows=3 }
  html_footer     = {2.110, "textarea", rows=3 }
-html_section_end = {2.111, "div_end"}
+
+html_section_end = {2.112, "div_end"}
 
 http_section     = {2.201, "div_start", id="http_section", state="open"}
- html_cache_control = {2.202, "textarea", rows=3 }
- html_expires    = {2.203, "textarea", rows=3 }
+ http_cache_control = {2.202, "textarea", rows=3 }
+ http_expires    = {2.203, "textarea", rows=3 }
 http_section_end = {2.209, "div_end"}
 
 guru_section     = {2.30, "div_start", id="guru_section"}
@@ -346,3 +347,4 @@ NODE.html_sidebar = [==[$menu
 NODE.html_footer = [===[
    _(POWERED_BY_SPUTNIK) | <a style="font-size: .7em" href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a>
 ]===]
+

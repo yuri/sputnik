@@ -193,6 +193,9 @@ end
 -- @return               formatted time (string)
 -----------------------------------------------------------------------------
 function Sputnik:format_time(timestamp, format, tzoffset, tzname)
+   if type(timestamp) == "number" or timestamp:match("^[0-9]*$") then
+      timestamp = os.date("!%Y-%m-%d %H:%M:%S", timestamp)
+   end
    return versium.util.format_time(timestamp,format, 
                                    tzoffset or self.config.TIME_ZONE,
                                    tzname or self.config.TIME_ZONE_NAME)

@@ -825,16 +825,20 @@ function actions.show_users(node, request, sputnik)
 
    local TEMPLATE = [[
    <table><thead><td>username</td><td>registration time</td></thead>
-   $do_users[=[<tr><td><a $link>$username</a></td><td>$formatted_time</td></tr>
+   $do_users[=[<tr><td><a $link>$username</a></td><td>$time</td></tr>
    ]=]
    </table>
    ]]
 
    local users = {}
    for username, record in pairs(node.content.USERS) do
-      table.insert(users, {username=username, link=sputnik:make_link(username), time=record.creation_time, formatted_time=os.date("%c", record.time)})
+      table.insert(users, 
+                   { username = username, link = sputnik:make_link(username),
+                     time     = sputnik:format_time(record.creation_time, 
+                                                    "%Y/%m/%d %H:%M %z")
+                   })
    end
-   table.sort(users, function(x,y) return x.time > y.time end)
+   table.sort(users, function(x,y) return x.time < y.time end)
 
    node.inner_html = cosmo.f(TEMPLATE) {do_users = users}
    return node.wrappers.default(node, request, sputnik)

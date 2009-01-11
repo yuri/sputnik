@@ -81,7 +81,7 @@ local function parse_history(raw_history, date_prefix, limit)
    local counter = 0
    local environment = {
       add_version = function (values)
-                       if counter <= limit then
+                       if not limit or counter <= limit then
                           if values.timestamp:sub(1, preflen) == date_prefix then 
                              table.insert(all_versions, values)
                              counter = counter + 1

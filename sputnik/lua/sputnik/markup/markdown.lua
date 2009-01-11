@@ -23,7 +23,7 @@ end
 
 function new(sputnik) 
    return {
-      transform = function(text)
+      transform = function(text, node)
                      local function dolink(wikilink)
                         return wikify_link(wikilink, sputnik)
                      end
@@ -38,6 +38,10 @@ function new(sputnik)
                      local filter = sputnik.xssfilter or xssfilter.new()
                      filter.generic_attributes.style = "."
                      filter.allowed_tags.a.css_class = "."
+                     -- override values with those in node.xssfilter_allowed_tags
+                     for key, value in pairs(node.xssfilter_allowed_tags) do
+                        filter.allowed_tags[key] = value
+                     end
                      local html, message = filter:filter(markdown(buffer))
                      if html then
                         return html

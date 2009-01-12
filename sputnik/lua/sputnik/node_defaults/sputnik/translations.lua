@@ -419,10 +419,29 @@ EDIT_FORM_CONTENT_TEMPLATE = {
    en_US = "Content Template"
 }
 
+EDIT_FORM_HTML_CONTENT = {
+   en_US = "Content Template"
+}
+
 EDIT_FORM_XML_TEMPLATE = {
    en_US = "XML Template"
 }
 
+EDIT_FORM_HTTP_SECTION = {
+   en_US = "HTTP Fields"
+}
+
+EDIT_FORM_HTTP_CACHE_CONTROL = {
+   en_US = "Cache-Control"
+}
+
+EDIT_FORM_HTTP_EXPIRES = {
+   en_US = "Expires"
+}
+
+EDIT_FORM_XSSFILTER_ALLOWED_TAGS = {
+   en_US = "Tags Allowed for XSSFilter"
+}
 
 -----------------------------------------------------------------------------
 -----  LOGIN  ---------------------------------------------------------------

@@ -39,8 +39,10 @@ function new(sputnik)
                      filter.generic_attributes.style = "."
                      filter.allowed_tags.a.css_class = "."
                      -- override values with those in node.xssfilter_allowed_tags
-                     for key, value in pairs(node.xssfilter_allowed_tags) do
-                        filter.allowed_tags[key] = value
+                     if node then
+                        for key, value in pairs(node.xssfilter_allowed_tags) do
+                           filter.allowed_tags[key] = value
+                        end
                      end
                      local html, message = filter:filter(markdown(buffer))
                      if html then

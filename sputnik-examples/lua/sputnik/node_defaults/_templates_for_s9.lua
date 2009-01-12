@@ -39,7 +39,7 @@ SLIDESHOW = [[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
      body {
         height: 100%; margin: 0px; padding: 0px;
         font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
-        color: white; background-color: #003300; 
+        color: white; background-color: #002200; 
         opacity: .99; 
      }    
     .slide {
@@ -73,7 +73,7 @@ SLIDESHOW = [[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     h3 { font-size: 28pt; font-weight: bold; color: yellow; }
     h4 { font-size: 25pt; }
     p, li, td, th { font-size: 20pt; }
-    pre { font-size: 18pt; padding-left: 1em; color: #9999ff; }
+    pre { font-size: 18pt; padding-left: 1em; color: #ffffff; }
     pre.code { font-size: 16pt;
         background-color: black;
         color: white;

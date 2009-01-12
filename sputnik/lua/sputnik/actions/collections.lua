@@ -29,7 +29,13 @@ end
 function actions.list_children(node, request, sputnik)
    node:add_javascript_snippet(sorttable.script)
    local nodes = wiki.get_visible_nodes(sputnik, request.user, node.id.."/")
-   node.inner_html = format_list(nodes, node.content_template, sputnik, node)
+   local non_proto_nodes = {}
+   for i, n in ipairs(nodes) do
+      if n.id ~= node.id.."/@Item" then
+         table.insert(non_proto_nodes, n)
+      end
+   end
+   node.inner_html = format_list(non_proto_nodes, node.content_template, sputnik, node)
    return node.wrappers.default(node, request, sputnik)
 end
 
@@ -46,6 +52,7 @@ actions.save_new = function(node, request, sputnik)
    local new_id = string.format("%s/%06d", parent_id, sputnik:get_uid(parent_id))
    local new_node = sputnik:get_node(new_id)
    sputnik:update_node_with_params(new_node, {prototype = parent.child_proto})
+   request.params.actions = ""
    new_node = sputnik:activate_node(new_node)
    new_node.inner_html = "Created a new item: <a "..sputnik:make_link(new_id)..">"
                          ..new_id.."</a><br/>"

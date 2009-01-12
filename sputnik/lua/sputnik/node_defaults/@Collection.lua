@@ -55,9 +55,12 @@ NODE.xml_template = [=[<?xml version="1.0" encoding="UTF-8"?>
 
 NODE.child_defaults = [=[
 new = [[ 
-prototype = "$child_proto"
-title     = "New Item"; 
-actions   = 'save="collections.save_new"';
+prototype = "$id/@Item"
+title     = "New Item"
+actions   = 'save="collections.save_new"'
+]]
+any = [[ 
+prototype = "$id/@Item"
 ]]
 ]=]
 

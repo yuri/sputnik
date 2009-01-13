@@ -5,25 +5,26 @@ NODE = {
       show = "collections.list_children"
       rss = "collections.rss"
       xml = "collections.list_children_as_xml"
+      new_child = "collections.edit_new_child"
    ]],
    child_proto = "@Root"
 }
 
 NODE.fields = [=[
 child_proto = {1.1, proto="fallback"}
-content_template = {1.2, proto="fallback"}
+--content_template = {1.2, proto="fallback"}
 xml_template = {1.3, proto="fallback"}
 ]=]
 
 NODE.admin_edit_ui = [=[
 collection_section = {1.401, "div_start", id="collection_section"}
- child_proto = {1.401, "text_field"}
- content_template = {1.402, "textarea"}
+ --child_proto = {1.401, "text_field"}
+ --content_template = {1.402, "textarea"}
  xml_template = {1.403, "textarea"}
 collection_section_end = {1.404, "div_end"}
 ]=]
 
-NODE.content_template = [=[
+NODE.html_content = [=[
 
 Create <a href="$new_url">new item</a>.
 
@@ -55,12 +56,9 @@ NODE.xml_template = [=[<?xml version="1.0" encoding="UTF-8"?>
 
 NODE.child_defaults = [=[
 new = [[ 
-prototype = "$id/@Item"
+prototype = "$id/@Child"
 title     = "New Item"
 actions   = 'save="collections.save_new"'
-]]
-any = [[ 
-prototype = "$id/@Item"
 ]]
 ]=]
 
@@ -72,6 +70,8 @@ NODE.permissions = [=[
 --allow(Admin, "edit")
 --allow(Admin, "save")
 --allow(Admin, "history")
+  allow(all_users, "edit")
+  allow(all_users, "new_child")
 ]=]
 
 

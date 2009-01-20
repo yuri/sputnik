@@ -577,7 +577,7 @@ function actions.show_sitemap_xml(node, request, sputnik)
       do_urls = function()
           for i, node in ipairs(nodes) do
              local priority, url
-             if name == sputnik.config.HOME_PAGE then
+             if node.id == sputnik.config.HOME_PAGE then
                 url = sputnik.config.HOME_PAGE_URL
                 priority = "0.9"
              else

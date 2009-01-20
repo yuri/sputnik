@@ -1010,7 +1010,7 @@ function wrappers.default(node, request, sputnik)
       if_can_see_feed  = cosmo.c(node:check_permissions(request.user, "rss")){},
       site_rss_link    = sputnik:make_link(sputnik.config.HISTORY_PAGE, "rss"),
       node_rss_link    = sputnik:make_link(node.id, "rss"),
-      sputnik_link     = "href='http://sputnik.freewisdom.org/'",
+      sputnik_link     = "href='http://spu.tnik.org/'",
       -- urls are just urls
       make_url         = function(args)
                             return sputnik:make_url(unpack(args))

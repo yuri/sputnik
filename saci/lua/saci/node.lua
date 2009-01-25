@@ -73,21 +73,17 @@ local Node_mt = {
 -----------------------------------------------------------------------------
 function new(args)
    local node = setmetatable({raw_values={}, inherited_values={}, active_values={}}, Node_mt)
-
-   assert(args.data)
-   assert(args.id)
+   --assert(args.data)
+   --assert(args.id)
    node.data = args.data
    node.id = args.id
-   assert(args.repository)
+   --assert(args.repository)
    node.repository = args.repository
    node.saci = node.repository
-
    node.raw_values = saci.sandbox.new():do_lua(args.data)
-   assert(rawget(node, "raw_values"), "the sandbox should give us a table")
-
+   --assert(rawget(node, "raw_values"), "the sandbox should give us a table")
    node:apply_inheritance()
    node:activate()
-
    return node
 end
 
@@ -158,7 +154,7 @@ inheritance_rules.default = inheritance_rules.fallback -- set a default
 -----------------------------------------------------------------------------
 function Node:apply_inheritance()
 
-   assert(self.id)
+   --assert(self.id)
    -- If this node is itself the root prototype, then there is nothing else
    -- to do.
    if self.id == self.repository.root_prototype_id then
@@ -181,7 +177,7 @@ function Node:apply_inheritance()
    -- this node's own "fields" table rather than the fields table from the
    -- prototype and the value for fields must _always_ be inherited as a 
    -- matter of bootstrapping.
-   
+
    local tmp_fields = inheritance_rules.concat(proto_values.fields,
                                                self.raw_values.fields)
    assert(tmp_fields)
@@ -221,6 +217,7 @@ function Node:activate()
          self.active_values[field] = activator_fn(value, self.repository)
       end
    end
+
    return self
 end
 

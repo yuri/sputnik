@@ -137,16 +137,27 @@ end
 --                           otherwise).
 -----------------------------------------------------------------------------
 function Saci:get_node(id, version)
-   assert(id)
-   assert(type(id)=="string")
+   --assert(id)
+   --assert(type(id)=="string")
 
-   local cache_key = version and id.."."..version or id
+   -- first, check if we have this node in cache
+   local cache_key = id
+   if version then
+      cache_key = cache_key.."."..version
+   end
    if self.cache[cache_key] then
       return self.cache[cache_key], self.cache_stub[cache_key]
    end
 
-   -- first check if the id has a slash.  if so, identify the parent, and ask
-   -- it about the child.
+   -- second, check if we have it in versium
+   local data = self.versium:get_node(id, version)
+   if data then
+      local node = self:make_node(data, id)
+      self.cache[cache_key] = node
+      return node
+   end
+
+   -- third, check with the node's parent
    local parent_id, rest = string.match(id, "^(.+)/(.-)$")
    if parent_id then
       local parent = self:get_node(parent_id)
@@ -157,15 +168,6 @@ function Saci:get_node(id, version)
             return node
          end
       end
-   end
-
-   -- ok, either we've got an atomic node, or the parent doesn't exist, or
-   -- the parent didn't give us anything.  proceed to the normal method.
-   local data = self.versium:get_node(id, version)
-   if data then
-      local node = self:make_node(data, id)
-      self.cache[cache_key] = node
-      return node
    end
 
    -- no luck, check if we have a fallback function
@@ -200,7 +202,7 @@ end
 -- @return               the version tag for the latest version of the node
 -----------------------------------------------------------------------------
 function Saci:make_node(data, id)
-   return saci.node.new{data=data, id=id, repository=self}   
+   return saci.node.new{data=data, id=id, repository=self}
 end
 
 -----------------------------------------------------------------------------

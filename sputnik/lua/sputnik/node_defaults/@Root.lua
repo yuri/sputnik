@@ -24,9 +24,12 @@ html_body       = {0.707, proto="fallback"}
 html_header     = {0.708, proto="fallback"}
 html_footer     = {0.708, proto="fallback"}
 html_sidebar    = {0.709, proto="fallback"}
+html_meta_keywords = {0.70901, proto="fallback"}
+html_meta_description = {0.70902, proto="fallback"}
 xssfilter_allowed_tags = {0.7091, proto="concat", activate="lua"}
 http_cache_control = {0.710, proto="fallback"}
 http_expires    = {0.711, proto="fallback"}
+
 
 content         = {0.8  }
 edit_ui         = {0.9, proto="concat"}
@@ -75,6 +78,8 @@ title           = {1.2, "text_field"}
 advanced_section = {2.0, "div_start", id="foo"}
  category        = {2.1, "text_field"}
  prototype       = {2.2, "text_field"}
+ html_meta_keywords = {2.051, "text_field"}
+ html_meta_description = {2.052, "text_field"}
 advanced_section_end = {2.3, "div_end"}
 
 --- the content of the page ----------------------------
@@ -99,6 +104,8 @@ advanced_section = {2.0, "div_start", id="advanced_section"}
  permissions     = {2.03, "textarea", rows=3}
  actions         = {2.04, "textarea", div_class="editlua", rows=3}
  config          = {2.05, "textarea", div_class="editlua", rows=3}
+ html_meta_keywords = {2.051, "text_field"}
+ html_meta_description = {2.052, "text_field"}
 advanced_section_end = {2.06, "div_end"}
 
 html_section     = {2.100, "div_start", id="html_section", state="open"}
@@ -215,6 +222,8 @@ $(document).ready(function(){
 
 NODE.html_head = [==[
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="keywords" content="$html_meta_keywords">
+  <meta name="description" content="$html_meta_description">
   $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]
   <title>$site_title: $title</title>
   <link type="text/css" rel="stylesheet"

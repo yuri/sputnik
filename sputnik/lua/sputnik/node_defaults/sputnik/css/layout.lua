@@ -456,5 +456,23 @@ span.ctrigger.closed {
   margin-left: 3em;
 }
 
+/*.yui-u > * {
+  margin-right: .5em;
+  margin-left: 1em;
+}
+
+.yui-u h2, .yui-u h3, .yui-u h4, .yui-u h5 {
+  margin-right: .5em;
+  margin-left: .5em;
+} */
+
+.box {
+  /*margin-right: .5em;
+  margin-left: .5em;*/
+  border: 1px solid green;
+  background-color: #efe;
+}
+
+
 ]===]
 

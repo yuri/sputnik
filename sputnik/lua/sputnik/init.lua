@@ -341,7 +341,7 @@ function Sputnik:make_link(node_name, action, params, anchor, options)
    if node_name:find("%.") then 
       node_name, action = node_name:match("(.+)%.(.+)")
    end
-   local css_class = "local"
+   --local css_class = "local"
    local url = self:make_url(node_name, action, params, anchor)
    self.logger:debug("Creating a link to "..node_name)
    if (not options.mark_missing==false)
@@ -350,7 +350,8 @@ function Sputnik:make_link(node_name, action, params, anchor, options)
       url = self:make_url(node_name, action, params, anchor)
       self.logger:debug("No such node, will link to .edit")
    end
-   return string.format("href='%s' class='%s'", url, css_class)
+   --return string.format("href='%s' class='%s'", url, css_class)
+   return string.format("href='%s'", url, css_class)
 end
 
 -----------------------------------------------------------------------------
@@ -653,7 +654,6 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:handle_request(request, response)
    self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
-   if self.saci.reset_cache then self.saci:reset_cache() end
 
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
@@ -762,6 +762,8 @@ function Sputnik:handle_request(request, response)
    else
       response:write(content)
    end
+
+   if self.saci.reset_cache then self.saci:reset_cache() end
    return response
 end
 

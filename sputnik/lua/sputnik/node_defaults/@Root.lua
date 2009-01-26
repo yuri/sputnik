@@ -245,17 +245,18 @@ NODE.html_head = [==[
 ]==]
 
 NODE.html_menu = [==[
-   <!--navigation bar --> 
-    <ul id='menu' class="level1">   $do_nav_sections[=[
-     <li class='$class level1' id='$id'>
-      <a title="$accessibility_title" $link>$title</a>
-      <ul class='$class level2'> <!-- ul.back will be hidden via CSS -->
-       $subsections[[<li class='$class level2'><a 
-                         title="$accessibility_title" $link>$title</a></li>]]
-       <li style="display:none">&nbsp;</li>
-      </ul>
-     </li>]=]
-    </ul>
+<!--navigation bar --> 
+<ul id='menu' class="level1">
+$do_nav_sections[=[
+ <li class='$class level1' id='$id'>
+  <a title="$accessibility_title" $link>$title</a>
+  <ul class='$class level2'> <!-- ul.back will be hidden via CSS -->
+$subsections[[<li class='$class level2'><a
+ title="$accessibility_title" $link>$title</a></li>]]
+   <li style="display:none">&nbsp;</li>
+  </ul>
+ </li>]=]
+</ul>
 ]==]
 
 NODE.html_search = [==[

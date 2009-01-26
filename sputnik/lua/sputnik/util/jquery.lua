@@ -1,14 +1,6 @@
 module(..., package.seeall)
 
-NODE = {
- prototype= "@JavaScript",
- title= "JQuery",
- permissions = [[
-    allow(all_users, 'js')
- ]],
-}
-
-NODE.content= "/*\
+js = "/*\
  * jQuery 1.2.3 - New Wave Javascript\
  *\
  * Copyright (c) 2008 John Resig (jquery.com)\

@@ -185,38 +185,12 @@ $head
  <body>
 $body
  </body>
-  <script type="text/javascript" src="$make_url{'jquery.js'}"></script>
-  $do_javascript_links[[
-   <script type="text/javascript" src="$href"></script>
+  $do_css_snippets[[
+   <style type="text/css" media="$media">$snippet</style>
   ]]
   $do_javascript_snippets[=[
    <script type="text/javascript">/* <![CDATA[ */ $snippet /* ]]> */</script>
-  ]=] 
-
-<script>
-$(document).ready(function(){
- $("#sidebar ul#menu > li > a ").click(
- function(){
-  $(this).siblings("ul").slideToggle();
-  return false;
- }
-);
-
- $("span.ctrigger").click(function () {
-                                var selector = "#" + this.id.substring(8);
-                                $(selector).slideToggle();
-                                $(this).toggleClass("closed");
-                                });
-                // Actually hide all the closed elements
-                $("span.ctrigger.closed").each(function() {
-                                var selector = "#" + this.id.substring(8);
-                                $(selector).hide();
-                });
-
-});
-</script>
-  <script type="text/javascript" src='$make_url{"markitup/js/markitup.js"}'></script>
-  <script type="text/javascript" src='$make_url{"markitup/js/markdown.js"}'></script>
+  ]=]
 </html>
 ]==]
 
@@ -224,48 +198,37 @@ NODE.html_head = [==[
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="keywords" content="$html_meta_keywords">
   <meta name="description" content="$html_meta_description">
-  $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]
   <title>$site_title: $title</title>
-  <link type="text/css" rel="stylesheet"
-        href="$make_url{'sputnik/css/yui_reset.css'}" media="screen"/>
-  <link type="text/css" rel="stylesheet"
-        href="$make_url{'sputnik/css/layout.css'}" media="screen"/>
-  <link type="text/css" rel="stylesheet"
-        href="$make_url{'sputnik/css/colors.css'}" media="screen"/>
-
-  $do_css_links[[
-   <link type="text/css" rel="stylesheet" href="$href" media="$media"/>
-  ]]
-  $do_css_snippets[[
-   <style type="text/css" media="$media">$snippet</style>
-  ]]
-  <link rel="shortcut icon" href="$favicon_url"/>
+  <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/style.css'}" media="screen"/>
+  $do_css_links[[<link type="text/css" rel="stylesheet" href="$href" media="$media"/>
+]]<script type="text/javascript" src="$make_url{'sputnik/scripts.js'}"></script>
+  $do_javascript_links[[<script type="text/javascript" src="$href"></script>
+]]<link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>
-]==]
+  $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>
+]]]==]
 
 NODE.html_menu = [==[
-<!--navigation bar --> 
-<ul id='menu' class="level1">
-$do_nav_sections[=[
- <li class='$class level1' id='$id'>
-  <a title="$accessibility_title" $link>$title</a>
-  <ul class='$class level2'> <!-- ul.back will be hidden via CSS -->
-$subsections[[<li class='$class level2'><a
- title="$accessibility_title" $link>$title</a></li>]]
-   <li style="display:none">&nbsp;</li>
-  </ul>
- </li>]=]
-</ul>
+    <ul id='menu' class="level1">$do_nav_sections[=[
+     <li class='$class level1' id='$id'>
+      <a title="$accessibility_title" $link>$title</a>
+      <ul class='$class level2'>$subsections[[
+       <li class='$class level2'><a title="$accessibility_title" $link>$title</a></li>]]
+       <li style="display:none">&nbsp;</li>
+      </ul>
+     </li>]=]
+    </ul>
 ]==]
 
 NODE.html_search = [==[
-    <form action="$base_url" style="margin-right: 0px; padding-right: 0px;">
-     <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
-     <input class="search_box" type="text" name="q" size="16"
-            title="_(TOOLTIP_FOR_SEARCH_BOX)" value="$search_box_content"/>
-     <input class="small_submit" type="submit" name="Search" value="_(SEARCH)" 
-            title="_(TOOLTIP_FOR_SEARCH)"/></form><br/>
+     <form action="$base_url" class="search">
+      <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
+      <input class="search_box" type="text" name="q" size="16"
+             title="_(TOOLTIP_FOR_SEARCH_BOX)" value="$search_box_content"/>
+      <input class="small_submit" type="submit" name="Search" value="_(SEARCH)" 
+             title="_(TOOLTIP_FOR_SEARCH)"/>
+     </form>
 ]==]
 
 NODE.html_page = [==[
@@ -275,31 +238,17 @@ NODE.html_page = [==[
         $do_breadcrumb[[<li class="$class"><a $link>$title</a></li>]],[[<li class="$class">▹ <a $link>$title</a></li>]]
         <li style="display:none">&nbsp;</li>
        </ul>
-       ]=]
-       <span class="toolbar">
-       $if_can_edit[[
-       <a $edit_link title="_(EDIT)"> 
-        <img src="$make_url{'icons/edit.png'}" alt="_(EDIT)"/>
-       </a>
-       ]]
-       $if_can_see_history[[
-       <a $history_link title="_(HISTORY)">
-        <img src="$make_url{'icons/history.png'}" alt="_(HISTORY)"/>
-       </a>
-       ]]
-       $if_can_see_feed[[
-       <a $node_rss_link title="_(RSS_FOR_EDITS_TO_THIS_NODE)">
-        <img src="$make_url{'icons/feed.png'}" alt="_(RSS_FOR_EDITS_TO_THIS_NODE)" />
-       </a>
-       ]]
-       </span>
+       ]=]<span class="toolbar">
+        $do_buttons[[<a $link title="$title"><img src="$icon_url" alt="_(BUTTON)"/></a>
+       ]]</span>
       </div>
-      <h1 class="title">
-        $if_title_icon[[<img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/> ]]
-        <a name="title" title="_(CURRENT_PAGE)" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
+      <h1 class="title">$if_title_icon[[
+       <img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/>]]
+       <a name="title" title="_(CURRENT_PAGE)" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
       </h1>
-      $do_messages[[<p class="$class">$message</p>]]
-      <div class='content'>$content</div>
+      $do_messages[[<p class="$class">$message</p>]]<div class='content'>
+$content
+      </div>
 ]==]
 
 NODE.html_content = [==[
@@ -313,40 +262,39 @@ NODE.html_logo = [==[
 ]==]
 
 NODE.html_header = [===[
-   <div id="login"> <!--login and search (in the upper right corner) -->
-    $if_search[[$search]]
-    $if_logged_in[[ _(HI_USER) (<a $logout_link>_(LOGOUT)</a>) ]]
-    $if_not_logged_in[[<a $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
-    <a $site_rss_link><img src="$make_url{'icons/feed_medium.png'}" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)"
-      alt="_(RSS_FOR_EDITS_TO_THIS_WIKI)" /></a>
+    <div id="login"> <!--login and search (in the upper right corner) -->
+$if_search[[$search]]
+     <br/>
+     $if_logged_in[[_(HI_USER) (<a $logout_link>_(LOGOUT)</a>)
+     ]]$if_not_logged_in[[<a $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
+     <a $site_rss_link><img src="$make_url{'icons/feed_medium.png'}" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)"
+        alt="_(RSS_FOR_EDITS_TO_THIS_WIKI)" /></a>
    </div>   
    <div id="logo">
-    $logo
+$logo
    </div>
-
-    <div id="menu_bar">
-     $menu<!--br/><br/-->
-    </div>
+   <div id="menu_bar">
+$menu<!--br/><br/-->
+   </div>
 ]===]
 
 NODE.html_body = [===[
   <div id='doc3' class='yui-t0'>
    <div id='hd'>
-    $header
+$header
    </div>
    <div id='bd'>
     <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]>
      <div class="yui-b" id='page'>
-      $page
+$page
      </div>
     </div>
     <div class="yui-b" id="sidebar">
-     $sidebar
+$sidebar
     </div>    
    </div>  <!--#bd-->
    <div id='ft'>
-    $footer
-   </div>
+$footer   </div>
   </div> <!--#docN-->
   <br/>
 ]===]
@@ -355,6 +303,8 @@ NODE.html_sidebar = [==[
 ]==]
 
 NODE.html_footer = [===[
-   _(POWERED_BY_SPUTNIK) | <a style="font-size: .7em" href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a>
+    _(POWERED_BY_SPUTNIK) | <a style="font-size: .7em" href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a>
 ]===]
 
+NODE.html_meta_keywords = " "
+NODE.html_meta_description = " "

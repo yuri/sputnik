@@ -1,5 +1,9 @@
 module(..., package.seeall)
 
+local yui_reset = require("sputnik.util.yui_reset")
+
+--print(yui_reset.css)
+
 actions = {}
 
 actions.css = function(page, params, sputnik)
@@ -16,6 +20,7 @@ actions.fancy_css = function(page, params, sputnik)
    require"colors"
    require"saci.sandbox"
    local data, e = saci.sandbox.new{
+                      reset_code = yui_reset.css,
                       string = string,
                       table  = table,
                       MAIN_COLOR = sputnik.config.MAIN_COLOR,
@@ -24,11 +29,11 @@ actions.fancy_css = function(page, params, sputnik)
                       ipairs = ipairs,
                       unpack = unpack,
                       config = page.config,
-                   }:do_lua(page.content)
+                   }:do_lua(page.css_config)
    if e then 
       error(e.err)
    else
-      return cosmo.fill(data.CSS, data), "text/css"
+      return cosmo.fill(page.content, data), "text/css"
    end
 
 end

@@ -970,6 +970,8 @@ function wrappers.default(node, request, sputnik)
 
    local nav_sections, nav_subsections = get_nav_bar(node, sputnik)
 
+   local translate = node.translator.translate
+
    local values = {
       site_title       = sputnik.config.SITE_TITLE or "",
       title            = sputnik:escape(node.title),
@@ -1003,13 +1005,19 @@ function wrappers.default(node, request, sputnik)
 
       -- "links" include "href="
       show_link        = sputnik:make_link(node.id),
-      if_can_edit      = cosmo.c(node:check_permissions(request.user, "edit")){},
-      edit_link        = sputnik:make_link(node.id, "edit", {version = request.params.version}),
-      if_can_see_history = cosmo.c(node:check_permissions(request.user, "history")){},
-      history_link     = sputnik:make_link(node.id, "history"),
-      if_can_see_feed  = cosmo.c(node:check_permissions(request.user, "rss")){},
-      site_rss_link    = sputnik:make_link(sputnik.config.HISTORY_PAGE, "rss"),
+      do_buttons       = function(args)
+                            for i, command in ipairs({'edit', 'history', 'rss'}) do
+                               if node:check_permissions(request.user, command) then
+                                  cosmo.yield{
+                                     link = sputnik:make_link(node.id, command),
+                                     title = translate("_("..command:upper()..")"),
+                                     icon_url = sputnik:make_url("icons/"..command, "png"),
+                                  }
+                               end
+                            end
+                         end,
       node_rss_link    = sputnik:make_link(node.id, "rss"),
+      site_rss_link    = sputnik:make_link(sputnik.config.HISTORY_PAGE, "rss"),
       sputnik_link     = "href='http://spu.tnik.org/'",
       -- urls are just urls
       make_url         = function(args)

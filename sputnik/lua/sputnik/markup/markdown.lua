@@ -46,16 +46,18 @@ function new(sputnik)
                         end
                      end
 
-                     local raw_html = ""
-                     for _, chunk in ipairs(diff.split(buffer, "\n\n%<[^%>\n]*>\n\n")) do
-                        local tag, rest = chunk:match("(%<[^%>\n]*%>)\n%s*\n(.*)")
+                     --[[local raw_html = ""
+                     for _, chunk in ipairs(diff.split(buffer, "\n\n%<[^%>\n]*%>\n\n")) do
+                        print("{{"..chunk.."}}")
+                        local tag, rest = chunk:match("^(%<[^%>\n]*%>)\n%s*\n(.*)")
+                        print(tag, rest)
                         if not tag then
                            rest = chunk
                         end
                         raw_html = raw_html.."\n\n"..(tag or "").."\n\n"..markdown(rest or "")                        
-                     end
+                     end]]
 
-                     --local raw_html = markdown(buffer)
+                     local raw_html = markdown(buffer)
 
                      local html, message = filter:filter(raw_html)
                      if html then

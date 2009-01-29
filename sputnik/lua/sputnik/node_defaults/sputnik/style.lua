@@ -487,7 +487,7 @@ div.field {
 }
 
 div.grippie {
-	background:#F3F3F3 url($make_url{node="sputnik/grippie.png"}) no-repeat scroll center 2px;
+	background:#F3F3F3 url($icon_base_url{}sputnik/grippie.png) no-repeat scroll center 2px;
 	border-color:#DDDDDD;
 	border-style:solid;
 	border-width:0pt 1px 1px;
@@ -505,10 +505,10 @@ width: 100%;
 }
 
 span.ctrigger {
-  background: url($make_url{node="icons/minus.png"}) no-repeat right;
+  background: url($icon_base_url{}icons/minus.png) no-repeat right;
 }
 span.ctrigger.closed {
-  background: url($make_url{node="icons/plus.png"}) no-repeat right;
+  background: url($icon_base_url{}icons/plus.png"}) no-repeat right;
 }
 
 .yui-t0 #sidebar {

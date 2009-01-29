@@ -21,6 +21,7 @@ actions.fancy_css = function(page, params, sputnik)
    require"saci.sandbox"
    local data, e = saci.sandbox.new{
                       reset_code = yui_reset.css,
+                      icon_base_url    = sputnik.config.ICON_BASE_URL or sputnik.config.NICE_URL,
                       string = string,
                       table  = table,
                       MAIN_COLOR = sputnik.config.MAIN_COLOR,

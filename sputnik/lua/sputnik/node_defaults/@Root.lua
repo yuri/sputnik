@@ -241,7 +241,9 @@ NODE.html_page = [==[
        ]=]<span class="toolbar">
         $do_buttons[[<a $link title="$title"><img src="$icon_url" alt="_(BUTTON)"/></a>
        ]]
-        <a title="Bookmark" href="javascript:addBookmark('$site_title: $title','http://www.astroman.com')"><img src="$make_url{'icons/star.png'}"/></a>
+        <a title="Bookmark"
+           href="javascript:addBookmark('$site_title: $title','http://www.astroman.com')"><img
+           alt="_(BUTTON)" src="$make_url{'icons/star.png'}"/></a>
        </span>
       </div>
       <h1 class="title">$if_title_icon[[

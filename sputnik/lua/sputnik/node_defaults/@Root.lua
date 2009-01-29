@@ -196,8 +196,8 @@ $body
 
 NODE.html_head = [==[
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-  <meta name="keywords" content="$html_meta_keywords">
-  <meta name="description" content="$html_meta_description">
+  <meta name="keywords" content="$html_meta_keywords"/>
+  <meta name="description" content="$html_meta_description"/>
   <title>$site_title: $title</title>
   <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/style.css'}" media="screen"/>
   $do_css_links[[<link type="text/css" rel="stylesheet" href="$href" media="$media"/>
@@ -240,7 +240,9 @@ NODE.html_page = [==[
        </ul>
        ]=]<span class="toolbar">
         $do_buttons[[<a $link title="$title"><img src="$icon_url" alt="_(BUTTON)"/></a>
-       ]]</span>
+       ]]
+        <a title="Bookmark" href="javascript:addBookmark('$site_title: $title','http://www.astroman.com')"><img src="$make_url{'icons/star.png'}"/></a>
+       </span>
       </div>
       <h1 class="title">$if_title_icon[[
        <img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/>]]

@@ -41,4 +41,14 @@ $(document).ready(function(){
  );
 
 });
+
+function addBookmark(title, url) {
+        if (window.sidebar) { // firefox
+              window.sidebar.addPanel(title, url,"");
+        } else if( document.all ) { //MSIE
+                window.external.AddFavorite( url, title);
+        } else {
+               alert("Sorry, your browser doesn't support this");
+        }
+}
 ]======]

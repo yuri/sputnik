@@ -199,9 +199,9 @@ NODE.html_head = [==[
   <meta name="keywords" content="$html_meta_keywords"/>
   <meta name="description" content="$html_meta_description"/>
   <title>$site_title: $title</title>
-  <link type="text/css" rel="stylesheet" href="$make_url{'sputnik/style.css'}" media="screen"/>
+  <link type="text/css" rel="stylesheet" href="$css_base_url{}sputnik/style.css" media="screen"/>
   $do_css_links[[<link type="text/css" rel="stylesheet" href="$href" media="$media"/>
-]]<script type="text/javascript" src="$make_url{'sputnik/scripts.js'}"></script>
+]]<script type="text/javascript" src="$css_base_url{}sputnik/scripts.js"></script>
   $do_javascript_links[[<script type="text/javascript" src="$href"></script>
 ]]<link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
@@ -239,11 +239,11 @@ NODE.html_page = [==[
         <li style="display:none">&nbsp;</li>
        </ul>
        ]=]<span class="toolbar">
-        $do_buttons[[<a $link title="$title"><img src="$icon_url" alt="_(BUTTON)"/></a>
+        $do_buttons[[<a $link title="$title"><img src="$icon_base_url{}icons/$command.png" alt="_(BUTTON)"/></a>
        ]]
         <a title="Bookmark"
            href="javascript:addBookmark('$site_title: $title','http://www.astroman.com')"><img
-           alt="_(BUTTON)" src="$make_url{'icons/star.png'}"/></a>
+           alt="_(BUTTON)" src="$icon_base_url{}icons/star.png"/></a>
        </span>
       </div>
       <h1 class="title">$if_title_icon[[
@@ -271,7 +271,7 @@ $if_search[[$search]]
      <br/>
      $if_logged_in[[_(HI_USER) (<a $logout_link>_(LOGOUT)</a>)
      ]]$if_not_logged_in[[<a $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
-     <a $site_rss_link><img src="$make_url{'icons/feed_medium.png'}" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)"
+     <a $site_rss_link><img src="$icon_base_url{}icons/feed_medium.png" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)"
         alt="_(RSS_FOR_EDITS_TO_THIS_WIKI)" /></a>
    </div>   
    <div id="logo">

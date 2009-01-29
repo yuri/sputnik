@@ -1005,13 +1005,17 @@ function wrappers.default(node, request, sputnik)
 
       -- "links" include "href="
       show_link        = sputnik:make_link(node.id),
+      icon_base_url    = sputnik.config.ICON_BASE_URL or sputnik.config.NICE_URL,
+      css_base_url     = sputnik.config.CSS_BASE_URL or sputnik.config.NICE_URL,
+      js_base_url      = sputnik.config.JS_BASE_URL or sputnik.config.NICE_URL,
       do_buttons       = function(args)
                             for i, command in ipairs({'edit', 'history', 'rss'}) do
                                if node:check_permissions(request.user, command) then
                                   cosmo.yield{
                                      link = sputnik:make_link(node.id, command),
                                      title = translate("_("..command:upper()..")"),
-                                     icon_url = sputnik:make_url("icons/"..command, "png"),
+                                     --icon_url = sputnik:make_url("icons/"..command, "png"),
+                                     command = command,
                                   }
                                end
                             end

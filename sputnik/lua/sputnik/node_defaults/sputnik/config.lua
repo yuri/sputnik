@@ -26,8 +26,11 @@ SEARCH_PAGE    = "search"             -- comment out remove the search box
 TIME_ZONE      = "+0000"
 TIME_ZONE_NAME = "<abbr title='Greenwich Mean Time'>GMT</abbr>"
 
-LOGO_URL       = NICE_URL.."logo.png"
-FAVICON_URL    = NICE_URL.."icons/sputnik.png"
+ICON_BASE_URL  = NICE_URL             -- change this to host icons elsewhere
+CSS_BASE_URL   = NICE_URL             -- change this to host CSS elsewhere
+JS_BASE_URL    = NICE_URL             -- change this to host JS elsewhere
+LOGO_URL       = ICON_BASE_URL.."logo.png"
+FAVICON_URL    = ICON_BASE_URL.."icons/sputnik.png"
 
 -----------------------------------------------------------------------------
 --------- other things you might want to change -----------------------------

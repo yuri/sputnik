@@ -508,7 +508,7 @@ span.ctrigger {
   background: url($icon_base_url{}icons/minus.png) no-repeat right;
 }
 span.ctrigger.closed {
-  background: url($icon_base_url{}icons/plus.png"}) no-repeat right;
+  background: url($icon_base_url{}icons/plus.png) no-repeat right;
 }
 
 .yui-t0 #sidebar {

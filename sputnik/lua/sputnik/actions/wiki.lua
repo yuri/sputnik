@@ -855,14 +855,8 @@ function actions.show_users(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
------------------------------------------------------------------------------
--- Shows login form.
------------------------------------------------------------------------------
-function actions.show_login_form(node, request, sputnik)
-   if (request.params.user and request.user) then -- we've just logged in the user
-      node:redirect(sputnik:make_url(node.id))
-      return node.wrappers.default(node, request, sputnik)
-   end
+
+function get_login_form(node, request, sputnik)
    local post_timestamp = os.time()
    local post_token = sputnik.auth:timestamp_token(post_timestamp)   
    local html_for_fields, field_list = html_forms.make_html_form{
@@ -878,16 +872,30 @@ function actions.show_login_form(node, request, sputnik)
                                                           return sputnik:hash_field_name(field_name, post_token)
                                                        end
                                        }
-   
-   node.inner_html = cosmo.f(node.templates.LOGIN_FORM){
+
+   return cosmo.f(node.templates.LOGIN_FORM){
                         html_for_fields = html_for_fields,
-                        node_name       = node.name,
+                        node_name       = request.params.next or node.name,
                         post_fields     = "user,password",
                         post_token      = post_token,
                         post_timestamp  = post_timestamp,
                         action_url      = sputnik.config.BASE_URL,
                         register_link   = sputnik:make_url("sputnik/register")
                      }
+
+
+end
+
+-----------------------------------------------------------------------------
+-- Shows login form.
+-----------------------------------------------------------------------------
+function actions.show_login_form(node, request, sputnik)
+   if (request.params.user and request.user) then -- we've just logged in the user
+      node:redirect(sputnik:make_url(node.id))
+      return node.wrappers.default(node, request, sputnik)
+   end
+
+   node.inner_html = get_login_form(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
@@ -958,7 +966,11 @@ end
 -- Wraps the HTML content in bells and whistles such as the navigation bar, the header, the footer,
 -- etc.
 -----------------------------------------------------------------------------
-function wrappers.default(node, request, sputnik) 
+function wrappers.default(node, request, sputnik)
+
+   if request.params.skip_wrapper then
+      return node.inner_html
+   end
 
    if request.auth_message then
       node:post_error(node.translator.translate_key(request.auth_message))

@@ -199,7 +199,7 @@ NODE.html_head = [==[
   <meta name="keywords" content="$html_meta_keywords"/>
   <meta name="description" content="$html_meta_description"/>
   <title>$site_title: $title</title>
-  <link type="text/css" rel="stylesheet" href="$css_base_url{}sputnik/style.css" media="screen"/>
+  <link type="text/css" rel="stylesheet" href="$css_base_url{}sputnik/style.css" media="all"/>
   $do_css_links[[<link type="text/css" rel="stylesheet" href="$href" media="$media"/>
 ]]<script type="text/javascript" src="$css_base_url{}sputnik/scripts.js"></script>
   $do_javascript_links[[<script type="text/javascript" src="$href"></script>
@@ -251,6 +251,7 @@ NODE.html_page = [==[
        <a name="title" title="_(CURRENT_PAGE)" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
       </h1>
       $do_messages[[<p class="$class">$message</p>]]<div class='content'>
+
 $content
       </div>
 ]==]
@@ -270,9 +271,9 @@ NODE.html_header = [===[
 $if_search[[$search]]
      <br/>
      $if_logged_in[[_(HI_USER) (<a $logout_link>_(LOGOUT)</a>)
-     ]]$if_not_logged_in[[<a $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
-     <a $site_rss_link><img src="$icon_base_url{}icons/feed_medium.png" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)"
-        alt="_(RSS_FOR_EDITS_TO_THIS_WIKI)" /></a>
+     ]]$if_not_logged_in[[<a class="login_link" $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
+     <!--a $site_rss_link><img src="$icon_base_url{}icons/feed_medium.png" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)"
+        alt="_(RSS_FOR_EDITS_TO_THIS_WIKI)" /></a-->
    </div>   
    <div id="logo">
 $logo
@@ -284,6 +285,8 @@ $menu<!--br/><br/-->
 
 NODE.html_body = [===[
   <div id='doc3' class='yui-t0'>
+
+   <div id="login_form" class="popup_form" style="display: none"></div>
    <div id='hd'>
 $header
    </div>

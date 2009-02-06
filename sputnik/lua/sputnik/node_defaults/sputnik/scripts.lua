@@ -17,6 +17,19 @@ NODE.content = [======[
 
 $jquery
 
+function sputnik_make_modal_popup(id, url) {
+   var login_form = document.createElement('div');
+   var selector = "#"+id;
+   $(selector).fadeIn();
+   $(selector).append('<div class="transparency">&nbsp;</div>');
+   $(selector).append('<div class="popup_frame"><div class="close_popup">⨯</div><div class="actual_form"/></div>');
+   $(selector+" div.actual_form").load(url);
+   $(selector+" .close_popup").click(
+    function(){ $(selector).hide(); return false; }
+   );
+}
+
+
 $(document).ready(function(){
 
  $("#sidebar ul#menu > li > a ").click(
@@ -25,6 +38,7 @@ $(document).ready(function(){
    return false;
   }
  );
+
  $("span.ctrigger").click(
   function () {
    var selector = "#" + this.id.substring(8);
@@ -32,6 +46,7 @@ $(document).ready(function(){
    $(this).toggleClass("closed");
   }
  );
+
  // Actually hide all the closed elements
  $("span.ctrigger.closed").each(
   function() {
@@ -40,15 +55,24 @@ $(document).ready(function(){
   }
  );
 
+ /*$("a.login_link").click(
+  function(){
+   sputnik_make_modal_popup("login_form", "/sputnik2.ws?p=sputnik/login&skip_wrapper=1");
+   return false;
+  }
+ );*/
+
+ function addBookmark(title, url) {
+  if (window.sidebar) { // firefox
+   window.sidebar.addPanel(title, url,"");
+  } else if( document.all ) { //MSIE
+   window.external.AddFavorite( url, title);
+  } else {
+   alert("Sorry, your browser doesn't support this");
+  }
+ }
+
 });
 
-function addBookmark(title, url) {
-        if (window.sidebar) { // firefox
-              window.sidebar.addPanel(title, url,"");
-        } else if( document.all ) { //MSIE
-                window.external.AddFavorite( url, title);
-        } else {
-               alert("Sorry, your browser doesn't support this");
-        }
-}
+
 ]======]

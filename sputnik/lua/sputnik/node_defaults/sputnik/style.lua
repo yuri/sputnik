@@ -56,6 +56,16 @@ FORM_BG_SUBMIT       = SECOND:desaturate_to(.8):tint(.3)
 FORM_BG_READONLY     = SECOND:desaturate_to(.2):tint(.7)
 FORM_BORDER          = SECOND
 INS                  = "#cfc"
+
+icon_plus_wrapped = [=[
+iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/
+wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9gMFBUUKV7DN4kAAAAZdEVYdENvbW
+1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAAAKUlEQVQ4y2NgoAJgJCD/nxi1TNRwyaghuGPnPyV
+mDD7vjCa2wWgIVQAA4ZoDHFUwDWsAAAAASUVORK5CYII=
+]=]
+
+icon_plus = icon_plus_wrapped:gsub("%s", "")
+
 ]]
 
 NODE.content = [===[
@@ -508,7 +518,7 @@ span.ctrigger {
   background: url($icon_base_url{}icons/minus.png) no-repeat right;
 }
 span.ctrigger.closed {
-  background: url($icon_base_url{}icons/plus.png) no-repeat right;
+  background: url(data:image/png;base64,$icon_plus) no-repeat right;
 }
 
 .yui-t0 #sidebar {
@@ -621,6 +631,51 @@ INPUT.small_submit    {                          background: $FORM_BG_SUBMIT;   
 .error_message        {                                                            BORDER:        2px solid  red;          }
 .content .preview     {                                                            BORDER:        3px dashed $NAV_BAR;     }
 
+
+
+div.popup_form div.transparency {
+  background: black;
+  height: 100%;  width: 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 10000;
+  opacity: .7;
+}
+
+div.popup_form div.popup_frame {
+  margin: 100px;
+  padding: .3em;
+  border: 5px solid $NAVBAR;
+  background: white;
+  position: absolute;
+  width: 700px;
+  opacity: 2;
+  z-index: 10001;
+}
+
+div.popup_form div.actual_form {
+  padding: 2em;
+}
+
+div.close_popup {
+  width: 100%;
+  text-align: right;
+}
+
+@media print {
+ #menu_bar, #login, #ft, .toolbar {
+   display: none; !important;
+ }
+ body {
+   background-color: white;
+ }
+ #bd {
+   border: none;
+   margin: 0px;
+   padding: 0px;
+ } 
+}
 
 ]===]
 

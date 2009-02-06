@@ -34,7 +34,7 @@ function actions.show_form(node, request, sputnik)
    -- prepare the edit form
    local html_for_fields, field_list = html_forms.make_html_form{
       field_spec = [[
-                      new_username = {1.30, "text_field"}
+                      new_username = {1.30, "text_field", div_class="autofocus"}
                       new_password = {1.31, "password"}
                       new_password_confirm = {1.32, "password"}
                    ]] .. email_field,

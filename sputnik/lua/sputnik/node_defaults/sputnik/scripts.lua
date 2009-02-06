@@ -17,6 +17,15 @@ NODE.content = [======[
 
 $jquery
 
+function sputnik_init_page() {
+  $(".field input, .field textarea").not(".submit").focus(
+    function(){$(this).addClass("active_input");}
+  ).blur(
+    function() {$(this).removeClass("active_input");}
+  );
+  $(".autofocus input").focus();
+}
+
 function sputnik_make_modal_popup(id, url) {
    var login_form = document.createElement('div');
    var selector = "#"+id;
@@ -27,10 +36,12 @@ function sputnik_make_modal_popup(id, url) {
    $(selector+" .close_popup").click(
     function(){ $(selector).hide(); return false; }
    );
+   sputnik_init_page();
 }
 
-
 $(document).ready(function(){
+
+ sputnik_init_page();
 
  $("#sidebar ul#menu > li > a ").click(
   function(){

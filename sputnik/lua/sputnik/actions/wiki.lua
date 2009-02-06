@@ -862,7 +862,7 @@ function get_login_form(node, request, sputnik)
    local html_for_fields, field_list = html_forms.make_html_form{
                                           field_spec = [[
                                                            --please_login = {4.0, "note"}
-                                                           user = {4.1, "text_field"}
+                                                           user = {4.1, "text_field", div_class="autofocus"}
                                                            password = {4.2, "password"}      
                                                        ]], 
                                           templates  = node.templates, 

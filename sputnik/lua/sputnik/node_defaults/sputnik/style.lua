@@ -618,6 +618,7 @@ input.submit {
 
 .active_input {
   border: 2px solid $NAVBAR;
+  background: #ffffd6;
 }
 
 

@@ -185,7 +185,7 @@ $head
  <body>
 $body
 
-  <script type="text/javascript" src="$script_base_url{}sputnik/scripts.js"></script>
+  <script type="text/javascript" src="$js_base_url{}sputnik/scripts.js"></script>
    $do_javascript_links[[<script type="text/javascript" src="$href"></script>
   ]]
   $do_javascript_snippets[=[

@@ -26,6 +26,7 @@ html_footer     = {0.708, proto="fallback"}
 html_sidebar    = {0.709, proto="fallback"}
 html_meta_keywords = {0.70901, proto="fallback"}
 html_meta_description = {0.70902, proto="fallback"}
+redirect_destination =  {0.70903}
 xssfilter_allowed_tags = {0.7091, proto="concat", activate="lua"}
 http_cache_control = {0.710, proto="fallback"}
 http_expires    = {0.711, proto="fallback"}
@@ -101,6 +102,7 @@ title           = {1.2, "text_field"}
 advanced_section = {2.0, "div_start", id="advanced_section"}
  category        = {2.01, "text_field"}
  prototype       = {2.02, "text_field"}
+ redirect_destination = {2.021, "text_field"}
  permissions     = {2.03, "textarea", rows=3}
  actions         = {2.04, "textarea", div_class="editlua", rows=3}
  config          = {2.05, "textarea", div_class="editlua", rows=3}

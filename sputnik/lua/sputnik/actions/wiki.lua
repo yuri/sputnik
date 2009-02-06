@@ -267,6 +267,11 @@ end
 -- @param sputnik        passed to show_content.
 -----------------------------------------------------------------------------
 function actions.show(node, request, sputnik)
+   if node.redirect_destination and node.redirect_destination~="" then
+      node:redirect(sputnik:make_url(node.redirect_destination))
+      return "redirect"
+   end
+
    request.is_indexable = true
    node.inner_html = node.actions.show_content(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)

@@ -184,13 +184,14 @@ $head
  </head>
  <body>
 $body
- </body>
-  $do_css_snippets[[
-   <style type="text/css" media="$media">$snippet</style>
+
+  <script type="text/javascript" src="$script_base_url{}sputnik/scripts.js"></script>
+   $do_javascript_links[[<script type="text/javascript" src="$href"></script>
   ]]
   $do_javascript_snippets[=[
    <script type="text/javascript">/* <![CDATA[ */ $snippet /* ]]> */</script>
   ]=]
+ </body>
 </html>
 ]==]
 
@@ -201,9 +202,10 @@ NODE.html_head = [==[
   <title>$site_title: $title</title>
   <link type="text/css" rel="stylesheet" href="$css_base_url{}sputnik/style.css" media="all"/>
   $do_css_links[[<link type="text/css" rel="stylesheet" href="$href" media="$media"/>
-]]<script type="text/javascript" src="$css_base_url{}sputnik/scripts.js"></script>
-  $do_javascript_links[[<script type="text/javascript" src="$href"></script>
-]]<link rel="shortcut icon" href="$favicon_url"/>
+]]$do_css_snippets[[
+   <style type="text/css" media="$media">$snippet</style>
+]]
+<link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>
   $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>

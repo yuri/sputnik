@@ -7,18 +7,70 @@ repository = {}
 repository['cosmo']={}                                             -- remove?
 repository['cosmo']['8.04.14-1']            = {{arch='rockspec'}}  -- test
 
------------------------------------------------------ kepler-cvs ------------
-repository['luasql-sqlite3'] = {}       
-repository['luasql-sqlite3']['2.2.0rc1-1']  = {{arch='rockspec'}}  -- test
+
+----------------------------------------------------- kepler ----------------
+
+repository['cgilua'] = {}
+repository['cgilua']['5.1.2-2']  = {{arch='rockspec'}}  -- test
+
+repository['copas'] = {}
+repository['copas']['1.1.4-1']  = {{arch='rockspec'}}  -- test
+
+repository['coxpcall'] = {}
+repository['coxpcall']['1.13.0-1']  = {{arch='rockspec'}}  -- test
+
+repository['cosmo'] = {}
+repository['cosmo']['8.04.14-1']  = {{arch='rockspec'}}  -- test
+
+repository['kepler'] = {}
+repository['kepler']['1.1-1']  = {{arch='rockspec'}}  -- test
+
+repository['kepler-xavante'] = {}
+repository['kepler-xavante']['1.1-1']  = {{arch='rockspec'}}  -- test
+
+repository['lpeg'] = {}
+repository['lpeg']['0.9-1']                 = {{arch='rockspec'}}  -- up2date
+
+repository['luafilesystem'] = {}
+repository['luafilesystem']['1.4.1-1']      = {{arch='rockspec'}}  -- up2date
+repository['luafilesystem']['1.4.2-1']  = {{arch='rockspec'}}  -- test
+
+repository['luasocket'] = {}
+repository['luasocket']['2.0.2-1']  = {{arch='rockspec'}}  -- test
 
 repository['luasql-mysql'] = {}
-repository['luasql-mysql']['2.2.0rc1-1']    = {{arch='rockspec'}}  -- test
+repository['luasql-mysql']['2.2.0rc1-1']  = {{arch='rockspec'}}  -- test
+
+repository['luasql-sqlite3'] = {}
+repository['luasql-sqlite3']['2.2.0rc1-1']  = {{arch='rockspec'}}  -- test
 
 repository['md5'] = {}
-repository['md5']['1.1.2-1']                = {{arch='rockspec'}}  -- up2date
+repository['md5']['1.1.2-1']  = {{arch='rockspec'}}  -- test
+
+repository['orbit'] = {}
+repository['orbit']['2.0.1-1']  = {{arch='rockspec'}}  -- test
+
+repository['rings'] = {}
+repository['rings']['1.2.2-1']  = {{arch='rockspec'}}  -- test
 
 repository['wsapi'] = {}
-repository['wsapi']['1.0-2']                = {{arch='rockspec'}}  -- up2date
+repository['wsapi']['1.0-2']  = {{arch='rockspec'}}  -- test
+
+repository['xavante'] = {}
+repository['xavante']['2.0.0-1']  = {{arch='rockspec'}}  -- test
+
+----------------------------------------------------- kepler-cvs ------------
+--repository['luasql-sqlite3'] = {}       
+--repository['luasql-sqlite3']['2.2.0rc1-1']  = {{arch='rockspec'}}  -- test
+
+--repository['luasql-mysql'] = {}
+--repository['luasql-mysql']['2.2.0rc1-1']    = {{arch='rockspec'}}  -- test
+
+--repository['md5'] = {}
+--repository['md5']['1.1.2-1']                = {{arch='rockspec'}}  -- up2date
+
+--repository['wsapi'] = {}
+--repository['wsapi']['1.0-2']                = {{arch='rockspec'}}  -- up2date
 
 ----------------------------------------------------- 3rd party -------------
 repository['markdown'] = {}
@@ -45,10 +97,8 @@ repository['recaptcha']['8.05.26-0']        = {{arch='rockspec'}}
 repository['recaptcha']['8.06.12-0']        = {{arch='rockspec'}}
 repository['recaptcha']['8.07.07-0']        = {{arch='rockspec'}}  -- up2date
 
-
 repository['medialike'] = {}
 repository['medialike']['0.03-0']             = {{arch='all'}}       -- up2date
-
 
 repository['versium'] = {}              
 repository['versium']['8.05.24-0']          = {{arch='rockspec'}}
@@ -102,10 +152,4 @@ repository['sputnik-medialike']['8.08.08-0']= {{arch='rockspec'}}  -- up2date
 
 repository['sputnik-search-google'] = {}
 repository['sputnik-search-google']['8.08.25-0']   = {{arch='rockspec'}}  -- up2date
-
-repository['luafilesystem'] = {}
-repository['luafilesystem']['1.4.1-1']      = {{arch='rockspec'}}  -- up2date
-
-repository['lpeg'] = {}
-repository['lpeg']['0.9-1']                 = {{arch='rockspec'}}  -- up2date
 

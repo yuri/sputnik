@@ -442,7 +442,9 @@ function Sputnik:decorate_node(node)
    -- Table/Function that allow the developer to add custom HTML response headers
    node.headers = {}
    node.add_header = function(self, header, value) self.headers[header] = value end
-   node.redirect = function(self, url) self.headers["Location"] = url end
+   node.redirect = function(node_self, url)
+      node_self.headers["Location"] = url
+   end
 
    node.css_links = {}
    node.css_snippets = {}

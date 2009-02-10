@@ -259,6 +259,22 @@ function actions.show_content(node, request, sputnik)
    return title..node.markup.transform(node.content or "", node)
 end
 
+REDIRECTION_PROTOCOLS = {
+   http = true,
+   https = true,
+}
+
+function actions.redirect(node, request, sputnik)
+   local destination = node.redirect_destination
+   local protocol = destination:match("^[^%:]*")
+   if REDIRECTION_PROTOCOLS[protocol] or destination:sub(1,1)=="/" then
+      node:redirect(destination)
+   else
+      node:redirect(sputnik:make_url(destination))
+   end
+   return "redirect"
+end
+
 -----------------------------------------------------------------------------
 -- Returns the complete HTML for the node.
 --
@@ -268,8 +284,7 @@ end
 -----------------------------------------------------------------------------
 function actions.show(node, request, sputnik)
    if node.redirect_destination and node.redirect_destination~="" then
-      node:redirect(sputnik:make_url(node.redirect_destination))
-      return "redirect"
+      return actions.redirect(node, request, sputnik)
    end
 
    request.is_indexable = true

@@ -16,6 +16,8 @@ local function format_list(nodes, template, sputnik, node)
                              local t = {
                                 url = sputnik.config.NICE_URL..node.id,
                                 id  = node.id,
+                                short_id = node.id:match("[^%/]*$"),
+                                nice_url = sputnik.config.NICE_URL,
                              }
                              for k, v in pairs(node.fields) do
                                  t[k] = tostring(node[k])

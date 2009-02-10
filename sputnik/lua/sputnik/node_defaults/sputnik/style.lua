@@ -105,7 +105,8 @@ margin/padding cheatsheet:  top right bottom left;
 
 /* TOP LEVEL ELEMS    */
 html {
- overflow   : -moz-scrollbars-vertical; 
+ overflow   : -moz-scrollbars-vertical;
+ overflow-y : scroll;
  /* always use a vert. scroll bar. */
 }
 

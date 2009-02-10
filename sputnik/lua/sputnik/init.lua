@@ -34,6 +34,7 @@ local function apply_defaults(config)
                              or "2348979898237082394172309847123"
    config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "sputnik/config"
    config.PASS_PAGE_NAME   = config.PASS_PAGE_NAME or "sputnik/passwords"
+   config.INTERWIKI        = config.INTERWIKI or {}
    --config.LOGGER = config.LOGGER or "file"
    --config.LOGGER_PARAMS = config.LOGGER_PARAMS
    --                       or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
@@ -302,27 +303,51 @@ function Sputnik:make_url(node_name, action, params, anchor)
    if not node_name or node_name=="" then
       node_name = self.config.HOME_PAGE
    end
-   node_name = self:dirify(node_name) --wsapi.util.url_encode()
-   if action and action~="show" then 
-      node_name = node_name.."."..action
+   local interwiki_code = node_name:match("^[^%:]*")
+   local interwiki_handler = self.config.INTERWIKI[interwiki_code]
+   if interwiki_handler then
+      node_name = node_name:gsub("^[^%:]*%:", "") -- crop the code
    end
-   if anchor then
-      anchor = "#"..anchor
-   else
-      anchor = ""
-   end
-   if params and next(params) then
-      local link = self.config.BASE_URL.."?p="..node_name
-      for k, v in pairs(params or {}) do
-         link = link.."&"..wsapi.util.url_encode(k).."="
-                         ..wsapi.util.url_encode(v or "")
+
+   local dirified = self:dirify(node_name) --wsapi.util.url_encode()
+
+   local url
+
+   -- first the node name
+   if interwiki_handler then
+      local handler_type = type(interwiki_handler)
+      if handler_type == "string" then
+         url = interwiki_handler..dirified
+      elseif handler_type == "function" then
+         url = interwiki_handler(node_name)
+      else
+         error("Interwiki handler should be string or function, but is "..handler_type)
       end
-      return self:escape(link..anchor)
-   elseif node_name==self.config.HOME_PAGE then
-      return self:escape(self.config.HOME_PAGE_URL..anchor)
+   elseif  dirified==self.config.HOME_PAGE then
+      url = self.config.HOME_PAGE_URL
    else
-      return self:escape(self.config.NICE_URL..node_name..anchor)
-   end   
+      url = self.config.NICE_URL..dirified
+   end
+
+   -- then the action
+   if action and action~="show" then 
+      url = url.."."..action
+   end
+
+   -- then the parameters
+   if params and next(params) then
+      for k, v in pairs(params or {}) do
+         url = url.."&"..wsapi.util.url_encode(k).."="
+                       ..wsapi.util.url_encode(v or "")
+      end
+   end
+
+   -- finally the anchor
+   if anchor then
+      url = url.."#"..anchor
+   end
+
+   return self:escape(url), node_name
 end
 
 -----------------------------------------------------------------------------

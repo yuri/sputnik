@@ -5,7 +5,7 @@ require("xssfilter")
 require("diff")
 
 local split = require("sputnik.util").split
-local WIKI_LINK = [[<a $link>$title</a>]]
+local WIKI_LINK = [[<a href='$url'>$title</a>]]
 
 function wikify_link(wikilink, sputnik)
    -- [[Page_Name.edit#A1|Edit the Page]]
@@ -15,10 +15,10 @@ function wikify_link(wikilink, sputnik)
    wikilink, anchor  = split(wikilink, "#")
    page_name, action = split(wikilink, "%.")
 
+   local url, new_title = sputnik:make_url(page_name, action, {}, anchor)
    return cosmo.f(WIKI_LINK){  
-             title = string.gsub(title or page_name, "_", "\_"),
-             link = sputnik:make_link(page_name, action, {}, anchor),
-             
+             title = string.gsub(title or new_title or page_name, "_", "\_"),
+             url = url             
           }
 end
 

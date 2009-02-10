@@ -50,6 +50,17 @@ MIME_TYPES = {
 
 INTERFACE_LANGUAGE = "en"
 
+--- configure interwiki links for sister-sites
+
+INTERWIKI = {
+   sputnik = "http://spu.tnik.org/en/",
+   wikipedia = "http://en.wikipedia.org/wiki/",
+   ["lua-users"] = function(node_name)
+                      local prefix = "http://lua-users.org/wiki/"
+                      return prefix..node_name:gsub("%s", "")
+                   end
+}
+
 
 --- set the number of honey pots to entertain the spammers
 NUM_HONEYPOTS_IN_FORMS = 5

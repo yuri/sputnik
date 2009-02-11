@@ -38,8 +38,8 @@ detailed   = [[
 ]]
 
 license    = 'MIT/X11'
-download   = 'http://sputnik.freewisdom.org/files/sputnik-$version.tar.gz'
-push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+download   = 'http://spu.tnikorg/files/sputnik-$version.tar.gz'
+push       = "scp %s tnik.org:/var/www/tnik.org/files/"
 --------------------------------------------------------------------------------
 
 dependencies = [[
@@ -50,10 +50,8 @@ dependencies = [[
   'markdown >= 0.32',
   'md5 >= 1.1',
   'wsapi >= 1.0',
-  'lbase64 >= 20070628',
+  'luasocket >= 2.0',
 ]]
 
 -------------------------------------------------------------------------------
-
-
 

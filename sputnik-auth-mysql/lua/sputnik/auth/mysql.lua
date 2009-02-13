@@ -58,7 +58,7 @@ function new(sputnik, params)
    params.token_salt = params.token_salt or sputnik.config.TOKEN_SALT
    params.recent = params.recent or (14 * 24 * 60 * 60)
 
-   assert(params.token_salt, error.initialization_error("Cannot proceed without token salt"))
+   assert(params.token_salt, errors.initialization_error("Cannot proceed without token salt"))
 
    -- Create the new object
 	local obj = {

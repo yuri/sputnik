@@ -1,4 +1,4 @@
 
-scp $1 yuri@web10.webfaction.com:~/webapps/static/rocks/earth/
-scp manifest-earth yuri@web10.webfaction.com:~/webapps/static/rocks/earth/manifest
+scp $1 tnik.org:/var/www/tnik.org/rocks/earth/
+scp manifest-earth tnik.org:/var/www/tnik.org/rocks/earth/manifest
 

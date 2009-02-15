@@ -47,7 +47,7 @@ end
 function setup(dir)
    require("sputnik.installer")
    sputnik.installer.reset_salts()
-   sputnik.installer.make_wsapi_script(dir, "kepler/htdocs/sputnik.ws")
+   sputnik.installer.make_wsapi_script(dir, "sputnik.ws")
    sputnik.installer.make_cgi_file(dir, "sputnik.cgi")
 end
 
@@ -182,7 +182,6 @@ function Sputnik:init(initial_config)
       end
    }
    self.saci.permission_groups.is = setmetatable({}, groups_mt)
-
    self.saci.permission_groups.edit_and_save = {"save", "edit", "preview"}
    self.saci.permission_groups.show = {"show", "show_content", "cancel"}
    self.saci.permission_groups.history_and_diff = {"history", "diff"}

@@ -391,6 +391,12 @@ EDIT_FORM_CONFIG = {
    ru    = "Прочие настройки",
 }
 
+EDIT_FORM_MARKUP_MODULE = {
+   en_US = "Markup Module",
+   ru    = "Модуль разметки",
+}
+
+
 EDIT_FORM_FIELDS = {
    en_US = "Fields",
    ru    = "Поля",

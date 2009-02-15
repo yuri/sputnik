@@ -9,6 +9,7 @@ category        = {0.2  }
 actions         = {0.3, proto="concat", activate="lua"}
 action_hooks    = {0.31, proto="concat", activate="lua"}
 config          = {0.4, proto="concat", activate="lua"}
+markup_module   = {0.41, proto="fallback"}
 templates       = {0.5, proto="concat", activate="list"}
 translations    = {0.51, proto="concat", activate="list"}
 prototype       = {0.6  }
@@ -106,6 +107,7 @@ advanced_section = {2.0, "div_start", id="advanced_section"}
  permissions     = {2.03, "textarea", rows=3}
  actions         = {2.04, "textarea", div_class="editlua", rows=3}
  config          = {2.05, "textarea", div_class="editlua", rows=3}
+ markup_module   = {2.0501, "text_field"}
  html_meta_keywords = {2.051, "text_field"}
  html_meta_description = {2.052, "text_field"}
 advanced_section_end = {2.06, "div_end"}
@@ -319,3 +321,12 @@ NODE.html_footer = [===[
 
 NODE.html_meta_keywords = " "
 NODE.html_meta_description = " "
+
+NODE.child_defaults = [[
+
+--talk = [==[
+--title = "Discussion of $id"
+--prototype ="@Discussion"
+--]==]
+
+]]

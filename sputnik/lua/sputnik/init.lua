@@ -138,9 +138,10 @@ function Sputnik:init(initial_config)
    end
 
    -- setup markup
+   self.markup_modules = {}
 
-   self.markup_module = require(self.config.MARKUP_MODULE or "sputnik.markup.markdown")
-   self.markup = self.markup_module.new(self)
+   --self.markup_module = require(self.config.MARKUP_MODULE or "sputnik.markup.markdown")
+   --self.markup = self.markup_module.new(self)
 
    -- setup cache
    if self.config.CACHE_MODULE then
@@ -457,7 +458,17 @@ end
 -- Adds extra sputnik-specific fields to a node.
 -----------------------------------------------------------------------------
 function Sputnik:decorate_node(node)
-   node.markup = self.markup
+
+   local markup_module_name = "sputnik.markup."..(node.markup_module
+                                                  or self.config.MARKUP_MODULE
+                                                  or "markdown")
+   local markup_module = self.markup_modules[markup_module_name]
+   if not markup_module then
+      markup_module = require(markup_module_name)
+      self.markup_modules[markup_module_name] = markup_module
+   end
+   node.markup = markup_module.new(self)
+
    node.messages = {}
    for i, class in ipairs{"error", "warning", "success", "notice"} do
       node["post_"..class] = function(self, message) 

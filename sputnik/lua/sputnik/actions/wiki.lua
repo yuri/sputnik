@@ -900,7 +900,7 @@ function get_login_form(node, request, sputnik)
                         post_token      = post_token,
                         post_timestamp  = post_timestamp,
                         action_url      = sputnik.config.BASE_URL,
-                        register_link   = sputnik:make_url("sputnik/register")
+                        register_link   = sputnik:make_url(sputnik.config.REGISTRATION_NODE)
                      }
 
 
@@ -1019,7 +1019,7 @@ function wrappers.default(node, request, sputnik)
                                            nil, {do_not_highlight_missing=true}),
       login_link       = sputnik:make_link(node.name, "login", {prev = request.params.action},
                                            nil, {do_not_highlight_missing=true}),
-      register_link    = sputnik:make_link("sputnik/register"),
+      register_link    = sputnik:make_link(sputnik.config.REGISTRATION_NODE),
       if_logged_in     = cosmo.c(request.user){ user = sputnik:escape(request.user) },
       if_not_logged_in = cosmo.c(not request.user){},
       if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){},

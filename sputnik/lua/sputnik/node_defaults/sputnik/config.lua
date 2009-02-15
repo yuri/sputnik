@@ -17,7 +17,7 @@ MAIN_COLOR     = 200                  -- pick a number from 0 to 360
 --BODY_BG_COLOR  = "white"
 
 HOME_PAGE      = "index"
-HOME_PAGE_URL  = BASE_URL             -- or NICE_URL.."?p="..HOME_PAGE
+HOME_PAGE_URL  = NICE_URL             -- or NICE_URL.."?p="..HOME_PAGE
 COOKIE_NAME    = "Sputnik"            -- change if you run several
 SEARCH_PAGE    = "search"             -- comment out remove the search box
 
@@ -72,13 +72,16 @@ NUM_HONEYPOTS_IN_FORMS = 5
 --- CHANGING THEM CAN MAKE THE SITE UNACCESSIBLE ----------------------------
 -----------------------------------------------------------------------------
 
-STYLESHEETS = { 
-  NICE_URL.."sputnik/css/yui_reset.css",
-  NICE_URL.."sputnik/css/layout.css",
-  NICE_URL.."sputnik/css/colors.css",
-}
-DEFAULT_NAVIGATION_BAR    = "sputnik/navigation"
+ADMIN_NODE_PREFIX = "sputnik/"
+
 HISTORY_PAGE              = "history"
+DEFAULT_NAVIGATION_BAR    = ADMIN_NODE_PREFIX.."navigation"
+LOGIN_NODE                = ADMIN_NODE_PREFIX.."login"
+REGISTRATION_NODE         = ADMIN_NODE_PREFIX.."register"
+
+-- The following built-in nodes do not need variables because we never link
+-- to them: "sputnik/sitemap", "sputnik/version"
+
 -- the versions of those rocks will be displayed under "sputnik/version"
 ROCK_LIST_FOR_VERSION     = { "sputnik", "versium", "saci",
                               "colors", "diff", "xssfilter", "recaptcha",

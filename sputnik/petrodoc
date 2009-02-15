@@ -1,5 +1,6 @@
 package    = 'Sputnik'
 versions   = {
+   {'9.02.15', 'February 15, 2009',  'misc changes since August 2008'},
    {'8.08.13', 'August 13, 2008',  'a more useful default for sputnik.cgi'},
    {'8.08.11', 'August 11, 2008',  'fixed the generation of the sputnik.cgi file'},
    {'8.08.08', 'August 8, 2008',  '.reload action; fixing the registration system; fixing captcha logic; separating password and token salts'},
@@ -38,12 +39,12 @@ detailed   = [[
 ]]
 
 license    = 'MIT/X11'
-download   = 'http://spu.tnikorg/files/sputnik-$version.tar.gz'
+download   = 'http://spu.tnik.org/files/sputnik-$version.tar.gz'
 push       = "scp %s tnik.org:/var/www/tnik.org/files/"
 --------------------------------------------------------------------------------
 
 dependencies = [[
-  'saci == 8.07.21',
+  'saci == 9.02.15',
   'cosmo >= 8.04.14',
   'xssfilter == 8.07.07',
   'colors == 8.05.26',

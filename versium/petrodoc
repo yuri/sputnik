@@ -1,5 +1,6 @@
 package    = 'Versium'
 versions   = {
+   {'9.02.15', 'February 15, 2009',  'misc changes since August 2008'},
    {'8.07.21', 'July 21, 2008',  'fixed the handling of time zones'},
    {'8.07.07', 'July 7, 2008',   'fixed hour conversion and a bug with out of sequence IDs in filedir'},
    {'8.06.22', 'June 22, 2008',  'refactored diff logic into a separate rock'},
@@ -24,11 +25,11 @@ detailed   = [[
 
 license    = 'MIT/X11'
 
-homepage   = 'http://sputnik.freewisdom.org/en/Versium'
+homepage   = 'http://spu.tnik.org/en/Versium'
 favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
-download   = 'http://sputnik.freewisdom.org/files/versium-$version.tar.gz'
+download   = 'http://spu.tnik.org/files/versium-$version.tar.gz'
 --download   = "/tmp/versium-$version.tar.gz"
-push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+push       = "scp %s tnik.org:/var/www/tnik.org/files/"
 --push       = "cp %s /tmp/"
 logo       = 'versium.png'
 keywords   = 'lua, versioned storage, file system, sql, database'

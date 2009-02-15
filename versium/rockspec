@@ -1,7 +1,7 @@
 package = "Versium"
-version = "8.07.21-0"
+version = "9.02.15-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/versium-8.07.21.tar.gz",
+   url = "http://spu.tnik.org/files/versium-9.02.15.tar.gz",
 }
 description = {
    summary    = "A versioned storage API for Lua",
@@ -17,7 +17,7 @@ description = {
      a database) are provided as separate rocks.
 ]===],
    license    =  "MIT/X11",
-   homepage   = "http://sputnik.freewisdom.org/en/Versium",
+   homepage   = "http://spu.tnik.org/en/Versium",
    maintainer = "Yuri Takhteyev (yuri@freewisdom.org)",
 }
 dependencies = {

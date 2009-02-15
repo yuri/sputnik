@@ -1,5 +1,6 @@
 package    = 'SACI'
 versions   = {
+   {'9.02.15', 'February 15, 2009',  'misc changes since August 2008'},
    {'8.08.08', 'August 8, 2008',  'added node caching to avoid fetching the same nodes again and again'},
    {'8.07.21', 'July 21, 2008',  'more child methods, new versium'},
    {'8.07.07', 'July 7, 2008',   'allowed missing fields (commit 94d0259)'},
@@ -16,11 +17,11 @@ detailed   = [[
 
 license    = 'MIT/X11'
 
-homepage   = 'http://sputnik.freewisdom.org/en/Saci'
+homepage   = 'http://spu.tnik.org/en/Saci'
 favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
-download   = 'http://sputnik.freewisdom.org/files/saci-$version.tar.gz'
+download   = 'http://spu.tnik.org/files/saci-$version.tar.gz'
 --download   = "/tmp/versium-$version.tar.gz"
-push       = "scp %s yuri@web10.webfaction.com:~/webapps/static/files/"
+push       = "scp %s tnik.org:/var/www/tnik.org/files/"
 --push       = "cp %s /tmp/"
 logo       = 'saci.png'
 keywords   = 'lua, versioned storage, file system, sql, database'
@@ -29,7 +30,7 @@ rss        = homepage.."releases.rss"
 
 dependencies = [[
   'cosmo >= 7.12.24',
-  'versium == 8.07.21',
+  'versium == 9.02.15',
 ]]
 
 TOC = {

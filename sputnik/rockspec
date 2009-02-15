@@ -31,8 +31,8 @@ description = {
 dependencies = {
   'saci == 9.02.15',
   'cosmo >= 8.04.14',
-  'xssfilter == 8.07.07',
-  'colors == 8.05.26',
+  'xssfilter >= 8.07.07',
+  'colors >= 8.05.26',
   'markdown >= 0.32',
   'md5 >= 1.1',
   'wsapi >= 1.0',

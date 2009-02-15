@@ -1,7 +1,7 @@
 package = "XSSFilter"
-version = "8.07.07-0"
+version = "9.02.15-0"
 source = {
-   url = "http://sputnik.freewisdom.org/files/xssfilter-8.07.07.tar.gz",
+   url = "http://spu.tnik.org/files/xssfilter-9.02.15.tar.gz",
 }
 description = {
    summary    = "A filter to prevernt cross-site scripting (XSS) attacks",
@@ -16,7 +16,7 @@ description = {
      supply their own or modify the default.
 ]===],
    license    =  "MIT/X11",
-   homepage   = "http://sputnik.freewisdom.org/lib/xssfilter/",
+   homepage   = "http://spu.tnik.org/lib/xssfilter/",
    maintainer = "Yuri Takhteyev (yuri@freewisdom.org)",
 }
 dependencies = {

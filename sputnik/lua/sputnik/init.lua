@@ -302,6 +302,7 @@ function Sputnik:make_url(node_name, action, params, anchor)
    if not node_name or node_name=="" then
       node_name = self.config.HOME_PAGE
    end
+
    local interwiki_code = node_name:match("^[^%:]*")
    local interwiki_handler = self.config.INTERWIKI[interwiki_code]
    if interwiki_handler then
@@ -322,15 +323,15 @@ function Sputnik:make_url(node_name, action, params, anchor)
       else
          error("Interwiki handler should be string or function, but is "..handler_type)
       end
-   elseif  dirified==self.config.HOME_PAGE then
-      url = self.config.HOME_PAGE_URL
    else
       url = self.config.NICE_URL..dirified
    end
 
-   -- then the action
+   -- then the action and HOME_PAGE
    if action and action~="show" then 
       url = url.."."..action
+   elseif dirified==self.config.HOME_PAGE and #(params or {})==0 then
+      url = self.config.HOME_PAGE_URL
    end
 
    -- then the parameters

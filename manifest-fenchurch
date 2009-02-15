@@ -2,10 +2,8 @@ modules = {}
 commands = {}
 repository = {}
 
------------------------------------------------------ core dependencies -----
+----------------------------------------------------- core C dependencies ---
 
-repository['cosmo'] = {}
-repository['cosmo']['8.04.14-1']            = {{arch='rockspec'}}  -- up2date
 repository['lpeg'] = {}
 repository['lpeg']['0.9-1']                 = {{arch='rockspec'}}  -- up2date
 repository['luafilesystem'] = {}
@@ -16,6 +14,15 @@ repository['md5'] = {}
 repository['md5']['1.1.2-1']                = {{arch='rockspec'}}  -- up2date
 repository['rings'] = {}
 repository['rings']['1.2.2-1']              = {{arch='rockspec'}}  -- up2date
+repository['sputnik-binary-dependencies'] = {}
+repository['sputnik-binary-dependencies']['9.02.15-0']
+                                            = {{arch='rockspec'}}  -- up2date
+
+
+----------------------------------------------------- core Lua dependencies -
+
+repository['cosmo'] = {}
+repository['cosmo']['8.04.14-1']            = {{arch='rockspec'}}  -- up2date
 repository['wsapi'] = {}
 repository['wsapi']['1.1-2']                = {{arch='rockspec'}}  -- up2date
 repository['markdown'] = {}

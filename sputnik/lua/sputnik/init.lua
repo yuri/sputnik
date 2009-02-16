@@ -318,7 +318,11 @@ function Sputnik:make_url(node_name, action, params, anchor)
    if interwiki_handler then
       local handler_type = type(interwiki_handler)
       if handler_type == "string" then
-         url = interwiki_handler..dirified
+         if interwiki_handler:match("%%s") then
+            url = string.format(interwiki_handler, node_name)
+         else
+            url = interwiki_handler..node_name
+         end
       elseif handler_type == "function" then
          url = interwiki_handler(node_name)
       else
@@ -338,8 +342,10 @@ function Sputnik:make_url(node_name, action, params, anchor)
    -- then the parameters
    if params and next(params) then
       for k, v in pairs(params or {}) do
-         url = url.."&"..wsapi.util.url_encode(k).."="
-                       ..wsapi.util.url_encode(v or "")
+         if k~="p" then
+            url = url.."&"..wsapi.util.url_encode(k).."="
+                          ..wsapi.util.url_encode(v or "")
+         end
       end
    end
 
@@ -702,9 +708,17 @@ function Sputnik:handle_request(request, response)
    self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
 
-   
+   local dirified = self:dirify(request.node_name)
+
    local node, stub = self:get_node(request.node_name, request.params.version)
    self:decorate_node(node)
+
+   if dirified ~= request.node_name then
+      response.headers["Content-Type"] = content_type or "text/html"
+      response.headers["Location"] = self:make_url(dirified, request.action, request.params)
+      response:write("redirect")
+      return response
+   end
   
    if stub and self.config.PROTOTYPE_PATTERNS then
       -- If an empty stub was returned, check the PROTOTYPE_PATTERNS table to

@@ -54,7 +54,7 @@ INTERFACE_LANGUAGE = "en"
 
 INTERWIKI = {
    sputnik = "http://spu.tnik.org/en/",
-   wikipedia = "http://en.wikipedia.org/wiki/",
+   wikipedia = "http://en.wikipedia.org/wiki/%s",
    ["lua-users"] = function(node_name)
                       local prefix = "http://lua-users.org/wiki/"
                       return prefix..node_name:gsub("%s", "")

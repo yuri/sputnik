@@ -1,32 +1,38 @@
 -----------------------------------------------------------------------------
 -- An icon an RSS feed.
 -- 
--- Image (c) Mark James (http://famfamfam.com), 2008
--- Creative Commons Attribution 2.5 License.
+-- Image (c) Mozilla Foundation
+-- License: LGPL
 -----------------------------------------------------------------------------
 
 module(..., package.seeall)
 
 NODE = {
- prototype = "@Binary_File",
+ prototype = "@Image",
  file_name = "feed.png",
- copyright = "Mark James (http://famfamfam.com)",
+ copyright = "Mozilla Foundation",
  title     = "Feed Icon",
- actions   = [[png = "binaryfile.mimetype"]],
  file_type = "image/png",
 }
 
 NODE.content = [[
-iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U
-29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAJFSURBVBgZBcHda5V1AADg5/d733Oc7tjOaN
-s5GC6KdrEwmpPRxG7spoKghOim7oK8y0MIEQRL+geGEIQ3UXQvSJ8IafZxUbjQhRDZoU60iYsSc9t
-5v87b84TsVe3mrBWpHoCICIAIACixYTUfOJM2Z62YO97TOULSIKaEQAyESAzEgISAgLpi48de87ML
-UqmezhGyhO4SCW7f4O81YiSJiCQIkbqmNcXMIjMXeilIGsQxDp8AnKDY5teL3PyU6h4CdY3Av7cYu
-58R0QghZWeT9fP0v2V7i8Y4j77As2c5sAwIFAXDgjInJxURAzub/PwxMZBGphZYeIWJWZ44xdo5bl
-4kK8kzioohUUREd4kXP+Kpd3nkee72+epNBleAxdfoLJBlDEuKkpxoBAkBjXGm53n8ZZ45S/shrr7
-P75eBo6eo9zAsKCqGRBEB/1zj89e5eo7tLRr7ePJtWg9wZZV7t2i2OPQcw5JiRE4UESN1ZPc2g0tc
-eos/LtPYx9HTaPDNe8Dhl9gtyStyUiMIJDXLp2m0GHzN2gdMzdPq0F3k+pcc/4+x/UwepKzIiSDWT
-B/iwBLT8xw8xt07rJ8HHj7GbkX/B+DBxyhrciIQ2N2i2AG2fiPL+OsXoNVlWPDnDaC5l6qiJJWjLl
-HxxRs0JhhcIyvp/8SHJylKdiu++4Tr31NW7B8nkrwzp627d9nkHM0Wsea+GSY6tDvESEyY6TIxyZ4
-GSUp/nTubqyF7WrvZtaKrZ4QSQ+TIMUSJHCVypGhaHW448z+h1tLAgvKk7gAAAABJRU5ErkJggg==
+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
+AASUVORK5CYII=
 ]]

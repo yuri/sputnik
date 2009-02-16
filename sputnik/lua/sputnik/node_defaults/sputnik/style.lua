@@ -128,6 +128,7 @@ body {
  float      : right;
  text-align : right;         
  font-size  : 90%;
+ vertical-align: text-bottom;
 }
 #rss_icon {
  margin     :    0em   0em   0em   0em; 
@@ -419,14 +420,27 @@ input.button {
 form.search {
  margin-right: 0px;
  padding-right: 0px;
+ display: inline;
 }
 
 input.search_box {
- margin:    0em   1px  auto   4px; 
- padding:   2px  auto   2px  auto;
+ margin:    0em   0px  0px   0px; 
+ padding:   2px  2px   2px  2px;
  display : inline;
  line-height: 10px;  
  font-size  : 9pt;
+ vertical-align: text-bottom;
+ height: 22px;
+}
+input.search_button {
+ margin:    0em   0px  0px   0px; 
+ padding:   2px  2px   2px  2px;
+ display : inline;
+ line-height: 10px;  
+ font-size  : 9pt;
+ border: none;
+ background: none;
+ vertical-align: text-bottom;
 }
 input.submit {
  margin:   .8em   0em  .8em  .4em; 

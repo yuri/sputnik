@@ -1,38 +1,29 @@
 -----------------------------------------------------------------------------
 -- An icon representing an anonymous user.
 -- 
--- Image (c) Mark James (http://famfamfam.com), 2008
--- Creative Commons Attribution 2.5 License.
---
--- Black glasses added by Yuri Takhteyev.
+-- Original Image Copyright (c)  2006-2007  Everaldo Coelho.
+-- Distributed under GNU General Public License.
+-- http://www.everaldo.com/crystal/?action=license
 -----------------------------------------------------------------------------
-
-
 module(..., package.seeall)
 
-
-
 NODE = {
- prototype = "@Binary_File",
+ prototype = "@Image",
  file_name = "anon.png",
- copyright = "Mark James (http://famfamfam.com)",
+ copyright = "Everaldo Coelho (http://www.everaldo.com, everaldo@everaldo.com",
  title     = "Anonymous User Icon",
- actions   = [[png = "binaryfile.mimetype"]],
  file_type = "image/png",
 }
 
 NODE.content = [[
-iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/
-wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9gGGwUWJByxgjEAAAJSSURBVHjapV
-JNSJRhEH7eeb+/ddd1dROlkOgkdKlDRmRdKuzQQQg8GELUsUPYIYT8AQ+LlgcP0nbwYIcuEkoIRnS
-xn8taiJKGbZoWLlGa2q767c/3/nQQF3/KoAaGGWbmeXiYGaa1xv+Y8bvi/UhLazBgNYHBr5SGJ5S7
-5ua6b7V1tOyepd2FnkhzU3GRr92yud8wOQyTYHAUODa709l2u/2vBOGg02mYxDIZgWwmB8+TAHEQG
-cw2WOMeuVrrHQ5A7+dDjx/Z2+f3KOjv7VrZyuOTYxgffZ3vDfZ1p8rLy/S+S9SaTy98+lANxmBwQm
-GwCAtzcYABoy+ezVSduZD74w66HgyYsz+dubHYSzAtQcTBicCJYTz2CjM/zC8dPf2+7Ri29Qf3ogO
-2hr7ut51o/eWziI08BbZ+hDEcP12DJ8MxJDfWGzVUb/PNejdPcDc6yKTWV8OBgr662mqsprNYTq1D
-eApKSigFFPpslIeDGBqOYSmZuqG17G1tvCIIAHyWrg07oq/m/AksJjewuJyCl5NQQkJKQAmF1aSLr
-0spnKw6igMFKuq3dENewfPBh6LiSCVfyXBIJwRim+qVArRSkFJDKQUhFHxwcTDEMB9/712su2YRAB
-AjMkwTicR3BBwTQmpIoSDlJpgRAxEhHPJjIbEITgRGzMhfIVR6qHk+PimklxNT7z6CcwZuEkyLYDk
-8H9++mQJXrjs/O50tKauI7LjCRGyk8PO3lJVYoUg2nb1kGEYJA0wAUEoLKeW647MmSgNeQ+Xh4vSx
-U+fWdhD8q/0CYnslLWLAIrIAAAAASUVORK5CYII=
+iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAQAAABuvaSwAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAC
+xMAAAsTAQCanBgAAAAHdElNRQfZAhADJirJHxcTAAABtUlEQVQoz33Sv4sUMRjG8RUOBgcsRGwsLL
+S2sBMbwcpCtBBB0VIL/wP/ht2ZJJNMMjvZmcxcdWihXGcrCCf4A4QD68NCBBU5Dk+R5Wuxcb07mOW
+pQj68hOfNiNHhyEsqFM/0hprK20fvjhyzk6KRX9VPvVtuqxf5tZU4f5wjECgMFv1R3BjExeXisyIj
+i9xh9CCWjaKiJmdCjsJgdtSpASxCjmedBsmYDIXezR8N4KyQtPT0BBw5ArmfPxzCd/T3QKCjo6fDk
+j3Nrgy2IZ60hJgO9ym7taI6MW5oYwJuW5xYgYub1TzQ0NAQ/pSbk1VYHtMPphG7LXFu5QYZmbPlr5
+oKj3o1+DeKM+Pr4w3xXv0I856Wddrf5kuxJU1xVR0/hO39fEdjcTimeDwNM1oCHRX6rT6/xPaCnJs
+lrfHMmNGwaKajQ76WpyOu7ipKHNWS/oOL1j1qz1yMePKmxB6Y2izZglrkvr4Xcf7B4agi/c8CLZ4K
+R8nkZcTi22Ha0dPT0dLgqamwyHcRl88NJfbAmz0eT800zjV7uo7YralUpUWqU5OWqV0ksUmZmEQnR
+aISmZg1Rn8BXp9TeVi00g4AAAAASUVORK5CYII=
 ]]

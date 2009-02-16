@@ -232,8 +232,7 @@ NODE.html_search = [==[
       <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
       <input class="search_box" type="text" name="q" size="16"
              title="_(TOOLTIP_FOR_SEARCH_BOX)" value="$search_box_content"/>
-      <input class="small_submit" type="submit" name="Search" value="_(SEARCH)" 
-             title="_(TOOLTIP_FOR_SEARCH)"/>
+      <input class="search_button" type="image" src="$icon_base_url{}icons/search.png" alt="_(BUTTON)"/>
      </form>
 ]==]
 
@@ -247,9 +246,6 @@ NODE.html_page = [==[
        ]=]<span class="toolbar">
         $do_buttons[[<a $link title="$title"><img src="$icon_base_url{}icons/$command.png" alt="_(BUTTON)"/></a>
        ]]
-        <a title="Bookmark"
-           href="javascript:addBookmark('$site_title: $title','http://www.astroman.com')"><img
-           alt="_(BUTTON)" src="$icon_base_url{}icons/star.png"/></a>
        </span>
       </div>
       <h1 class="title">$if_title_icon[[
@@ -273,13 +269,13 @@ NODE.html_logo = [==[
 ]==]
 
 NODE.html_header = [===[
-    <div id="login"> <!--login and search (in the upper right corner) -->
-$if_search[[$search]]
-     <br/>
-     $if_logged_in[[_(HI_USER) (<a $logout_link>_(LOGOUT)</a>)
-     ]]$if_not_logged_in[[<a class="login_link" $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
-     <!--a $site_rss_link><img src="$icon_base_url{}icons/feed_medium.png" id="rss_icon" title="_(RSS_FOR_EDITS_TO_THIS_WIKI)"
-        alt="_(RSS_FOR_EDITS_TO_THIS_WIKI)" /></a-->
+    <div id="login" style="vertical-align: middle;">
+     <!--login and search (in the upper right corner) -->
+     $if_search[[$search]]<br/><br/>
+     $if_logged_in[[<span style="border: 1px solid read;">_(HI_USER)
+     <a title="_(LOGOUT)" $logout_link><img style="vertical-align: text-bottom" src="$icon_base_url{}icons/logout.png" alt="_(BUTTON)"/></a></span>]]
+     $if_not_logged_in[[<a class="login_link" $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
+
    </div>   
    <div id="logo">
 $logo

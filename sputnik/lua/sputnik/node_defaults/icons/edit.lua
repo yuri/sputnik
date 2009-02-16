@@ -1,8 +1,9 @@
 -----------------------------------------------------------------------------
 -- An icon for editing the node.
 -- 
--- Image (c) Mark James (http://famfamfam.com), 2008
--- Creative Commons Attribution 2.5 License.
+-- Original Image Copyright (c)  2006-2007  Everaldo Coelho.
+-- Distributed under GNU General Public License.
+-- http://www.everaldo.com/crystal/?action=license
 -----------------------------------------------------------------------------
 
 module(..., package.seeall)
@@ -10,20 +11,23 @@ module(..., package.seeall)
 NODE = {
  prototype = "@Binary_File",
  file_name = "edit.png",
- copyright = "Mark James (http://famfamfam.com)",
+ copyright = "Everaldo Coelho (http://www.everaldo.com, everaldo@everaldo.com",
  title     = "Edit Icon",
  actions   = [[png = "binaryfile.mimetype"]],
  file_type = "image/png",
 }
 
 NODE.content = [[
-iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U
-29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAFUSURBVDjLrZM/SAJxGIZdWwuDlnCplkAEm1
-zkaIiGFFpyMIwGK5KGoK2lphDKkMDg3LLUSIJsSKhIi+684CokOtTiMizCGuzEU5K3vOEgKvtBDe/
-2Pc8H3x8NAM1fQlx4H9M3pcOWp6TXWmM8A7j0629v1nraiAVC0IrrwATKIgs5xyG5QiE+Z4iQdoeU
-2oAsnqCSO1NSTu+D9VhqRLD8nIB8F0Q2MgmJDyipCzjvYJkIfpN2UBLG8MpP4dxvQ3ZzGuyyBQ2H+
-AnOOCBd9aL6soh81A5hyYSGWyCFvxUcerqI4S+CvYVOFPMHxLAq8I3qdHVY5LbBhJzEsCrwutpRFB
-lUHy6wO2tEYtWAzLELPN2P03kjfj3luqDycV2F8AgefWbEnVqEHa2IznSD6BdsVDNStB0lfh0FPoQ
-jdx8RrAqGzC0YprSgxzsUMOY2bf37N/6Ud1Vc9yYcH50CAAAAAElFTkSuQmCC
-
+iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAYAAADEtGw7AAAACXBIWXMAAAsTAAALEwEAmpwYAAACX
+0lEQVQ4y6XTy2oTURgH8AlYu3LTtYJPkRewlahLxXdQqMt6SyVmCsG60rT4DrFdBBLJxEggkIWl5h
+7MDSokFZKQ+/02n+d/5IxpLu3UHviTYebkd775zhnJ6XRKCBHxsOswy+8rJANHmoWj0ShNJhMaDAY
+0HA5pNBrxjMfjM8E9zOn3+9TpdPi9Xq9Hbre7uRTGEBgWUVWVFg3cFyAGFrgQRiWzFWMRZBZG5bph
+VLGoHbNvgGs8uxSMqgUuFliG64YxaRY/r/JLwd1udw5vNptULBY1eBrXBbdaLQ0W/Q4Gg2Sz2cirK
+HyO2ExdrYjFYnwSKmu321pL/H4/lUslioTD5HA4tLaI1uiuuF6vcxyTE4kElUplUhQf2e12XiHaI4
+4kciEciUT4H2u1GpvYZmiSoSWO7u6+59WjRaJNaJGucwwYr4ZqUz9THHW5vpAsy1SpVLT2TG8sogv
+GSKfSVGSox/OVLBYLFQoFjooIHNEFx+NxUjwe3gqv9xuZzduUy+X4KcFb4BcBLmBkDn5w777kcrk0
+2OfzUblcpu9HP8hqlSmbzXKk0WjwLMPn4LvrG9LzrRfStvmNZLW+3U+n03R8HKKdnX8oqscpWYQDQ
+5bCsmx9ms/n66FQlO9+JpPhaLVa5TkPxzx8KHMwQ5+cnPw6DYej9OGjnZLJJN/xaVCgi6pFAOOZBm
+/cWb/x6uVr+4HjM+3t7Y8PDw9Uho4YorKJKgPOhFW3MOwLVHE6NPj2zVufHj98RM82N09NJpOCT5e
+dkqvkL2wwGNZWr6++W7m2smU0GqVAIKAdwf8N4D/mLk6MuPzc6AAAAABJRU5ErkJggg==
 ]]

@@ -459,9 +459,15 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:decorate_node(node)
 
-   local markup_module_name = "sputnik.markup."..(node.markup_module
-                                                  or self.config.MARKUP_MODULE
-                                                  or "markdown")
+   
+   local markup_module_name
+   if node.markup_module and node.markup_module:len() > 0 then
+      markup_module_name = "sputnik.markup."..node.markup_module
+   elseif self.config.MARKUP_MODULE then
+      markup_module_name = "sputnik.markup."..self.config.MARKUP_MODULE
+   else
+      markup_module_name = "sputnik.markup.markdown"
+   end
    local markup_module = self.markup_modules[markup_module_name]
    if not markup_module then
       markup_module = require(markup_module_name)

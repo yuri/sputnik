@@ -1,7 +1,7 @@
 package = "Sputnik"
-version = "9.02.15-0"
+version = "9.02.16-0"
 source = {
-   url = "http://spu.tnik.org/files/sputnik-9.02.15.tar.gz",
+   url = "http://spu.tnik.org/files/sputnik-9.02.16.tar.gz",
 }
 description = {
    summary    = "A wiki and a framework for wiki-like applications",
@@ -66,31 +66,50 @@ build = {
 
         ["sputnik.wsapi_app"] = "lua/sputnik/wsapi_app.lua",
         ["sputnik.installer"] = "lua/sputnik/installer.lua",
+
         ["sputnik.node_defaults.jquery.textarearesizer"] = "lua/sputnik/node_defaults/jquery/textarearesizer.lua",
 
         ["sputnik.node_defaults.@Text_Config"] = "lua/sputnik/node_defaults/@Text_Config.lua",
         ["sputnik.node_defaults.@Collection"] = "lua/sputnik/node_defaults/@Collection.lua",
         ["sputnik.node_defaults.@Comment"] = "lua/sputnik/node_defaults/@Comment.lua",
+        ["sputnik.node_defaults.@Image"] = "lua/sputnik/node_defaults/@Image.lua",
         ["sputnik.node_defaults.icons.system"] = "lua/sputnik/node_defaults/icons/system.lua",
         ["sputnik.node_defaults.icons.minus"] = "lua/sputnik/node_defaults/icons/minus.lua",
         ["sputnik.node_defaults.icons.rss"] = "lua/sputnik/node_defaults/icons/rss.lua",
+        ["sputnik.node_defaults.icons.search"] = "lua/sputnik/node_defaults/icons/search.lua",
         ["sputnik.node_defaults.icons.attach"] = "lua/sputnik/node_defaults/icons/attach.lua",
         ["sputnik.node_defaults.icons.plus"] = "lua/sputnik/node_defaults/icons/plus.lua",
+        ["sputnik.node_defaults.icons.logout"] = "lua/sputnik/node_defaults/icons/logout.lua",
         ["sputnik.node_defaults.icons.diff"] = "lua/sputnik/node_defaults/icons/diff.lua",
+
         ["sputnik.node_defaults.icons.picture"] = "lua/sputnik/node_defaults/icons/picture.lua",
+
+
+
         ["sputnik.node_defaults.icons.edit"] = "lua/sputnik/node_defaults/icons/edit.lua",
-        ["sputnik.node_defaults.icons.feed_medium"] = "lua/sputnik/node_defaults/icons/feed_medium.lua",
         ["sputnik.node_defaults.icons.admin"] = "lua/sputnik/node_defaults/icons/admin.lua",
         ["sputnik.node_defaults.icons.user"] = "lua/sputnik/node_defaults/icons/user.lua",
+
         ["sputnik.node_defaults.icons.star"] = "lua/sputnik/node_defaults/icons/star.lua",
+
+
+
+
+
+
         ["sputnik.node_defaults.icons.anon"] = "lua/sputnik/node_defaults/icons/anon.lua",
         ["sputnik.node_defaults.icons.history"] = "lua/sputnik/node_defaults/icons/history.lua",
         ["sputnik.node_defaults.icons.lua"] = "lua/sputnik/node_defaults/icons/lua.lua",
+
         ["sputnik.node_defaults.icons.sputnik"] = "lua/sputnik/node_defaults/icons/sputnik.lua",
+
+
 
         ["sputnik.node_defaults.@JavaScript"] = "lua/sputnik/node_defaults/@JavaScript.lua",
         ["sputnik.node_defaults.@Lua_Config"] = "lua/sputnik/node_defaults/@Lua_Config.lua",
+
         ["sputnik.node_defaults.@Discussion"] = "lua/sputnik/node_defaults/@Discussion.lua",
+
         ["sputnik.node_defaults.sputnik.style"] = "lua/sputnik/node_defaults/sputnik/style.lua",
         ["sputnik.node_defaults.sputnik.translations"] = "lua/sputnik/node_defaults/sputnik/translations.lua",
         ["sputnik.node_defaults.sputnik.register"] = "lua/sputnik/node_defaults/sputnik/register.lua",
@@ -104,6 +123,8 @@ build = {
         ["sputnik.node_defaults.sputnik.grippie"] = "lua/sputnik/node_defaults/sputnik/grippie.lua",
         ["sputnik.node_defaults.sputnik.scripts"] = "lua/sputnik/node_defaults/sputnik/scripts.lua",
         ["sputnik.node_defaults.sputnik.navigation"] = "lua/sputnik/node_defaults/sputnik/navigation.lua",
+
+
 
         ["sputnik.node_defaults.sputnik.version"] = "lua/sputnik/node_defaults/sputnik/version.lua",
         ["sputnik.node_defaults.sputnik.passwords"] = "lua/sputnik/node_defaults/sputnik/passwords.lua",

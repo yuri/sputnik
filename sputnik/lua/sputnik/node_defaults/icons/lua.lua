@@ -1,6 +1,8 @@
 -----------------------------------------------------------------------------
 -- An icon representing an Lua configuration page.
 -- 
+-- Modified from http://www.lua.org/images/.
+-- (c) 1998 Lua.org. Graphic design by Alexandre Nakonechnyj.
 -----------------------------------------------------------------------------
 
 module(..., package.seeall)

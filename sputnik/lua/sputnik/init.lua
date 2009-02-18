@@ -35,6 +35,11 @@ local function apply_defaults(config)
    config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "sputnik/config"
    config.PASS_PAGE_NAME   = config.PASS_PAGE_NAME or "sputnik/passwords"
    config.INTERWIKI        = config.INTERWIKI or {}
+   config.ADMIN_NODE_PREFIX = config.ADMIN_NODE_PREFIX or "sputnik/"
+   config.DEFAULT_NAVIGATION_BAR = config.ADMIN_NODE_PREFIX .. "navigation"
+   config.LOGIN_NODE = config.ADMIN_NODE_PREFIX .. "login"
+   config.LOGOUT_NODE = config.ADMIN_NODE_PREFIX .. "logout"
+   config.REGISTRATION_NODE = config.ADMIN_NODE_PREFIX .. "register"
    --config.LOGGER = config.LOGGER or "file"
    --config.LOGGER_PARAMS = config.LOGGER_PARAMS
    --                       or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
@@ -660,7 +665,7 @@ function Sputnik:translate_request (request)
       new_params.post_timestamp = request.params.post_timestamp
       request.params = new_params
    end
-   
+
    -- break "p" parameter into node name and the action
    if request.params.p and request.params.p~="" then
       request.node_name, request.action = sputnik.util.split(request.params.p, "%.")
@@ -679,7 +684,13 @@ function Sputnik:translate_request (request)
                                                       request.params.password)
       if not request.user then
          request.auth_message = "INCORRECT_PASSWORD"
+         -- TODO: I am unsure what the behavior here should be.. 
+         request.node_name = self.config.LOGIN_NODE
       else
+         if request.params.next then
+            request.redirect = self:make_url(request.params.next)
+         end
+
          self.logger:debug(request.user..","..request.auth_token)
       end
    else
@@ -712,6 +723,18 @@ function Sputnik:handle_request(request, response)
 
    local node, stub = self:get_node(request.node_name, request.params.version)
    self:decorate_node(node)
+
+   if request.redirect then
+      self.logger:debug("Sending redirect")
+      -- Set the authentication cookie so it's not lost
+      local cookie_value = (request.user or "").."|"..(request.auth_token or "")
+      response:set_cookie(self.cookie_name, {value=cookie_value, path="/"})
+
+      response.headers["Content-Type"] = "text/html"
+      response.headers["Location"] = request.redirect
+      response:write("redirect")
+      return response
+   end
 
    if dirified ~= request.node_name then
       response.headers["Content-Type"] = content_type or "text/html"

@@ -223,7 +223,6 @@ EDIT_FORM_DIV_END = [[</div>]]
 LOGIN_FORM              = [===[
    
       <form method="post" action="$action_url">
-       <input class="hidden" type="hidden" name="p" value="$node_name.post"/>
        <input class="hidden" type="hidden" name="post_token" value="$post_token"/>
        <input class="hidden" type="hidden" name="post_timestamp" value="$post_timestamp"/>
        <input class="hidden" type="hidden" name="post_fields" value="$post_fields"/>

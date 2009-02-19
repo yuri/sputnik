@@ -878,16 +878,28 @@ end
 
 function get_login_form(node, request, sputnik)
    local post_timestamp = os.time()
-   local post_token = sputnik.auth:timestamp_token(post_timestamp)   
+   local post_token = sputnik.auth:timestamp_token(post_timestamp)
+   local field_spec = [[
+      --please_login = {4.0, "note"}
+      user = {4.1, "text_field", div_class="autofocus"}
+      password = {4.2, "password"}
+   ]]
+
+   if request.params.next then
+      field_spec = field_spec .. [[
+      next = {4.3, "hidden", no_label = true}
+      ]]
+   end
+
    local html_for_fields, field_list = html_forms.make_html_form{
-                                          field_spec = [[
-                                                           --please_login = {4.0, "note"}
-                                                           user = {4.1, "text_field", div_class="autofocus"}
-                                                           password = {4.2, "password"}      
-                                                       ]], 
+                                          field_spec = field_spec,
                                           templates  = node.templates, 
                                           translator = node.translator,
-                                          values     = {user="", password=""},
+                                          values     = {
+                                             user = "",
+                                             password = "",
+                                             next = request.params.next,
+                                          },
                                           hash_fn    = function(field_name)
                                                           return sputnik:hash_field_name(field_name, post_token)
                                                        end
@@ -896,10 +908,10 @@ function get_login_form(node, request, sputnik)
    return cosmo.f(node.templates.LOGIN_FORM){
                         html_for_fields = html_for_fields,
                         node_name       = request.params.next or node.name,
-                        post_fields     = "user,password",
+                        post_fields     = "user,password,next",
                         post_token      = post_token,
                         post_timestamp  = post_timestamp,
-                        action_url      = sputnik.config.BASE_URL,
+                        action_url      = sputnik:make_url(sputnik.config.LOGIN_NODE),
                         register_link   = sputnik:make_url(sputnik.config.REGISTRATION_NODE)
                      }
 
@@ -919,6 +931,11 @@ function actions.show_login_form(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
+function actions.logout_user(node, request, sputnik)
+   request.user = nil
+   node:redirect(sputnik:make_url(request.params.next))
+   return "redirect"
+end
 
 -----------------------------------------------------------------------------
 -- Shows the version of sputnik.
@@ -1015,9 +1032,9 @@ function wrappers.default(node, request, sputnik)
       if_old_version   = cosmo.c(is_old){
                             version      = request.params.version,
                          },
-      logout_link      = sputnik:make_link(node.name, request.params.action, {logout="1"},
-                                           nil, {do_not_highlight_missing=true}),
-      login_link       = sputnik:make_link(node.name, "login", {prev = request.params.action},
+      logout_link      = sputnik:make_link(sputnik.config.LOGOUT_NODE, nil, {next = node.name},
+                                           nil, {do_not_highlight_missing = true}),
+      login_link       = sputnik:make_link(sputnik.config.LOGIN_NODE, nil, {next = node.name},
                                            nil, {do_not_highlight_missing=true}),
       register_link    = sputnik:make_link(sputnik.config.REGISTRATION_NODE),
       if_logged_in     = cosmo.c(request.user){ user = sputnik:escape(request.user) },

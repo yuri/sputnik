@@ -6,7 +6,7 @@ NODE = {
   --submit = "register.submit"
  ]],
  --translations = [[_translations_register]],
- title = "New Account",
+ title = "Login",
  permissions = [[
 allow(all_users, "submit")
 ]]

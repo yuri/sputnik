@@ -14,6 +14,7 @@ actions.save_new = function(node, request, sputnik)
    local new_id = string.format("%s/%06d", parent_id, sputnik:get_uid(parent_id))
    local new_node = sputnik:get_node(new_id)
    sputnik:update_node_with_params(new_node, {prototype = "@Comment"})
+   sputnik:update_node_with_params(new_node, {comment_date = os.date("%Y/%M/%d %H:%m")})
    request.params.actions = ""
    new_node = sputnik:activate_node(new_node)
 

@@ -421,6 +421,12 @@ EDIT_FORM_COLLECTION_SECTION = {
    en_US = "Collection Fields"
 }
 
+EDIT_FORM_COMMENT_AUTHOR = {
+   en_US = "Your name",
+   ru = "Ваше имя",
+}
+
+
 EDIT_FORM_CONTENT_TEMPLATE = {
    en_US = "Content Template"
 }

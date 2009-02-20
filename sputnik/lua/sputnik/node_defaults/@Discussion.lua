@@ -14,19 +14,45 @@ actions   = 'save="comments.save_new"'
 NODE.html_content = [=[
 Add <a href="$new_url">new comment</a>.
 
+<style>
+.comment_toolbar {
+ border-top: 1px solid #eee;
+ margin-top: 1em;
+}
+.comment_toolbar a {
+   text-decoration: none;
+   color: #99c;
+}
+.comment_toolbar a:hover {
+   text-decoration: underline;
+   color: blue;
+}
+</style>
+
 <br/><br/>
 
  $do_nodes[[
 
   <h2>
    <span id="trigger_message_$short_id" class="ctrigger $closed">
-    <span class="email_address">$short_id |</span> <img alt="author" src="$icon"/> some dude </span>
+    $title
+   </span>
   </h2>
+  
+  
+
 
   <div id="message_$short_id">
+  <p>
   $content
+  </p>
 
-  <p><a href="$new_url&parent_comment=$short_id">reply</a>, $parent_comment</p> 
+  <div class="comment_toolbar">
+   $comment_author on $comment_date |
+   <a href="$new_url&comment_parent=$short_id">reply</a>
+   <a href="#trigger_message_$comment_parent">parent</a>
+   <a href="#trigger_message_$short_id">link</a>
+  </div>
   </div>
 
  ]]

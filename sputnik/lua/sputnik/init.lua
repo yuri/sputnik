@@ -310,7 +310,7 @@ function Sputnik:make_url(node_name, action, params, anchor)
       node_name = self.config.HOME_PAGE
    end
 
-   local interwiki_code = node_name:match("^[^%:]*")
+   local interwiki_code = node_name:match("^([^%:]*)%:")
    local interwiki_handler = self.config.INTERWIKI[interwiki_code]
    if interwiki_handler then
       node_name = node_name:gsub("^[^%:]*%:", "") -- crop the code

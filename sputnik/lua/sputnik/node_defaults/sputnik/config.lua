@@ -46,6 +46,9 @@ MIME_TYPES = {
    ["text/plain"] = "txt",
 }
 
+-- Configure the actions that appear in the node toolbar as commands
+TOOLBAR_COMMANDS = {"edit", "history", "rss"}
+
 --- changes the language of the wiki interface
 
 INTERFACE_LANGUAGE = "en"

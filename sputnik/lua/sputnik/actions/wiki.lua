@@ -1058,7 +1058,7 @@ function wrappers.default(node, request, sputnik)
       css_base_url     = sputnik.config.CSS_BASE_URL or sputnik.config.NICE_URL,
       js_base_url      = sputnik.config.JS_BASE_URL or sputnik.config.NICE_URL,
       do_toolbar       = function(args)
-                            for i, command in ipairs({'edit', 'history', 'rss'}) do
+                            for i, command in ipairs(sputnik.config.TOOLBAR_COMMANDS) do
                                if node:check_permissions(request.user, command) then
                                   cosmo.yield{
                                      link = sputnik:make_link(node.id, command),

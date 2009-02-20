@@ -244,7 +244,7 @@ NODE.html_page = [==[
         <li style="display:none">&nbsp;</li>
        </ul>
        ]=]<span class="toolbar">
-        $do_buttons[[<a $link title="$title"><img src="$icon_base_url{}icons/$command.png" alt="_(BUTTON)"/></a>
+        $do_toolbar[[<a $link title="$title"><img src="$icon_base_url{}icons/$command.png" alt="_(BUTTON)"/></a>
        ]]
        </span>
       </div>

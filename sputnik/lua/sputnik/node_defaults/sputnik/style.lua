@@ -525,15 +525,10 @@ div.grippie {
     margin-left: 300px;
 }
 
-span.ctrigger {
-display : block;
-width: 100%;
-}
-
-span.ctrigger {
+h2.ctrigger {
   background: url($icon_base_url{}icons/minus.png) no-repeat right;
 }
-span.ctrigger.closed {
+h2.ctrigger.closed {
   background: url(data:image/png;base64,$icon_plus) no-repeat right;
 }
 

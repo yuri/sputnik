@@ -50,7 +50,7 @@ $(document).ready(function(){
   }
  );
 
- $("span.ctrigger").click(
+ $(".ctrigger").click(
   function () {
    var selector = "#" + this.id.substring(8);
    $(selector).slideToggle();
@@ -59,7 +59,7 @@ $(document).ready(function(){
  );
 
  // Actually hide all the closed elements
- $("span.ctrigger.closed").each(
+ $(".ctrigger.closed").each(
   function() {
    var selector = "#" + this.id.substring(8);
    $(selector).hide();

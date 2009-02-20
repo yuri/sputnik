@@ -204,7 +204,7 @@ EDIT_FORM_SELECT        = [[<select name="$name" tabindex="$tab_index">
                             </select>]]
 EDIT_FORM_SHOW_ADVANCED = [[<a id="more_fields" href="#" class="local" onclick="toggleElements('advanced_field')">
                              <div id="toggle_advanced_fields">_(SHOW_ADVANCED_OPTIONS)</div></a>]]
-EDIT_FORM_DIV_START = [=[<h2>$do_collapse[[<span id="trigger_$id" class="ctrigger $state">$label</span></h2>]]<div id="$id" class="$class">]=]
+EDIT_FORM_DIV_START = [=[$do_collapse[[<h2 id="trigger_$id" class="ctrigger $state">$label</h2>]]<div id="$id" class="$class">]=]
 EDIT_FORM_DIV_END = [[</div>]] 
 
 LOGIN_FORM              = [===[

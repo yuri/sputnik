@@ -6,19 +6,6 @@ NODE = {
    prototype="@Lua_Config",
 }
 
-NODE.fields = [[
-main         = {0.78, proto="concat", activate="lua"  }
-head         = {0.781, proto="concat", activate="lua"  }
-body         = {0.782, proto="concat", activate="lua"  }
-]]
-
-NODE.admin_edit_ui = [[
-main         = {3.001, "editor", rows=3 }
-head         = {3.002, "editor", rows=3 }
-body         = {3.003, "editor", rows=3 }
-]]
-
-
 NODE.search_form = [===[
 
 

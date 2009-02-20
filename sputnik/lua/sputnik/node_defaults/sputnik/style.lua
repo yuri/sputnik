@@ -478,6 +478,7 @@ input.textfield {
 #more_fields       {margin:   auto  auto  auto 200px; 
                     padding:  auto  auto  auto 200px; display: block;        }
 input.hidden       {                                  display: none;         }
+div.hidden         {                                  display: none;         }
 div.honey          {                                  display: none;         }
 div.advanced_field {                                  display: none;         }
 

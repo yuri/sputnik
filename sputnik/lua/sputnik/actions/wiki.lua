@@ -887,7 +887,7 @@ function get_login_form(node, request, sputnik)
 
    if request.params.next then
       field_spec = field_spec .. [[
-      next = {4.3, "hidden", no_label = true}
+      next = {4.3, "hidden", no_label = true, div_class="hidden"}
       ]]
    end
 

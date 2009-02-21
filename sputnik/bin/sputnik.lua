@@ -33,8 +33,6 @@ Some of the possible commands are:
 
 local function main()
    local options = parse_args(arg)
-   print(options.bar)
-   print(options.webdir)
 
    local command = options[1]
    if not command then

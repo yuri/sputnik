@@ -154,11 +154,6 @@ EDIT = [===[
    
       <form class="edit" method="post" enctype="multipart/form-data" action="$action_url">
        $captcha
-       <script type="text/javascript">
-        /* <![CDATA[ */
-
-        /* ]]> */
-       </script>
        <input class="hidden" type="hidden" name="p" value="$node_name.post"/>
        <input class="hidden" type="hidden" name="post_token" value="$post_token"/>
        <input class="hidden" type="hidden" name="post_timestamp" value="$post_timestamp"/>

@@ -48,16 +48,6 @@ local function apply_defaults(config)
 end
 
 -----------------------------------------------------------------------------
--- Sets up Sputnik in the current or specified directory.
------------------------------------------------------------------------------
-function setup(dir)
-   require("sputnik.installer")
-   sputnik.installer.reset_salts()
-   sputnik.installer.make_wsapi_script(dir, "sputnik.ws")
-   sputnik.installer.make_cgi_file(dir, "sputnik.cgi")
-end
-
------------------------------------------------------------------------------
 -- THE SPUTNIK CLASS  -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 -----------------------------------------------------------------------------
 local Sputnik = {}

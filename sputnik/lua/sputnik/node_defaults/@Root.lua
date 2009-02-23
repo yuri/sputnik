@@ -244,8 +244,10 @@ NODE.html_page = [==[
         <li style="display:none">&nbsp;</li>
        </ul>
        ]=]<span class="toolbar">
-        $do_toolbar[[<a $link title="$title"><img src="$icon_base_url{}icons/$command.png" alt="_(BUTTON)"/></a>
-       ]]
+        $do_toolbar[[
+         $if_icon[====[<a $link title="$title"><img src="$icon_base_url{}icons/$command.png" alt="_(BUTTON)"/></a>]====]
+         $if_text[====[<a $link>$title</a>]====]
+        ]]
        </span>
       </div>
       <h1 class="title">$if_title_icon[[

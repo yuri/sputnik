@@ -48,6 +48,11 @@ MIME_TYPES = {
 
 -- Configure the actions that appear in the node toolbar as commands
 TOOLBAR_COMMANDS = {"edit", "history", "rss"}
+TOOLBAR_ICONS = {
+   edit = "icons/edit.png",
+   history = "icons/history.png",
+   rss = "icons/rss.png",
+}
 
 --- changes the language of the wiki interface
 
@@ -64,9 +69,12 @@ INTERWIKI = {
                    end
 }
 
-
 --- set the number of honey pots to entertain the spammers
 NUM_HONEYPOTS_IN_FORMS = 5
+
+-- the maximum set of commands for the toolbar
+-- (each user will only see those they can permissions for)
+TOOLBAR_COMMANDS = {'edit', 'history', 'rss'}
 
 -----------------------------------------------------------------------------
 ----------- NOW WAIT A SECOND -----------------------------------------------

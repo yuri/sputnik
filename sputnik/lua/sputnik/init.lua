@@ -41,6 +41,7 @@ local function apply_defaults(config)
    config.LOGOUT_NODE = config.ADMIN_NODE_PREFIX .. "logout"
    config.REGISTRATION_NODE = config.ADMIN_NODE_PREFIX .. "register"
    config.TOOLBAR_COMMANDS = config.TOOLBAR_COMMANDS or {"edit", "history", "rss"}
+   config.TOOLBAR_COMMANDS = config.TOOLBAR_ICONS or {}
    --config.LOGGER = config.LOGGER or "file"
    --config.LOGGER_PARAMS = config.LOGGER_PARAMS
    --                       or {"/tmp/sputnik-log.log", "%Y-%m-%d"}

@@ -1059,13 +1059,13 @@ function wrappers.default(node, request, sputnik)
       js_base_url      = sputnik.config.JS_BASE_URL or sputnik.config.NICE_URL,
       do_toolbar       = function(args)
                             local icons = sputnik.config.TOOLBAR_ICONS
-                            for i, action in ipairs(sputnik.config.TOOLBAR_ACTIONS) do
-                               if node:check_permissions(request.user, action) then
-                                  local icon = icons[action]
+                            for i, command in ipairs(sputnik.config.TOOLBAR_COMMANDS) do
+                               if node:check_permissions(request.user, command) then
+                                  local icon = icons[command]
                                   cosmo.yield{
-                                     link = sputnik:make_link(node.id, action),
-                                     title = translate("_("..action:upper()..")"),
-                                     action = action,
+                                     link = sputnik:make_link(node.id, command),
+                                     title = translate("_("..command:upper()..")"),
+                                     command = command,
                                      if_icon = cosmo.c(icon){ icon = icon },
                                      if_text = cosmo.c(not icon){},
                                   }

@@ -44,7 +44,7 @@ local function apply_defaults(config)
    defaults.LOGIN_NODE              = config.ADMIN_NODE_PREFIX .. "login"
    defaults.LOGOUT_NODE             = config.ADMIN_NODE_PREFIX .. "logout"
    defaults.REGISTRATION_NODE       = config.ADMIN_NODE_PREFIX .. "register"
-   defaults.TOOLBAR_ACTIONS         = {"edit", "history", "rss"}
+   defaults.TOOLBAR_COMMANDS        = {"edit", "history", "rss"}
    defaults.TOOLBAR_ICONS           = {}
 
    return config

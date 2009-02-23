@@ -26,25 +26,27 @@ new_wsapi_run_fn = sputnik.wsapi_app.new  -- for backwards compatibility
 -- Applies default config values.
 -----------------------------------------------------------------------------
 local function apply_defaults(config)
-   config                  = config or {}
+   config = config or {}
    assert(config.TOKEN_SALT, "TOKEN_SALT must be set")
    assert(config.BASE_URL, "BASE_URL must be set")
-   config.ROOT_PROTOTYPE   = config.ROOT_PROTOTYPE or "@Root"
-   config.PASSWORD_SALT    = config.PASSWORD_SALT 
-                             or "2348979898237082394172309847123"
-   config.CONFIG_PAGE_NAME = config.CONFIG_PAGE_NAME or "sputnik/config"
-   config.PASS_PAGE_NAME   = config.PASS_PAGE_NAME or "sputnik/passwords"
-   config.INTERWIKI        = config.INTERWIKI or {}
-   config.ADMIN_NODE_PREFIX = config.ADMIN_NODE_PREFIX or "sputnik/"
-   config.DEFAULT_NAVIGATION_BAR = config.ADMIN_NODE_PREFIX .. "navigation"
-   config.LOGIN_NODE = config.ADMIN_NODE_PREFIX .. "login"
-   config.LOGOUT_NODE = config.ADMIN_NODE_PREFIX .. "logout"
-   config.REGISTRATION_NODE = config.ADMIN_NODE_PREFIX .. "register"
-   config.TOOLBAR_COMMANDS = config.TOOLBAR_COMMANDS or {"edit", "history", "rss"}
-   config.TOOLBAR_COMMANDS = config.TOOLBAR_ICONS or {}
-   --config.LOGGER = config.LOGGER or "file"
-   --config.LOGGER_PARAMS = config.LOGGER_PARAMS
-   --                       or {"/tmp/sputnik-log.log", "%Y-%m-%d"}
+
+   -- Set some defaults on the configuration table
+   local defaults = {}
+   setmetatable(config, {__index = defaults})
+
+   defaults.ROOT_PROTOTYPE          = "@Root"
+   defaults.PASSWORD_SALT           = "2348979898237082394172309847123"
+   defaults.CONFIG_PAGE_NAME        = "sputnik/config"
+   defaults.PASS_PAGE_NAME          = "sputnik/passwords"
+   defaults.INTERWIKI               = {}
+   defaults.ADMIN_NODE_PREFIX       = "sputnik/"
+   defaults.DEFAULT_NAVIGATION_BAR  = config.ADMIN_NODE_PREFIX .. "navigation"
+   defaults.LOGIN_NODE              = config.ADMIN_NODE_PREFIX .. "login"
+   defaults.LOGOUT_NODE             = config.ADMIN_NODE_PREFIX .. "logout"
+   defaults.REGISTRATION_NODE       = config.ADMIN_NODE_PREFIX .. "register"
+   defaults.TOOLBAR_ACTIONS         = {"edit", "history", "rss"}
+   defaults.TOOLBAR_ICONS           = {}
+
    return config
 end
 

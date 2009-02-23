@@ -47,7 +47,7 @@ MIME_TYPES = {
 }
 
 -- Configure the actions that appear in the node toolbar as commands
-TOOLBAR_COMMANDS = {"edit", "history", "rss"}
+TOOLBAR_ACTIONS = {"edit", "history", "rss"}
 TOOLBAR_ICONS = {
    edit = "icons/edit.png",
    history = "icons/history.png",

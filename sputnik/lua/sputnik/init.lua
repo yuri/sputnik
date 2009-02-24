@@ -136,12 +136,6 @@ function Sputnik:init(initial_config)
       self.config[k] = v
    end
 
-   -- setup markup
-   self.markup_modules = {}
-
-   --self.markup_module = require(self.config.MARKUP_MODULE or "sputnik.markup.markdown")
-   --self.markup = self.markup_module.new(self)
-
    -- setup cache
    if self.config.CACHE_MODULE then
       local cache_mod = require(self.config.CACHE_MODULE)
@@ -463,21 +457,16 @@ end
 -- Adds extra sputnik-specific fields to a node.
 -----------------------------------------------------------------------------
 function Sputnik:decorate_node(node)
-
-   
+   -- Determine which markup module the node should be using based on
+   -- the markup_module field, or the default
    local markup_module_name
    if node.markup_module and node.markup_module:len() > 0 then
       markup_module_name = "sputnik.markup."..node.markup_module
-   elseif self.config.MARKUP_MODULE then
-      markup_module_name = "sputnik.markup."..self.config.MARKUP_MODULE
    else
       markup_module_name = "sputnik.markup.markdown"
    end
-   local markup_module = self.markup_modules[markup_module_name]
-   if not markup_module then
-      markup_module = require(markup_module_name)
-      self.markup_modules[markup_module_name] = markup_module
-   end
+
+   local markup_module = require(markup_module_name)
    node.markup = markup_module.new(self)
 
    node.messages = {}

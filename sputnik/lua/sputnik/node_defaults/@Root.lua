@@ -66,9 +66,10 @@ preview         = "wiki.preview"
 preview_content = "wiki.preview_content"
 reload          = "wiki.reload"
 ]],
-templates    = "sputnik/templates",
-translations = "sputnik/translations",
-config       = [[
+markup_module = "markdown",
+templates     = "sputnik/templates",
+translations  = "sputnik/translations",
+config        = [[
    
 ]],
 edit_ui = [[

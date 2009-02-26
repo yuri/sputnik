@@ -683,15 +683,38 @@ function actions.edit (node, request, sputnik, etc)
    end 
 
    sputnik.logger:debug(node[edit_ui_field]..honeypots)
-   local html_for_fields, field_list = html_forms.make_html_form{
-                                          field_spec = node[edit_ui_field]..honeypots, 
-                                          templates  = node.templates, 
-                                          translator = node.translator,
-                                          values     = fields,
-                                          hash_fn    = function(field_name)
-                                                          return sputnik:hash_field_name(field_name, post_token)
-                                                       end
-                                       }
+
+   -- Pre-compile the field spec
+   local cfields, cfield_names = html_forms.compile_field_spec(node[edit_ui_field]..honeypots)
+   for i, field in ipairs(cfields) do
+      local editor_classes = {}
+      if field.editor_modules then
+         for j, module in ipairs(field.editor_modules) do
+            local editor_module = require("sputnik.editor." .. module)
+            editor_module.initialize(node, request, sputnik)
+            table.insert(editor_classes, "editor_" .. module)
+         end
+
+         local editor_class_txt = table.concat(editor_classes, " ")
+         if not field.class or #field.class <= 0 then
+            field.class = editor_class_txt
+         else
+            field.class = field.class .. editor_class_txt
+         end
+      end
+   end
+
+   local form_params = {
+      field_spec = node[edit_ui_field]..honeypots, 
+      templates  = node.templates, 
+      translator = node.translator,
+      values     = fields,
+      hash_fn    = function(field_name)
+         return sputnik:hash_field_name(field_name, post_token)
+      end
+   }
+
+   local html_for_fields, field_list = html_forms.make_html_form(form_params, cfields, cfield_names)
 
    local captcha_html = ""
    if not request.user and sputnik.captcha then

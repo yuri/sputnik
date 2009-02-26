@@ -2,17 +2,25 @@ module(..., package.seeall)
 
 require("saci.sandbox")
 
-function make_html_form(form_params)
-   local fields = {}
-   local just_field_names = {}
+function compile_field_spec(field_spec)
+   local fields, field_names = {}, {}
    local sandbox = saci.sandbox.new()
-   sandbox:do_lua(form_params.field_spec) -- [[         user         = {5.1, "text_field"}]])
-   --local field_table = versium.luaenv.make_sandbox().do_lua(form_params.field_spec)
+   sandbox:do_lua(field_spec)
    for name, spec in pairs(sandbox.values) do
       spec.name = name
       table.insert(fields, spec)
-      table.insert(just_field_names, name)
+      table.insert(field_names, name)
    end
+
+   return fields, field_names
+end
+
+function make_html_form(form_params, fields, field_names)
+   -- Compile the field_spec if it hasn't already been compiled
+   if not fields or not field_names then
+      fields, field_names = compile_field_spec(form_params.field_spec)
+   end
+
    table.sort(fields, function(x,y) return x[1] < y[1] end) -- sort by the first value (position)
    
    local form_decorators = {
@@ -125,7 +133,7 @@ function make_html_form(form_params)
          html = html.."       <div class='"..field.div_class.."'>"..field.html.."       </div>\n"
       end
    end
-   return html, just_field_names
+   return html, field_names
 end
 
 -- vim:ts=3 ss=3 sw=3 expandtab

@@ -171,9 +171,6 @@ EDIT = [===[
        <input class="submit" type="submit" accesskey="p" name="action_preview" value="_(PREVIEW)"/>
        <input class="submit" type="submit" accesskey="c" name="action_show"    value="_(CANCEL)"/>
       </form>
-      <script type="text/javascript" src='$make_url{"markitup/js/markitup.js"}'></script>
-      <script type="text/javascript" src='$make_url{"markitup/js/markdown.js"}'></script>
- 
 ]===]
 
 EDIT_FORM_HEADER        = [[<a name="$anchor"></a><h2>$label</h2>]]

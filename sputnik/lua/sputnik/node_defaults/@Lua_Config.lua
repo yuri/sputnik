@@ -21,16 +21,8 @@ NODE.content=[===[
 --some of the other pages of this wiki.
 ]===]
 NODE.edit_ui=[[
-if content.editor_modules then
-	table.insert(content.editor_modules, "validatelua")
-else
-	content.editor_modules = {"validatelua"}
-end
+content.editor_modules = {"validatelua"}
 ]]
 NODE.admin_edit_ui=[[
-if content.editor_modules then
-	table.insert(content.editor_modules, "validatelua")
-else
-	content.editor_modules = {"validatelua"}
-end
+content.editor_modules = {"validatelua"}
 ]]

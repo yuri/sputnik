@@ -641,11 +641,8 @@ function actions.edit (node, request, sputnik, etc)
       return node.wrappers.default(node, request, sputnik)
    end
 
-   -- Add the scripts and stylesheets
-   node:add_css_link(sputnik:make_url("markitup/css/simple.css", "screen"))
-   node:add_css_link(sputnik:make_url("markitup/css/markdown.css", "screen"))
+   -- Add the editpage stylesheet
    node:add_javascript_link(sputnik:make_url("sputnik/js/editpage.js"))
-   node:add_javascript_link(sputnik:make_url("jquery/textarearesizer.js"))
 
    -- select the parameters that should be copied
    local fields = {}

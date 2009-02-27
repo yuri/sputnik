@@ -6,6 +6,7 @@ NODE = {
 }
 
 local markItUpButtons = {
+   "markitup/images/h1",
    "markitup/images/h2",
    "markitup/images/h3",
    "markitup/images/h4",

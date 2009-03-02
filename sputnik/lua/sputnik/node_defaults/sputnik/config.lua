@@ -83,6 +83,14 @@ TOOLBAR_COMMANDS = {'edit', 'history', 'rss'}
 --- CHANGING THEM CAN MAKE THE SITE UNACCESSIBLE ----------------------------
 -----------------------------------------------------------------------------
 
+NEW_NODE_PROTOTYPES = {
+   {"", title="Basic", icon="icons/basic_node.png"},
+   {"@Image", title="Image", icon="icons/picture.png"},
+   {"@Binary_File", title="Binary File", icon="icons/attach.png"},
+   {"@Collection", title="Collection", icon = "icons/collection.png"},
+   {"@Discussion", title="Discussion", icon = "icons/discussion.png"},
+}
+
 ADMIN_NODE_PREFIX = "sputnik/"
 
 HISTORY_PAGE              = "history"

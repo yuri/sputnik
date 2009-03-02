@@ -726,5 +726,14 @@ ANONYMOUS_USERS_MUST_ENTER_CAPTCHA = {
    en_US = "Anonymous users must enter <a href='http://en.wikipedia.org/wiki/Captcha'>captcha</a> below."
 }
 
+NO_SUCH_NODE = {
+   en_US = "This node by this name does not exist."
+}
+
+PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE = {
+   en_US = [[The node by this name does not exist, but you can create it.
+             Please pick one of the node types below.]]
+}
+
 
 ]=============]

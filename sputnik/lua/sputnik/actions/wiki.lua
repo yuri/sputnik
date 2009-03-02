@@ -282,13 +282,55 @@ end
 -- @param request        passed to show_content.
 -- @param sputnik        passed to show_content.
 -----------------------------------------------------------------------------
+
+TMPL = [=[
+<p>
+ <span class="teaser">
+  $note
+ </span>
+</p>
+
+<br/><br/>
+
+<table style="border: none">
+$do_prototypes[[
+  <tr>
+   <td><a href="$url"><img src="$icon_base_url{}$icon"/></a></td>
+   <td><a href="$url">$name</a></li></td>
+  </tr>
+]]
+</table>
+]=]
+
+
 function actions.show(node, request, sputnik)
    if node.redirect_destination and node.redirect_destination~="" then
       return actions.redirect(node, request, sputnik)
    end
 
-   request.is_indexable = true
-   node.inner_html = node.actions.show_content(node, request, sputnik)
+   if node.is_a_stub then
+      request.is_indexable = false
+
+      --node:post_notice(node.translator.translate_key("PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE"))
+
+      node.inner_html = cosmo.f(TMPL){
+         note = node.translator.translate_key("PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE"),
+         icon_base_url = sputnik.config.ICON_BASE_URL or sputnik.config.NICE_URL,
+         do_prototypes = function()
+                            local prototypes = sputnik.config.NEW_NODE_PROTOTYPES or {}
+                            for i,v in ipairs(prototypes) do
+                               cosmo.yield{
+                                  name =v.title or v[1],
+                                  icon = v.icon,
+                                  url  =sputnik:make_url(node.id, "edit", {prototype=v[1]})
+                               }
+                            end
+                         end
+      }
+   else 
+      request.is_indexable = true
+      node.inner_html = node.actions.show_content(node, request, sputnik)
+   end
    return node.wrappers.default(node, request, sputnik)
 end
 

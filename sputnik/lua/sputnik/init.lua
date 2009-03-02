@@ -706,6 +706,7 @@ function Sputnik:handle_request(request, response)
    local dirified = self:dirify(request.node_name)
 
    local node, stub = self:get_node(request.node_name, request.params.version)
+   node.is_a_stub = stub
    self:decorate_node(node)
 
    if request.redirect then

@@ -83,7 +83,7 @@ content_section_end = {1.4, "div_end"}
 -------------------------- advanced fields -------------
 advanced_section = {2.0, "div_start", id="foo"}
  category        = {2.1, "text_field"}
- prototype       = {2.2, "text_field"}
+ prototype       = {2.2, "hidden", no_label=true, div_class="hidden"}
  html_meta_keywords = {2.051, "text_field"}
  html_meta_description = {2.052, "text_field"}
 advanced_section_end = {2.3, "div_end"}

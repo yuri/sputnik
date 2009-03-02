@@ -46,6 +46,7 @@ local function apply_defaults(config)
    defaults.REGISTRATION_NODE       = config.ADMIN_NODE_PREFIX .. "register"
    defaults.TOOLBAR_COMMANDS        = {"edit", "history", "rss"}
    defaults.TOOLBAR_ICONS           = {}
+   defaults.COOKIE_NAME             = "Sputnik"
 
    return config
 end
@@ -699,7 +700,7 @@ end
 function Sputnik:handle_request(request, response)
    self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
 
-   self.cookie_name = "Sputnik_"..md5.sumhexa(self.config.BASE_URL)
+   self.cookie_name = self.config.COOKIE_NAME.."_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
 
    local dirified = self:dirify(request.node_name)

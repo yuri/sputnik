@@ -209,7 +209,7 @@ LOGIN_FORM              = [===[
        <input class="hidden" type="hidden" name="post_timestamp" value="$post_timestamp"/>
        <input class="hidden" type="hidden" name="post_fields" value="$post_fields"/>
        $html_for_fields
-       <input class="submit" type="submit" accesskey="c" name="action_login" value="_(LOGIN)"/>
+       <button class="submit" type="submit" accesskey="c" name="action_login">_(LOGIN)</button>
       </form> 
 
 ]===]

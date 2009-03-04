@@ -47,12 +47,13 @@ history         = {virtual=true}
 name            = {virtual=true}
 ]],
 title="@Root (Root Prototype)",
-category="_prototypes",
+category="Prototypes",
 actions=[[
 show            = "wiki.show"
 show_content    = "wiki.show_content"
 history         = "wiki.history"
 edit            = "wiki.edit"
+configure       = "wiki.configure"
 post            = "wiki.post"
 rss             = "wiki.rss"
 diff            = "wiki.diff"
@@ -75,17 +76,15 @@ config        = [[
 edit_ui = [[
 -------------------------- basic fields ----------------
 content_section  = {1.0, "div_start", id="content_section", open="true"}
- page_name       = {1.1, "readonly_text"}
- title           = {1.2, "text_field"}
  content         = {1.3, "textarea", editor_modules = {"resizeable"}, rows=15, no_label=true}
 content_section_end = {1.4, "div_end"}
 
 -------------------------- advanced fields -------------
-advanced_section = {2.0, "div_start", id="foo"}
- category        = {2.1, "text_field"}
- prototype       = {2.2, "hidden", no_label=true, div_class="hidden"}
- html_meta_keywords = {2.051, "text_field"}
- html_meta_description = {2.052, "text_field"}
+advanced_section = {2.0, "div_start", id="advanced"}
+ page_name       = {2.21, "readonly_text"}
+ title           = {2.22, "text_field"}
+ category        = {2.23, "select", options = {}}
+ prototype       = {2.24, "hidden", no_label=true, div_class="hidden"}
 advanced_section_end = {2.3, "div_end"}
 
 --- info about the edit --------------------------------
@@ -105,7 +104,7 @@ content_section_end = {1.4, "div_end"}
 
 -------------------------- advanced fields -------------
 advanced_section = {2.0, "div_start", id="advanced_section"}
- category        = {2.01, "text_field"}
+ category        = {2.01, "select", options = {"Foo", "Bar"}}
  prototype       = {2.02, "text_field"}
  redirect_destination = {2.021, "text_field"}
  permissions     = {2.03, "textarea", rows=3, editor_modules = {"resizeable", "validatelua"}}
@@ -175,6 +174,7 @@ permissions=[[
    allow(all_users, "xml")
    --deny(Anonymous, edit_and_save)
    allow(Admin, "reload")
+   allow(Admin, "configure")
 ]]
 }
 

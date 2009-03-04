@@ -394,7 +394,7 @@ label.inline {
  display    : inline-block;
  width: 200px; 
 }
-input {
+input, select {
  margin:   .5em  .5em .5em  .5em; 
  padding:   3px   3px   3px   3px;
  line-height: 20px;
@@ -402,12 +402,7 @@ input {
  font-family: monospace
 }
 select {
- margin:   auto  auto   5px 200px; 
- padding:   3px   3px   3px   3px; line-height: 20px;
- display    : block;
- min-height : 20px; 
- width      : 168px;
- height     : 27px;
+ min-width: 300px;
 }
 option {
  margin:    0em   0em   0em   0em; 

@@ -44,8 +44,11 @@ function get_nav_bar (node, sputnik)
       return value:gsub("'", ""):gsub('"', ''):gsub("%s+", " ")
    end
 
+   local categories = {}
+
    for i, section in ipairs(nav) do
       section.title = section.title or section.id
+      categories[section.id] = section.title
       section.accessibility_title = remove_quotes(section.title)
       section.id    = sputnik:dirify(section.id)
       section.link  = sputnik:make_link(section.id)
@@ -59,6 +62,7 @@ function get_nav_bar (node, sputnik)
       end
       for j, subsection in ipairs(section) do
          subsection.title = subsection.title or subsection.id
+         categories[subsection.id] = subsection.title
          subsection.accessibility_title = remove_quotes(subsection.title)
          subsection.id = sputnik:dirify(subsection.id)
          subsection.class = "back"
@@ -77,7 +81,7 @@ function get_nav_bar (node, sputnik)
       nav[1].class="front"
    end
 
-   return nav
+   return nav, categories
 end
 
 
@@ -662,6 +666,12 @@ end
 --     Now the few remaining things
 --=========================================================================--
 
+function actions.configure (node, request, sputnik, etc)
+   request.admin_edit = true
+   return node.actions.edit(node, request, sputnik, etc)
+end
+
+
 -----------------------------------------------------------------------------
 -- Shows HTML for the standard Edit field.
 -----------------------------------------------------------------------------
@@ -715,7 +725,7 @@ function actions.edit (node, request, sputnik, etc)
    
    local edit_ui_field = etc.edit_ui_field
    local admin = sputnik.auth:get_metadata(request.user, "is_admin")
-   if admin == "true" then
+   if request.admin_edit then
       edit_ui_field = edit_ui_field or "admin_edit_ui"
    else
       edit_ui_field = edit_ui_field or "edit_ui"
@@ -741,7 +751,19 @@ function actions.edit (node, request, sputnik, etc)
             field.class = field.class .. editor_class_txt
          end
       end
+      if cfield_names[i] == "category" then
+         if field[2] == "select" then
+            local _, category_hash = get_nav_bar(node, sputnik)
+            local categories = {{display="       ", value=""}}
+            for id, _ in pairs(category_hash) do
+               categories[#categories + 1] = {value=id, display=category_hash[id]}
+            end
+            table.sort(categories, function(x,y) return x.display < y.display end)
+            field.options = categories
+         end
+      end
    end
+
 
    local form_params = {
       field_spec = node[edit_ui_field]..honeypots, 

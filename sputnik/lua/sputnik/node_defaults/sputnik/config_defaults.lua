@@ -51,11 +51,12 @@ INTERFACE_LANGUAGE = "en"
 -- Actions that may appear in the node toolbar as commands
 -- (this is the maximum set of commands for the toolbar - each user will only
 -- see those they can permissions for)
-TOOLBAR_COMMANDS = {"edit", "history", "rss"}
+TOOLBAR_COMMANDS = {"edit", "configure", "history", "rss"}
 
 -- Optional icons for the commands
 TOOLBAR_ICONS = {
    edit = "icons/edit.png",
+   configure = "icons/system.png",
    history = "icons/history.png",
    rss = "icons/rss.png",
 }

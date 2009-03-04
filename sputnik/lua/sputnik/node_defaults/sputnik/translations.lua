@@ -74,6 +74,13 @@ HISTORY = {
    pt_BR = "Histórico",
 }
 
+-- The link to the node configurations
+CONFIGURE = {
+   en_US = "Configure",
+   ru    = "Настройки",     
+   pt_BR = "Configuração",
+}
+
 -- The "powered by sputnik" label in the footer.
 POWERED_BY_SPUTNIK = {
    en_US = "Powered by <a $sputnik_link>Sputnik</a>",
@@ -735,5 +742,8 @@ PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE = {
              Please pick one of the node types below.]]
 }
 
+THIS_PAGE_DEFINED_THE_FOLLOWING_ACTIONS = {
+   en_US = "This node supports the following commands:"
+}
 
 ]=============]

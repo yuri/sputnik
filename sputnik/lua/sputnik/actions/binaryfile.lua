@@ -18,7 +18,7 @@ end
 local TPL_FILE_INFO = [=[
 <h2>File information</h2>
 
-$if_image[[<img style="float: right; max-width:300px; margin: 2em;" src="$url"/>]]
+$if_image[[<a href="$url"><img style="float: right; max-width:300px; margin: 2em;" src="$url"/></a>]]
 
 <table>
 <tr><th>Filename</th><td>$filename</td></tr>

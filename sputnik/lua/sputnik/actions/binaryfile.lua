@@ -48,10 +48,10 @@ end
 
 function actions.download(node, request, sputnik)
 	local filename = node.file_name
-	local mime = node.file_type
+	local mime_type = node.file_type
 	-- Set the Content-disposition header, and suggest a filename
 	node:add_header("Content-Disposition", "attachment; filename=\""..node.file_name.."\"")
-	return mime.b64(node.content), mime
+	return mime.unb64(node.content), mime_type
 end
 
 CHUNK_LENGTH=78

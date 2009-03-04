@@ -31,13 +31,23 @@ function actions.show_form(node, request, sputnik)
       email_field = [[new_email = {1.33, "text_field"} ]]
    end
 
+   -- add the terms of service acceptance checkbox if configured
+   local tos_field = ""
+   if sputnik.config.TERMS_OF_SERVICE_NODE then
+      local tos_template = node.translator.translate_key("I_AGREE_TO_TERMS_OF_SERVICE")
+      local text = cosmo.fill(tos_template, {
+         url = sputnik.config.TERMS_OF_SERVICE_NODE,
+      })
+      tos_field = [[agree_tos = {1.34, "checkbox_text", text="]] .. text .. [["}]]
+   end
+
    -- prepare the edit form
    local html_for_fields, field_list = html_forms.make_html_form{
       field_spec = [[
                       new_username = {1.30, "text_field", div_class="autofocus"}
                       new_password = {1.31, "password"}
                       new_password_confirm = {1.32, "password"}
-                   ]] .. email_field,
+                   ]] .. email_field .. tos_field,
       values     = {
                       new_username = request.params.new_username or "",
                       new_password = request.params.new_password or "",
@@ -51,11 +61,7 @@ function actions.show_form(node, request, sputnik)
                    end
    }
 
-   -- add the terms of servince acceptance checkbox if configured
-   if TERMS_OF_SERVICE then
-      html_for_fields = html_for_fields .. node.templates.I_AGREE_TO_TERMS_OF_SERVICE
-   end
-
+   
    local captcha_html = ""
    if sputnik.captcha then
       for _, field in ipairs(sputnik.captcha:get_fields()) do
@@ -154,9 +160,10 @@ function actions.submit(node, request, sputnik)
       if  sputnik.auth:user_exists(p.new_username) then
          err_msg("USERNAME_TAKEN")
       end
+
       -- optionally check for TOS acceptance
-      if sputnik.config.TERMS_OF_SERVICE
-              and not not request.POST.read_tos then
+      if sputnik.config.TERMS_OF_SERVICE_NODE
+              and not p.agree_tos then
          err_msg("MUST_CONFIRM_TOS")
       end
 

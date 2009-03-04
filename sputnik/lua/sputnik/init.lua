@@ -37,16 +37,6 @@ local function apply_defaults(config)
    defaults.ROOT_PROTOTYPE          = "@Root"
    defaults.PASSWORD_SALT           = "2348979898237082394172309847123"
    defaults.CONFIG_PAGE_NAME        = "sputnik/config"
-   defaults.PASS_PAGE_NAME          = "sputnik/passwords"
-   defaults.INTERWIKI               = {}
-   defaults.ADMIN_NODE_PREFIX       = "sputnik/"
-   defaults.DEFAULT_NAVIGATION_BAR  = config.ADMIN_NODE_PREFIX .. "navigation"
-   defaults.LOGIN_NODE              = config.ADMIN_NODE_PREFIX .. "login"
-   defaults.LOGOUT_NODE             = config.ADMIN_NODE_PREFIX .. "logout"
-   defaults.REGISTRATION_NODE       = config.ADMIN_NODE_PREFIX .. "register"
-   defaults.TOOLBAR_COMMANDS        = {"edit", "history", "rss"}
-   defaults.TOOLBAR_ICONS           = {}
-   defaults.COOKIE_NAME             = "Sputnik"
 
    return config
 end

@@ -69,6 +69,11 @@ NEW_NODE_PROTOTYPES = {
    {"@Discussion", title="Discussion", icon = "icons/discussion.png"},
 }
 
+-- If no other section of the navigation bar is selected, choose this index
+-- from the navigation table and set it's class to 'front'.  You can set this
+-- value to nil to disable this behavior.
+DEFAULT_NAVSECTION = 1
+
 -----------------------------------------------------------------------------
 --------- Etc. --------------------------------------------------------------
 -----------------------------------------------------------------------------

@@ -77,8 +77,10 @@ function get_nav_bar (node, sputnik)
          end
       end
    end
-   if not nav.current_section then
-      nav[1].class="front"
+
+   local default_navsection = sputnik.config.DEFAULT_NAVSECTION
+   if not nav.current_section and default_navsection and nav[default_navsection] then
+      nav[default_navsection].class = "front"
    end
 
    return nav, categories

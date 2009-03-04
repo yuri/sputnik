@@ -162,14 +162,17 @@ EDIT = [===[
         <h2>_(PREVIEWING_UNSAVED_CHANGES)</h2>
         <div class="preview">$preview</div>
         <a href="#new_page_content_header" class="button">_(CHANGE)</a>
-        <input class="submit" type="submit" accesskey="s" name="action_save"    value="_(SAVE)"/>
-        <input class="submit" type="submit" accesskey="c" name="action_show"    value="_(CANCEL)"/>
-        <br/>
+        <div class="submit">
+         <button class="positive" type="submit" name="action_save" accesskey="s">_(SAVE)</button>
+         <button class="negative" type="submit" name="action_show" accesskey="c">_(CANCEL)</button>
+        </div>
        ]]
        $html_for_fields
-       <input class="submit" type="submit" accesskey="s" name="action_save"    value="_(SAVE)"/>
-       <input class="submit" type="submit" accesskey="p" name="action_preview" value="_(PREVIEW)"/>
-       <input class="submit" type="submit" accesskey="c" name="action_show"    value="_(CANCEL)"/>
+       <div class="submit">
+        <button class="positive" type="submit" accesskey="s" name="action_save">_(SAVE)</button>
+        <button class="positive" type="submit" accesskey="s" name="action_preview">_(PREVIEW)</button>
+        <button class="negative" type="submit" accesskey="s" name="action_cancel">_(CANCEL)</button>
+      </div>
       </form>
 ]===]
 

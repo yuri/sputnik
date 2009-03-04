@@ -1045,7 +1045,9 @@ end
 -- on whether the code is ok.  (This 
 -----------------------------------------------------------------------------
 function actions.validate_lua(node, request, sputnik)
-   local result, err = saci.sandbox.new(sputnik.config):do_lua(request.params.code or "")
+   local code = request.params.code or ""
+   local sandbox = saci.sandbox.new(sputnik.config)
+   local result, err = sandbox:do_lua(code, true)
    if result then
       return "valid"
    else

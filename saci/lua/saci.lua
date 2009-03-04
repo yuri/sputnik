@@ -175,7 +175,7 @@ function Saci:get_node(id, version)
       local prototype = nil
       local node, stub = self:get_fallback_node(id, version)
       self.cache[cache_key] = node
-      self.cache_stub[cache_key] = true
+      self.cache_stub[cache_key] = stub
       return node, stub
    end
 end

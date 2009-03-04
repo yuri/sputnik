@@ -34,11 +34,10 @@ function Sandbox:add_values(symbol_table)
       self.values[symbol] = value
    end
 end
-   
-function Sandbox:do_lua(lua_code)
-
+  
+function Sandbox:do_lua(lua_code, parseOnly)
    local f, err = loadstring(lua_code)      -- load the code into a function
-   if f then 
+   if f and not parseOnly then 
       setfenv(f, self.values or {})         -- set a restricted environment
       local ok, result = pcall(f)           -- run it
       if ok then 

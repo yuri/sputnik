@@ -38,6 +38,7 @@ edit_ui         = {0.9, proto="concat"}
 admin_edit_ui   = {0.91, proto="concat"}
 child_defaults  = {0.92, proto="concat", activate="lua"}
 icon            = {0.93, proto="fallback"}
+breadcrumb      = {0.94 }
 
 -- "virtual" fields (never saved) ------------------------
 version         = {virtual=true}
@@ -83,8 +84,9 @@ content_section_end = {1.4, "div_end"}
 advanced_section = {2.0, "div_start", id="advanced"}
  page_name       = {2.21, "readonly_text"}
  title           = {2.22, "text_field"}
- category        = {2.23, "select", options = {}}
- prototype       = {2.24, "hidden", no_label=true, div_class="hidden"}
+ breadcrumb      = {2.23, "text_field"}
+ category        = {2.24, "select", options = {}}
+ prototype       = {2.25, "hidden", no_label=true, div_class="hidden"}
 advanced_section_end = {2.3, "div_end"}
 
 --- info about the edit --------------------------------
@@ -99,8 +101,9 @@ admin_edit_ui = [[
 content_section  = {1.00, "div_start", id="content_section", open="true"}
  page_name       = {1.1, "readonly_text"}
  title           = {1.2, "text_field"}
- content         = {1.3, "textarea", editor_modules = {"resizeable"}, rows=15, no_label=true}
-content_section_end = {1.4, "div_end"}
+ breadcrumb      = {1.3, "text_field"}
+ content         = {1.4, "textarea", editor_modules = {"resizeable"}, rows=15, no_label=true}
+content_section_end = {1.5, "div_end"}
 
 -------------------------- advanced fields -------------
 advanced_section = {2.0, "div_start", id="advanced_section"}

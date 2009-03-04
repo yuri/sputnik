@@ -30,6 +30,12 @@ function make_html_form(form_params, fields, field_names)
                     field.if_checked = cosmo.c(isset){}
                     field.inline = true
                  end,
+      checkbox_text = function(field)
+         local isset = field.value
+         if type(isset)=="string" then isset = isset:len() > 0 end
+         field.if_checked = cosmo.c(isset){}
+         field.inline = true
+      end,
       div_start = function(field)
          field.no_label = true
          field.class = "collapse"

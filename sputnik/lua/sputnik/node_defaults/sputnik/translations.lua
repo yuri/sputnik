@@ -688,6 +688,11 @@ EDIT_FORM_NEW_EMAIL = {
    en_US = "Email"
 }
 
+-- Form label for terms of service
+EDIT_FORM_AGREE_TOS = {
+   en_US = "Terms of Service"
+}
+
 -- Form label for confirming new password
 EDIT_FORM_NEW_PASSWORD_CONFIRM = {
    en_US = "Confirm Password"
@@ -699,6 +704,10 @@ TWO_VERSIONS_OF_NEW_PASSWORD_DO_NOT_MATCH = {
 
 NEW_EMAIL_NOT_VALID = {
    en_US = "The email you entered is not valid."
+}
+
+MUST_CONFIRM_TOS = {
+   en_US = "You must agree to the terms of service in order to create a new account.",
 }
 
 USERNAME_TAKEN = {

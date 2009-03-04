@@ -193,7 +193,9 @@ EDIT_FORM_BIG_TEXTAREA  = [[<textarea class="$class" name="$name" id="main_text_
 EDIT_FORM_CHECKBOX      = [[<input class="checkbox" style="border:1px solid black" 
                                    type="checkbox" name="$name" value="yes"
                                    $if_checked[=[checked="checked"]=] /><br/>]]
-
+EDIT_FORM_CHECKBOX_TEXT = [[<input class="checkbox" style="border:1px solid black"
+                                      type="checkbox" name="$name" value="yes"
+                                      $if_checked[=[checked="checked"]=] />$text<br/>]]
 EDIT_FORM_SELECT        = [[<select name="$name" tabindex="$tab_index">
                                $do_options[===[<option value="$value" $if_selected[=[selected="yes"]=]>$display</option>]===]
                             </select>]]
@@ -297,11 +299,6 @@ REGISTRATION = [===[
  </div>
 </form> 
 ]===]
-
-CONSENT_TO_TERMS_OF_SERVICE = [[
-   <input style="margin: 0 10px 0 20px; width: auto; display: inline;" target="_blank" type="checkbox" name="r_read_tos" />
-   _(I_AGREE_TO_TERMS_OF_SERVICE)
-]]
 
 VERSION = [=[
    <h2>Installer Version</h2>

@@ -62,7 +62,11 @@ function make_html_form(form_params, fields, field_names)
                     field.cols = field.cols or 80
                     field.rows = num_lines + field.rows
                  end,
+      file     = function(field)
+                    field.inline = true
+                 end,
       select   = function(field)
+                    field.inline = true
                     field.do_options = function()
                        for idx,entry in ipairs(field.options) do
                           local display, value

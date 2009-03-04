@@ -73,6 +73,7 @@ repository['saci']['9.02.15-0']             = {{arch='rockspec'}}  -- up2date
 repository['sputnik'] = {}
 repository['sputnik']['9.02.15-0']          = {{arch='rockspec'}}  -- up2date
 repository['sputnik']['9.02.16-0']          = {{arch='rockspec'}}  -- up2date
+repository['sputnik']['9.03.03-0']          = {{arch='rockspec'}}  -- up2date
 
 ----------------------------------------------------- our plugins  ----------
 

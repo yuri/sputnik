@@ -4,8 +4,8 @@ require"lfs"
 require"cosmo"
 
 WS_SCRIPT_TEMPLATE = [[
-require('sputnik')
-return sputnik.new_wsapi_run_fn{
+require('sputnik.wsapi_app')
+return sputnik.wsapi_app.new{
    VERSIUM_PARAMS = { '$dir/wiki-data/' },
    BASE_URL       = '/sputnik.ws',
    PASSWORD_SALT  = '$password_salt',
@@ -13,14 +13,18 @@ return sputnik.new_wsapi_run_fn{
 }
 ]]
 
-CGI_TEMPLATE = [[#! /bin/bash $dir/bin/wsapi.cgi
-require('sputnik')
-return sputnik.new_wsapi_run_fn{
+CGI_TEMPLATE = [[#! $dir/bin/lua
+pcall(require, "luarocks.require")
+require('sputnik.wsapi_app')
+local my_app = sputnik.wsapi_app.new{
    VERSIUM_PARAMS = { '$dir/wiki-data/' },
    BASE_URL       = '/cgi-bin/sputnik.cgi',
    PASSWORD_SALT  = '$password_salt',
    TOKEN_SALT     = '$token_salt',
 }
+
+require("wsapi.cgi")
+wsapi.cgi.run(my_app)
 ]]
 
 

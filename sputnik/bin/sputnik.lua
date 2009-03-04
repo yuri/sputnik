@@ -42,8 +42,8 @@ local function main()
 
    local config_path = options.config or "sputnik.config"
 
-   local config = dofile(config_path)
-   print(config.VERSIUM_PARAMS[1])   
+   config = pcall(dofile, config_path)
+   --print(config.VERSIUM_PARAMS[1])   
 
    local ok, handler = pcall(require, "sputnik.cli."..command)
    if ok then

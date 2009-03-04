@@ -5,20 +5,27 @@
 #luasocket
 #lfs
 
-cp -r xssfilter/lua/* pure_lua/
-cp -r colors/lua/* pure_lua/
-cp -r recaptcha/lua/* pure_lua/
-cp -r diff/lua/* pure_lua/
-cp -r versium/lua/* pure_lua/
-cp -r saci/lua/* pure_lua/
-cp -r sputnik/lua/* pure_lua/
-cp -r ~/sputnik/rocks/wsapi/cvs-3/lua/* pure_lua/
-cp -r ~/sputnik/rocks/xavante/2.0.0-1/lua/* pure_lua/
-cp -r ~/sputnik/rocks/markdown/0.32-1/lua/markdown.lua pure_lua/
-cp -r ~/sputnik/rocks/coxpcall/1.13.0-1/lua/coxpcall.lua pure_lua/
-cp -r ~/sputnik/rocks/copas/1.1.3-1/lua/copas.lua pure_lua/
-cp -r ~/sputnik/rocks/cosmo/8.04.14-1/lua/* pure_lua/
+mkdir $1/lua
+mkdir $1/bin
+cp -r xssfilter/lua/* $1/lua/
+cp -r colors/lua/* $1/lua/
+cp -r recaptcha/lua/* $1/lua/
+cp -r diff/lua/* $1/lua/
+cp -r versium/lua/* $1/lua/
+cp -r saci/lua/* $1/lua/
+cp -r sputnik/lua/* $1/lua/
+cp -r sputnik/bin/* $1/bin/
+cp -r ~/sputnik/rocks/wsapi/cvs-3/lua/* $1/lua/
+cp -r ~/sputnik/rocks/xavante/2.0.0-1/lua/* $1/lua/
+cp -r ~/sputnik/rocks/markdown/0.32-1/lua/markdown.lua $1/lua/
+cp -r ~/sputnik/rocks/coxpcall/1.13.0-1/lua/coxpcall.lua $1/lua/
+cp -r ~/sputnik/rocks/copas/1.1.3-1/lua/copas.lua $1/lua/
+cp -r ~/sputnik/rocks/cosmo/8.04.14-1/lua/* $1/lua/
+
+cp sputnik/LICENSE* $1/
+cp licenses/LICENSE_* $1/
 
 # for actually running a pure-lua installation we'll need:
 #
-# ./bin/lua -e 'require("sputnik.xavante").start("./web/")'
+# ./bin/sputnik.lua make-cgi
+# ./bin/sputnik.lua start-xavante

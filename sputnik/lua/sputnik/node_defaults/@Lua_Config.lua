@@ -21,8 +21,8 @@ NODE.content=[===[
 --some of the other pages of this wiki.
 ]===]
 NODE.edit_ui=[[
-content.editor_modules = {"validatelua"}
+content.editor_modules = {"validatelua", "resizeable"}
 ]]
 NODE.admin_edit_ui=[[
-content.editor_modules = {"validatelua"}
+content.editor_modules = {"validatelua", "resizeable"}
 ]]

@@ -190,6 +190,10 @@ DIFF_SELECTED_VERSIONS = {
    en_US = "Diff selected versions",
 }
 
+SHOW_CHANGES_SINCE_PREVIOUS = {
+   en_US = "Show changes since previous version",
+}
+
 -----------------------------------------------------------------------------
 -----  EDITING: BASIC -------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -758,6 +762,14 @@ PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE = {
 
 THIS_PAGE_DEFINED_THE_FOLLOWING_ACTIONS = {
    en_US = "This node supports the following commands:"
+}
+
+-----------------------------------------------------------------------------
+-----  RSS OUTPUT  --------------------------------------------------------
+-----------------------------------------------------------------------------
+
+NO_EDIT_SUMMARY = {
+   en_US = "No edit summary provided",
 }
 
 ]=============]

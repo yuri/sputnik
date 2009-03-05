@@ -107,7 +107,7 @@ COMPLETE_HISTORY = [===[
 DIFF = [===[
         <ul> 
          <li><a $link1><ins class='diffmod'>$version1</ins></a> _(BY_AUTHOR1)</li>
-         <li><a $link2><del class='diffmod'>$version2</del></a> _(BY_AUTHOR2)</li>
+         $if_version2_exists[[<li><a $link2><del class='diffmod'>$version2</del></a> _(BY_AUTHOR2)</li>]]
         </ul>
         $diff
 ]===]
@@ -127,6 +127,13 @@ RSS = [===[<rss version="2.0">
  </channel>
 </rss>
 ]===]
+
+RSS_SUMMARY = [===[
+$if_summary_exists[[$summary]]
+$if_no_summary[[_(NO_EDIT_SUMMARY)]]
+<hr/>
+<a $history_link>_(HISTORY)</a>
+<a $diff_link>_(SHOW_CHANGES_SINCE_PREVIOUS)</a>]===]
 
 LIST_OF_ALL_PAGES = [===[
        $do_nodes[[<a href="$url">$name</a><br/>]]

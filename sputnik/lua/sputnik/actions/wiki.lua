@@ -561,13 +561,24 @@ function actions.rss(node, request, sputnik)
                                               edit.id or node.id, 
                                               "show", {version=edit.version}
                                            ),
-                            title       = string.format("%s: %s by %s",
+                            title       = sputnik:escape(string.format("%s: %s by %s",
                                                         edit.version,
                                                         edit.id or "",
-                                                        author_display or ""),
+                                                        author_display or "")),
                             ispermalink = "false",
                             guid        = (edit.id or node.id).. "/" .. edit.version,
-                            summary     = edit.comment
+                            summary     = sputnik:escape(cosmo.f(node.templates.RSS_SUMMARY){
+                               if_summary_exists = cosmo.c(edit.comment:match("%S")){
+                                  summary = edit.comment
+                               },
+                               if_no_summary = cosmo.c(not edit.comment:match("%S")){},
+                               history_link = sputnik:make_link(edit.id, "history", {
+                                  version = edit.version,
+                               }),
+                               diff_link    = sputnik:make_link(edit.id, "diff", {
+                                  version = edit.version,
+                               }),
+                            })
                          }
                       end
                    end
@@ -809,7 +820,31 @@ end
 -- Shows HTML of diff between two versions of the node.
 -----------------------------------------------------------------------------
 function actions.diff(node, request, sputnik)
-   local other_node_data = sputnik.saci:get_node(node.id, request.params.other)
+   local this_node_info  = sputnik.saci:get_node_info(node.id, request.params.version)
+
+   if not request.params.other then
+      -- No version was specified for the "other" node, so compare with the
+      -- immediately previous version
+      local history = sputnik:get_history(node.id, 200)
+      for idx,edit in ipairs(history) do
+         if edit.version == this_node_info.version then
+            local prior_edit = history[idx+1]
+            request.params.other = prior_edit and prior_edit.version
+         end
+      end
+   end
+
+   local other_node_data, other_node_info, version2_exists
+   if request.params.other then
+      other_node_data = sputnik.saci:get_node(node.id, request.params.other)
+      other_node_info = sputnik.saci:get_node_info(node.id, request.params.other)
+      version2_exists = true
+   else
+      other_node_data = {raw_values = {}}
+      other_node_info = {timestamp = 0}
+      version2_exists = false
+   end
+
    local diff = ""
    local diff_table = node:diff(other_node_data)
    for i, field in ipairs(node:get_ordered_field_names()) do
@@ -820,15 +855,14 @@ function actions.diff(node, request, sputnik)
       end
    end
 
-   local other_node_info = sputnik.saci:get_node_info(node.id, request.params.other)
-   local this_node_info  = sputnik.saci:get_node_info(node.id, request.params.version)
    node.inner_html  = cosmo.f(node.templates.DIFF){  
-                         version1 = request.params.version,
+                         version1 = this_node_info.version,
                          link1    = sputnik:make_link(node.id, "show", {version=request.params.version}),
                          author1  = author_or_ip(this_node_info),
                          time1    = sputnik:format_time(this_node_info.timestamp, "%H:%M %z"),
                          date1    = sputnik:format_time(this_node_info.timestamp, "%Y/%m/%d"),
-                         version2 = request.params.other,
+                         if_version2_exists = cosmo.c(version2_exists){},
+                         version2 = other_node_info.version,
                          link2    = sputnik:make_link(node.id, "show", {version=request.params.other}),
                          author2  = author_or_ip(other_node_info),
                          time2    = sputnik:format_time(other_node_info.timestamp, "%H:%M %z"),

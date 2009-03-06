@@ -567,8 +567,7 @@ function actions.rss(node, request, sputnik)
                                                         author_display or "")),
                             ispermalink = "false",
                             guid        = (edit.id or node.id).. "/" .. edit.version,
-                            pub_date    = sputnik:format_time(edit.timestamp,
-                                             "!%a, %d %b %Y %H:%M:%S +0000"),
+                            pub_date    = sputnik:format_time_RFC822(edit.timestamp),
                             author      = sputnik:escape(author_display),
                             summary     = sputnik:escape(cosmo.f(node.templates.RSS_SUMMARY){
                                if_summary_exists = cosmo.c(edit.comment:match("%S")){

@@ -87,14 +87,17 @@ function actions.rss(node, request, sputnik)
       baseurl = sputnik.config.BASE_URL, 
       items   = function()
                    for i, item in ipairs(items) do
-                         cosmo.yield{
-                            link        = "http://" .. sputnik.config.DOMAIN ..
-                                          sputnik:escape_url(sputnik:make_url(item.id)),
-                            title       = item.title,
-                            ispermalink = "false",
-                            guid        = item.id,
-                            summary     = item.content,
-                         }
+					   local node_info = sputnik.saci:get_node_info(item.id)
+                       cosmo.yield{
+                          link        = "http://" .. sputnik.config.DOMAIN ..
+                          sputnik:escape_url(sputnik:make_url(item.id)),
+                          title       = item.title,
+                          ispermalink = "false",
+                          guid        = item.id,
+                          author      = node_info.author,
+                          pub_date    = sputnik:format_time_RFC822(node_info.timestamp),
+                          summary     = item.content,
+                       }
                    end
                 end,
    }, "application/rss+xml"

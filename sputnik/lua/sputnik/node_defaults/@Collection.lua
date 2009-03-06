@@ -7,7 +7,6 @@ NODE = {
       xml = "collections.list_children_as_xml"
       new_child = "collections.edit_new_child"
    ]],
-   child_proto = "@Root"
 }
 
 NODE.fields = [=[
@@ -19,7 +18,7 @@ child_uid_format = {1.4, proto="fallback"}
 
 NODE.admin_edit_ui = [=[
 collection_section = {1.401, "div_start", id="collection_section"}
- --child_proto = {1.401, "text_field"}
+ child_proto = {1.401, "text_field"}
  --content_template = {1.402, "textarea"}
  xml_template = {1.403, "textarea"}
  child_uid_format = {1.404, "text_field"}

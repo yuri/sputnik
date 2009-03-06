@@ -51,8 +51,12 @@ local PARENT_PATTERN = "(.+)%/[^%/]+$" -- everything up to the last slash
 
 actions.edit_new_child = function(node, request, sputnik)
    local child_node = sputnik:get_node(node.id.."/__new")
+   local child_proto = node.id .. "/@Child"
+   if parent.child_proto and parent.child_proto:match("%S") then
+      child_proto = parent.child_proto
+   end
    sputnik:update_node_with_params(child_node,
-                                   { prototype = node.id.."/@Child",
+                                   { prototype = child_proto,
                                      permissions ="allow(all_users, 'new_child')",
                                      title = "A new item",
                                      actions = 'save="collections.save_new"'
@@ -72,7 +76,12 @@ actions.save_new = function(node, request, sputnik)
    local uid = string.format(uid_format, sputnik:get_uid(parent_id))
    local new_id = string.format("%s/%s", parent_id, uid)
    local new_node = sputnik:get_node(new_id)
-   sputnik:update_node_with_params(new_node, {prototype = parent.id.."/@Child"})
+   local child_proto = node.id .. "/@Child"
+   if parent.child_proto and parent.child_proto:match("%S") then
+      child_proto = parent.child_proto
+   end
+   sputnik:update_node_with_params(new_node, {prototype = child_proto})
+
    request.params.actions = ""
    new_node = sputnik:activate_node(new_node)
    new_node.inner_html = "Created a new item: <a "..sputnik:make_link(new_id)..">"

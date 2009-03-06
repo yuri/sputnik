@@ -11,6 +11,7 @@ local function format_list(nodes, template, sputnik, node)
    return util.f(template){
             new_url = sputnik:make_url(node.id.."/new", "edit"),
             id      = node.id,
+            content = node.content,
             do_nodes = function()
                           for i, node in ipairs(nodes) do
                              local t = {

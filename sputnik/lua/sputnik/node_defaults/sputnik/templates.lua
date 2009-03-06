@@ -112,18 +112,20 @@ DIFF = [===[
         $diff
 ]===]
 
-RSS = [===[<rss version="2.0">
+RSS = [===[<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
  <channel>
   <title>$title</title>
   <description/>
    <link>$channel_url</link>
-     $items[[
+     $items[==[
    <item>
     <link>$link</link>
     <title>$title</title>
     <guid isPermaLink="$ispermalink">$guid</guid>
+	<pubDate>$pub_date</pubDate>
+    <dc:creator>$author</dc:creator>
     <description>$summary</description>
-   </item>]]
+   </item>]==]
  </channel>
 </rss>
 ]===]
@@ -132,8 +134,8 @@ RSS_SUMMARY = [===[
 $if_summary_exists[[$summary]]
 $if_no_summary[[_(NO_EDIT_SUMMARY)]]
 <hr/>
-<a $history_link>_(HISTORY)</a>
-<a $diff_link>_(SHOW_CHANGES_SINCE_PREVIOUS)</a>]===]
+<a href="$history_url">_(HISTORY)</a>
+<a href="$diff_url">_(SHOW_CHANGES_SINCE_PREVIOUS)</a>]===]
 
 LIST_OF_ALL_PAGES = [===[
        $do_nodes[[<a href="$url">$name</a><br/>]]

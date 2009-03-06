@@ -772,4 +772,8 @@ NO_EDIT_SUMMARY = {
    en_US = "No edit summary provided",
 }
 
+ANONYMOUS_USER = {
+   en_US = "Anonymous user",
+}
+
 ]=============]

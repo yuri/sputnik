@@ -567,17 +567,18 @@ function actions.rss(node, request, sputnik)
                                                         author_display or "")),
                             ispermalink = "false",
                             guid        = (edit.id or node.id).. "/" .. edit.version,
+                            pub_date    = sputnik:format_time(edit.timestamp,
+                                             "!%a, %d %b %Y %H:%M:%S +0000"),
+                            author      = sputnik:escape(author_display),
                             summary     = sputnik:escape(cosmo.f(node.templates.RSS_SUMMARY){
                                if_summary_exists = cosmo.c(edit.comment:match("%S")){
                                   summary = edit.comment
                                },
                                if_no_summary = cosmo.c(not edit.comment:match("%S")){},
-                               history_link = sputnik:make_link(edit.id, "history", {
-                                  version = edit.version,
-                               }),
-                               diff_link    = sputnik:make_link(edit.id, "diff", {
-                                  version = edit.version,
-                               }),
+                               history_url = "http://" .. sputnik.config.DOMAIN .. 
+                                 sputnik:make_url(edit.id, "history", {version = edit.version}),
+                               diff_url = "http://" .. sputnik.config.DOMAIN ..  
+                                 sputnik:make_url(edit.id, "diff", {version = edit.version}),
                             })
                          }
                       end

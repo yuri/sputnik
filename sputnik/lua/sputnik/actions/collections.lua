@@ -65,7 +65,11 @@ end
 actions.save_new = function(node, request, sputnik)
    local parent_id = node.id:match(PARENT_PATTERN)
    local parent = sputnik:get_node(parent_id)
-   local uid = string.format(parent.child_uid_format or "%06d", sputnik:get_uid(parent_id))
+   local uid_format = "%06d"
+   if parent.child_uid_format and parent.child_uid_format:match("%S") then
+      uid_format = parent.child_uid_format
+   end
+   local uid = string.format(uid_format, sputnik:get_uid(parent_id))
    local new_id = string.format("%s/%s", parent_id, uid)
    local new_node = sputnik:get_node(new_id)
    sputnik:update_node_with_params(new_node, {prototype = parent.id.."/@Child"})

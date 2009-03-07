@@ -107,26 +107,35 @@ COMPLETE_HISTORY = [===[
 DIFF = [===[
         <ul> 
          <li><a $link1><ins class='diffmod'>$version1</ins></a> _(BY_AUTHOR1)</li>
-         <li><a $link2><del class='diffmod'>$version2</del></a> _(BY_AUTHOR2)</li>
+         $if_version2_exists[[<li><a $link2><del class='diffmod'>$version2</del></a> _(BY_AUTHOR2)</li>]]
         </ul>
         $diff
 ]===]
 
-RSS = [===[<rss version="2.0">
+RSS = [===[<rss version="2.0" xmlns:dc="http://purl.org/dc/elements/1.1/">
  <channel>
   <title>$title</title>
   <description/>
    <link>$channel_url</link>
-     $items[[
+     $items[==[
    <item>
     <link>$link</link>
     <title>$title</title>
     <guid isPermaLink="$ispermalink">$guid</guid>
+	<pubDate>$pub_date</pubDate>
+    <dc:creator>$author</dc:creator>
     <description>$summary</description>
-   </item>]]
+   </item>]==]
  </channel>
 </rss>
 ]===]
+
+RSS_SUMMARY = [===[
+$if_summary_exists[[$summary]]
+$if_no_summary[[_(NO_EDIT_SUMMARY)]]
+<hr/>
+<a href="$history_url">_(HISTORY)</a>
+<a href="$diff_url">_(SHOW_CHANGES_SINCE_PREVIOUS)</a>]===]
 
 LIST_OF_ALL_PAGES = [===[
        $do_nodes[[<a href="$url">$name</a><br/>]]

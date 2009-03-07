@@ -198,6 +198,17 @@ function Sputnik:format_time(timestamp, format, tzoffset, tzname)
                                    tzname or self.config.TIME_ZONE_NAME)
 end
 
+-----------------------------------------------------------------------------
+-- Converts a versium time stamp into the format specified in RFC-822.  This
+-- format will always be given in GMT for simplicity, which will be correctly
+-- altered by the reader.
+--
+-- @param timestamp      Versium timestamp (string) 
+-- @return               Time string that complied with RFC-822 (string)
+-----------------------------------------------------------------------------
+function Sputnik:format_time_RFC822(timestamp)
+   return self:format_time(timestamp, "!%a, %d %b %Y %H:%M:%S +0000")
+end
 
 function Sputnik:get_gravatar_for_email(email)
    if self.config.USE_GRAVATAR then

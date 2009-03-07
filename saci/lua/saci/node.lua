@@ -370,6 +370,23 @@ function Node:get_child(id)
    end
 end
 
+local function make_immediate_child_filter(parent_id)
+   local length = parent_id:len()
+   return function(id)
+      return not id:sub(length+2):find("/")
+   end
+end
+
+function Node:get_children(immediate, limit, visible)
+   local id_filter = make_immediate_child_filter(self.id)
+   return self.repository:get_nodes_by_prefix(self.id.."/", limit, id_filter)
+end
+
+function Node:get_visible_children(immediate, limit, visible)
+   local id_filter = make_immediate_child_filter(self.id)
+   return self.repository:get_nodes_by_prefix(self.id.."/", limit, true, id_filter)
+end
+
 function Node:get_parent_id()
    local parent_id, rest = string.match(self.id, "^(.+)/(.-)$")
    return parent_id, rest

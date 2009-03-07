@@ -274,20 +274,36 @@ end
 -- @return               a table containing the returned Saci nodes, indexed
 --                       by node name.
 -----------------------------------------------------------------------------
-function Saci:get_nodes_by_prefix(prefix, limit)
+function Saci:get_nodes_by_prefix(prefix, limit, visible, id_filter)
    local versium_nodes = self:get_versium_nodes_by_prefix(prefix, limit)
    local nodes = {}
+   local ids = {}
    local cache = self.cache
+   local num_hidden = 0
    for id, vnode in pairs(versium_nodes) do
-      if cache[id] then
-         nodes[id] = cache[id]
-      else
-         local node = self:make_node(vnode, id) 
-         nodes[id] = node
-         cache[id] = node
+      if (not id_filter) or id_filter(id) then
+         local node
+         if cache[id] then
+            node = cache[id]
+         else
+            node = self:make_node(vnode, id) 
+            cache[id] = node
+         end
+         if visible then
+            if node:check_permissions(user, "show") then
+               nodes[id] = node
+               ids[#ids+1] = id
+            else
+               num_hidden = num_hidden + 1
+            end
+         else
+            nodes[id] = node
+            ids[#ids+1] = id            
+         end
       end
    end
-   return nodes
+   table.sort(ids)
+   return nodes, ids, num_hidden
 end
 
 -----------------------------------------------------------------------------

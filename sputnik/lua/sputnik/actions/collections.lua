@@ -31,9 +31,11 @@ end
 
 function actions.list_children(node, request, sputnik)
    node:add_javascript_snippet(sorttable.script)
-   local nodes = wiki.get_visible_nodes(sputnik, request.user, node.id.."/")
+   local node_hash, node_ids, num_hidden = node:get_visible_children(request.user or "Anonymous")
+   --nodes = wiki.get_visible_nodes(sputnik, request.user, node.id.."/")
    local non_proto_nodes = {}
-   for i, n in ipairs(nodes) do
+   for i, id in ipairs(node_ids) do
+      n = node_hash[id]
       if n.id ~= node.id.."/@Child" then
          table.insert(non_proto_nodes, n)
       end

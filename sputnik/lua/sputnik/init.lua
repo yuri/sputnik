@@ -434,6 +434,14 @@ function Sputnik:activate_node(node)
       node.actions[k] = action_loader.load(mod_name)[dot_action]
    end
 
+   -- Setup the initializer function if the initializer field is set
+   if type(node.initializer) == "string" and #node.initializer > 0 then
+      local mod_name, func_name = sputnik.util.split(node.initializer, "%.")
+      local module = require("sputnik.initializer." .. mod_name)
+      assert(type(module[func_name]) == "function", "Initializer must be a function")
+      node.initializer = module[func_name]
+   end
+
    -- set wrappers -----------------------------------------------------
    node.wrappers = self.wrappers
    

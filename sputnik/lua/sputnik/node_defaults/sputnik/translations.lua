@@ -341,6 +341,9 @@ EDIT_FORM_FILE_COPYRIGHT = {
 	en_US = "Copyright",
 }
 
+EDIT_FORM_SUBJECT = {
+   en_US = "Subject",
+}
 -----------------------------------------------------------------------------
 -----  EDITING: ADMIN -------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -371,6 +374,11 @@ EDIT_FORM_PROTOTYPE = {
    en_US = "Prototype",
    ru    = "Прототип",
    pt_BR = "Prototipo",
+}
+
+-- A label for the "initializer" parameter
+EDIT_FORM_INITIALIZER = {
+   en_US = "Initializer"
 }
 
 -- A label for the "templates" parameter

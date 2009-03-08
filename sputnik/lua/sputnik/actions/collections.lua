@@ -12,6 +12,12 @@ local function format_list(nodes, template, sputnik, node)
             new_url = sputnik:make_url(node.id.."/new", "edit"),
             id      = node.id,
             content = node.content,
+            format_time = function(params)
+               return sputnik:format_time(unpack(params))
+            end,
+            make_link = function(params)
+               return sputnik:make_link(unpack(params))
+            end,
             do_nodes = function()
                           for i, node in ipairs(nodes) do
                              local t = {
@@ -83,9 +89,14 @@ actions.save_new = function(node, request, sputnik)
       child_proto = parent.child_proto
    end
    sputnik:update_node_with_params(new_node, {prototype = child_proto})
+   new_node = sputnik:activate_node(new_node)
+
+   -- Call the node's initializer function, if set
+   if new_node.initializer then
+	   new_node = new_node.initializer(new_node, request, sputnik)
+   end
 
    request.params.actions = ""
-   new_node = sputnik:activate_node(new_node)
    new_node.inner_html = "Created a new item: <a "..sputnik:make_link(new_id)..">"
                          ..new_id.."</a><br/>"
                          .."List <a "..sputnik:make_link(parent_id)..">items</a>"

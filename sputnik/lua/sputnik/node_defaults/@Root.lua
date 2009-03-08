@@ -13,6 +13,7 @@ markup_module   = {0.41, proto="fallback"}
 templates       = {0.5, proto="concat", activate="list"}
 translations    = {0.51, proto="concat", activate="list"}
 prototype       = {0.6  }
+initializer     = {0.61, proto="fallback"}
 permissions     = {0.7,   proto="concat"}
 html_main       = {0.701, proto="fallback"}
 html_head       = {0.702, proto="fallback"}
@@ -109,7 +110,8 @@ content_section_end = {1.5, "div_end"}
 advanced_section = {2.0, "div_start", id="advanced_section"}
  category        = {2.01, "select", options = {"Foo", "Bar"}}
  prototype       = {2.02, "text_field"}
- redirect_destination = {2.021, "text_field"}
+ initializer     = {2.021, "text_field"}
+ redirect_destination = {2.022, "text_field"}
  permissions     = {2.03, "textarea", rows=3, editor_modules = {"resizeable", "validatelua"}}
  actions         = {2.04, "textarea", rows=3, editor_modules = {"resizeable", "validatelua"}}
  config          = {2.05, "textarea", rows=3, editor_modules = {"resizeable", "validatelua"}}

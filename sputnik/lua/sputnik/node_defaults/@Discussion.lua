@@ -3,11 +3,31 @@ NODE = {
 prototype="@Collection"
 }
 
+NODE.initializer = "forums.init_discussion"
+NODE.fields = [[
+ subject = {1.1}
+ content = {1.2}
+ author = {1.3}
+ creation_time = {1.4}
+ activity_time = {1.5}
+ activity_node = {1.6}
+]]
+NODE.edit_ui = [[
+ local origContent = content
+ reset()
+ prototype = {1.0, "hidden", div_class="hidden"}
+ subject = {1.1, "text_field"}
+ content = origContent
+ content[1] = 1.2
+]]
+
+NODE.child_proto = "@Comment"
+
 NODE.child_defaults = [=[
 new = [[ 
 prototype = "@Comment"
-title     = "New Comment"
-actions   = 'save="comments.save_new"'
+title     = "New Reply"
+actions   = 'save="collections.save_new"'
 ]]
 ]=]
 
@@ -39,9 +59,6 @@ Add <a href="$new_url">new comment</a>.
    </span>
   </h2>
   
-  
-
-
   <div id="message_$short_id">
   <p>
   $content

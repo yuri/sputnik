@@ -779,47 +779,26 @@ function Sputnik:handle_request(request, response)
 
    if not action_function then
       content, content_type = sputnik.actions.wiki.actions.action_not_found(node, request, self)
-   else
+   elseif node:check_permissions(request.user, action) then
       -- Check permissions on the node, for the given action
-      if node:check_permissions(request.user, action) then
-         -- Determine if there are any hooks to be called for this action, on this node
-         -- by checking the node.action_hooks table
-         if node.action_hooks and node.action_hooks[action] then
-            local hooks = node.action_hooks[action].before
-            if hooks then
-               for idx, hook in ipairs(hooks) do
-                  local mod_name, dot_action = sputnik.util.split(hook, "%.")
-                  local mod = require("sputnik.actions." .. mod_name)
-                  if mod and mod.actions and mod.actions[dot_action] then
-                     pcall(mod.actions[dot_action], node, request, sputnik)
-                  end
-               end
-            end
-         end
+      content, content_type = action_function(node, request, self)
+   else
+      -- The user did not have permission, so give a message stating this
+      node:post_error("Sorry, that action is not allowed")
+      node.inner_html = ""
+      content, content_type = node.wrappers.default(node, request, self)
+   end
 
-         content, content_type = action_function(node, request, self)
+   if request.redirect then
+      self.logger:debug("Sending redirect")
+      -- Set the authentication cookie so it's not lost
+      local cookie_value = (request.user or "").."|"..(request.auth_token or "")
+      response:set_cookie(self.cookie_name, {value=cookie_value, path="/"})
 
-         -- Handle any action hooks at this point, with no digging for post actions
-         -- If you want to hook a post action, you need to iterate the parameters 
-         -- to determine which action is actually being called
-         if node.action_hooks and node.action_hooks[action] then
-            local hooks = node.action_hooks[action].after
-            if hooks then
-               for idx, hook in ipairs(hooks) do
-                  local mod_name, dot_action = sputnik.util.split(hook, "%.")
-                  local mod = require("sputnik.actions." .. mod_name)
-                  if mod and mod.actions and mod.actions[dot_action] then
-                     pcall(mod.actions[dot_action], node, request, sputnik)
-                  end
-               end
-            end
-         end
-      else
-         -- The user did not have permission, so give a message stating this
-         node:post_error("Sorry, that action is not allowed")
-         node.inner_html = ""
-         content, content_type = node.wrappers.default(node, request, self)
-      end
+      response.headers["Content-Type"] = "text/html"
+      response.headers["Location"] = request.redirect
+      response:write("redirect")
+      return response
    end
 
    assert(content)

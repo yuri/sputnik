@@ -112,7 +112,7 @@ function actions.save(node, request, sputnik)
       new_node = sputnik:activate_node(new_node)
       new_node = sputnik:save_node(new_node, request, request.user, 
       request.params.summary or "", {minor=request.params.minor}) 
-      new_node:redirect(sputnik:make_url(new_node.name))	
-      return new_node.wrappers.default(new_node, request, sputnik)
+      request.redirect = sputnik:make_url(new_node.name)	
+      return
    end
 end

@@ -91,11 +91,6 @@ actions.save_new = function(node, request, sputnik)
    sputnik:update_node_with_params(new_node, {prototype = child_proto})
    new_node = sputnik:activate_node(new_node)
 
-   -- Call the node's initializer function, if set
-   if new_node.initializer then
-	   new_node = new_node.initializer(new_node, request, sputnik)
-   end
-
    request.params.actions = ""
    new_node.inner_html = "Created a new item: <a "..sputnik:make_link(new_id)..">"
                          ..new_id.."</a><br/>"

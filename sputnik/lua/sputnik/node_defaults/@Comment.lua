@@ -7,7 +7,7 @@ comment_author = {}
 comment_date = {}
 ]]
 
-NODE.initializer = "forums.init_comment"
+NODE.save_hook = "forums.save_comment"
 
 NODE.edit_ui = [[
 reset()

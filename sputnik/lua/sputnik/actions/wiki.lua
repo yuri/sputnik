@@ -184,7 +184,8 @@ function actions.save(node, request, sputnik)
       if not request.user then
          extra.ip=request.wsapi_env.REMOTE_ADDR -- track IPs for anonymous
       end
-      new_node:save(request.user, request.params.summary or "", extra)
+      new_node = sputnik:save_node(new_node, request, request.user,
+         request.params.summary or "", extra)
       new_node:redirect(sputnik:make_url(node.name)) -- Redirect to the node
       return new_node.wrappers.default(new_node, request, sputnik)
    end

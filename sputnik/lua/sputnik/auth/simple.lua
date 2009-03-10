@@ -183,7 +183,8 @@ function Simple:add_user(username, password, metadata)
       content = (raw_users or "USERS={}\n").."\n"..user_as_string,
    }
    password_node = self.sputnik:update_node_with_params(password_node, params)
-   password_node:save(username, "Added new user: " .. username, {minor="yes"})
+   password_node = self.sputnik:save_node(password_node, nil, username,
+      "Added new user: " .. username, {minor="yes"})
    self.users = load_users(self.sputnik, self.node)
    return true
 end

@@ -3,7 +3,7 @@ NODE = {
 prototype="@Collection"
 }
 
-NODE.initializer = "forums.init_discussion"
+NODE.save_hook = "forums.save_discussion"
 NODE.fields = [[
  subject = {1.1}
  content = {1.2}

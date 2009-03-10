@@ -67,7 +67,7 @@ NEW_NODE_PROTOTYPES = {
    {"@Binary_File", title="Binary File", icon="icons/attach.png"},
    {"@Collection", title="Collection", icon = "icons/collection.png"},
    {"@Discussion", title="Discussion", icon = "icons/discussion.png"},
-   {"@DiscussionForum", title="Discussion Forum", icon="icons/discussion.png"},
+   {"@DiscussionForum", title="Discussion Forum", icon="icons/forum.png"},
 }
 
 -- If no other section of the navigation bar is selected, choose this index

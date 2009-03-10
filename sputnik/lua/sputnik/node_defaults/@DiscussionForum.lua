@@ -17,8 +17,6 @@ NODE.html_content = [=[
 $content
 Create <a href="$new_url">new discussion topic</a>.
 
-<br/><br/>
-
 <table class="sorttable" width="100%">
  <thead>
   <tr>

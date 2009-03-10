@@ -7,6 +7,10 @@ comment_author = {}
 comment_date = {}
 ]]
 
+NODE.actions = [[
+  show = "comments.show_comment"
+]]
+
 NODE.save_hook = "forums.save_comment"
 
 NODE.edit_ui = [[

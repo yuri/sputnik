@@ -7,7 +7,7 @@ local util = require("sputnik.util")
 
 actions = {}
 
-local function format_list(nodes, template, sputnik, node)
+local function format_list(nodes, template, sputnik, node, request)
    return util.f(template){
             new_url = sputnik:make_url(node.id.."/new", "edit"),
             id      = node.id,
@@ -35,18 +35,74 @@ local function format_list(nodes, template, sputnik, node)
          }
 end
 
-function actions.list_children(node, request, sputnik)
-   node:add_javascript_snippet(sorttable.script)
+function actions.show(node, request, sputnik)
    local node_hash, node_ids, num_hidden = node:get_visible_children(request.user or "Anonymous")
-   --nodes = wiki.get_visible_nodes(sputnik, request.user, node.id.."/")
    local non_proto_nodes = {}
    for i, id in ipairs(node_ids) do
       n = node_hash[id]
-      if n.id ~= node.id.."/@Child" then
+      if n.id ~= node.id .. "/@Child" then
          table.insert(non_proto_nodes, n)
       end
    end
-   node.inner_html = format_list(non_proto_nodes, node.html_content, sputnik, node)
+
+   local template = node.html_content
+   local values = {
+      new_id  = node.id .. "/new",
+      new_url = sputnik:make_url(node.id.."/new", "edit"),
+      id      = node.id,
+      content = node.content,
+      format_time = function(params)
+         return sputnik:format_time(unpack(params))
+      end,
+      make_url = function(params)
+         local id, action, _, anchor = unpack(params)
+         for i=1,#params do
+            params[i] = nil
+         end
+         return sputnik:make_url(id, action, params, anchor)
+      end,
+      do_nodes = function()
+         for i, node in ipairs(non_proto_nodes) do
+            local t = {
+               url = sputnik.config.NICE_URL..node.id,
+               id  = node.id,
+               short_id = node.id:match("[^%/]*$"),
+               nice_url = sputnik.config.NICE_URL,
+            }
+            for k, v in pairs(node.fields) do
+               t[k] = tostring(node[k])
+            end
+            for action_name in pairs(node.actions) do
+               if node:check_permissions(request.user, action_name) then
+                  sputnik.logger:debug("Action: " .. tostring(action_name))
+                  t[action_name .. "_link"] = sputnik:make_url(node.id, action_name)
+                  t["if_user_can_" .. action_name] = cosmo.c(true){}
+               else
+                  t["if_user_can_" .. action_name] = cosmo.c(false){}
+               end
+            end
+            cosmo.yield (t)
+         end
+      end,
+   }
+
+   for k,v in pairs(node.fields) do
+      if not values[k] then
+         values[k] = tostring(node[k])
+      end
+   end
+   
+   for action_name in pairs(node.actions) do
+      if node:check_permissions(request.user, action_name) then
+         sputnik.logger:debug("Action: " .. tostring(action_name))
+         values[action_name .. "_link"] = sputnik:make_url(node.id, action_name)
+         values["if_user_can_" .. action_name] = cosmo.c(true){}
+      else
+         values["if_user_can_" .. action_name] = cosmo.c(false){}
+      end
+   end
+
+   node.inner_html = cosmo.fill(template, values)
    return node.wrappers.default(node, request, sputnik)
 end
 

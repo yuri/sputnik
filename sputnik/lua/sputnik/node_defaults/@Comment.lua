@@ -4,7 +4,7 @@ NODE = {}
 NODE.fields = [[
 comment_parent = {}
 comment_author = {}
-comment_date = {}
+comment_timestamp = {}
 ]]
 
 NODE.actions = [[

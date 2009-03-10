@@ -32,38 +32,40 @@ actions   = 'save="collections.save_new"'
 ]=]
 
 NODE.html_content = [=[
-Add <a href="$new_url">new comment</a>.
-
-<style>
-.comment_toolbar {
- border-top: 1px solid #eee;
- margin-top: 1em;
-}
-.comment_toolbar a {
-   text-decoration: none;
-   color: #99c;
-}
-.comment_toolbar a:hover {
-   text-decoration: underline;
-   color: blue;
-}
-</style>
-
-<br/><br/>
-
- $do_nodes[[
-  <a name="$short_id"/>
-  <h2>$title</h2>
-  <p>
-  $content
-  </p>
-
-  <div class="comment_toolbar">
-   $comment_author on $comment_date |
-   <a href="$new_url&comment_parent=$short_id">reply</a>
-   <a href="$comment_parent">parent</a>
-   <a href="#$short_id">link</a>
+<ol class="discussion">
+ <li class="origpost">
+  <div class="info">
+   Posted by $author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
   </div>
- ]]
- </table>
+  <div class="toolbar">
+  <ul>
+   $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
+   $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
+   <li><a href="$make_url{$new_id, "edit"}">_(REPLY)</a></li> 
+   <li><a href="$make_url{$new_id, "edit"}">_(QUOTE)</a></li> 
+  </div>
+  <div class="content">
+   $content
+  </div>
+ </li>
+ $do_nodes[====[
+ <li class="reply">
+  <div class="info">
+   <a name="$short_id"></a>
+   Posted by $comment_author on $format_time{$comment_timestamp, "%a, %d %b %Y %H:%M:%S"}
+  </div>
+  <div class="toolbar">
+   <ul>
+    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
+    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
+    <li><a href="$make_url{$new_id, "edit", parent_id=$short_id}">_(REPLY)</a></li> 
+    <li><a href="$make_url{$new_id, "edit", parent_id=$short_id, quote="true"}">_(QUOTE)</a></li> 
+   </ul>
+  </div>
+  <div class="content">
+   $content
+  </div>
+ </li>
+ ]====]
+</ol>
 ]=]

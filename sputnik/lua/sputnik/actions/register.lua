@@ -101,7 +101,8 @@ function create_email_activation_ticket(args)
             hash      = args.hash,
             numtries  = "0"
          }
-   ticket:save("Sputnik", "Creation of account activation ticket")
+   ticket = sputnik:save_node(ticket, request, "Sputnik",
+      "Creation of account activation ticket")
 
    -- Email the user
    local link = "http://" .. sputnik.config.DOMAIN .. sputnik:make_url(ticket_id)
@@ -264,7 +265,8 @@ function actions.activate(node, request, sputnik)
          sputnik:activate_node(node)
 
          err_msg("COULD_NOT_CONFIRM_NEW_PASSWORD")
-         node:save("Sputnik", "Invalid confirmation attempt")
+         node = sputnik:save_node(node, request, "Sputnik",
+            "Invalid confirmation attempt")
          return actions.confirm(node, request, sputnik)
       else
          err_msg("INVALID_ACTIVATION_TICKET")

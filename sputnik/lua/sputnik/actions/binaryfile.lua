@@ -1,6 +1,9 @@
 module(..., package.seeall)
 
 require("mime")
+require("ltn12")
+
+local base64_wrap = ltn12.filter.chain(mime.encode("base64"), mime.wrap("base64"))
 
 actions = {}
 
@@ -54,68 +57,62 @@ function actions.download(node, request, sputnik)
 	return mime.unb64(node.content), mime_type
 end
 
-CHUNK_LENGTH=78
-
 function actions.save(node, request, sputnik)
-	local info = request.params.file_upload
+   local info = request.params.file_upload
 
-	if info then
-		local type = info["content-type"]
-		local name = info.name
-		local size = info.size
-		local file = info.contents
+   if info then
+      local type = info["content-type"]
+      local name = info.name
+      local size = info.size
+      local file = info.contents
 
-		-- Clear out the file_upload parameter
-		request.params.file_update = nil
+      -- Clear out the file_upload parameter
+      request.params.file_update = nil
 
-		-- Check to see if we're editing fields, rather than uploading
-		-- a new file by checking filename and filesize.
+      -- Check to see if we're editing fields, rather than uploading
+      -- a new file by checking filename and filesize.
 
-		if name and name:match("%S") and size > 0 then
-			-- A file was uploaded 
+      if name and name:match("%S") and size > 0 then
+         -- A file was uploaded 
 
-            local long_line = mime.b64(info.contents)
-            request.params.content = "\n"
-            for i=1,long_line:len(),CHUNK_LENGTH-1 do
-               request.params.content = request.params.content
-                                        ..long_line:sub(i, i+CHUNK_LENGTH-2).."\n"
-            end
-			request.params.file_type = type
-			request.params.file_name = tostring(name)
-			request.params.file_size = tostring(size)
+         request.params.content = base64_wrap(info.contents)
+         request.params.file_type = type
+         request.params.file_name = tostring(name)
+         request.params.file_size = tostring(size)
 
-			-- Set the correct action
-			local ext = sputnik.config.MIME_TYPES[type]
+         -- Set the correct action
+         local ext = sputnik.config.MIME_TYPES[type]
 
-			if not ext and sputnik.auth:get_metadata(request.user, "is_admin") ~= "true" then
-				node:post_error("The file you uploaded did not match a known file type: " .. tostring(type))
-				request.try_again = true
-			elseif ext then
-				request.params.actions = string.format([[%s = "binaryfile.mimetype"]], ext, ext)
-			end
-		elseif node.content:match("%S") then
-			-- Do nothing
-		else
-			request.try_again = true
-		end
-	else
-		node:post_error("Did not receive a file in the request")
-		request.try_again = true
-	end
+         if not ext and sputnik.auth:get_metadata(request.user, "is_admin") ~= "true" then
+            node:post_error("The file you uploaded did not match a known file type: " .. tostring(type))
+            request.try_again = true
+         elseif ext then
+            request.params.actions = string.format([[%s = "binaryfile.mimetype"]], ext, ext)
+         end
+      elseif node.content:match("%S") then
+         -- Do nothing
+      else
+         request.try_again = true
+      end
+   else
+      node:post_error("Did not receive a file in the request")
+      request.try_again = true
+   end
 
-	-- Was something incomplete?
-	if request.try_again then
-		request.params.content = nil
-		request.params.file_type = nil
-		request.params.file_name = nil
-		request.params.file_size = nil
-		return node.actions.edit(node, request, sputnik)
-	else
-		-- Actually try to store the node
-		local new_node = sputnik:update_node_with_params(node, request.params)
-		new_node = sputnik:activate_node(new_node)
-		new_node:save(request.user, request.params.summary or "", {minor=request.params.minor})
-		new_node:redirect(sputnik:make_url(new_node.name))	
-		return new_node.wrappers.default(new_node, request, sputnik)
-	end
+   -- Was something incomplete?
+   if request.try_again then
+      request.params.content = nil
+      request.params.file_type = nil
+      request.params.file_name = nil
+      request.params.file_size = nil
+      return node.actions.edit(node, request, sputnik)
+   else
+      -- Actually try to store the node
+      local new_node = sputnik:update_node_with_params(node, request.params)
+      new_node = sputnik:activate_node(new_node)
+      new_node = sputnik:save_node(new_node, request, request.user, 
+      request.params.summary or "", {minor=request.params.minor}) 
+      request.redirect = sputnik:make_url(new_node.name)	
+      return
+   end
 end

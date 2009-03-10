@@ -2,7 +2,7 @@ module(..., package.seeall)
 NODE = {
    title      = "@Collection",
    actions    = [[
-      show = "collections.list_children"
+      show = "collections.show"
       rss = "collections.rss"
       xml = "collections.list_children_as_xml"
       new_child = "collections.edit_new_child"

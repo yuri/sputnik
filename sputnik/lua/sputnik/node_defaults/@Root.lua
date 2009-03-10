@@ -13,7 +13,6 @@ markup_module   = {0.41, proto="fallback"}
 templates       = {0.5, proto="concat", activate="list"}
 translations    = {0.51, proto="concat", activate="list"}
 prototype       = {0.6  }
-initializer     = {0.61, proto="fallback"}
 permissions     = {0.7,   proto="concat"}
 html_main       = {0.701, proto="fallback"}
 html_head       = {0.702, proto="fallback"}
@@ -32,14 +31,13 @@ redirect_destination =  {0.70903}
 xssfilter_allowed_tags = {0.7091, proto="concat", activate="lua"}
 http_cache_control = {0.710, proto="fallback"}
 http_expires    = {0.711, proto="fallback"}
-
-
 content         = {0.8  }
 edit_ui         = {0.9, proto="concat"}
 admin_edit_ui   = {0.91, proto="concat"}
 child_defaults  = {0.92, proto="concat", activate="lua"}
 icon            = {0.93, proto="fallback"}
 breadcrumb      = {0.94 }
+save_hook       = {0.95, proto="fallback"}
 
 -- "virtual" fields (never saved) ------------------------
 version         = {virtual=true}
@@ -110,7 +108,6 @@ content_section_end = {1.5, "div_end"}
 advanced_section = {2.0, "div_start", id="advanced_section"}
  category        = {2.01, "select", options = {"Foo", "Bar"}}
  prototype       = {2.02, "text_field"}
- initializer     = {2.021, "text_field"}
  redirect_destination = {2.022, "text_field"}
  permissions     = {2.03, "textarea", rows=3, editor_modules = {"resizeable", "validatelua"}}
  actions         = {2.04, "textarea", rows=3, editor_modules = {"resizeable", "validatelua"}}
@@ -118,6 +115,7 @@ advanced_section = {2.0, "div_start", id="advanced_section"}
  markup_module   = {2.0501, "text_field"}
  html_meta_keywords = {2.051, "text_field"}
  html_meta_description = {2.052, "text_field"}
+ save_hook       = {2.053, "text_field"}
 advanced_section_end = {2.06, "div_end"}
 
 html_section     = {2.100, "div_start", id="html_section", state="open"}

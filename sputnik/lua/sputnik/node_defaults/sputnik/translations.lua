@@ -376,9 +376,9 @@ EDIT_FORM_PROTOTYPE = {
    pt_BR = "Prototipo",
 }
 
--- A label for the "initializer" parameter
-EDIT_FORM_INITIALIZER = {
-   en_US = "Initializer"
+-- A label for the "save_hook" parameter
+EDIT_FORM_SAVE_HOOK = {
+   en_US = "Save Hook"
 }
 
 -- A label for the "templates" parameter

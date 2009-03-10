@@ -184,9 +184,12 @@ function actions.save(node, request, sputnik)
       if not request.user then
          extra.ip=request.wsapi_env.REMOTE_ADDR -- track IPs for anonymous
       end
-      new_node:save(request.user, request.params.summary or "", extra)
-      new_node:redirect(sputnik:make_url(node.name)) -- Redirect to the node
-      return new_node.wrappers.default(new_node, request, sputnik)
+      new_node = sputnik:save_node(new_node, request, request.user,
+         request.params.summary or "", extra)
+
+      -- redirect to the newly saved node
+      request.redirect = sputnik:make_url(new_node.name)
+      return
    end
 end
 
@@ -196,8 +199,8 @@ end
 function actions.reload(node, request, sputnik)
    sputnik:init(sputnik.initial_config)
    node.inner_html = "Reloading..."
-   node:redirect(sputnik:make_url(node.name)) -- Redirect to the node
-   return node.wrappers.default(node, request, sputnik)
+   request.redirect = sputnik:make_url(node.name)
+   return
 end
 
 
@@ -240,8 +243,9 @@ end
 -- @param sputnik        not used.
 -----------------------------------------------------------------------------
 function actions.cancel(node, request, sputnik)
-   node:redirect(node.name) -- redirect to "show"
-   return node.wrappers.default(node, request, sputnik)
+   -- Redirect to the show action
+   request.redirect = sputnik:make_url(node.name)
+   return
 end
 
 
@@ -274,11 +278,11 @@ function actions.redirect(node, request, sputnik)
    local destination = node.redirect_destination
    local protocol = destination:match("^[^%:]*")
    if REDIRECTION_PROTOCOLS[protocol] or destination:sub(1,1)=="/" then
-      node:redirect(destination)
+      request.redirect = destination
    else
-      node:redirect(sputnik:make_url(destination))
+      request.redirect = sputnik:make_url(destination)
    end
-   return "redirect"
+   return
 end
 
 -----------------------------------------------------------------------------
@@ -1047,8 +1051,8 @@ end
 function actions.show_login_form(node, request, sputnik)
    request.is_indexable = false
    if (request.params.user and request.user) then -- we've just logged in the user
-      node:redirect(sputnik:make_url(node.id))
-      return node.wrappers.default(node, request, sputnik)
+      request.redirect = sputnik:make_url(node.id)
+      return
    end
 
    node.inner_html = get_login_form(node, request, sputnik)
@@ -1058,8 +1062,8 @@ end
 function actions.logout_user(node, request, sputnik)
    request.is_indexable = false
    request.user = nil
-   node:redirect(sputnik:make_url(request.params.next))
-   return "redirect"
+   request.redirect = sputnik:make_url(request.params.next)
+   return
 end
 
 -----------------------------------------------------------------------------

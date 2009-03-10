@@ -4,10 +4,14 @@ NODE = {}
 NODE.fields = [[
 comment_parent = {}
 comment_author = {}
-comment_date = {}
+comment_timestamp = {}
 ]]
 
-NODE.initializer = "forums.init_comment"
+NODE.actions = [[
+  show = "comments.show_comment"
+]]
+
+NODE.save_hook = "forums.save_comment"
 
 NODE.edit_ui = [[
 reset()

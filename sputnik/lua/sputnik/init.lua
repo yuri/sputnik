@@ -97,7 +97,7 @@ function Sputnik:init(initial_config)
          local node = self.saci:make_node(data, id)
          assert(node)
          if page_module.CREATE_DEFAULT then
-            node:save()
+            node = self:save_node(node, nil)
             node = self.saci:get_node(id)
          end
          return node
@@ -434,14 +434,6 @@ function Sputnik:activate_node(node)
       node.actions[k] = action_loader.load(mod_name)[dot_action]
    end
 
-   -- Setup the initializer function if the initializer field is set
-   if type(node.initializer) == "string" and #node.initializer > 0 then
-      local mod_name, func_name = sputnik.util.split(node.initializer, "%.")
-      local module = require("sputnik.initializer." .. mod_name)
-      assert(type(module[func_name]) == "function", "Initializer must be a function")
-      node.initializer = module[func_name]
-   end
-
    -- set wrappers -----------------------------------------------------
    node.wrappers = self.wrappers
    
@@ -530,6 +522,30 @@ function Sputnik:update_node_with_params(node, params)
 end
 
 -----------------------------------------------------------------------------
+-- This function is provided as a wrapper to node:save(...) that respects the
+-- save_hook field in a node.  This field defines a module and function name
+-- that are called when the node is being saved, allowing for last minute
+-- changes to the node parameters, or for other actions to be taken alongside
+-- the save.
+--
+-- NODE: A save hook is passed the node, the request object and the sputnik
+-- instance, although request and sputnik are not guaranteed to be available
+-- for certain types of nodes.
+-----------------------------------------------------------------------------
+function Sputnik:save_node(node, request, ...)
+   local new_node = node
+   if type(node.save_hook) == "string" and #node.save_hook > 0 then
+      local mod_name, func_name = sputnik.util.split(node.save_hook, "%.")
+      local module = require("sputnik.hooks." .. mod_name)
+      local save_hook = module[func_name]
+      new_node = save_hook(node, request, self)
+   end
+   -- Actually perform the save at the saci layer
+   new_node:save(...)
+   return new_node
+end
+
+-----------------------------------------------------------------------------
 -- Returns node's history.
 -----------------------------------------------------------------------------
 function Sputnik:get_history(node_name, limit, date_prefix)
@@ -588,7 +604,7 @@ function Sputnik:get_uid(namespace, type)
    local node_name = "_uid:" .. namespace
    local node = self:get_node(node_name)
    node = self:update_node_with_params(node, {content=hash})
-   node:save("Sputnik-UID", hash)
+   node = self:save_node(node, nil, "Sputnik-UID", hash)
 
    -- Retrieve the node history 
    local history = self:get_history(node_name)
@@ -763,47 +779,26 @@ function Sputnik:handle_request(request, response)
 
    if not action_function then
       content, content_type = sputnik.actions.wiki.actions.action_not_found(node, request, self)
-   else
+   elseif node:check_permissions(request.user, action) then
       -- Check permissions on the node, for the given action
-      if node:check_permissions(request.user, action) then
-         -- Determine if there are any hooks to be called for this action, on this node
-         -- by checking the node.action_hooks table
-         if node.action_hooks and node.action_hooks[action] then
-            local hooks = node.action_hooks[action].before
-            if hooks then
-               for idx, hook in ipairs(hooks) do
-                  local mod_name, dot_action = sputnik.util.split(hook, "%.")
-                  local mod = require("sputnik.actions." .. mod_name)
-                  if mod and mod.actions and mod.actions[dot_action] then
-                     pcall(mod.actions[dot_action], node, request, sputnik)
-                  end
-               end
-            end
-         end
+      content, content_type = action_function(node, request, self)
+   else
+      -- The user did not have permission, so give a message stating this
+      node:post_error("Sorry, that action is not allowed")
+      node.inner_html = ""
+      content, content_type = node.wrappers.default(node, request, self)
+   end
 
-         content, content_type = action_function(node, request, self)
+   if request.redirect then
+      self.logger:debug("Sending redirect")
+      -- Set the authentication cookie so it's not lost
+      local cookie_value = (request.user or "").."|"..(request.auth_token or "")
+      response:set_cookie(self.cookie_name, {value=cookie_value, path="/"})
 
-         -- Handle any action hooks at this point, with no digging for post actions
-         -- If you want to hook a post action, you need to iterate the parameters 
-         -- to determine which action is actually being called
-         if node.action_hooks and node.action_hooks[action] then
-            local hooks = node.action_hooks[action].after
-            if hooks then
-               for idx, hook in ipairs(hooks) do
-                  local mod_name, dot_action = sputnik.util.split(hook, "%.")
-                  local mod = require("sputnik.actions." .. mod_name)
-                  if mod and mod.actions and mod.actions[dot_action] then
-                     pcall(mod.actions[dot_action], node, request, sputnik)
-                  end
-               end
-            end
-         end
-      else
-         -- The user did not have permission, so give a message stating this
-         node:post_error("Sorry, that action is not allowed")
-         node.inner_html = ""
-         content, content_type = node.wrappers.default(node, request, self)
-      end
+      response.headers["Content-Type"] = "text/html"
+      response.headers["Location"] = request.redirect
+      response:write("redirect")
+      return response
    end
 
    assert(content)

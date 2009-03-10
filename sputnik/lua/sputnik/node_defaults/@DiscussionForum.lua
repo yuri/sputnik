@@ -17,26 +17,20 @@ NODE.html_content = [=[
 $content
 Create <a href="$new_url">new discussion topic</a>.
 
-<br/><br/>
-
 <table class="sorttable" width="100%">
  <thead>
   <tr>
    <th>Subject</th>
-   <th>Author</th>
-   <th>Posted</th>
-   <th>Last Activity</th>
+   <th>Last Post</th>
   </tr>
  </thead>
  $do_nodes[[
  <tr>
   <td>
-   <p class="forum_subject"><a href="$url">$subject</a></p>
-   <p class="forum_content">$content</a></p>
+   <div class="disc_info"><a href="$url">$subject</a> posted by $author</div>
+   <div class="disc_snippet">$content</div>
   </td>
-  <td>$author</td>
-  <td>$format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}</td>
-  <td><a $make_link{$activity_node}>$format_time{$activity_time, "%a, %d %b %Y %H:%M:%S"}</a></td> 
+  <td><a href="$make_url{$activity_node}">$format_time{$activity_time, "%a, %d %b %Y %H:%M:%S"}</a></td> 
  </tr>
 ]]
 </table>

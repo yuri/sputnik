@@ -690,6 +690,8 @@ end
 -- Shows HTML for the standard Edit field.
 -----------------------------------------------------------------------------
 function actions.edit (node, request, sputnik, etc)
+   request.is_indexable = false
+
    etc = etc or {} -- additional parameters
 
    -- check if the user is even allowed to edit
@@ -821,6 +823,7 @@ end
 -- Shows HTML of diff between two versions of the node.
 -----------------------------------------------------------------------------
 function actions.diff(node, request, sputnik)
+   request.is_indexable = false
    local this_node_info  = sputnik.saci:get_node_info(node.id, request.params.version)
 
    if not request.params.other then
@@ -1043,6 +1046,7 @@ end
 -- Shows login form.
 -----------------------------------------------------------------------------
 function actions.show_login_form(node, request, sputnik)
+   request.is_indexable = false
    if (request.params.user and request.user) then -- we've just logged in the user
       node:redirect(sputnik:make_url(node.id))
       return node.wrappers.default(node, request, sputnik)
@@ -1053,6 +1057,7 @@ function actions.show_login_form(node, request, sputnik)
 end
 
 function actions.logout_user(node, request, sputnik)
+   request.is_indexable = false
    request.user = nil
    node:redirect(sputnik:make_url(request.params.next))
    return "redirect"
@@ -1062,6 +1067,7 @@ end
 -- Shows the version of sputnik.
 -----------------------------------------------------------------------------
 function actions.sputnik_version(node, request, sputnik)
+   request.is_indexable = false
    local rocks = {}
    if luarocks and luarocks.require then
       for _, rock in ipairs(sputnik.config.ROCK_LIST_FOR_VERSION or {}) do
@@ -1082,6 +1088,7 @@ end
 -- on whether the code is ok.  (This 
 -----------------------------------------------------------------------------
 function actions.validate_lua(node, request, sputnik)
+   request.is_indexable = false
    local code = request.params.code or ""
    local sandbox = saci.sandbox.new(sputnik.config)
    local result, err = sandbox:do_lua(code, true)

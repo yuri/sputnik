@@ -727,6 +727,7 @@ function Sputnik:handle_request(request, response)
 
    self.cookie_name = self.config.COOKIE_NAME.."_"..md5.sumhexa(self.config.BASE_URL)
    request = self:translate_request(request)
+   request.is_indexable = true
 
    local dirified = self:dirify(request.node_name)
 

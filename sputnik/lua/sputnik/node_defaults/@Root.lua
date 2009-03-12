@@ -240,12 +240,12 @@ NODE.html_search = [==[
 
 NODE.html_page = [==[
       <div id="breadcrumbs">
-       $if_multipart_id[=[
        <ul>
-        $do_breadcrumb[[<li class="$class"><a $link>$title</a></li>]],[[<li class="$class">▹ <a $link>$title</a></li>]]
-        <li style="display:none">&nbsp;</li>
+       $do_breadcrumb[[
+        <li class="first"><a $link>$title</a></li>]],[[
+        <li class="follow"><a $link>▹&nbsp; $title</a></li>]]
        </ul>
-       ]=]<span class="toolbar">
+       <span class="toolbar">
         $do_toolbar[[
          $if_icon[====[<a $link title="$title"><img src="$icon_base_url{}$icon" alt="_(BUTTON)"/></a>]====]
          $if_text[====[<a $link>$title</a>]====]

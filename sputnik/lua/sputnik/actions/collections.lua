@@ -45,7 +45,8 @@ function actions.show(node, request, sputnik)
       end
    end
 
-   local template = node.html_content
+   local template = node.translator.translate(node.html_content)
+
    local values = {
       new_id  = node.id .. "/new",
       new_url = sputnik:make_url(node.id.."/new", "edit"),

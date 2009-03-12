@@ -37,15 +37,14 @@ NODE.html_content = [=[
   <div class="info">
    Posted by $author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
   </div>
-  <div class="toolbar">
-  <ul>
+  <ul class="toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
    <li><a href="$make_url{$new_id, "edit"}">_(REPLY)</a></li> 
    <li><a href="$make_url{$new_id, "edit"}">_(QUOTE)</a></li> 
-  </div>
+  </ul>
   <div class="content">
-   $content
+   $markup{$content}
   </div>
  </li>
  $do_nodes[====[
@@ -63,7 +62,7 @@ NODE.html_content = [=[
    </ul>
   </div>
   <div class="content">
-   $content
+   $markup{$content}
   </div>
  </li>
  ]====]

@@ -670,6 +670,35 @@ div.close_popup {
   text-align: right;
 }
 
+/* Comments Styles */
+
+ol.discussion {
+    margin: 0;
+    list-style-type: none;
+}
+
+ol.discussion div.content {
+    clear: both;
+    padding: 10px 20px;
+}
+
+ol.discussion div.info {
+    float: left;
+}
+
+ol.discussion ul.toolbar {
+    float:right;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+ol.discussion ul.toolbar li {
+    float: left;
+    margin: 0;
+    padding: 0;
+}
+
 @media print {
  #menu_bar, #login, #ft, .toolbar {
    display: none; !important;

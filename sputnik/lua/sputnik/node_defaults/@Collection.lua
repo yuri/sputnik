@@ -26,7 +26,7 @@ collection_section_end = {1.405, "div_end"}
 ]=]
 
 NODE.html_content = [=[
-$content
+$markup{$content}
 Create <a href="$new_url">new item</a>.
 
 <br/><br/>

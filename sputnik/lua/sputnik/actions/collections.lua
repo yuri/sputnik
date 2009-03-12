@@ -51,6 +51,9 @@ function actions.show(node, request, sputnik)
       new_url = sputnik:make_url(node.id.."/new", "edit"),
       id      = node.id,
       content = node.content,
+      markup = function(params)
+         return node.markup.transform(params[1], node)
+      end,
       format_time = function(params)
          return sputnik:format_time(unpack(params))
       end,
@@ -68,6 +71,9 @@ function actions.show(node, request, sputnik)
                id  = node.id,
                short_id = node.id:match("[^%/]*$"),
                nice_url = sputnik.config.NICE_URL,
+               markup = function(params)
+                  return node.markup.transform(params[1], node)
+               end,
             }
             for k, v in pairs(node.fields) do
                t[k] = tostring(node[k])

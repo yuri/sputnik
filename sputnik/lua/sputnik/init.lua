@@ -429,9 +429,11 @@ function Sputnik:activate_node(node)
    end
    local action_loader = action_loader()
    
-   for k, v in pairs(node.actions) do
-      local mod_name, dot_action = sputnik.util.split(v, "%.")
-      node.actions[k] = action_loader.load(mod_name)[dot_action]
+   for command, action_function in pairs(node.actions) do
+      if type(action_function) == "string" then
+         local mod_name, dot_action = sputnik.util.split(action_function, "%.")
+         node.actions[command] = action_loader.load(mod_name)[dot_action]
+      end
    end
 
    -- set wrappers -----------------------------------------------------

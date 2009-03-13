@@ -14,7 +14,7 @@ end
 local wiki = require("sputnik.actions.wiki")
 function actions.edit_comment(node, request, sputnik)
     if request.params.quote then
-        local parent_id = request.params.parent
+        local parent_id = request.params.comment_parent
         local parent = sputnik:get_node(parent_id)
         parent = sputnik:decorate_node(parent)
         if node:check_permissions(request.user, "show") then

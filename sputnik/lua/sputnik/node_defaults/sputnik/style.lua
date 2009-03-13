@@ -351,7 +351,8 @@ pre {
  padding:   8px  20px   8px   1em;
  display    : block; 
  font-family: monospace;
- font-size  : 90%
+ font-size  : 90%;
+ overflow: auto;
 }
 pre code {
  padding:   0em   0em   0em   0em;
@@ -677,13 +678,21 @@ ol.discussion {
     list-style-type: none;
 }
 
-ol.discussion div.content {
-    clear: both;
-    padding: 10px 20px;
+ol.discussion li {
+   padding-bottom: 10px;
 }
 
-ol.discussion div.info {
-    float: left;
+ol.discussion div.content {
+    clear: both;
+    padding: 5px 20px;
+    margin: 0;
+}
+
+ol.discussion div.header {
+    border-bottom-color: black;
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
+    padding-bottom: 5px;
 }
 
 ol.discussion ul.toolbar {
@@ -697,6 +706,7 @@ ol.discussion ul.toolbar li {
     float: left;
     margin: 0;
     padding: 0;
+    padding-left: 8px;
 }
 
 @media print {

@@ -67,6 +67,7 @@ function actions.show(node, request, sputnik)
       end,
       do_nodes = function()
          for i, node in ipairs(non_proto_nodes) do
+             sputnik:decorate_node(node)
             local t = {
                url = sputnik.config.NICE_URL..node.id,
                id  = node.id,

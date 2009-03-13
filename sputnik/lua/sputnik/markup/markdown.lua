@@ -22,9 +22,14 @@ function wikify_link(wikilink, sputnik)
           }
 end
 
+local util = require("sputnik.util")
+
 function new(sputnik) 
    return {
-      transform = function(text, node)
+       quote = function(text)
+           return "> " .. text:gsub("\n", "\n> ")
+       end,
+       transform = function(text, node)
                      local function dolink(wikilink)
                         return wikify_link(wikilink, sputnik)
                      end
@@ -68,4 +73,3 @@ function new(sputnik)
                   end
    }
 end
-

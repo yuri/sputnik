@@ -1122,7 +1122,7 @@ function get_breadcrumbs(node, sputnik)
       end
       local crumb = part
       if b_node.breadcrumb and b_node.breadcrumb:match("%S") then
-         crumb = b_node.breadcrumb  .. " FOO"
+         crumb = b_node.breadcrumb
       end
       table.insert(breadcrumbs, {
          link = sputnik:make_link(path),

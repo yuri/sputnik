@@ -2,12 +2,19 @@ module(..., package.seeall)
 
 function save_discussion(node, request, sputnik)
    request = request or {}
-   node = sputnik:update_node_with_params(node, {
+   local params = {
       author = request.user or "Anonymous user",
       creation_time = tostring(os.time()),
       activity_time = tostring(os.time()),
       activity_node = node.id,
-   })
+   }
+   if #node.subject > 25 then
+      params.breadcrumb = node.subject:sub(1, 25) .. "..."
+   else
+      params.breadcrumb = node.subject
+   end
+
+   node = sputnik:update_node_with_params(node, params)
    return node
 end
 

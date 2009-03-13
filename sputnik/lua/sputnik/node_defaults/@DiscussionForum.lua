@@ -4,6 +4,7 @@ NODE = {
 }
 
 NODE.child_proto = "@Discussion"
+NODE.child_uid_format = "%d"
 
 NODE.child_defaults = [=[
 new = [[ 

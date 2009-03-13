@@ -445,11 +445,41 @@ EDIT_FORM_COLLECTION_SECTION = {
    en_US = "Collection Fields"
 }
 
-EDIT_FORM_COMMENT_AUTHOR = {
-   en_US = "Your name",
-   ru = "Ваше имя",
+EDIT_FORM_CHILD_UID_FORMAT = {
+    en_US = "Child UID Format"
 }
 
+EDIT_FORM_DISC_SECTION = {
+   en_US = "Discussion Fields"
+}
+
+EDIT_FORM_AUTHOR = {
+   en_US = "Author"
+}
+
+EDIT_FORM_CREATION_TIME = {
+   en_US = "Creation Time",
+}
+
+EDIT_FORM_ACTIVITY_TIME = {
+   en_US = "Activity Time",
+}
+
+EDIT_FORM_ACTIVITY_NODE = {
+   en_US = "Activity Node",
+}
+
+EDIT_FORM_COMMENT_AUTHOR = {
+   en_US = "Comment Author",
+}
+
+EDIT_FORM_COMMENT_PARENT = {
+    en_US = "Comment Parent",
+}
+
+EDIT_FORM_COMMENT_SECTION = {
+    en_US = "Comment Fields"
+}
 
 EDIT_FORM_CONTENT_TEMPLATE = {
    en_US = "Content Template"

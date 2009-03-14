@@ -6,16 +6,16 @@ NODE = {
 }
 
 local markItUpButtons = {
-   "markitup/images/h1",
+   --"markitup/images/h1",
    "markitup/images/h2",
    "markitup/images/h3",
    "markitup/images/h4",
-   "markitup/images/code",
    "markitup/images/bold",
    "markitup/images/italic",
+   "icons/sputnik",
+   "markitup/images/code",
    "markitup/images/list-bullet",
    "markitup/images/list-numeric",
-   "icons/sputnik",
    "markitup/images/picture",
    "markitup/images/link",
    "markitup/images/quotes",

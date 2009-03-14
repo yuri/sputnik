@@ -26,11 +26,11 @@ mySettings = {
    onShiftEnter:		{keepDefault:false,	openWith:'\n\n'},
    markupSet: [		
 
-      {name:'First Level Heading', key:"1", placeHolder:'Your title here...', 
+      /*{name:'First Level Heading', key:"1", placeHolder:'Your title here...', 
        closeWith:function(markItUp) { 
           return miu.markdownTitle(markItUp, '=') 
        }
-      },
+      },*/
       {name:'Second Level Heading', key:"2", placeHolder:'Your title here...',
        closeWith:function(markItUp) {
           return miu.markdownTitle(markItUp, '-') 
@@ -38,14 +38,15 @@ mySettings = {
       },
       {name:'Heading 3', key:"3", openWith:'### ', placeHolder:'Your title here...' },
       {name:'Heading 4', key:"4", openWith:'#### ', placeHolder:'Your title here...' },
-      {name:'Code Block / Code', openWith:'(!(\t|!|`)!)', closeWith:'(!(`)!)'},
       {name:'Bold', key:"B", openWith:'**', closeWith:'**'},
       {name:'Italic', key:"I", openWith:'_', closeWith:'_'},
+      {name:'WikiLink', key:"W", openWith:'[[', closeWith:']]', placeHolder:'Another Page' },
+
+      {name:'Code Block / Code', openWith:'(!(\t|!|`)!)', closeWith:'(!(`)!)'},
       {name:'Bulleted List', openWith:'- ' },
       {name:'Numeric List', openWith:function(h) {
          return h.line+'. ';
       }},
-      {name:'WikiLink', key:"W", openWith:'[[', closeWith:']]', placeHolder:'Another Page' },
       {separator:'---------------' },
       {name:'Picture', key:"P", replaceWith:'![[![Alternative text]!]]([![Url:!:http://]!] "[![Title]!]")'},
       {name:'Link', key:"K", openWith:'[', closeWith:']([![Url:!:http://]!] "[![Title]!]")', placeHolder:'Your text to link here...' },

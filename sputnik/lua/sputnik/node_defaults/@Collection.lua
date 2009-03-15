@@ -16,6 +16,10 @@ xml_template = {1.3, proto="fallback"}
 child_uid_format = {1.4, proto="fallback"}
 ]=]
 
+NODE.edit_ui = [=[
+ title           = {0.80, "text_field"}
+]=]
+
 NODE.admin_edit_ui = [=[
 collection_section = {1.401, "div_start", id="collection_section"}
  child_proto = {1.401, "text_field"}

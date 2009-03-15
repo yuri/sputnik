@@ -700,6 +700,7 @@ ol.discussion ul.toolbar {
     list-style: none;
     margin: 0;
     padding: 0;
+    padding-top: 1em;
 }
 
 ol.discussion ul.toolbar li {

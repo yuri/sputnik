@@ -16,7 +16,8 @@ actions   = 'save="collections.save_new"'
 
 NODE.html_content = [=[
 $content
-Create <a href="$new_url">new discussion topic</a>.
+
+<p><a href="$new_url">_(ADD_NEW_DISCUSSION_TOPIC)</a></p>
 
 <table class="sorttable" width="100%">
  <thead>
@@ -28,7 +29,7 @@ Create <a href="$new_url">new discussion topic</a>.
  $do_nodes[[
  <tr>
   <td>
-   <div class="disc_info"><a href="$url">$subject</a> posted by $author</div>
+   <div class="disc_info"><a href="$url">$title</a> posted by $author</div>
    <div class="disc_snippet">$content</div>
   </td>
   <td><a href="$make_url{$activity_node}">$format_time{$activity_time, "%a, %d %b %Y %H:%M:%S"}</a></td> 

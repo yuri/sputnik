@@ -11,7 +11,6 @@ local function format_list(nodes, template, sputnik, node, request)
    return util.f(template){
             new_url = sputnik:make_url(node.id.."/new", "edit"),
             id      = node.id,
-            content = node.content,
             format_time = function(params)
                return sputnik:format_time(unpack(params))
             end,
@@ -51,10 +50,7 @@ function actions.show(node, request, sputnik)
       new_id  = node.id .. "/new",
       new_url = sputnik:make_url(node.id.."/new", "edit"),
       id      = node.id,
-      content = node.content,
-      markup = function(params)
-         return node.markup.transform(params[1], node)
-      end,
+      content = node.markup.transform(node.content or "", node),
       format_time = function(params)
          return sputnik:format_time(unpack(params))
       end,
@@ -73,13 +69,11 @@ function actions.show(node, request, sputnik)
                id  = node.id,
                short_id = node.id:match("[^%/]*$"),
                nice_url = sputnik.config.NICE_URL,
-               markup = function(params)
-                  return node.markup.transform(params[1], node)
-               end,
             }
             for k, v in pairs(node.fields) do
                t[k] = tostring(node[k])
             end
+            t.content = node.markup.transform(t.content, node)
             for action_name in pairs(node.actions) do
                if node:check_permissions(request.user, action_name) then
                   sputnik.logger:debug("Action: " .. tostring(action_name))

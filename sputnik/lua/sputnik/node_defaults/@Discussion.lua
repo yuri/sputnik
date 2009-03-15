@@ -7,8 +7,6 @@ NODE.child_uid_format = "%d"
 
 NODE.save_hook = "forums.save_discussion"
 NODE.fields = [[
- subject = {1.1}
- content = {1.2}
  author = {1.3}
  creation_time = {1.4}
  activity_time = {1.5}
@@ -18,7 +16,7 @@ NODE.edit_ui = [[
  local origContent = content
  reset()
  prototype = {1.0, "hidden", div_class="hidden"}
- subject = {1.1, "text_field"}
+ title = {1.1, "text_field"}
  content = origContent
  content[1] = 1.2
 ]]
@@ -53,7 +51,7 @@ NODE.html_content = [=[
   </ul>
   </div>
   <div class="content">
-   $markup{$content}
+   $content
   </div>
  </li>
  $do_nodes[====[
@@ -68,7 +66,7 @@ NODE.html_content = [=[
   </ul>
   </div>
   <div class="content">
-   $markup{$content}
+   $content
   </div>
  </li>
  ]====]

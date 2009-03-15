@@ -8,10 +8,10 @@ function save_discussion(node, request, sputnik)
       activity_time = tostring(os.time()),
       activity_node = node.id,
    }
-   if #node.subject > 25 then
-      params.breadcrumb = node.subject:sub(1, 25) .. "..."
+   if #node.title > 25 then
+      params.breadcrumb = node.title:sub(1, 25) .. "..."
    else
-      params.breadcrumb = node.subject
+      params.breadcrumb = node.title
    end
 
    node = sputnik:update_node_with_params(node, params)

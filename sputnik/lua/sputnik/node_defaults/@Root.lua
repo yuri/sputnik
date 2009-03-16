@@ -76,7 +76,11 @@ config        = [[
 edit_ui = [[
 -------------------------- basic fields ----------------
 content_section  = {1.0, "div_start", id="content_section", open="true"}
- content         = {1.3, "textarea", editor_modules = {"resizeable"}, rows=15, no_label=true}
+ content         = {1.3, "textarea", rows=15, no_label=true}
+ content.editor_modules = {
+                      "resizeable",
+                      "markitup",
+ }
 content_section_end = {1.4, "div_end"}
 
 -------------------------- advanced fields -------------

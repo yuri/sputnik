@@ -41,9 +41,11 @@ actions   = 'save="collections.save_new"'
 NODE.html_content = [=[
 <ol class="discussion">
  <li class="origpost">
-  <div class="header">
+  <div class="post-header">
+  <span class="post-info">
    Posted by $author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
-  <ul class="toolbar">
+  </span>
+  <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
    <li><a href="$make_url{$new_id, "edit", comment_parent=$id}">_(REPLY)</a></li> 
@@ -56,9 +58,11 @@ NODE.html_content = [=[
  </li>
  $do_nodes[====[
  <li class="reply">
-  <div class="header">
+  <div class="post-header">
+  <span class="post-info">
    Posted by $author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
-  <ul class="toolbar">
+  </span>
+  <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
    <li><a href="$make_url{$new_id, "edit", comment_parent=$id}">_(REPLY)</a></li> 

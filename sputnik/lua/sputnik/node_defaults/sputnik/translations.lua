@@ -829,4 +829,9 @@ QUOTE = {
    ru = "Цитировать"
 }
 
+ADD_NEW_DISCUSSION_TOPIC = {
+   en_US = "Add new discussion topic",
+   ru = "Добавить тему",
+}
+
 ]=============]

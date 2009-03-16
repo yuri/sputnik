@@ -15,7 +15,7 @@ actions   = 'save="collections.save_new"'
 ]=]
 
 NODE.html_content = [=[
-$content
+$markup{$content}
 
 <p><a href="$new_url">_(ADD_NEW_DISCUSSION_TOPIC)</a></p>
 
@@ -30,7 +30,7 @@ $content
  <tr>
   <td>
    <div class="disc_info"><a href="$url">$title</a> posted by $author</div>
-   <div class="disc_snippet">$content</div>
+   <div class="disc_snippet">$markup{$content}</div>
   </td>
   <td><a href="$make_url{$activity_node}">$format_time{$activity_time, "%a, %d %b %Y %H:%M:%S"}</a></td> 
  </tr>

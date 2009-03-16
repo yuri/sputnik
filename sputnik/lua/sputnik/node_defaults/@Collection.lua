@@ -30,9 +30,10 @@ collection_section_end = {1.405, "div_end"}
 ]=]
 
 NODE.html_content = [=[
-$content
+$markup{$content}
+Create <a href="$new_url">new item</a>.
 
-<div><a href="$new_url">New item</a></div>
+<br/><br/>
 
 <table class="sorttable" width="100%">
  <thead>

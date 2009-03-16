@@ -256,10 +256,10 @@ NODE.html_page = [==[
         ]]
        </span>
       </div>
-      <h1 class="title">$if_title_icon[[
+      <div class="title">$if_title_icon[[
        <img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/>]]
        <a name="title" title="_(CURRENT_PAGE)" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
-      </h1>
+      </div>
       <div class='content'>
         $do_messages[[<p class="$class">$message</p>]]
 

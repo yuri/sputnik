@@ -11,6 +11,7 @@ NODE.fields = [[
  creation_time = {1.4}
  activity_time = {1.5}
  activity_node = {1.6}
+ snippet = {1.7}
 ]]
 NODE.edit_ui = [[
  local origContent = content
@@ -26,7 +27,8 @@ disc_section  = {1.410, "div_start", id="disc_section", closed="true"}
  creation_time = {1.413, "text_field"}
  activity_time = {1.414, "text_field"}
  activity_node = {1.415, "text_field"}
-disc_section_end = {1.416, "div_end"}
+ snippet = {1.416, "textarea", editor_modules = {"resizeable"}}
+disc_section_end = {1.417, "div_end"}
 ]]
 NODE.child_proto = "@Comment"
 

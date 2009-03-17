@@ -288,40 +288,35 @@ ul#menu li a, ul#menu li ul li a {
 /* ELEMENTS IN CONTENT --------------------------------------------------- */
 
 h1 {
- margin     :    0em   0em   0em   0em;
- padding    :   1em   0em  .5em   0em;
- font-size  : 270%;
- font-weight: normal;
-}
-.title_icon {
- margin     :    0em   0em .15em   0em;
-}
-h1 a {
- text-decoration: none;
+ font-size  : 180%;
 }
 h2 {
- margin     :    2em  .3em   1em  -1em;   
- padding    :    0em   0em   0em   1em;
  font-size  : 140%;
- font-weight: normal;
 }
 h3 {
- margin:   20px   3px  10px  -5px; 
- padding:   1px   5px   1px   1em;
  font-size  : 129%; 
- font-weight: normal;  }
+}
 h4 {
- margin:   20px   3px  10px  -5px; 
- padding:   1px   5px   1px   1em;
  font-size  : 107%; 
+}
+
+.title a {
+ font-size: 270%;
+ text-decoration: none;
+}
+
+.title {
+ color: orange;
+ margin: 0 0 0 0;
+ padding: 0 0 1em 1em;
+}
+
+h1, h2, h3, h4, h5 {
+ margin     :    1.5em   0em    1em   0em;
+ padding     :    0em   0em   0em   0em;
  font-weight: normal;
 }
-h5 {
- margin:   20px   3px  10px  -5px; 
- padding:   1px   5px   1px   1em;
- font-size: 100%; 
- font-weight: normal;
-}
+
 ul {
  margin:   10px   0em  10px  15px;
  list-style-type: square
@@ -375,8 +370,6 @@ strong {
 a.local {
  padding:  auto   3px  auto  auto;
  background : none transparent scroll repeat 0% 0%;
-}
-a {
 }
 
 span.preview {
@@ -532,7 +525,7 @@ h2.ctrigger.closed {
   display: none;
 }
 .yui-t0 #page {
-  margin-left: 3em;
+  /*margin-left: 3em;*/
 }
 
 /*.yui-u > * {
@@ -559,13 +552,13 @@ body                  {                          background: $BODY_BG;          
 #sidebar              {
  /*border-right:  1px solid  $NAVBAR;      */
 }
-H1                    {                                                            BORDER-BOTTOM: 4px solid  $NAVBAR;      }
-H1.title A            { color: black;                                                                                      }
-H2                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 4px solid  $H_LINE;      }
-H3                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 2px dotted $H_LINE;      }
-H4                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 1px dotted $H_LINE;      }
-H5                    { COLOR: $HEADER;                                                                                    }
-ul#menu li a             { color: $MENU_TEXT;       background: $MENU_BG;                                                     }
+
+.title                {                                              BORDER-BOTTOM: 3px solid  $NAVBAR;      }
+.title a:visited              { color: black;   }
+H1                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 3px solid  $NAVBAR;      }
+H2                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 2px solid  $H_LINE;      }
+H3                    { COLOR: $HEADER;                                            BORDER-BOTTOM: 1px dotted $H_LINE;      }
+ul#menu li a             { color: $MENU_TEXT;       background: $MENU_BG;                                                  }
 
 #sidebar ul#menu li.level1 > a:hover    {
  color: $MENU_TEXT_HOVER;       
@@ -678,35 +671,39 @@ ol.discussion {
     list-style-type: none;
 }
 
-ol.discussion li {
-   padding-bottom: 10px;
-}
-
-ol.discussion div.content {
-    clear: both;
-    padding: 5px 20px;
-    margin: 0;
-}
-
-ol.discussion div.header {
+ol.discussion div.post-header {
     border-bottom-color: black;
     border-bottom-style: solid;
     border-bottom-width: 2px;
-    padding-bottom: 5px;
+    padding-bottom: 1.22em;
+    clear: both;
 }
 
-ol.discussion ul.toolbar {
-    float:right;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-ol.discussion ul.toolbar li {
+ol.discussion span.post-info {
     float: left;
+}
+
+ol.discussion ul.post-toolbar {
+    float: right;
+    list-style: none;
+    display: inline;
     margin: 0;
-    padding: 0;
-    padding-left: 8px;
+}
+
+ol.discussion ul.post-toolbar li {
+    floar: left;
+    display: inline;
+    line-height: 100%;
+    padding-left: 5px;
+}
+
+ol.discussion ul.post-toolbar a {
+    text-decoration: none;
+}
+
+ol.discussion div.content {
+    padding: 5px 20px 20px 20px;
+    margin: 0;
 }
 
 @media print {

@@ -743,7 +743,6 @@ function actions.edit (node, request, sputnik, etc)
    local post_token = sputnik.auth:timestamp_token(post_timestamp)
    
    local edit_ui_field = etc.edit_ui_field
-   local admin = sputnik.auth:get_metadata(request.user, "is_admin")
    if request.admin_edit then
       edit_ui_field = edit_ui_field or "admin_edit_ui"
    else

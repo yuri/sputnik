@@ -19,7 +19,7 @@ $markup{$content}
 
 <p><a href="$new_url">_(ADD_NEW_DISCUSSION_TOPIC)</a></p>
 
-<table class="sorttable" width="100%">
+<table class="sortable" width="100%">
  <thead>
   <tr>
    <th>Subject</th>
@@ -32,7 +32,7 @@ $markup{$content}
    <div class="disc_info"><a href="$url">$title</a> posted by $author</div>
    <div class="disc_snippet">$snippet</div>
   </td>
-  <td><a href="$make_url{$activity_node}">$format_time{$activity_time, "%a, %d %b %Y %H:%M:%S"}</a></td> 
+  <td><a href="$make_url{$activity_node}">$format_time{$activity_time, "%Y/%m/%d %H:%M:%S"}</a> by $activity_author</td> 
  </tr>
 ]]
 </table>

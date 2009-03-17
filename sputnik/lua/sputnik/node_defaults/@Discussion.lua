@@ -11,7 +11,8 @@ NODE.fields = [[
  creation_time = {1.4}
  activity_time = {1.5}
  activity_node = {1.6}
- snippet = {1.7}
+ activity_author = {1.7}
+ snippet = {1.8}
 ]]
 NODE.edit_ui = [[
  local origContent = content
@@ -27,8 +28,9 @@ disc_section  = {1.410, "div_start", id="disc_section", closed="true"}
  creation_time = {1.413, "text_field"}
  activity_time = {1.414, "text_field"}
  activity_node = {1.415, "text_field"}
- snippet = {1.416, "textarea", editor_modules = {"resizeable"}}
-disc_section_end = {1.417, "div_end"}
+ activity_author = {1.416, "text_field"}
+ snippet = {1.417, "textarea", editor_modules = {"resizeable"}}
+disc_section_end = {1.418, "div_end"}
 ]]
 NODE.child_proto = "@Comment"
 
@@ -59,10 +61,10 @@ NODE.html_content = [=[
   </div>
  </li>
  $do_nodes[====[
- <li class="reply">
+ <a name="$short_id"></a><li class="reply">
   <div class="post-header">
   <span class="post-info">
-   Posted by $author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
+   Posted by $comment_author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
   </span>
   <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]

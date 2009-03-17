@@ -43,6 +43,7 @@ function save_comment(node, request, sputnik)
    parent = sputnik:update_node_with_params(parent, {
       activity_time = tostring(os.time()),
       activity_node = node.id,
+      activity_author = request.user or "Anonymous User",
    })
    parent = sputnik:activate_node(parent)
    parent:save("Sputnik", "Updating activity time and node", {})

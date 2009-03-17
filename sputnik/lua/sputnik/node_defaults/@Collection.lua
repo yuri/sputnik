@@ -35,7 +35,7 @@ Create <a href="$new_url">new item</a>.
 
 <br/><br/>
 
-<table class="sorttable" width="100%">
+<table class="sortable" width="100%">
  <thead>
   <tr>
    <th>id</th>

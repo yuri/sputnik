@@ -5,6 +5,11 @@ NODE = {
 
 NODE.child_proto = "@Discussion"
 NODE.child_uid_format = "%d"
+NODE.sort_params = [[
+  sort_key = "activity_time"
+  sort_desc = true
+  sort_type = "number"
+]]
 
 NODE.child_defaults = [=[
 new = [[ 

@@ -61,7 +61,7 @@ function new(params)
    local con = env:connect(unpack(params))
 
    if not con then
-      errors.could_not_initialize("Could not connect to MySQL database")
+      error(errors.could_not_initialize("Could not connect to MySQL database"))
    end
 
    -- Create the new object

@@ -70,10 +70,12 @@ repository['versium'] = {}
 repository['versium']['9.02.15-0']          = {{arch='rockspec'}}  -- up2date
 repository['saci'] = {}               
 repository['saci']['9.02.15-0']             = {{arch='rockspec'}}  -- up2date
+repository['saci']['9.03.16-0']             = {{arch='rockspec'}}  -- up2date
 repository['sputnik'] = {}
 repository['sputnik']['9.02.15-0']          = {{arch='rockspec'}}  -- up2date
 repository['sputnik']['9.02.16-0']          = {{arch='rockspec'}}  -- up2date
 repository['sputnik']['9.03.03-0']          = {{arch='rockspec'}}  -- up2date
+repository['sputnik']['9.03.16-0']          = {{arch='rockspec'}}  -- up2date
 
 ----------------------------------------------------- our plugins  ----------
 
@@ -103,7 +105,8 @@ repository['sputnik-medialike']['8.08.08-0']= {{arch='rockspec'}}  -- up2date
 repository['sputnik-search-google'] = {}
 repository['sputnik-search-google']['8.08.25-0']={{arch='rockspec'}}-- check!
 
-
+repository['sputnik-markitup'] = {}
+repository['sputnik-markitup']['9.03.16-0']    = {{arch='rockspec'}}  -- up2date
 -- mbox
 -- sputnik-mbox
 -- sputnik-examples

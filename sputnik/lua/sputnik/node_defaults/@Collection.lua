@@ -77,8 +77,8 @@ NODE.permissions = [=[
 --allow(Admin, "edit")
 --allow(Admin, "save")
 --allow(Admin, "history")
-  allow(all_users, "edit")
-  allow(all_users, "new_child")
+--allow(all_users, "edit")
+--allow(all_users, "new_child")
 ]=]
 
 

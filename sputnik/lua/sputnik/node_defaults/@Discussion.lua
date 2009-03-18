@@ -4,7 +4,7 @@ prototype="@Collection"
 }
 
 NODE.child_uid_format = "%d"
-
+NODE.translations = "sputnik/translations/forums"
 NODE.save_hook = "forums.save_discussion"
 NODE.fields = [[
  author = {1.3}

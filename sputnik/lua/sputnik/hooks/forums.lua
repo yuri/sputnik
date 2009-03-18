@@ -7,6 +7,7 @@ function save_discussion(node, request, sputnik)
       creation_time = tostring(os.time()),
       activity_time = tostring(os.time()),
       activity_node = node.id,
+      activity_author = request.user or "Anonymous user",
    }
    local title = request.params.title or node.title
    if #node.title > 25 then
@@ -35,6 +36,7 @@ function save_comment(node, request, sputnik)
    -- Update the parameters of the node being saved
    node = sputnik:update_node_with_params(node, {
       comment_timestamp = tostring(os.time()),
+      comment_author = request.user or "Anonymous User",
    })
    
    -- Update the parent node before returning from the hook

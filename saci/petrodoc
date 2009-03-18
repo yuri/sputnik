@@ -1,5 +1,6 @@
 package    = 'SACI'
 versions   = {
+   {'9.03.16', 'March 16, 2009',  'get_visible_children and some error and some bug fixes'},
    {'9.02.15', 'February 15, 2009',  'misc changes since August 2008'},
    {'8.08.08', 'August 8, 2008',  'added node caching to avoid fetching the same nodes again and again'},
    {'8.07.21', 'July 21, 2008',  'more child methods, new versium'},

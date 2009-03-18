@@ -7,7 +7,7 @@ function save_discussion(node, request, sputnik)
       creation_time = tostring(os.time()),
       activity_time = tostring(os.time()),
       activity_node = node.id,
-      activity_author = request.user or "Anonymous user",
+      activity_author = request.user or "Anonymous User",
    }
    local title = request.params.title or node.title
    if #node.title > 25 then

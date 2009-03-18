@@ -1,7 +1,7 @@
 package = "SACI"
-version = "9.02.15-0"
+version = "9.03.16-0"
 source = {
-   url = "http://spu.tnik.org/files/saci-9.02.15.tar.gz",
+   url = "http://spu.tnik.org/files/saci-9.03.16.tar.gz",
 }
 description = {
    summary    = "Saci is a document-oriented hierarchical storage system",
@@ -21,7 +21,9 @@ build = {
      lua = {        ["saci"] = "lua/saci.lua",
         ["saci.node"] = "lua/saci/node.lua",
         ["saci.search"] = "lua/saci/search.lua",
+
         ["saci.sandbox"] = "lua/saci/sandbox.lua",
+
 
 
      }

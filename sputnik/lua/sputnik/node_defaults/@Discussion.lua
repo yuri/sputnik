@@ -6,6 +6,10 @@ prototype="@Collection"
 NODE.child_uid_format = "%d"
 NODE.translations = "sputnik/translations/forums"
 NODE.save_hook = "forums.save_discussion"
+NODE.sort_params = [[
+ sort_key = "comment_timestamp"
+ sort_type = "number"
+]]
 NODE.fields = [[
  author = {1.3}
  creation_time = {1.4}

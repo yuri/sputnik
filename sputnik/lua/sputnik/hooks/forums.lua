@@ -15,6 +15,14 @@ function save_discussion(node, request, sputnik)
       params.breadcrumb = title
    end
 
+   -- Generate a snippet for the content by stripping markup and trimming
+   local snippet = node.content:gsub("%b<>", ""):gsub("%b[]", "")
+   if #snippet > 250 then
+      params.snippet = snippet:sub(1, 250) .. "..."
+   else
+      params.snippet = snippet
+   end
+
    node = sputnik:update_node_with_params(node, params)
    return node
 end
@@ -35,6 +43,7 @@ function save_comment(node, request, sputnik)
    parent = sputnik:update_node_with_params(parent, {
       activity_time = tostring(os.time()),
       activity_node = node.id,
+      activity_author = request.user or "Anonymous User",
    })
    parent = sputnik:activate_node(parent)
    parent:save("Sputnik", "Updating activity time and node", {})

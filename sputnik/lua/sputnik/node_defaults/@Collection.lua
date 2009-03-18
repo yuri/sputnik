@@ -14,6 +14,7 @@ child_proto = {1.1, proto="fallback"}
 --content_template = {1.2, proto="fallback"}
 xml_template = {1.3, proto="fallback"}
 child_uid_format = {1.4, proto="fallback"}
+sort_params = {1.5, proto="fallback", activate="lua"}
 ]=]
 
 NODE.edit_ui = [=[
@@ -26,7 +27,8 @@ collection_section = {1.401, "div_start", id="collection_section"}
  --content_template = {1.402, "textarea"}
  xml_template = {1.403, "textarea"}
  child_uid_format = {1.404, "text_field"}
-collection_section_end = {1.405, "div_end"}
+ sort_params = {1.405, "textarea", editor_modules="validatelua"}
+collection_section_end = {1.406, "div_end"}
 ]=]
 
 NODE.html_content = [=[
@@ -35,7 +37,7 @@ Create <a href="$new_url">new item</a>.
 
 <br/><br/>
 
-<table class="sorttable" width="100%">
+<table class="sortable" width="100%">
  <thead>
   <tr>
    <th>id</th>

@@ -11,6 +11,8 @@ NODE.fields = [[
  creation_time = {1.4}
  activity_time = {1.5}
  activity_node = {1.6}
+ activity_author = {1.7}
+ snippet = {1.8}
 ]]
 NODE.edit_ui = [[
  local origContent = content
@@ -26,7 +28,9 @@ disc_section  = {1.410, "div_start", id="disc_section", closed="true"}
  creation_time = {1.413, "text_field"}
  activity_time = {1.414, "text_field"}
  activity_node = {1.415, "text_field"}
-disc_section_end = {1.416, "div_end"}
+ activity_author = {1.416, "text_field"}
+ snippet = {1.417, "textarea", editor_modules = {"resizeable"}}
+disc_section_end = {1.418, "div_end"}
 ]]
 NODE.child_proto = "@Comment"
 
@@ -41,9 +45,11 @@ actions   = 'save="collections.save_new"'
 NODE.html_content = [=[
 <ol class="discussion">
  <li class="origpost">
-  <div class="header">
+  <div class="post-header">
+  <span class="post-info">
    Posted by $author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
-  <ul class="toolbar">
+  </span>
+  <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
    <li><a href="$make_url{$new_id, "edit", comment_parent=$id}">_(REPLY)</a></li> 
@@ -55,10 +61,12 @@ NODE.html_content = [=[
   </div>
  </li>
  $do_nodes[====[
- <li class="reply">
-  <div class="header">
-   Posted by $author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
-  <ul class="toolbar">
+ <a name="$short_id"></a><li class="reply">
+  <div class="post-header">
+  <span class="post-info">
+   Posted by $comment_author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
+  </span>
+  <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
    <li><a href="$make_url{$new_id, "edit", comment_parent=$id}">_(REPLY)</a></li> 

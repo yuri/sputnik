@@ -671,36 +671,39 @@ ol.discussion {
     list-style-type: none;
 }
 
-ol.discussion li {
-   padding-bottom: 10px;
-}
-
-ol.discussion div.content {
-    clear: both;
-    padding: 5px 20px;
-    margin: 0;
-}
-
-ol.discussion div.header {
+ol.discussion div.post-header {
     border-bottom-color: black;
     border-bottom-style: solid;
     border-bottom-width: 2px;
-    padding-bottom: 5px;
+    padding-bottom: 1.22em;
+    clear: both;
 }
 
-ol.discussion ul.toolbar {
-    float:right;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    padding-top: 1em;
-}
-
-ol.discussion ul.toolbar li {
+ol.discussion span.post-info {
     float: left;
+}
+
+ol.discussion ul.post-toolbar {
+    float: right;
+    list-style: none;
+    display: inline;
     margin: 0;
-    padding: 0;
-    padding-left: 8px;
+}
+
+ol.discussion ul.post-toolbar li {
+    floar: left;
+    display: inline;
+    line-height: 100%;
+    padding-left: 5px;
+}
+
+ol.discussion ul.post-toolbar a {
+    text-decoration: none;
+}
+
+ol.discussion div.content {
+    padding: 5px 20px 20px 20px;
+    margin: 0;
 }
 
 @media print {

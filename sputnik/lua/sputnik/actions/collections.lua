@@ -47,6 +47,8 @@ function actions.show(node, request, sputnik)
 
    local template = node.translator.translate(node.html_content)
 
+   node:add_javascript_snippet(sorttable.script)
+
    local values = {
       new_id  = node.id .. "/new",
       new_url = sputnik:make_url(node.id.."/new", "edit"),
@@ -66,6 +68,30 @@ function actions.show(node, request, sputnik)
          return sputnik:make_url(id, action, params, anchor)
       end,
       do_nodes = function()
+         if type(node.sort_params) == "table" then
+            local sparams = node.sort_params
+            local skey = sparams.sort_key or "id"
+            local sdesc = sparams.sort_desc
+            local stype = sparams.sort_type
+
+            -- Set up conversion functions
+            local convert = function(x) return x end
+            if stype == "number" then
+               convert = tonumber
+            elseif stype == "string" then
+               convert = tostring
+            end
+
+            if sdesc then
+               table.sort(non_proto_nodes, function(a, b)
+                  return convert(b[skey]) < convert(a[skey])
+               end)
+            else
+               table.sort(non_proto_nodes, function(a, b)
+                  return convert(a[skey]) < convert(b[skey])
+               end)
+            end
+         end
          for i, node in ipairs(non_proto_nodes) do
              sputnik:decorate_node(node)
             local t = {
@@ -73,9 +99,6 @@ function actions.show(node, request, sputnik)
                id  = node.id,
                short_id = node.id:match("[^%/]*$"),
                nice_url = sputnik.config.NICE_URL,
-               markup = function(params)
-                  return node.markup.transform(params[1], node)
-               end,
             }
             for k, v in pairs(node.fields) do
                t[k] = tostring(node[k])

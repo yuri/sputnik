@@ -431,7 +431,7 @@ function Sputnik:activate_node(node)
    
    for command, action_function in pairs(node.actions) do
       if type(action_function) == "string" then
-         local mod_name, dot_action = sputnik.util.split(action_function, "%.")
+         local mod_name, dot_action = action_function:match("^(.+)%.([^%.]+)$")
          node.actions[command] = action_loader.load(mod_name)[dot_action]
       end
    end

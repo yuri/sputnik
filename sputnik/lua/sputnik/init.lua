@@ -368,17 +368,13 @@ function Sputnik:make_link(node_name, action, params, anchor, options)
    if node_name:find("%.") then 
       node_name, action = node_name:match("(.+)%.(.+)")
    end
-   --local css_class = "local"
    local url = self:make_url(node_name, action, params, anchor)
    self.logger:debug("Creating a link to "..node_name)
-   if (not options.mark_missing==false)
-      and (not self:node_exists(node_name)) then
-      css_class="no_such_node"
-      url = self:make_url(node_name, action, params, anchor)
-      self.logger:debug("No such node, will link to .edit")
+   if options.mark_missing and not self:node_exists(node_name) then
+      return string.format("href='%s' class='no_such_node'", url)
+   else
+      return string.format("href='%s'", url, css_class)
    end
-   --return string.format("href='%s' class='%s'", url, css_class)
-   return string.format("href='%s'", url, css_class)
 end
 
 -----------------------------------------------------------------------------

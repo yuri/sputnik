@@ -1097,6 +1097,14 @@ function actions.validate_lua(node, request, sputnik)
    if result then
       return "valid"
    else
+      -- Try to compile the code prefixed with return
+      local sandbox = saci.sandbox.new(sputnik.config)
+      local result, err = sandbox:do_lua("return " .. code, true)
+      if result then
+         return "valid"
+      else
+         return "invalid"
+      end
       return "invalid" --tostring(err.err)
    end
 end

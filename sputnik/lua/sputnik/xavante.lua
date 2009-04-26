@@ -18,26 +18,30 @@ end
 
 xavante_is_finished = function() return false end
 
-function start(web_dir)
+function start(script_file)
 
-   web_dir = web_dir:gsub("^%.", lfs.currentdir())
+
+   script_file = script_file:gsub("^%./", lfs.currentdir().."/")
+
+   local handler_fn = loadfile(script_file)()
 
    xavante.start_message(xavante_start_message)
    xavante.HTTP{
 	   server = {host = "*", port = 8080},
 	   defaultHost = {
 		  rules = {
-		     { -- URI remapping example
-		       match = "^/$",
-		       with = xavante.redirecthandler, params = {"sputnik.ws"}
+		     { match = {"^/(.+)$"},
+		       with  = xavante.redirecthandler, params = {"/?p=%1"}
 		     },
-		     { -- wsapihandler example
-		        match = {"sputnik.ws$"},
-		        with = wsapi.xavante.makeGenericHandler(web_dir)
+		     { match = {"^/$"},
+               with  = wsapi.xavante.makeHandler(handler_fn, "", "", ""),
 		     },
 		  }
 	   },
    }
    xavante.start(xavante_is_finished, XAVANTE_TIMEOUT)
 end
+
+
+
 

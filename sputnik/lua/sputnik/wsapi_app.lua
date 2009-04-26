@@ -121,8 +121,6 @@ function new(config)
    end
 
    return  function (wsapi_env)
-      _G.format = string.format -- to work around a bug in wsapi.response
-
       require("wsapi.request")
       local request = wsapi.request.new(wsapi_env)
       request.wsapi_env = wsapi_env

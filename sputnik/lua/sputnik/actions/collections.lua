@@ -67,7 +67,15 @@ function actions.show(node, request, sputnik)
          end
          return sputnik:make_url(id, action, params, anchor)
       end,
-      do_nodes = function()
+      has_node_permissions = function(params)
+          local id, action = unpack(params)
+          local node = sputnik:get_node(id)
+          local has_permission = node:check_permissions(request.user, action)
+          cosmo.yield{
+              _template = has_permission and 1 or 2,
+          }
+      end,
+     do_nodes = function()
          if type(node.sort_params) == "table" then
             local sparams = node.sort_params
             local skey = sparams.sort_key or "id"

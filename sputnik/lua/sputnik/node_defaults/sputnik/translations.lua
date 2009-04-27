@@ -449,6 +449,10 @@ EDIT_FORM_CHILD_UID_FORMAT = {
     en_US = "Child UID Format"
 }
 
+EDIT_FORM_SORT_PARAMS = {
+    en_US = "Sort Parameters"
+}
+
 EDIT_FORM_DISC_SECTION = {
    en_US = "Discussion Fields"
 }

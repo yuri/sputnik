@@ -210,21 +210,22 @@ function actions.rss(node, request, sputnik)
    local items = wiki.get_visible_nodes(sputnik, request.user, node.id.."/")
    table.sort(items, function(x,y) return x.id > y.id end )
 
+   local url_format = string.format("http://%s%%s", sputnik.config.DOMAIN)
    return cosmo.f(node.templates.RSS){  
       title   = title,
       baseurl = sputnik.config.BASE_URL, 
+      channel_url = url_format:format(sputnik:make_url(node.id, request.action)),
       items   = function()
                    for i, item in ipairs(items) do
 					   local node_info = sputnik.saci:get_node_info(item.id)
                        cosmo.yield{
-                          link        = "http://" .. sputnik.config.DOMAIN ..
-                          sputnik:escape_url(sputnik:make_url(item.id)),
-                          title       = item.title,
+                          link        = url_format:format(sputnik:make_url(item.id)),
+                          title       = util.escape(item.title),
                           ispermalink = "false",
                           guid        = item.id,
-                          author      = node_info.author,
+                          author      = util.escape(node_info.author),
                           pub_date    = sputnik:format_time_RFC822(node_info.timestamp),
-                          summary     = item.content,
+                          summary     = util.escape(item.content),
                        }
                    end
                 end,

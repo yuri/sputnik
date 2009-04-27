@@ -27,7 +27,7 @@ collection_section = {1.401, "div_start", id="collection_section"}
  --content_template = {1.402, "textarea"}
  xml_template = {1.403, "textarea"}
  child_uid_format = {1.404, "text_field"}
- sort_params = {1.405, "textarea", editor_modules="validatelua"}
+ sort_params = {1.405, "textarea", editor_modules={"validatelua"}}
 collection_section_end = {1.406, "div_end"}
 ]=]
 

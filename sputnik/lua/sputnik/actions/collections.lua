@@ -161,6 +161,10 @@ actions.edit_new_child = function(node, request, sputnik)
    return wiki.actions.edit(child_node, request, sputnik)
 end
 
+local function slug(title)
+    return title:gsub("%s", "%_"):gsub("[^a-zA-Z0-9%-_]", "")
+end
+
 actions.save_new = function(node, request, sputnik)
    local parent_id = node.id:match(PARENT_PATTERN)
    local parent = sputnik:get_node(parent_id)
@@ -168,7 +172,11 @@ actions.save_new = function(node, request, sputnik)
    if parent.child_uid_format and parent.child_uid_format:match("%S") then
       uid_format = parent.child_uid_format
    end
+
    local uid = string.format(uid_format, sputnik:get_uid(parent_id))
+   -- Support the string $slug in a uid_format to insert the slugged version
+   -- of the node's title into the ending uid
+   uid = uid:gsub("$slug", tostring(slug(node.title)))
    local new_id = string.format("%s/%s", parent_id, uid)
    local new_node = sputnik:get_node(new_id)
    local child_proto = node.id .. "/@Child"

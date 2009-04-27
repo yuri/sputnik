@@ -174,9 +174,11 @@ actions.save_new = function(node, request, sputnik)
    end
 
    local uid = string.format(uid_format, sputnik:get_uid(parent_id))
+
    -- Support the string $slug in a uid_format to insert the slugged version
    -- of the node's title into the ending uid
-   uid = uid:gsub("$slug", tostring(slug(node.title)))
+   uid = uid:gsub("$slug", tostring(slug(request.params.title)))
+
    local new_id = string.format("%s/%s", parent_id, uid)
    local new_node = sputnik:get_node(new_id)
    local child_proto = node.id .. "/@Child"

@@ -205,7 +205,6 @@ end
 
 function actions.rss(node, request, sputnik)
    local title = "Recent Additions to '" .. node.title .."'"  --::LOCALIZE::--
-   local edits = sputnik:get_history(node.name, 50)
 
    local items = wiki.get_visible_nodes(sputnik, request.user, node.id.."/")
    table.sort(items, function(x,y) return x.id > y.id end )

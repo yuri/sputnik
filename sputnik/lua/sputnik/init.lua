@@ -601,7 +601,7 @@ function Sputnik:get_uid(namespace, type)
    -- Create and store a node
    local node_name = "_uid:" .. namespace
    local node = self:get_node(node_name)
-   node = self:update_node_with_params(node, {content=hash})
+   node = self:update_node_with_params(node, {content=hash, prototype="@UID"})
    node = self:save_node(node, nil, "Sputnik-UID", hash)
 
    -- Retrieve the node history 

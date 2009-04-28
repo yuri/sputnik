@@ -623,7 +623,9 @@ function get_visible_nodes(sputnik, user, prefix, options)
             error("Could not load node '"..node.id.."'!\n"..err)
          end
       end
-      if node:check_permissions(user, "show") then
+      if node.id == sputnik.config.ROOT_PROTOTYPE then
+         -- Skip the root prototype
+      elseif node:check_permissions(user, "show") then
          table.insert(nodes, node)
       else
          num_hidden = num_hidden + 1

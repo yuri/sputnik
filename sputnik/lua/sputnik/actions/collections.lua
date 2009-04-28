@@ -185,7 +185,9 @@ actions.save_new = function(node, request, sputnik)
 
    -- Support the string $slug in a uid_format to insert the slugged version
    -- of the node's title into the ending uid
-   uid = uid:gsub("$slug", tostring(slug(request.params.title)))
+   if uid:match("$slug") then
+       uid = uid:gsub("$slug", tostring(slug(request.params.title)))
+   end
 
    local new_id = string.format("%s/%s", parent_id, uid)
    local new_node = sputnik:get_node(new_id)

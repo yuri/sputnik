@@ -349,8 +349,7 @@ end
 --                        indexed by node name.
 -----------------------------------------------------------------------------
 function MySQLVersium:get_nodes_by_prefix(prefix)
-   assert(prefix)
-
+   prefix = prefix or ""
    local data,metadata = {}, {}
 
    local cmd = self:prepare(self.queries.GET_NODES_PREFIX, prefix .. "%")

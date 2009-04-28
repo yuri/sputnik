@@ -533,7 +533,7 @@ end
 function Sputnik:save_node(node, request, ...)
    local new_node = node
    if type(node.save_hook) == "string" and #node.save_hook > 0 then
-      local mod_name, func_name = sputnik.util.split(node.save_hook, "%.")
+      local mod_name, func_name = node.save_hook:match("^(.+)%.([^%.]+)$")
       local module = require("sputnik.hooks." .. mod_name)
       local save_hook = module[func_name]
       new_node = save_hook(node, request, self)

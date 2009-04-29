@@ -92,7 +92,8 @@ function create_email_activation_ticket(args)
    assert(node)
    -- Create the activation ticket
    local uid = md5.sumhexa(args.username .. sputnik:get_uid("register") .. os.time())
-   local ticket_id = ("activate/%s"):format(uid)
+   local prefix = args.sputnik.config.ADMIN_NODE_PREFIX
+   local ticket_id = (prefix .. "activate/%s"):format(uid)
    local ticket = sputnik:get_node(ticket_id)
    ticket:update{
             prototype = "sputnik/@Account_Activation_Ticket",

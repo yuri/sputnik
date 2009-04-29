@@ -444,6 +444,7 @@ function actions.complete_history(node, request, sputnik)
                                               request.params.date,
                                               request.params.prefix)
 
+                             
    -- figure out which revisions are stale so that we could group them with
    -- the later ones.
    local latest = {}

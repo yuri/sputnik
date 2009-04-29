@@ -99,6 +99,7 @@ function new(params)
       GET_METADATA_ALL = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s ORDER BY timestamp;", obj.tables.node),
       GET_METADATA_VERSION = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s and version = %%s;", obj.tables.node),
       GET_METADATA_LATEST = string.format("SELECT n.id,n.version,timestamp,author,comment FROM %s as n NATURAL JOIN %s WHERE n.id = %%s ORDER BY timestamp;", obj.tables.node, obj.tables.node_index),
+      GET_COMPLETE_HISTORY = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id like %%s ORDER BY timestamp DESC LIMIT %%s, %%s;", obj.tables.node)
    }
 
    return obj 
@@ -366,6 +367,28 @@ function MySQLVersium:get_nodes_by_prefix(prefix)
    cur:close()
 
    return data, metadata
+end
+
+local LARGE_LIMIT = "18446744073709551615"
+function MySQLVersium:get_complete_history(id_prefix, date_prefix, limit)
+   local history = {}
+
+   -- Pull the history of the given node
+   limit = limit or LARGE_LIMIT
+   id_prefix = id_prefix and (id_prefix .. "%") or "%" 
+   local cmd = self:prepare(self.queries.GET_COMPLETE_HISTORY, id_prefix, 0, limit)
+
+   local cur = self.con:execute(cmd)
+   local row = cur:fetch({}, "a")
+
+   while row do
+      table.insert(history, 1, row)
+      row = cur:fetch({}, "a")
+   end
+
+   cur:close()
+
+   return history
 end
 
 -- vim:ts=3 ss=3 sw=3 expandtab

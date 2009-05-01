@@ -6,8 +6,7 @@ NODE = {
 
 NODE.content=[===[
 
-Congratulations, you just installed
-[Sputnik](http://sputnik.freewisdom.org/)!  
+Congratulations, you just installed [Sputnik](http://spu.tnik.org/)!
 
 What's next? 
 
@@ -30,11 +29,10 @@ with.  E.g., if you set it to "/mysite/" your wikilinks will point to
 
 Also, edit the [[sputnik/navigation.edit]] page to set your navigation bar.
 If you are new to Lua, don't get scared.  Use the "preview" button to check
-if your navigation is correct. You can also change the color scheme of your
-wiki by editing [[sputnik/css/colors.edit]]. (See the
-[Customization](http://www.freewisdom.org/projects/sputnik/Customization)
-page on the [Sputnik Wiki](http://www.freewisdom.org/projects/sputnik/) for
-more information.)
+if your navigation is correct. You can also change the appearance of your
+wiki by editing [[sputnik/style.edit]]. (See the
+[Configuration](http://spu.tnik.org/en/Configuration)
+page on the [Sputnik Wiki](http://spu.tnik.org) for more information.)
 
 ]===]
 

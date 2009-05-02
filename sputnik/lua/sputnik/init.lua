@@ -599,7 +599,7 @@ function Sputnik:get_uid(namespace, type)
    local hash = md5.sumhexa(namespace .. memory .. time)
 
    -- Create and store a node
-   local node_name = "_uid:" .. namespace
+   local node_name = self.config.ADMIN_NODE_PREFIX .. "_uid:" .. namespace
    local node = self:get_node(node_name)
    node = self:update_node_with_params(node, {content=hash, prototype="@UID"})
    node = self:save_node(node, nil, "Sputnik-UID", hash)

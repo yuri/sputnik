@@ -1,5 +1,5 @@
 module(..., package.seeall)
 
 NODE = {}
-NODE.permissions = [[deny(all_users, all_actions)
+NODE.permissions = [[deny(Anonymous, "show")
 allow(Admin, all_actions)]]

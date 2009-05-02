@@ -316,8 +316,8 @@ function Node:check_permissions(user, action)
    end
    
    -- checks membership in groups
-   local function member(item, group)
-      if     type(group) == "function" then return group(item)
+   local function member(item, group, node)
+      if     type(group) == "function" then return group(item, node)
       elseif type(group) == "table"    then return in_table(group, item)
       elseif type(group) == "string"   then return group == item
       else   error("expected a string, a table or a function")
@@ -328,12 +328,12 @@ function Node:check_permissions(user, action)
    local has_permission = true
    -- toggles the the state
    local function set(user_group, action_group, value)
-      if member(user, user_group) and member(action, action_group) then
+      if member(user, user_group, self) and member(action, action_group, self) then
          has_permission = value
       end
    end
 
-   -- setup the sandbox   
+   -- setup the sandbox
    local sandbox = saci.sandbox.new(self.saci.permission_groups)
    sandbox:add_values{
       allow = function (user, action) set(user, action, true) end,

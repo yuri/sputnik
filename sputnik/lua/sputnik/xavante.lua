@@ -18,12 +18,17 @@ end
 
 xavante_is_finished = function() return false end
 
-function start(script_file)
+function start(handler)
 
-
-   script_file = script_file:gsub("^%./", lfs.currentdir().."/")
-
-   local handler_fn = loadfile(script_file)()
+   local handler_fn
+   if type(handler) == "string" then
+       handler = handler:gsub("^%./", lfs.currentdir().."/")
+       handler_fn = loadfile(handler)()
+   elseif type(handler) == "function" then
+       handler_fn = handler
+   else
+       error("The first parameter to start() must be a script path or a handler function.")
+   end
 
    xavante.start_message(xavante_start_message)
    xavante.HTTP{

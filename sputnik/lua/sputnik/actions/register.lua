@@ -36,7 +36,7 @@ function actions.show_form(node, request, sputnik)
    if sputnik.config.TERMS_OF_SERVICE_NODE then
       local tos_template = node.translator.translate_key("I_AGREE_TO_TERMS_OF_SERVICE")
       local text = cosmo.fill(tos_template, {
-         url = sputnik.config.TERMS_OF_SERVICE_NODE,
+         url = sputnik:make_url(sputnik.config.TERMS_OF_SERVICE_NODE),
       })
       tos_field = [[agree_tos = {1.34, "checkbox_text", text="]] .. text .. [["}]]
    end

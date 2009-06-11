@@ -694,7 +694,7 @@ EDIT_FORM_REDIRECT_DESTINATION = {
 
 -- User agrees to terms of service.
 I_AGREE_TO_TERMS_OF_SERVICE = {
-   en_US = "I have read to and agree to the <a href='$url'>Terms of Service</a><br />"
+   en_US = "I have read to and agree to the <a href='$url' target='_blank'>Terms of Service</a><br />"
 }
 
 -- Subject for the account activation email

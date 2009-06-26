@@ -626,6 +626,8 @@ function get_visible_nodes(sputnik, user, prefix, options)
       end
       if node.id == sputnik.config.ROOT_PROTOTYPE then
          -- Skip the root prototype
+      elseif node.id:sub(1, #sputnik.config.ADMIN_NODE_PREFIX) == sputnik.config.ADMIN_NODE_PREFIX then
+         -- Skip anything under the admin prefix
       elseif node:check_permissions(user, "show") then
          table.insert(nodes, node)
       else

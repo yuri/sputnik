@@ -23,7 +23,11 @@ function start(handler)
    local handler_fn
    if type(handler) == "string" then
        handler = handler:gsub("^%./", lfs.currentdir().."/")
-       handler_fn = loadfile(handler)()
+       local loaded_handler = loadfile(handler)
+       if not loaded_handler then
+          error("The first parameter should be a handler file.")
+       end
+       handler_fn = loaded_handler()
    elseif type(handler) == "function" then
        handler_fn = handler
    else

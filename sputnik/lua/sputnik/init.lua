@@ -2,7 +2,7 @@
 -- Defines the main class for Sputnik - an extensible wiki implemented in Lua.
 -- (For usage, see sputnik.wsapi_app.)
 --
--- (c) 2007, 2008  Yuri Takhteyev (yuri@freewisdom.org)
+-- (c) 2007 - 2009  Yuri Takhteyev (yuri@freewisdom.org)
 -- License: MIT/X, see http://sputnik.freewisdom.org/en/License
 -----------------------------------------------------------------------------
 
@@ -336,6 +336,7 @@ function Sputnik:make_url(node_name, action, params, anchor)
 
    -- then the parameters
    if params and next(params) then
+
       for k, v in pairs(params or {}) do
          if k~="p" then
             url = url.."&"..wsapi.util.url_encode(k).."="
@@ -426,7 +427,9 @@ function Sputnik:activate_node(node)
    local action_loader = action_loader()
    
    for command, action_function in pairs(node.actions) do
-      if type(action_function) == "string" then
+      if type(action_function) == "function" then
+         node.actions[command] =  action_function
+      elseif type(action_function) == "string" then
          local mod_name, dot_action = action_function:match("^(.+)%.([^%.]+)$")
          node.actions[command] = action_loader.load(mod_name)[dot_action]
       end

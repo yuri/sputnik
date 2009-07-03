@@ -23,18 +23,24 @@ resolution_details = {.20}
 ]]
 
 NODE.edit_ui= [[
+
+title[1] = 1.1
+
 reported_by = {1.31, "text_field"}
 assigned_to = {1.331, "text_field"}
 status      = {1.34, "select"}
 status.options  ={"open", "someday", "resolved", "closed"}
 resolution  = {1.35, "select"}
-resolution.options = {"n.a.", "fixed", "wontfix"} 
-show_advanced   = {2.0, "show_advanced", no_label=true}
-priority    = {2.1, "select", advanced=true}
+resolution.options = {"n.a.", "fixed", "wontfix"}
+
+priority    = {2.21, "select" }
 priority.options={"unassigned", "high", "medium", "low"}
-resolution_details = {2.3, "textarea", advanced=true, rows=3}
-component   = {2.37, "text_field", advanced=true}
+resolution_details = {2.22, "textarea", rows=3}
+component   = {2.23, "text_field"}
 page_name   = null
+category    = null
+breadcrumb  = null
+
 ]]
 
 

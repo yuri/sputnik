@@ -42,13 +42,10 @@ EDIT_FORM_KEYWORDS = {
 EDIT_FORM_ASSIGNED_TO = {
    en_US = "Assigned to"
 }
-EDIT_FORM_PAGE_PARAMS_HDR = {
-   en_US = "Ticket Attributes"
-}
-EDIT_FORM_CONTENT_HDR = {
-   en_US = "Description"
+
+EDIT_FORM_CONTENT_SECTION = {
+   en_US = "Ticket Information",
 }
 
-EDIT_FORM_CONTENT = EDIT_FORM_CONTENT_HDR
 ]=]
 

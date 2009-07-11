@@ -720,5 +720,7 @@ ol.discussion div.content {
  } 
 }
 
+$more_css
+
 ]===]
 

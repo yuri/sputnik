@@ -79,16 +79,21 @@ function Gridder:flexgrid(image_code)
          if photo and photo.id then
             local album, image = photo.id:gmatch("(.*)/(.*)") --util.split(photo.id, "/")
             photo.size = photo.size or 1
+            local parsed = sfoto.parse_id("photos/"..photo.id)
             table.insert(photos, {
                width      = pixify(width*photo.size + dwidth*(photo.size-1)),
                height     = pixify(height*photo.size + 8*(photo.size-1)),
                left       = pixify(2 + (width + dwidth) * (i-1)),
                top        = pixify(y),
                title      = photo.title or "",               
-               photo_url  = sfoto.photo_url("photos/"..photo.id, 
+               photo_url  = sfoto.photo_url(parsed, 
                                             photo.size>1 and string.format("%dx", photo.size) or "thumb"),
-               link       = self.sputnik:make_url("albums/"..photo.id),
-               link       = self.sputnik:make_url("photos/"..photo.id:gsub("-", "/"))
+               link       = self.sputnik:make_url("photos/"..parsed.year.."/"
+                                                 ..parsed.month.."/"..parsed.date
+                                                 .."/"..parsed.rest)
+
+
+
             })
          end
       end
@@ -123,6 +128,8 @@ function Gridder:parse_simplerow(row_code)
 end
 
 
+
+
 function Gridder:simplegrid(image_code)
    self.rows = {}
    image_code:gsub("[^~]+", function (row) self:parse_simplerow(row) end)
@@ -130,8 +137,11 @@ function Gridder:simplegrid(image_code)
    for i, row in ipairs(self.rows) do
       row.photos = row
       for j, photo in ipairs(row) do
-         photo.photo_url = sfoto.photo_url("photos/"..photo.id, "thumb")
-         photo.link = self.sputnik:make_url("photos/"..photo.id:gsub("-", "/"))
+         local parsed = sfoto.parse_id("photos/"..photo.id)
+         photo.photo_url = sfoto.photo_url(parsed, "thumb")
+         photo.link = self.sputnik:make_url("photos/"..parsed.year.."/"
+                                            ..parsed.month.."/"..parsed.date
+                                            .."/"..parsed.rest)
       end
    end
 

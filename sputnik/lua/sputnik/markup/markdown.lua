@@ -4,7 +4,8 @@ require("markdown")
 require("xssfilter")
 require("diff")
 
-local split = require("sputnik.util").split
+local util = require("sputnik.util")
+local split = util.split
 local WIKI_LINK = [[<a href='$url'>$title</a>]]
 
 function wikify_link(wikilink, sputnik)
@@ -30,10 +31,21 @@ function new(sputnik)
            return "> " .. text:gsub("\n", "\n> ")
        end,
        transform = function(text, node)
+                     local function do_fenced_code_block(class, code)
+                        if class and class:len() > 0 then
+                           return "\n<pre class='brush: lua'><code class='"..class.."'>"
+                                   ..util.escape(code).."</code>\n</pre>\n"
+                        else
+                           return "\n<pre><code>"..util.escape(code).."</code></pre>\n"
+                        end
+                     end                     
                      local function dolink(wikilink)
                         return wikify_link(wikilink, sputnik)
                      end
                      local buffer = ""
+
+					 text = text:gsub("\r\n", "\n")
+                     text = text:gsub("\n~~~+(%w*)\n(.-)\n~~~+\n", do_fenced_code_block)
                      for line in string.gmatch("\n"..text, "(\n[^\n]*)") do
                         if line:len() < 5 or line:sub(1,5)~="\n    " then
                            buffer = buffer..string.gsub(line, "%[%[([^%]]*)%]%]", dolink)
@@ -41,6 +53,7 @@ function new(sputnik)
                            buffer = buffer..line
                         end
                      end
+
                      local filter = sputnik.xssfilter or xssfilter.new()
                      filter.generic_attributes.style = "."
                      filter.allowed_tags.a.css_class = "."

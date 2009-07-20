@@ -8,15 +8,26 @@ function get_text(module_name)
    return loaded_module.content
 end
 
+
 JS_INIT = [===========[
+
+if (jQuery) {  
+ $('pre > code').each(function(){
+  var klass = $(this).attr("class");
+  if (klass) {
+   $(this).parent().attr("class", "brush:"+klass);
+  }
+  var cnt = $(this).contents();
+  $(this).replaceWith(cnt);
+ });
+ 
+}
+
+SyntaxHighlighter.defaults["wrap-lines"] = false;
+SyntaxHighlighter.defaults["toolbar"] = false;
+
 //SyntaxHighlighter.config.clipboardSwf = 'http://localhost/syntaxhigh/scripts/clipboard.swf';
 SyntaxHighlighter.all();
-
-//sh.highlight(params);
-
-/*$("pre").each(function(i) {
-  SyntaxHighlighter.highlight({}, this)
-});*/
 
 ]===========]
 

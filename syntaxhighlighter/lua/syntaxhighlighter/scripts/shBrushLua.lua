@@ -45,7 +45,7 @@ SyntaxHighlighter.brushes.Lua = function()
 	this.regexList = [
 		{ regex: new RegExp('[0-9][\\.0-9]*', 'gm'), css: 'constants' },                        // -- comments
 		{ regex: new RegExp('[{}=\\[\\]]', 'gm'), css: 'color1' },                        // -- comments
-		{ regex: new RegExp('--[^!].*$', 'gm'), css: 'comments' },                        // -- comments
+		{ regex: new RegExp('--[^!\\[].*$', 'gm'), css: 'comments' },                        // -- comments
 		{ regex: new RegExp('--\\[\\[[\\s\\S]*?\\]\\]', 'gm'), css: 'comments' },         // [[...]] comments
 		{ regex: new RegExp('--\\[=\\[[\\s\\S]*?\\]=\\]', 'gm'), css: 'comments' },       // [==[.. comments
 		{ regex: new RegExp('--\\[==\\[[\\s\\S]*?\\]==\\]', 'gm'), css: 'comments' },     // [==[.. comments

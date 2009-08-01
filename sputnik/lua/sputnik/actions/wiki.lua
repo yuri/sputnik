@@ -910,8 +910,12 @@ end
 -- Shows the _content_ of the node shown as 'code'.
 -----------------------------------------------------------------------------
 function actions.show_content_as_code(node, request, sputnik)
-   local escaped = sputnik:escape(node.raw_values.content) 
-   return "<pre><code>"..escaped.."</code></pre>"
+   local escaped = sputnik:escape(node.raw_values.content)
+   if node.raw_content_type then 
+      return "<pre><code class='"..node.raw_content_type.."'>"..escaped.."</code></pre>"
+   else
+      return "<pre><code>"..escaped.."</code></pre>"
+   end
 end
 
 
@@ -977,6 +981,19 @@ function actions.action_not_found(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
+
+-----------------------------------------------------------------------------
+-- Shows the HTML for an access denied message.
+-----------------------------------------------------------------------------
+function actions.access_denied(node, request, sputnik)
+   if request.method == "POST" then
+      node:post_error("Sorry, you are not allowed to do this.")
+   else
+      node:post_error("Sorry, you are not allowed to see this.")
+   end
+   node.inner_html = ""
+   return node.wrappers.default(node, request, sputnik)
+end
 
 -----------------------------------------------------------------------------
 -- Shows the list of registered users

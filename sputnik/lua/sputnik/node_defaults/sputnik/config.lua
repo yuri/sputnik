@@ -27,4 +27,5 @@ INTERFACE_LANGUAGE = "en"
 
 ]=============]
 
+NODE.raw_content_type = "lua"
 

@@ -1,6 +1,5 @@
 module(..., package.seeall)
 NODE = {
-   --actions= [[show = "tickets.show"]],
    icon = "icons/bug.png",
    translations = "tickets/translations",
    templates    = "tickets/templates",
@@ -21,14 +20,9 @@ prod_version = {.16}
 component   = {.17}
 assigned_to = {.19}
 resolution_details = {.20}
-template_helpers = {activate="lua", proto="concat"}
 ]]
 
 NODE.template_helpers = [[
-function z(params)
-   return "[."..params[1].."]"
-end
-
 function priority_to_stars(params)
    local config = {
      unassigned = "",
@@ -38,7 +32,7 @@ function priority_to_stars(params)
      low        = "★",
      lowest     = ".",
    }
-   return config[params[1] ]
+   return config[params[1] ] or ""
 end
 ]]
 
@@ -67,8 +61,8 @@ NODE.html_content = [======[
 <table width="100%">
  <tr style="background:$ticket_status_color">
   <td width="15%" style="text-align: right;">
-	   <span style="font-size: 80%">$z{"bar"} ticket id</span><br/>
-   <span style="font-size: 200%;">$ticket_id</span>
+	   <span style="font-size: 80%">ticket id</span><br/>
+   <span style="font-size: 200%;">$id</span>
   </td>
   <td width="15%" style="text-align: right;">
    <span style="font-size: 80%">status</span><br/>

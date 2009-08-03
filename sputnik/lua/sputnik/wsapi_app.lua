@@ -42,35 +42,6 @@ ULTIMATE_OOPS_MESSAGE = [[
 
 
 -----------------------------------------------------------------------------
--- Creates a WSAPI app function to handle requests based on a configuration
--- table. This is the only function exported by the module. The app returned
--- by this function is _safe_ in the sense that Sputnik errors do not get
--- reported to WSAPI but are instead handled by a cascade of error-handling
--- apps.
---
--- @param config         a bootstrap configuration for Sputnik.
------------------------------------------------------------------------------
-function new(config)
-   -- create three WSAPI app functions: one that we _want_ to run, another as
-   -- a back up for the first (to report errors), and the third as a backup
-   -- for the second (to deal with errors in error handling).
-   local main_app = make_basic_sputnik_app(config),
-   local error_app = make_error_handling_app(config)
-   local total_fail_app = make_oops_app()
-   return make_safer_app(main_app, make_safer_app(error_app, total_fail_app))
-end
-
-
---[[      -- Change the HTTP status code to 302 is a location header is set
-      if response.headers["Location"] then
-         if response.status < 300 then
-            response.status = 302
-         end
-      end
-]]
-
-
------------------------------------------------------------------------------
 -- Given two apps, creates a new one that uses the second app as a backup for
 -- the first. So, the first app gets called first. If it runs successfully,
 -- it's output is returned. If it fails, the second app is called for error
@@ -101,6 +72,13 @@ local function make_basic_sputnik_app(config)
       local request = wsapi.request.new(wsapi_env)
       local response = wsapi.response.new()
       my_sputnik:handle_request(request, response)
+
+      if response.headers["Location"] then
+         if response.status < 300 then
+            response.status = 302
+         end
+      end
+
       return response:finish()
    end
 end
@@ -171,4 +149,31 @@ local function make_oops_app()
    end
 end
 
+-----------------------------------------------------------------------------
+-- Creates a WSAPI app function to handle requests based on a configuration
+-- table. This is the only function exported by the module. The app returned
+-- by this function is _safe_ in the sense that Sputnik errors do not get
+-- reported to WSAPI but are instead handled by a cascade of error-handling
+-- apps.
+--
+-- @param config         a bootstrap configuration for Sputnik.
+-----------------------------------------------------------------------------
+function new(config)
+   -- create three WSAPI app functions: one that we _want_ to run, another as
+   -- a back up for the first (to report errors), and the third as a backup
+   -- for the second (to deal with errors in error handling).
+   local main_app = make_basic_sputnik_app(config)
+   local error_app = make_error_handling_app(config)
+   local total_fail_app = make_oops_app()
+   return make_safer_app(main_app, make_safer_app(error_app, total_fail_app))
+end
+
+
+--[[      -- Change the HTTP status code to 302 is a location header is set
+      if response.headers["Location"] then
+         if response.status < 300 then
+            response.status = 302
+         end
+      end
+]]
 

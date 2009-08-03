@@ -284,6 +284,7 @@ function Sputnik:handle_request(request, response)
    -- Figure out what action we need to call and call it. 
    local action = request.action or "show"
    local action_function = node.actions[action]
+
    if not action_function then
       action_function = sputnik.actions.wiki.actions.action_not_found
    elseif not node:check_permissions(request.user, action) then
@@ -292,6 +293,11 @@ function Sputnik:handle_request(request, response)
 
    -- Call the action function. This gives us content and content_type.
    local content, content_type = action_function(node, request, self)
+
+   -- Check if the action logged out the user.
+   if not request.user then
+      response:set_cookie(self.cookie_name, {value="", path="/"})
+   end
 
    -- If we have any custom HTML headers, add them to the response
    for header,value in pairs(node.headers) do

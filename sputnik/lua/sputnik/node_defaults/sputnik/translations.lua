@@ -132,7 +132,7 @@ CURRENT_PAGE = {
 
 -- A note to the user that they are not allowed to perform the action
 ACTION_NOT_ALLOWED = {
-   en_US = "Sorry, you do not have permissions to perform this action",
+   en_US = "Sorry, you are not allowed to do this.",
 }
 
 -- A message to tell the user they are not allowed to edit the node

@@ -1,4 +1,3 @@
------------------------------------------------------------------------------
 -- Provides functions for collection of basic actions needed by a Sputnik to
 -- serve as a wiki.
 --
@@ -700,21 +699,6 @@ function actions.edit (node, request, sputnik, etc)
 
    etc = etc or {} -- additional parameters
 
-   -- check if the user is even allowed to edit
-   local admin = sputnik.auth:get_metadata(request.user, "is_admin")
-   if (not node:check_permissions(request.user, request.action)) 
-       or (node._id==sputnik.config.ROOT_PROTOTYPE and admin == "true") then
-      local message = etc.message_if_not_allowed
-      if request.action == "edit" then
-         message = message or "NOT_ALLOWED_TO_EDIT"
-      else
-         message = message or "ACTION_NOT_ALLOWED"
-      end
-      node:post_error(node.translator.translate_key(message))
-      node.inner_html = ""
-      return node.wrappers.default(node, request, sputnik)
-   end
-
    -- Add the editpage stylesheet
    node:add_javascript_link(sputnik:make_url("sputnik/js/editpage.js"))
 
@@ -888,22 +872,14 @@ end
 -- actions.raw, this method only returns the _content_ of the node, not its metadata).
 -----------------------------------------------------------------------------
 function actions.raw_content(node, request, sputnik)
-   if node:check_permissions(request.user, request.action) then
-      return node.raw_values.content, "text/plain"
-   else
-      return "-- Access to raw content not allowed", "text/plain"
-   end
+   return node.raw_values.content, "text/plain"
 end
 
 -----------------------------------------------------------------------------
 -- Shows the underlying string representation of the node as plain text.
 -----------------------------------------------------------------------------
 function actions.raw(node, request, sputnik)
-   if node:check_permissions(request.user, request.action) then
-      return node.data or "No source available.", "text/plain"
-   else
-      return "-- Access to raw content not allowed", "text/plain"
-   end
+   return node.data or "No source available.", "text/plain"
 end
 
 -----------------------------------------------------------------------------
@@ -986,11 +962,7 @@ end
 -- Shows the HTML for an access denied message.
 -----------------------------------------------------------------------------
 function actions.access_denied(node, request, sputnik)
-   if request.method == "POST" then
-      node:post_error("Sorry, you are not allowed to do this.")
-   else
-      node:post_error("Sorry, you are not allowed to see this.")
-   end
+   node:post_error(node.translator.translate_key("ACTION_NOT_ALLOWED"))
    node.inner_html = ""
    return node.wrappers.default(node, request, sputnik)
 end

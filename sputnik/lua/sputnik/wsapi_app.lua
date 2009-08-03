@@ -70,6 +70,8 @@ local function make_basic_sputnik_app(config)
    end
    return function (wsapi_env)      
       local request = wsapi.request.new(wsapi_env)
+      request.ip = wsapi_env.REMOTE_ADDR
+
       local response = wsapi.response.new()
       my_sputnik:handle_request(request, response)
 
@@ -80,6 +82,21 @@ local function make_basic_sputnik_app(config)
       end
 
       return response:finish()
+   end
+end
+
+
+-----------------------------------------------------------------------------
+-- An auxiliary functions to catch common errors and provide a better message
+-- for them.
+-----------------------------------------------------------------------------
+local detect_common_errors = function(error_message, config)
+   local pattern = "Versium storage error: (.*) Can't open file: (.*) in mode w"
+   local dummy, path = string.match(error_message, pattern)
+   local dir = config.VERSIUM_PARAMS
+   if path and path:sub(1, dir:len()) == dir then
+      return string.format([[Versium's data directory (%s) is not writable.<br/>
+                             Please fix directory permissions.]], dir)
    end
 end
 
@@ -118,21 +135,6 @@ end
 
 
 -----------------------------------------------------------------------------
--- An auxiliary functions to catch common errors and provide a better message
--- for them.
------------------------------------------------------------------------------
-local detect_common_errors = function(error_message, config)
-   local pattern = "Versium storage error: (.*) Can't open file: (.*) in mode w"
-   local dummy, path = string.match(error_message, pattern)
-   local dir = config.VERSIUM_PARAMS
-   if path and path:sub(1, dir:len()) == dir then
-      return string.format([[Versium's data directory (%s) is not writable.<br/>
-                             Please fix directory permissions.]], dir)
-   end
-end
-
-
------------------------------------------------------------------------------
 -- Creates a WSAPI app for handling he ultimate FAIL: error in error handling.
 --
 -- This app gets called when the normal Sputnik run failed, and then error
@@ -165,7 +167,7 @@ function new(config)
    local main_app = make_basic_sputnik_app(config)
    local error_app = make_error_handling_app(config)
    local total_fail_app = make_oops_app()
-   return make_safer_app(main_app, make_safer_app(error_app, total_fail_app))
+   return make_safer_app(main_app, error_app) --make_safer_app(error_app, total_fail_app))
 end
 
 

@@ -39,6 +39,7 @@ icon            = {0.93, proto="fallback"}
 breadcrumb      = {0.94 }
 save_hook       = {0.95, proto="fallback"}
 raw_content_type = {0.96 }
+template_helpers = {0.97, activate="lua", proto="concat"}
 -- "virtual" fields (never saved) ------------------------
 version         = {virtual=true}
 prev_version    = {virtual=true}

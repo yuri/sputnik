@@ -107,6 +107,7 @@ function actions.show(node, request, sputnik)
                id  = node.id,
                short_id = node.id:match("[^%/]*$"),
                nice_url = sputnik.config.NICE_URL,
+               logged_in_user = request.user,
             }
             for k, v in pairs(node.fields) do
                t[k] = tostring(node[k])

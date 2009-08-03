@@ -73,6 +73,10 @@ function priority_to_stars(params)
    return config[params[1] ] or ""
 end
 
+function is_yours(params)
+   if params[1] == params[2] then return "<b>yes</b>" else return "no" end
+end
+
 ]=]
 
 NODE.html_content = [======[
@@ -89,6 +93,7 @@ NODE.html_content = [======[
    <th>priority</th>
    <th>issue</th>
    <th>assigned to</th>
+   <th>yours</th>
   </tr>
  </thead>
  $do_nodes[[
@@ -98,6 +103,7 @@ NODE.html_content = [======[
    <td>$priority_to_stars{$priority}</td>
    <td>$title</td>
    <td>$assigned_to</td>
+   <td>$is_yours{$logged_in_user, $assigned_to}</td>
   </tr>
  ]]
  </table>

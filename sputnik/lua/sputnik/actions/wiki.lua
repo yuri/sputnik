@@ -148,7 +148,7 @@ function actions.post(node, request, sputnik)
 
          -- test captcha, if configured
          if sputnik.captcha and not (request.user or request.params.user) then
-            local client_ip = request.wsapi_env.REMOTE_ADDR
+            local client_ip = request.ip
             local captcha_ok, err = sputnik.captcha:verify(request.POST, client_ip)
             if not captcha_ok then
                err_msg("COULD_NOT_VERIFY_CAPTCHA", err)
@@ -181,7 +181,7 @@ function actions.save(node, request, sputnik)
       new_node = sputnik:activate_node(new_node)
       local extra = {minor=request.params.minor}
       if not request.user then
-         extra.ip=request.wsapi_env.REMOTE_ADDR -- track IPs for anonymous
+         extra.ip=request.ip -- track IPs for anonymous
       end
       new_node = sputnik:save_node(new_node, request, request.user,
          request.params.summary or "", extra)

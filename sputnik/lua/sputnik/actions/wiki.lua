@@ -160,7 +160,13 @@ function actions.post(node, request, sputnik)
             err_msg("ACTION_NOT_ALLOWED")
          end
 
-         return node.actions[action](node, request, sputnik)
+         local action_function = node.actions[action]
+         if action_function then
+            return action_function(node, request, sputnik)
+         else
+            request.action = action
+            return actions.action_not_found(node, request, sputnik)
+         end
       end
    end 
 end

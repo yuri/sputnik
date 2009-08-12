@@ -66,6 +66,7 @@ sputnik_version = "wiki.sputnik_version"
 save            = "wiki.save"
 preview         = "wiki.preview"
 preview_content = "wiki.preview_content"
+cancel          = "wiki.cancel"
 reload          = "wiki.reload"
 ]],
 markup_module = "markdown",

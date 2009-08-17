@@ -8,7 +8,7 @@ local function parse_args(arg)
       if flag then
          parsed[flag] = val
       else
-         flag = v:match('^%-%-(%w+)')
+         flag = v:match('^%-%-(.+)')
          if flag then
             parsed[flag] = true
          else

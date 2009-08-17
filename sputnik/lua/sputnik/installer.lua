@@ -3,6 +3,8 @@ module(..., package.seeall)
 require"lfs"
 require"cosmo"
 
+REQUIRE_LUAROCKS = [[pcall(require, "luarocks.require")]]
+
 WS_SCRIPT_TEMPLATE = [[
 require('sputnik.wsapi_app')
 return sputnik.wsapi_app.new{
@@ -14,7 +16,7 @@ return sputnik.wsapi_app.new{
 ]]
 
 CGI_TEMPLATE = [[#! $dir/bin/lua
-pcall(require, "luarocks.require")
+$require_luarocks
 require('sputnik.wsapi_app')
 local my_app = sputnik.wsapi_app.new{
    VERSIUM_PARAMS = { '$dir/wiki-data/' },
@@ -50,7 +52,10 @@ function make_salt(length)
 end
 
 
-function make_script(dir, subpath, template)
+function make_script(dir, subpath, template, options)
+
+   options = options or {}
+
    dir = dir or lfs.currentdir()
    local path = dir.."/"..subpath
 
@@ -65,19 +70,26 @@ function make_script(dir, subpath, template)
       print(err)
       return
    end
+
+   local require_luarocks = REQUIRE_LUAROCKS
+   if options.without_luarocks then
+      require_luarocks = ""
+   end
+
    local content = cosmo.f(template){
                       dir           = dir, 
                       password_salt = password_salt,
                       token_salt    = token_salt,
+                      require_luarocks = require_luarocks,
                    }
    out:write(content)
    out:close()
 end
 
-function make_wsapi_script(dir, subpath)
-   make_script(dir, subpath, WS_SCRIPT_TEMPLATE)
+function make_wsapi_script(dir, subpath, options)
+   make_script(dir, subpath, WS_SCRIPT_TEMPLATE, options)
 end
 
-function make_cgi_file(dir, subpath)
-   make_script(dir, subpath, CGI_TEMPLATE)
+function make_cgi_file(dir, subpath, options)
+   make_script(dir, subpath, CGI_TEMPLATE, options)
 end

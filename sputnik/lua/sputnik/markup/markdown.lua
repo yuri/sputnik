@@ -44,7 +44,7 @@ function new(sputnik)
                      end
                      local buffer = ""
 
-					 text = text:gsub("\r\n", "\n")
+                text = text:gsub("\r\n", "\n")
                      text = text:gsub("\n~~~+(%w*)\n(.-)\n~~~+\n", do_fenced_code_block)
                      for line in string.gmatch("\n"..text, "(\n[^\n]*)") do
                         if line:len() < 5 or line:sub(1,5)~="\n    " then
@@ -77,11 +77,15 @@ function new(sputnik)
 
                      local raw_html = markdown(buffer)
 
-                     local html, message = filter:filter(raw_html)
-                     if html then
-                        return html
-                     elseif message then
-                        return "<pre>"..message.."</pre>"
+                     if sputnik.config.DISABLE_XSS_FILTER then
+                        return raw_html
+                     else
+                        local html, message = filter:filter(raw_html)
+                        if html then
+                           return html
+                        elseif message then
+                           return "<pre>"..message.."</pre>"
+                        end
                      end
                   end
    }

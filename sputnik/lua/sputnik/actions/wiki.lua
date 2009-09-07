@@ -1165,6 +1165,7 @@ function wrappers.default(node, request, sputnik)
 
    local values = {
       site_title       = sputnik.config.SITE_TITLE or "",
+      site_subtitle       = sputnik.config.SITE_SUBTITLE or "",
       title            = sputnik:escape(node.title),
       if_no_index      = cosmo.c((not request.is_indexable) or is_old){},
       do_css_links     = node.css_links,

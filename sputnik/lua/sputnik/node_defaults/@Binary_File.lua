@@ -30,6 +30,7 @@ file_name = {2.9}
 file_type = {2.91}
 file_size = {2.92}
 file_upload = {2.93, virtual = true}
+file_md5 = {2.94}
 ]=],
    edit_ui = [=[
 content_hdr = nil
@@ -47,5 +48,6 @@ file_copyright = {1.32, "text_field"}
 file_name = {1.33, "text_field"}
 file_type = {1.34, "text_field"}
 file_size = {1.35, "text_field"}
+file_md5 = {1.36, "text_field"}
 ]=],
 }

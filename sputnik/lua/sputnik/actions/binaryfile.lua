@@ -27,6 +27,7 @@ $if_image[[<a href="$url"><img style="float: right; max-width:300px; margin: 2em
 <tr><th>Filename</th><td>$filename</td></tr>
 <tr><th>Size</th><td>$size</td></tr>
 <tr><th>Content-type</th><td>$type</td></tr>
+<tr><th>MD5 Checksum</th><td>$md5</td></tr>
 </table>
 
 <p><a class="button" $link>Download this file</a></p>
@@ -43,7 +44,8 @@ function actions.show(node, request, sputnik)
 		link = sputnik:make_link(node.name, "download"),
         if_image = cosmo.c(node.file_type:match("image")){
                       url = sputnik:make_url(node.name, ext, {version=request.params.version})
-        }
+        },
+        md5 = node.file_md5 and node.file_md5 or "Not available",
 	}
 
 	return node.wrappers.default(node, request, sputnik)
@@ -79,6 +81,7 @@ function actions.save(node, request, sputnik)
          request.params.file_type = type
          request.params.file_name = tostring(name)
          request.params.file_size = tostring(size)
+         request.params.file_md5 = md5.sumhexa(info.contents)
 
          -- Set the correct action
          local ext = sputnik.config.MIME_TYPES[type]
@@ -105,6 +108,7 @@ function actions.save(node, request, sputnik)
       request.params.file_type = nil
       request.params.file_name = nil
       request.params.file_size = nil
+      request.params.file_md5 = nil
       return node.actions.edit(node, request, sputnik)
    else
       -- Actually try to store the node

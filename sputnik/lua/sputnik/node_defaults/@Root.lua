@@ -187,8 +187,7 @@ permissions=[[
 ]]
 }
 
-NODE.html_main = [==[
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+NODE.html_main      = [==[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
  <head>
@@ -207,8 +206,7 @@ $body
 </html>
 ]==]
 
-NODE.html_head = [==[
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+NODE.html_head      = [=[  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
   <meta name="keywords" content="$html_meta_keywords"/>
   <meta name="description" content="$html_meta_description"/>
   <title>$site_title: $title</title>
@@ -221,103 +219,92 @@ NODE.html_head = [==[
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>
   $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>
-]]]==]
+]]]=]
 
-NODE.html_menu = [==[
-    <ul id='menu' class="level1">$do_nav_sections[=[
+NODE.html_menu      = [==[    <ul class="level1">$do_nav_sections[=[
      <li class='$class level1' id='$id'>
       <a title="$accessibility_title" $link>$title</a>
-      <ul class='$class level2'>$subsections[[
-       <li class='$class level2'><a title="$accessibility_title" $link>$title</a></li>]]
+      <ul class='$class level2'>$subsections[[<li class='$class level2'><a title="$accessibility_title" $link>$title</a></li>]]
        <li style="display:none">&nbsp;</li>
       </ul>
      </li>]=]
     </ul>
 ]==]
 
-NODE.html_search = [==[
-     <form action="$base_url" class="search">
-      <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
-      <input class="search_box" type="text" name="q" size="16"
-             title="_(TOOLTIP_FOR_SEARCH_BOX)" value="$search_box_content"/>
-      <input class="search_button" type="image" src="$icon_base_url{}icons/search.png" alt="_(BUTTON)"/>
-     </form>
-]==]
+NODE.html_logo      = [[    <a class="logo" href="$home_page_url">$site_title</a>
+]]
 
-NODE.html_page = [==[
-      <div id="breadcrumbs">
+NODE.html_search    = [[<form action="$base_url" class="search">
+     <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
+     <input class="search_box" type="text" name="q" size="16"
+             title="_(TOOLTIP_FOR_SEARCH_BOX)" value="$search_box_content"/>
+     <input class="search_button" type="image" src="$icon_base_url{}icons/search.png" alt="_(BUTTON)"/>
+    </form>
+]]
+
+NODE.html_page      = [=[      <div id="breadcrumbs">
        <ul>
        $do_breadcrumb[[
         <li class="first"><a $link>$title</a></li>]],[[
         <li class="follow"><a $link>▹&nbsp; $title</a></li>]]
        </ul>
-       <span class="toolbar">
+      </div>
+      <div id="toolbar">
         $do_toolbar[[
          $if_icon[====[<a $link title="$title"><img src="$icon_base_url{}$icon" alt="_(BUTTON)"/></a>]====]
          $if_text[====[<a $link>$title</a>]====]
         ]]
-       </span>
       </div>
-      <div class="title">$if_title_icon[[
+      <div id="page_title">$if_title_icon[[
        <img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/>]]
        <a name="title" title="_(CURRENT_PAGE)" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
       </div>
-      <div class='content'>
+
+      <div id="content" class='content'>
         $do_messages[[<p class="$class">$message</p>]]
 
 $content
       </div>
-]==]
+]=]
 
-NODE.html_content = [==[
-Not used by default.
-]==]
+NODE.html_content   = [[Not used by default.
+]]
 
-NODE.html_logo = [==[
-    <a class="logo" href="$home_page_url">
-     <img src="$logo_url" alt="_(LOGO)" /> 
-    </a>
-]==]
+NODE.html_body      = [[  <div id='container'>
+   <div id='header'>
+    $header
+   </div>
+   <div id='page'>
+    $page
+   </div>
+   <div id='menu'>
+     $menu
+   </div>
+   <div id='login_form' class='popup_form' style='display: none'>
+   </div>
+   <div id='footer'>
+     $footer
+   </div>
+  </div>
+]]
 
-NODE.html_header = [===[
-    <div id="login" style="vertical-align: middle;">
-     <!--login and search (in the upper right corner) -->
-     $if_search[[$search]]<br/><br/>
+NODE.html_footer    = [[
+<p>
+    _(POWERED_BY_SPUTNIK) | <a style="font-size: .7em" href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a>
+</p>]]
+
+NODE.html_header    = [=[<div id="search_box">
+    $search
+   </div>
+   <div id="login" style="font-size:120%; background-color: white;">
      $if_logged_in[[<span style="border: 1px solid read;">_(HI_USER)
      <a title="_(LOGOUT)" $logout_link><img style="vertical-align: text-bottom" src="$icon_base_url{}icons/logout.png" alt="_(BUTTON)"/></a></span>]]
      $if_not_logged_in[[<a class="login_link" $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
-
    </div>   
    <div id="logo">
-$logo
+    $logo
    </div>
-   <div id="menu_bar">
-$menu<!--br/><br/-->
-   </div>
-]===]
-
-NODE.html_body = [===[
-  <div id='doc3' class='yui-t0'>
-
-   <div id="login_form" class="popup_form" style="display: none"></div>
-   <div id='hd'>
-$header
-   </div>
-   <div id='bd'>
-    <div id="yui-main" $if_old_version[[style='background-color:#ddd;']]>
-     <div class="yui-b" id='page'>
-$page
-     </div>
-    </div>
-    <div class="yui-b" id="sidebar">
-$sidebar
-    </div>    
-   </div>  <!--#bd-->
-   <div id='ft'>
-$footer   </div>
-  </div> <!--#docN-->
-  <br/>
-]===]
+]=]
 
 NODE.html_sidebar = [==[
 ]==]

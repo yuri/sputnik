@@ -1,8 +1,9 @@
 module(..., package.seeall)
 NODE = {
    title      = "Tickets",
-   actions    = [[show = "tickets.list"]],
+   --actions    = [[show = "tickets.list"]],
    templates  = "tickets/templates",
+   prototype  = "@Collection",
 }
 
 NODE.config = [[
@@ -45,7 +46,7 @@ NODE.child_defaults = [=[
 new = [[ 
 prototype = "@Ticket"
 title     = "New Ticket"; 
-actions   = 'save="tickets.save_new"';
+actions   = 'save="collections.save_new"'
 ]]
 ]=]
 
@@ -59,4 +60,51 @@ allow(Admin, "save")
 allow(Admin, "history")
 ]=]
 
+NODE.template_helpers = [=[
+function priority_to_stars(params)
+   local config = {
+     unassigned = "",
+     highest    = "★★★★",
+     high       = "★★★ ",
+     medium     = "★★",
+     low        = "★",
+     lowest     = ".",
+   }
+   return config[params[1] ] or ""
+end
 
+function is_yours(params)
+   if params[1] == params[2] then return "<b>yes</b>" else return "no" end
+end
+
+]=]
+
+NODE.html_content = [======[
+
+<a href="$new_url">new ticket</a>
+
+<br/><br/>
+
+<table class="sortable" width="100%">
+ <thead>
+  <tr>
+   <th>&nbsp;</th>
+   <th>id</th>
+   <th>priority</th>
+   <th>issue</th>
+   <th>assigned to</th>
+   <th>yours</th>
+  </tr>
+ </thead>
+ $do_nodes[[
+  <tr>
+   <td><a href="$url{}.edit"><img src="$make_url{"icons/edit"}.png"/></a></td>
+   <td><a href="$url">$short_id</a></td>
+   <td>$priority_to_stars{$priority}</td>
+   <td>$title</td>
+   <td>$assigned_to</td>
+   <td>$is_yours{$logged_in_user, $assigned_to}</td>
+  </tr>
+ ]]
+ </table>
+]======]

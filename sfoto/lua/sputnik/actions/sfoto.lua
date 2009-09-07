@@ -212,7 +212,7 @@ local TEMPLATE = [==[
 $do_groups[=[
 <tr><td colspan="2"><h2>$title</h2></td></tr>
 $items[[
- <tr><td><a href="$id">
+ <tr><td><a href="$make_url{$id}">
  <img src="http://media.freewisdom.org/freewisdom/albums/$thumb.thumb.jpg"/>
  </a></td><td class='tag_list_table'><a href="$make_url{$id}">$title</a></td></tr>
 ]]

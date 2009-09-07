@@ -75,7 +75,7 @@ function actions.show(node, request, sputnik)
               _template = has_permission and 1 or 2,
           }
       end,
-     do_nodes = function()
+      do_nodes = function()
          if type(node.sort_params) == "table" then
             local sparams = node.sort_params
             local skey = sparams.sort_key or "id"
@@ -107,6 +107,7 @@ function actions.show(node, request, sputnik)
                id  = node.id,
                short_id = node.id:match("[^%/]*$"),
                nice_url = sputnik.config.NICE_URL,
+               logged_in_user = request.user,
             }
             for k, v in pairs(node.fields) do
                t[k] = tostring(node[k])
@@ -125,11 +126,16 @@ function actions.show(node, request, sputnik)
       end,
    }
 
+   for k,v in pairs(node.template_helpers or {}) do
+      values[k] = v
+   end
+
    for k,v in pairs(node.fields) do
       if not values[k] then
          values[k] = tostring(node[k])
       end
    end
+
    
    for action_name in pairs(node.actions) do
       if node:check_permissions(request.user, action_name) then

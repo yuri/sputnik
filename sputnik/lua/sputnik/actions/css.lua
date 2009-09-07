@@ -30,6 +30,7 @@ actions.fancy_css = function(page, params, sputnik)
                       ipairs = ipairs,
                       unpack = unpack,
                       config = page.config,
+                      more_css = sputnik.config.MORE_CSS or "",
                    }:do_lua(page.css_config)
    if e then 
       error(e.err)

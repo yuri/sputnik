@@ -171,7 +171,7 @@ function actions.submit(node, request, sputnik)
 
       -- test captcha, if configured
       if sputnik.captcha then
-         local captcha_ok, err = sputnik.captcha:verify(request.POST, request.wsapi_env.REMOTE_ADDR)
+         local captcha_ok, err = sputnik.captcha:verify(request.POST, request.ip)
          if not captcha_ok then
             err_msg("COULD_NOT_VERIFY_CAPTCHA", err)
          end

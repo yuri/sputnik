@@ -267,7 +267,7 @@ function Sputnik:handle_request(request, response)
          -- PROTOTYPE_PATTERNS
          local patterns = self.config.PROTOTYPE_PATTERNS or {}
          for pattern, pattern_prototype in pairs(patterns) do
-            if node_name:find(pattern) then
+            if request.node_name:find(pattern) then
                prototype = pattern_prototype;
                break
             end

@@ -140,6 +140,16 @@ function MySQLVersium:prepare(statement, ...)
 end
 
 -----------------------------------------------------------------------------
+-- Executes a query using the MySQL connection.  This function is exposed to
+-- allow other code to hook it if necessary, since we cannot hook con.execute
+-- 
+-- @param query          the query to be executed 
+-----------------------------------------------------------------------------
+function MySQLVersium:execute(query)
+   return self.con:execute(query)
+end
+
+-----------------------------------------------------------------------------
 -- Returns the data stored in the node as a string and a table representing
 -- the node's metadata.  Returns nil if the node doesn't exist.  Throws an
 -- error if anything else goes wrong.
@@ -165,7 +175,7 @@ function MySQLVersium:get_node(id, version)
    end
 
    -- Run the query to get the node
-   local cur = assert(self.con:execute(cmd))
+   local cur = assert(self:execute(cmd))
    local row = cur:fetch({}, "a")
    cur:close()
 
@@ -181,7 +191,7 @@ function MySQLVersium:get_node(id, version)
       cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
    end
 
-   local cur = assert(self.con:execute(cmd))
+   local cur = assert(self:execute(cmd))
    local metadata = cur:fetch({}, "a")
    cur:close()
 
@@ -199,7 +209,7 @@ function MySQLVersium:node_exists(id)
    assert(id)
 
    local cmd = self:prepare(self.queries.NODE_EXISTS, id)
-   local cur = assert(self.con:execute(cmd))
+   local cur = assert(self:execute(cmd))
    local row = cur:fetch({}, "*a")
    cur:close()
 
@@ -218,7 +228,7 @@ function MySQLVersium:get_node_info(id)
 
    -- Fetch the latest version number
    local cmd = self:prepare(self.queries.GET_METADATA_LATEST, id)
-   local cur = assert(self.con:execute(cmd))
+   local cur = assert(self:execute(cmd))
    local row = cur:fetch({}, "a")
    cur:close()
 
@@ -252,7 +262,7 @@ function MySQLVersium:get_node_ids(prefix, limit)
       cmd = self:prepare(self.queries.GET_NODE_IDS)
    end
 
-   local cur = assert(self.con:execute(cmd))
+   local cur = assert(self:execute(cmd))
    local row = cur:fetch({}, "a")
 
    while row do
@@ -286,20 +296,20 @@ function MySQLVersium:save_version(id, data, author, comment, extra, timestamp)
 
    -- Store the new node in the 'nodes' table
    local cmd = self:prepare(self.queries.INSERT_NODE, id, author, comment, timestamp, data)
-   assert(self.con:execute(cmd), out)
+   assert(self:execute(cmd), out)
 
-   local cur,err = assert(self.con:execute("SELECT LAST_INSERT_ID();"))
+   local cur,err = assert(self:execute("SELECT LAST_INSERT_ID();"))
    local version = tonumber(assert(cur:fetch("*a")))
    cur:close()
 
    -- Update the index table to the newest revision
    if version == 1 then
       local cmd = self:prepare(self.queries.INSERT_INDEX, id, version)
-      local cur = assert(self.con:execute(cmd))
+      local cur = assert(self:execute(cmd))
       assert(cur, err)
    else
       local cmd = self:prepare(self.queries.UPDATE_INDEX, version, id) 
-      local cur = assert(self.con:execute(cmd))
+      local cur = assert(self:execute(cmd))
    end
 
    -- Return the new version number
@@ -324,7 +334,7 @@ function MySQLVersium:get_node_history(id, prefix)
 
    -- Pull the history of the given node
    local cmd = self:prepare(self.queries.GET_METADATA_ALL, id)
-   local cur = self.con:execute(cmd)
+   local cur = self:execute(cmd)
    local row = cur:fetch({}, "a")
 
    while row do
@@ -354,7 +364,7 @@ function MySQLVersium:get_nodes_by_prefix(prefix)
    local data,metadata = {}, {}
 
    local cmd = self:prepare(self.queries.GET_NODES_PREFIX, prefix .. "%")
-   local cur = self.con:execute(cmd)
+   local cur = self:execute(cmd)
    local row = cur:fetch({}, "a")
 
    while row do
@@ -378,7 +388,7 @@ function MySQLVersium:get_complete_history(id_prefix, date_prefix, limit)
    id_prefix = id_prefix and (id_prefix .. "%") or "%" 
    local cmd = self:prepare(self.queries.GET_COMPLETE_HISTORY, id_prefix, 0, limit)
 
-   local cur = self.con:execute(cmd)
+   local cur = self:execute(cmd)
    local row = cur:fetch({}, "a")
 
    while row do

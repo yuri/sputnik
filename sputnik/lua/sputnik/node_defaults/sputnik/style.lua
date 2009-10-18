@@ -409,10 +409,10 @@ form.edit label {
  margin-left: 10px;
  padding-right: 1em;
 }
-#menu ul li.back ul {
+#menu ul li.other ul {
  display: none;
 }
-#menu ul li.front ul {
+#menu ul li.current ul {
  background: $SUBMENU_COLOR;
  float: left;
  margin-top: 1em;
@@ -421,7 +421,7 @@ form.edit label {
  width: $CONTAINER_WIDTH;
  z-index: 1000;
 }
-#menu ul li.front ul li{
+#menu ul li.current ul li{
  display: inline;
  z-index: 1001;
 }
@@ -431,34 +431,65 @@ form.edit label {
 #menu ul li a {
  padding: .3em;
 }
-#menu ul li.front a {
+#menu ul li.current a {
  border-bottom: .2em solid $SUBMENU_COLOR;
  color: $SUBMENU_COLOR;
 }
-#menu ul li.back a {
+#menu ul li.other a {
  border-bottom: .2em solid #555;
 }
-#menu ul li.front ul li {
+#menu ul li.current ul li {
  margin: 0;
  padding: 0;
 }
-#menu ul li.front ul li a {
+#menu ul li.current ul li a {
  color: white;
  font-family: Verdana, Arial, sans-serif;
  font-size: 70%;
  margin-left: 10px;
  padding: .3em 1em .3em 1em;
 }
-#menu ul li.front ul li.front a {
+#menu ul li.current ul li.current a {
  background: $ACTIVE_GRAY;
 }
-#menu ul li.front ul li.back a {
+#menu ul li.current ul li.other a {
  background: $SUBMENU_COLOR;
 }
-#menu ul li.front ul li.back a:hover {
+#menu ul li.current ul li.other a:hover {
  background-color: gray;
 }
 
+
+/*-- An alternative #menu --------------------------------------------------
+
+  Comment out the earlier #menu directives and uncomment the ones in this
+  section to display the menu as a list floating to the left. Other things
+  will need to be adjusted for this to actually look pretty, so this is just
+  to get you started.
+----------------------------------------------------------------------------*/
+
+/*
+#menu a {
+ text-decoration: none;
+ color: white;
+}
+#menu > ul {
+ position: absolute;
+ top: 220px;
+ left: 0px;
+ padding: 5px 5px 5px 5px;
+}
+#menu > ul > li > a {
+ padding: 5px 5px 5px 5px;
+}
+#menu > ul > li > ul > li > a {
+ font-size: 90%;
+}
+#menu > ul > li > ul > li.current > a {
+ color: yellow;
+}
+
+*/
 
 /*-- #footer ----------------------------------------------------------------
 

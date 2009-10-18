@@ -51,11 +51,11 @@ function get_nav_bar (node, sputnik)
       section.accessibility_title = remove_quotes(section.title)
       section.id    = sputnik:dirify(section.id)
       section.link  = sputnik:make_link(section.id)
-      section.class = "back"
+      section.class = "other"
       section.subsections = section
       if section.id == cur_node or section.id == node.category 
          or matches(node.name, section.patterns) then
-         section.class = "front"
+         section.class = "current"
          section.accessibility_title = section.accessibility_title.." (current section)"
          nav.current_section = section
       end
@@ -64,13 +64,13 @@ function get_nav_bar (node, sputnik)
          categories[subsection.id] = subsection.title
          subsection.accessibility_title = remove_quotes(subsection.title)
          subsection.id = sputnik:dirify(subsection.id)
-         subsection.class = "back"
+         subsection.class = "other"
          subsection.link = sputnik:make_link(subsection.id)
          if subsection.id == cur_node or subsection.id == sputnik:dirify(node.category)
             or matches(node.name, subsection.patterns) then
-            section.class = "front"
+            section.class = "current"
             nav.current_section = section
-            subsection.class = "front"
+            subsection.class = "current"
             subsection.accessibility_title = subsection.accessibility_title
                                              .." (current subsection)"
          end

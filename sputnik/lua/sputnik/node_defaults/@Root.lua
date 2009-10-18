@@ -217,7 +217,7 @@ NODE.html_head      = [=[  <meta http-equiv="Content-Type" content="text/html; c
   $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]]=]
 
 NODE.html_menu      = [==[<ul class="level1">$do_nav_sections[=[
-     <li class='$class level1' id='$id'>
+     <li class='$class level1' id='menu_item_$id'>
       <a title="$accessibility_title" $link>$title</a>
       <ul class='$class level2'>$subsections[[<li class='$class level2'><a title="$accessibility_title" $link>$title</a></li>]]
        <li style="display:none">&nbsp;</li>

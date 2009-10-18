@@ -11,6 +11,8 @@
 
 module(..., package.seeall)
 
+local iconv_loaded, iconv = pcall(require, "iconv")
+
 -----------------------------------------------------------------------------
 -- Default configuration of which tags are allowed.  The client can override
 -- this by passing their own table.  The table allows two types of entries:
@@ -122,6 +124,10 @@ local XSSFilter_mt = {__metatable = {}, __index = XSSFilter}
 function new(allowed_tags, generic_attrs)
    local obj = setmetatable({}, XSSFilter_mt)
    obj:init(allowed_tags)
+   if iconv_loaded then
+      obj.utf8_converter = iconv.new("UTF8", "UTF8")
+   end
+
    return obj
 end
 
@@ -226,6 +232,14 @@ end
 -- @return               A string with all but the allowed tags removed.
 -----------------------------------------------------------------------------
 function XSSFilter:filter(html)
+
+   if self.utf8_converter then
+       out, err = self.utf8_converter:iconv(html)
+       if err then
+          html = "[Invalid UTF8 - removed by XSSFilter]"
+       end
+   end
+
    local status, parsed = pcall(parse_xml, "<xml>"..html.."</xml>")
    if not status then
       return nil, "XSSFilter could not parse (X)HTML:\n"..html:gsub("<", "&lt;"):gsub(">", "&gt;")

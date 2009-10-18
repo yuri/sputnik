@@ -280,7 +280,7 @@ EDIT_FORM_BREADCRUMB = {
 
 -- A lable for the section of the form that deals with user id, minor parameter and edit summary
 EDIT_FORM_EDIT_INFO_SECTION = {
-   en_US = "About This Edit",
+   en_US = "A summary of your changes",
    ru    = "О ваших изменениях",
    pt_BR = "Sobre esta edição",
 }

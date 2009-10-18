@@ -95,8 +95,7 @@ advanced_section_end = {2.3, "div_end"}
 
 --- info about the edit --------------------------------
 edit_info_section  = {3.00, "div_start", id="edit_info_section", open="true"} 
- minor            = {3.1, "checkbox", value=false}
- summary         = {3.2, "textarea", rows=3, editor_modules = {"resizeable"}}
+ summary         = {3.2, "textarea", no_label=true, rows=2, editor_modules = {"resizeable"}}
 edit_info_section_end = {3.3, "div_end"}
 ]],
 admin_edit_ui = [[
@@ -152,7 +151,6 @@ guru_section_end = {2.36, "div_end"}
 
 --- info about the edit --------------------------------
 edit_info_section  = {3.00, "div_start", id="edit_info_section", open="true"} 
- minor            = {3.1, "checkbox", value=false}
  summary         = {3.2, "textarea", rows=3, editor_modules = {"resizeable"}}
 edit_info_section_end = {3.3, "div_end"}
 ]],

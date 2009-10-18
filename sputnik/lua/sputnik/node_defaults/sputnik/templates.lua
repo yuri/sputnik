@@ -33,13 +33,13 @@ HISTORY = [===[
               <tr><td style="border-right: 0; border-left: 0" colspan="3"><h2>$date</h2></td></tr>
             ]=]
             $if_edit[=[
-            <td width="5px" $if_minor[[bgcolor="#f0f0f0"]]>
+            <td width="5px">
              <input class="diff_radio" type="radio" value="$version" name="other"/>
             </td>
-            <td width="5px" $if_minor[[bgcolor="#f0f0f0"]]>
+            <td width="5px">
              <input class="diff_radio" type="radio" value="$version" name="version"/>
 	            </td>
-            <td width="400px" $if_minor[[bgcolor="#f0f0f0"]]>
+            <td width="400px">
              _(AUTHOR_SAVED_VERSION) $if_summary[[<ul><li>$summary</li></ul>]]
             </td>
             ]=]
@@ -63,11 +63,11 @@ COMPLETE_HISTORY = [===[
                 <td width="50px" $if_stale[[style="display:none"]] rowspan="$row_span">
                  &nbsp;<a $latest_link>$title</a>
                 </td>
-                <td width="300px" $if_minor[[bgcolor="#f0f0f0"]] style="border-right: 0px">
+                <td width="300px" style="border-right: 0px">
                  _(AUTHOR_SAVED_VERSION)
                  $if_summary[[<p>$summary</p>]]
                 </td>
-                <td width="10%" $if_minor[[bgcolor="#f0f0f0"]] style="border-left: 0px" align="right">
+                <td width="10%" style="border-left: 0px" align="right">
                  <a $diff_link title="_(DIFF)"><img alt="_(DIFF)" src="$diff_icon"/></a>
                  <a $history_link title="_(HISTORY)"><img alt="_(HISTORY)" src="$history_icon"/></a>
                 </td>

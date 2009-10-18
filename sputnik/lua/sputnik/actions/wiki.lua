@@ -79,7 +79,7 @@ function get_nav_bar (node, sputnik)
 
    local default_navsection = sputnik.config.DEFAULT_NAVSECTION
    if not nav.current_section and default_navsection and nav[default_navsection] then
-      nav[default_navsection].class = "front"
+      nav[default_navsection].class = "current"
    end
 
    return nav, categories
@@ -185,7 +185,7 @@ function actions.save(node, request, sputnik)
    else
       local new_node = sputnik:update_node_with_params(node, request.params)
       new_node = sputnik:activate_node(new_node)
-      local extra = {minor=request.params.minor}
+      local extra = {}
       if not request.user then
          extra.ip=request.ip -- track IPs for anonymous
       end
@@ -414,7 +414,6 @@ function actions.history(node, request, sputnik)
                version      = edit.version,
                date         = sputnik:format_time(edit.timestamp, "%Y/%m/%d"),
                time         = sputnik:format_time(edit.timestamp, "%H:%M %z"),
-               if_minor     = cosmo.c((edit.minor or ""):len() > 0){},
                title        = node.name,
                author_link  = sputnik:make_link(author_id_for_link),
                author_icon  = sputnik:get_user_icon(edit.author),
@@ -493,7 +492,6 @@ function actions.complete_history(node, request, sputnik)
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
             local author_display, author_ip_for_link = author_or_ip(edit)
-            local is_minor = (edit.minor or ""):len() > 0
             cosmo.yield{
                version_link = sputnik:make_link(edit.id, nil, {version = edit.version}),
                diff_link    = sputnik:make_link(edit.id, "diff", {version=edit.version, other=edit.previous}),
@@ -505,7 +503,6 @@ function actions.complete_history(node, request, sputnik)
                if_new_date  = cosmo.c(false){},
                if_edit      = cosmo.c(true){},
                time         = sputnik:format_time(edit.timestamp, "%H:%M %z"),
-               if_minor     = cosmo.c(is_minor){},
                title        = edit.id,
                author_link  = sputnik:make_link(author_ip_for_link),
                author_icon  = sputnik:get_user_icon(edit.author),
@@ -720,7 +717,6 @@ function actions.edit (node, request, sputnik, etc)
    fields.page_name = sputnik:dirify(node.name)  -- node name cannot be changed
    fields.user= request.params.user or ""
    fields.password=""
-   fields.minor=nil
    fields.summary= request.params.summary or ""
 
    local honeypots = "" 

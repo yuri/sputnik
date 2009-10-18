@@ -857,9 +857,9 @@ function Sputnik:make_link(node_name, action, params, anchor, options)
    local url = self:make_url(node_name, action, params, anchor)
    self.logger:debug("Creating a link to "..node_name)
    if options.mark_missing and not self:node_exists(node_name) then
-      return string.format("href='%s' class='no_such_node'", url)
+      return string.format('href="%s" class="no_such_node"', url)
    else
-      return string.format("href='%s'", url, css_class)
+      return string.format('href="%s"', url, css_class)
    end
 end
 

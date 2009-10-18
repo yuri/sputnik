@@ -27,9 +27,13 @@ ACTIVE_GRAY = "#737373"
 
 NODE.content = [===[
 
-/*** RESET ***/
+/*-- RESET ------------------------------------------------------------------
 
-/* Curtesy http://meyerweb.com/eric/tools/css/reset/ */
+  Before applying any styling, we start with a global reset to bring
+  everything to the same baseline. The reset code is based on
+  http://meyerweb.com/eric/tools/css/reset/ 
+
+----------------------------------------------------------------------------*/
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -77,25 +81,47 @@ blockquote, q {
  quotes: "" "";
 }
 
-/*** Let the styling begin. First the overall layout. ***/
+
+/*-- The body and the #container --------------------------------------------
+
+  The <body> has a single div inside it - #container. This way, the container
+  includes everything, but can be narrower than the body and can have
+  a different background. The children of container are:
+
+     #header - the site-level elements that we want to show prominently
+     #page - the content that is specific to this node
+     #menu - the navigation system (links to other pages)
+     #footer - less importnat site info
+----------------------------------------------------------------------------*/
 
 body {
  background-color: gray;
 }
-
 #container {
- /*position: relative;*/
  background-color: white;
  height: 100%;
  margin: 0 auto 0 auto;
  width: $CONTAINER_WIDTH;
 }
+
+
+/*-- #header ----------------------------------------------------------------
+
+  The header is a div that includes elements that do not change from one
+  node to another. We call it a "header" since it usually comes at the top
+  of the page, though we can put it anywhere.
+
+  The #header includes: #logo, #login, #search.
+----------------------------------------------------------------------------*/
+
 #header {
  background: $HEADER_COLOR;
  height: 150px;
  padding-left: 10px;
  position: relative;
 }
+
+/* #logo identifies the site and links to the front page. */
 #logo {
  background: #f0f0f0;
  border: 2px solid #303030;
@@ -107,17 +133,70 @@ body {
  color: black;
  text-decoration: none;
 }
-
-#logo a.logo {
+#logo a.home_page { /* a link to the home page */
  display: block;
  padding: 5px 20px 5px 20px;
 }
-
-p.site_title {
+p.site_title { /* a title for the site */
  font-size: 200%;
 }
-p.site_subtitle {
+p.site_subtitle { /* a subtitle for the site */
  font-style:italic;
+}
+
+/* #login contains the login status and the links to login/logout/register. */
+#login {
+ position:absolute;
+ top: 45px;
+ left: 700px;
+ z-index: 1000;
+}
+#login a {
+ text-decoration: none;
+ font-weight: bold;
+}
+
+/* #search contains a form for searching the site.*/
+#search {
+ position:absolute;
+ align:text;
+ top: 10px;
+ left: 700px;
+ z-index: 1000;
+}
+
+
+/*-- #page ------------------------------------------------------------------
+
+  #page groups content that relates to the particular page rather than the
+  site as a whole. This includes both the actual content of the page and an
+  additional set of tool or navigational elements. #page contains the
+  following divs: #breadcrumbs, #toolbar, #page_title, and #content.
+
+----------------------------------------------------------------------------*/
+
+#page { /* no styling on at the moment */
+}
+#page p {
+ line-height: 1.4;
+}
+
+#breadcrumbs {
+ display: none;
+}
+
+#page_title {
+ margin: 4em 1em 2em 2em;
+}
+#page_title a{
+ color: $ACTIVE_GRAY;
+ font-size: 240%;
+ text-decoration: none;
+}
+
+#toolbar {
+ float: right;
+ margin: -5px 10px 0px 0px;
 }
 
 #content {
@@ -125,40 +204,23 @@ p.site_subtitle {
  padding: 2em 2em 2em 2em;
 }
 
-#page p {
- line-height: 1.8;
-}
+/* Generic content tags */
 
-#footer {
- background-color: $SUBMENU_COLOR;
- border-top: 1px solid $ACTIVE_GRAY;
- color: white;
- margin-top: 20em;
- padding-top: 10px; padding-bottom: 10px;
- width: $CONTAINER_WIDTH;
+b, strong {
+ font-weight: bold;
 }
-
-#footer p {
- margin-left: 1em;
- margin-right: 1em;
+i, emphasis {
+ font-style:italic;
 }
-
-#footer a {
- color: #aaaaff;
-}
-
-/*** Content *******************************************************/
 
 h1, h2, h3 {
  margin-bottom: .5em;
  margin-top: 1em;
  padding-bottom: .5em;
 }
-
 h1, h2, h3, #logo, #page_title {
  font-family: Verdana, Tahoma, Helvetica, Arial, "sans-serif";
 }
-
 h4, h5, h6, p {
  margin: 5px 0 5px 0;
  padding: 5px 0 5px 0;
@@ -170,186 +232,36 @@ h1, h2 {
  border-bottom: 1px solid $ACTIVE_GRAY;
 }
 h1 {
- font-size  : 180%;
+ font-size: 180%;
 }
 h2 {
- font-size  : 140%;
+ font-size: 140%;
 }
 h3 {
- font-size  : 129%;
+ font-size: 129%;
 }
 h4 {
- font-size  : 107%;
-}
-
-/*** The Menu ******************************************************/
-
-#menu {
- font-size: 120%;
- position: absolute;
- top: 120px;
- width: $CONTAINER_WIDTH;
-}
-#menu > ul {
- display: block;
- text-align: center;
- width: 100%;
-}
-#menu ul li {
- display: inline;
- margin-left: 10px;
- padding-right: 1em;
-}
-#menu  ul  li.back  ul {
- display: none;
-}
-#menu  ul  li.front  ul {
- background: $SUBMENU_COLOR;
- float: left;
- margin-top: 1em;
- padding-top: .7em; padding-bottom: .7em;
- width: $CONTAINER_WIDTH;
- z-index: 1000;
-}
-#menu  ul  li.front  ul  li{
- display: inline;
- z-index: 1001;
-}
-
-#menu a {
- text-decoration: none;
-}
-
-#menu  ul  li  a {
- padding: .3em;
-}
-
-#menu  ul  li.front  a {
- border-bottom: .2em solid $SUBMENU_COLOR;
- color: $SUBMENU_COLOR;
-}
-#menu  ul  li.back  a {
- border-bottom: .2em solid #555;
-}
-
-#menu  ul  li.front  ul  li {
- margin: 0;
- padding: 0;
-}
-#menu  ul  li.front  ul  li  a {
- color: white;
- font-family: Verdana, Arial, sans-serif;
- font-size: 70%;
- margin-left: 10px;
- padding: .3em 1em .3em 1em;
-}
-#menu  ul  li.front  ul  li.front  a {
- background: $ACTIVE_GRAY;
-}
-#menu  ul  li.front  ul  li.back  a {
- background: $SUBMENU_COLOR;
-}
-#menu  ul  li.front  ul  li.back  a:hover {
- background-color: gray;
-}
-
-#breadcrumbs {
- display: none;
-}
-
-#toolbar {
- float: right;
- margin: -5px 10px 0px 0px;
-}
-
-#page_title {
- margin: 4em 1em 2em 2em;
-}
-
-#page_title a{
- font-size: 240%;
- text-decoration: none;
- color: $ACTIVE_GRAY;
-}
-
-/* Sputnik-Specific */
-
-#search_box {
- position:absolute;
- top: 10px;
- left: 700px;
- z-index: 1000;
-}
-
-#login {
- position:absolute;
- top: 45px;
- left: 700px;
- z-index: 1000;
-}
-
-form.search {
- display: inline;
-}
-
-input.search_box {
- padding:   2px  2px   2px  2px;
- display : inline;
- line-height: 10px;
- font-size  : 9pt;
- vertical-align: text-bottom;
- height: 22px;
-}
-
-#page p .nr {
- font-size:10px;
- text-decoration: none;
- vertical-align:top;
-}
-
-.footnote {
- margin-top: 20px;
-}
-h4 {
+ font-size: 107%;
  font-weight: bold;
 }
 
-#bd {
- padding-left: 5em;
-}
-#page blockquote {
+blockquote {
  border-left: 2px solid #cccccc;
  line-height: 1;
  margin-left: 5em;
  padding-left: 1em;
 }
-
-#page blockquote p {
+blockquote p {
  line-height: 1;
  padding-bottom: .5em;
  padding-top: .5em;
 }
 
-.next_node_link {
- margin-left: 400px;
-}
-
-#chapter_download_link {
- margin: 1em;
- margin-left: 500px;
- margin-right: -3em;
- padding: 0;
-}
-#chapter_download_link a {
- text-decoration: none;
-}
-
-#page ul {
+ul {
  list-style: disc;
  padding-left: 3em;
 }
-
-#page ol {
+ol {
  list-style: decimal;
  padding-left: 3em;
 }
@@ -359,7 +271,6 @@ pre {
  margin-bottom: 2em;
  margin-top: 2em;
 }
-
 pre code {
  background: #fffaf0;
  border-left: 1px solid gray;
@@ -370,22 +281,83 @@ pre code {
  padding-top: .5em;
 }
 
-.honey {
+
+/* Extra content rules */
+
+.teaser {
+ font-size: 120%;
+}
+a.footnote {
+ font-size:10px;
+ text-decoration: none;
+ vertical-align:top;
+}
+span.footnote {
+ margin-top: 20px;
+}
+
+.error, .warning, .success, .notice {
+ border-style: solid;
+ border-width: medium;
+ margin-bottom: 1em;
+ padding: .5em;
+ width: 90%;
+}
+.error {
+ background-color: #F8E0E0;
+ border-color: #DF0101;
+}
+.warning {
+ background-color: #F8F8D0;
+ border-color: #DF0101;
+}
+.success {
+ background-color: #D0F8D0;
+ border-color: #01DF01;
+}
+.notice {
+ background-color: #D0D0F8;
+ border-color: #0101DF;
+}
+
+ins {
+ background: #d0f8d0;
+ text-decoration: none;
+}
+del {
+ background: #f8f8d0;
+}
+
+
+/*-- Edit forms -------------------------------------------------------------
+
+  The edit form puts individual fields into divs, then groups those divs and
+  gives them headings:
+
+    h2#trigger_group1 -- group 1 title
+    div#group1
+       div.field
+         label
+         field
+
+  Groups can be collapsed through Javascript.
+----------------------------------------------------------------------------*/
+
+h2.ctrigger { /* a header that controls collapsing a group, in open state */
+ background: url($icon_base_url{}icons/minus.png) no-repeat right;
+}
+h2.ctrigger.closed {  /* a header that controls collapsing a group, closed */
+ background: url($icon_base_url{}icons/plus.png) no-repeat right;
+}
+form.edit div.honey {  /* a honeypot field */
  display: none;
 }
-
-label.inline {
- display: inline-block;
- width: 200px;
-}
-
-div.field {
+form.edit div.field {  /* a regular field */
  background-color: #ddd;
  margin-bottom: 2px;
  padding: .5em .2em .1em .5em ;
 }
-
-div.grippie {
+div.grippie { /* a grippie for resizing text areas */
  background:#F3F3F3 url($icon_base_url{}sputnik/grippie.png) no-repeat scroll center 2px;
  border-color:#DDDDDD;
  border-style:solid;
@@ -398,70 +370,144 @@ div.grippie {
  width: 70px;
 }
 
-h2.ctrigger {
- background: url($icon_base_url{}icons/minus.png) no-repeat right;
+form.edit label.inline {
+ display: inline-block;
+ width: 200px;
 }
-
-h2.ctrigger.closed {
- background: url($icon_base_url{}icons/plus.png) no-repeat right;
-}
-
-.teaser {
- font-size  : 120%;
-}
-
-textarea {
+form.edit textarea {
+ font-size: 110%;
  padding: 1em;
  width: 95%;
- font-size: 110%;
 }
-label {
+form.edit label {
  padding: .5em;
-}
-.error {
- background-color: #F8E0E0;
- border: medium solid #DF0101;
-}
-.warning {
- background-color: #F8F8D0;
- border: medium solid #DF0101;
-}
-.success {
- background-color: #D0F8D0;
- border: medium solid #01DF01;
-}
-.notice {
- background-color: #D0D0F8;
- border: medium solid #0101DF;
-}
-.error, .warning, .success, .notice {
- margin-bottom: 1em;
- padding: .5em;
- width: 90%;
 }
 
-ins {
- background: #d0f8d0;
+
+/*-- #menu ------------------------------------------------------------------
+
+  The menu contains links to other pages on the site. The menu can often be
+  quite big, so we may want to put the HTML for it in the end of the page,
+  then pull it up or to the side with CSS. This stylesheet turns the menu
+  into a two-level system of tabs.
+----------------------------------------------------------------------------*/
+
+#menu {
+ font-size: 120%;
+ position: absolute;
+ top: 120px;
+ width: $CONTAINER_WIDTH;
+}
+#menu > ul {
+ display: block;
+ text-align: center;
+ width: 100%;
+ padding-left: 0em;
+}
+#menu ul li {
+ display: inline;
+ margin-left: 10px;
+ padding-right: 1em;
+}
+#menu ul li.back ul {
+ display: none;
+}
+#menu ul li.front ul {
+ background: $SUBMENU_COLOR;
+ float: left;
+ margin-top: 1em;
+ padding-top: .7em; padding-bottom: .7em;
+ padding-left: 0em;
+ width: $CONTAINER_WIDTH;
+ z-index: 1000;
+}
+#menu ul li.front ul li{
+ display: inline;
+ z-index: 1001;
+}
+#menu a {
  text-decoration: none;
 }
-del {
- background: #f8f8d0;
+#menu ul li a {
+ padding: .3em;
+}
+#menu ul li.front a {
+ border-bottom: .2em solid $SUBMENU_COLOR;
+ color: $SUBMENU_COLOR;
+}
+#menu ul li.back a {
+ border-bottom: .2em solid #555;
+}
+#menu ul li.front ul li {
+ margin: 0;
+ padding: 0;
+}
+#menu ul li.front ul li a {
+ color: white;
+ font-family: Verdana, Arial, sans-serif;
+ font-size: 70%;
+ margin-left: 10px;
+ padding: .3em 1em .3em 1em;
+}
+#menu ul li.front ul li.front a {
+ background: $ACTIVE_GRAY;
+}
+#menu ul li.front ul li.back a {
+ background: $SUBMENU_COLOR;
+}
+#menu ul li.front ul li.back a:hover {
+ background-color: gray;
 }
 
 
+/*-- #footer ----------------------------------------------------------------
+
+  Information that appears on every page but is less important than the stuff
+  that goes into #header.
+----------------------------------------------------------------------------*/
+
+#footer {
+ background-color: $SUBMENU_COLOR;
+ border-top: 1px solid $ACTIVE_GRAY;
+ color: white;
+ margin-top: 20em;
+ padding-top: 10px; padding-bottom: 10px;
+ width: $CONTAINER_WIDTH;
+}
+#footer p {
+ margin-left: 1em;
+ margin-right: 1em;
+}
+#footer a {
+ color: #aaaaff;
+}
+#footer a.etc {
+  font-size: .7em
+}
+
+
+/*-- alternative media ------------------------------------------------------
+
+  Special rules for media other than screen.
+----------------------------------------------------------------------------*/
+
 @media print {
- #menu_bar, #login, #ft, .toolbar {
+ #menu, #login, #search, #footer, .toolbar {
    display: none; !important;
  }
- body {
+ body, container, page {
    background-color: white;
- }
- #bd {
    border: none;
    margin: 0px;
    padding: 0px;
  }
 }
+
+
+/*-- additional css ---------------------------------------------------------
+
+  Additional CSS to be included based on the site configuration.
+----------------------------------------------------------------------------*/
 
 $more_css
 

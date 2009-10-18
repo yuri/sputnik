@@ -15,37 +15,11 @@ NODE.search_form = [===[
 
 
 
-NODE.content=[=====[--- this is the template that generates the outer tags of the page ---
-
-TRANSLATIONS = "Translations:Main"
-
---------------------------------------------------------------------------------
-------- BASIC TEMPLATES --------------------------------------------------------
---------------------------------------------------------------------------------
-
-
+NODE.content=[=====[
 
 --------------------------------------------------------------------------------
 ------- HISTORY, ETC -----------------------------------------------------------
 --------------------------------------------------------------------------------
-
-DATE_SELECTOR = [===[
-      <div id="date_selector" style="border:1px solid #bbb; background: #eee8aa; padding: 5 5 5 5">
-       _(CHANGES_BY_DATE) ($current_month):
-       <span class="history_dates">
-        $do_dates[=[$if_current_date[[$date]]|[[<a $date_link>$date</a>]]
-        ]=]
-       </span>
-       <br/>
-       _(CHOOSE_ANOTHER_MONTH) ($current_year) :
-       <span class="history_months">
-        $do_months[=[$if_current_month[[$month]]$if_other_month[[<a $month_link>$month</a>]]
-        ]=]
-       </span>
-       <br/>
-      </div> <!-- end of "date_selector" div-->
-      <br/>
-]===]
 
 HISTORY = [===[
       <form action="$base_url">
@@ -170,10 +144,10 @@ EDIT = [===[
        $if_preview[[
         <h2>_(PREVIEWING_UNSAVED_CHANGES)</h2>
         <div class="preview">$preview</div>
-        <a href="#new_page_content_header" class="button">_(CHANGE)</a>
         <div class="submit">
          <button class="positive" type="submit" name="action_save" accesskey="s">_(SAVE)</button>
          <button class="negative" type="submit" name="action_show" accesskey="c">_(CANCEL)</button>
+         <label>or continue editing below</label>
         </div>
        ]]
        $html_for_fields

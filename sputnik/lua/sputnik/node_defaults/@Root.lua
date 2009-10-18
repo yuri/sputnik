@@ -18,7 +18,6 @@ html_main       = {0.701, proto="fallback"}
 html_head       = {0.702, proto="fallback"}
 html_menu       = {0.703, proto="fallback"}
 html_logo       = {0.704, proto="fallback"}
-html_search     = {0.705, proto="fallback"}
 html_page       = {0.706, proto="fallback"}
 html_content    = {0.7061, proto="fallback"}
 html_body       = {0.707, proto="fallback"}
@@ -31,7 +30,7 @@ redirect_destination =  {0.70903}
 xssfilter_allowed_tags = {0.7091, proto="concat", activate="lua"}
 http_cache_control = {0.710, proto="fallback"}
 http_expires    = {0.711, proto="fallback"}
-content         = {0.8  }
+content         = {0.81  }
 edit_ui         = {0.9, proto="concat"}
 admin_edit_ui   = {0.91, proto="concat"}
 child_defaults  = {0.92, proto="concat", activate="lua"}
@@ -131,7 +130,6 @@ html_section     = {2.100, "div_start", id="html_section", state="open"}
  html_header     = {2.104, "textarea", rows=3, editor_modules = {"resizeable"}}
  html_menu       = {2.105, "textarea", rows=3, editor_modules = {"resizeable"}}
  html_logo       = {2.106, "textarea", rows=3, editor_modules = {"resizeable"}}
- html_search     = {2.107, "textarea", rows=3, editor_modules = {"resizeable"}}
  html_page       = {2.108, "textarea", rows=3, editor_modules = {"resizeable"}}
  html_content    = {2.108, "textarea", rows=3, editor_modules = {"resizeable"}}
  html_sidebar    = {2.109, "textarea", rows=3, editor_modules = {"resizeable"}}
@@ -228,17 +226,10 @@ NODE.html_menu      = [==[<ul class="level1">$do_nav_sections[=[
     </ul>
 ]==]
 
-NODE.html_logo      = [[<a class="logo" href="$home_page_url" title="Home page">
+NODE.html_logo      = [[<a class="home_page" href="$home_page_url" title="Home page">
       <p class="site_title">$site_title</p>
       <p class="site_subtitle">$site_subtitle</p>
      </a>]]
-
-NODE.html_search    = [[ <form action="$base_url" class="search">
-      <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
-      <input class="search_box" type="text" name="q" size="16"
-             title="_(TOOLTIP_FOR_SEARCH_BOX)" value="$search_box_content"/>
-      <input class="search_button" type="image" src="$icon_base_url{}icons/search.png" alt="_(BUTTON)"/>
-     </form>]]
 
 NODE.html_page      = [=[<div id="breadcrumbs">
      <ul>
@@ -255,7 +246,7 @@ NODE.html_page      = [=[<div id="breadcrumbs">
      <img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/>]]
      <a name="title" title="_(CURRENT_PAGE)" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
     </div>
-    <div id="content" class='content'>
+    <div id="content" class="content">
      $do_messages[[<p class="$class">$message</p>]]
 
 <!-- start page content -->$content<!-- end page content -->
@@ -276,8 +267,6 @@ NODE.html_body      = [[  <div id="container">
    <div id="menu">
     $menu
    </div>
-   <div id="login_form" class="popup_form" style="display: none">
-   </div>
    <div id="footer">
      $footer
    </div>
@@ -285,16 +274,20 @@ NODE.html_body      = [[  <div id="container">
 ]]
 
 
-NODE.html_header    = [=[<div id="search_box">
-    $search
-    </div>
-    <div id="login" style="font-size:120%; background-color: white;">
-     $if_logged_in[[<span style="border: 1px solid read;">_(HI_USER)
-     <a title="_(LOGOUT)" $logout_link><img style="vertical-align: text-bottom" src="$icon_base_url{}icons/logout.png" alt="_(BUTTON)"/></a></span>]]
-     $if_not_logged_in[[<a class="login_link" $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
-    </div>   
-    <div id="logo">
+NODE.html_header    = [=[<div id="logo">
      $logo
+    </div>
+    <div id="login">
+     $if_logged_in[[$user / <a class="logout" title="_(LOGOUT)" $logout_link>_(LOGOUT)</a>]]
+     $if_not_logged_in[[<a class="login_link" $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
+    </div>
+    <div id="search">
+     <form action="$base_url" class="search">
+      <input class="hidden" type="hidden" name="p" value="sputnik/search"/>
+      <input class="search_box" type="text" name="q" size="16"
+             title="_(TOOLTIP_FOR_SEARCH_BOX)" value="$search_box_content"/>
+      <input class="search_button" type="image" src="$icon_base_url{}icons/search.png" alt="_(BUTTON)"/>
+     </form>
     </div>
 ]=]
 
@@ -302,7 +295,7 @@ NODE.html_sidebar = [==[
 ]==]
 
 NODE.html_footer = [===[
-<p>_(POWERED_BY_SPUTNIK) | <a style="font-size: .7em" href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a></p>
+<p>_(POWERED_BY_SPUTNIK) | <a class="etc" href="href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a></p>
 ]===]
 
 NODE.html_meta_keywords = " "

@@ -21,9 +21,9 @@ FALLBACKS = {
 
 -- The login link
 LOGIN = {
-   en_US = "Login",
+   en_US = "Sign in",
    ru    = "Представиться",     
-   pt_BR = "Login",
+   pt_BR = "Faça login",
 }
 
 OR = {
@@ -35,7 +35,7 @@ OR = {
 REGISTER = {
    en_US = "register",
    ru    = "зарегистрироваться",     
-   pt_BR = "Criar conta",
+   pt_BR = "crie uma conta",
 }
 
 -- The login button
@@ -44,13 +44,6 @@ LOGIN = {
    en_US = "Login",
    ru    = "Войти",     
    pt_BR = "Entrar",
-}
-
--- User greeting
-HI_USER = {
-   en_US = "Hi, $user!",
-   ru    = "Салют, $user!",
-   pt_BR = "Olá, $user!", 
 }
 
 -- The logout link

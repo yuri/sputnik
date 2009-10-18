@@ -4,9 +4,17 @@ NODE = {
    title="Home Page"
 }
 
-NODE.content=[===[
+NODE.abstract=[===[
 
 Congratulations, you just installed [Sputnik](http://spu.tnik.org/)!
+
+]===]
+
+NODE.content=[===[
+
+<span class="teaser">
+ Congratulations, you just installed [Sputnik](http://spu.tnik.org/)!
+</span>
 
 What's next? 
 

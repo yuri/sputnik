@@ -5,22 +5,22 @@ require"cosmo"
 
 REQUIRE_LUAROCKS = [[pcall(require, "luarocks.require")]]
 
-WS_SCRIPT_TEMPLATE = [[
+WS_SCRIPT_TEMPLATE = [=[
 require('sputnik.wsapi_app')
 return sputnik.wsapi_app.new{
-   VERSIUM_PARAMS = { '$dir/wiki-data/' },
+   VERSIUM_PARAMS = { [[$dir/wiki-data/]] },
    BASE_URL       = '/',
    NICE_URL       = '/', 
    PASSWORD_SALT  = '$password_salt',
    TOKEN_SALT     = '$token_salt',
 }
-]]
+]=]
 
-CGI_TEMPLATE = [[#! $dir/bin/lua
+CGI_TEMPLATE = [=[#! $dir/bin/lua
 $require_luarocks
 require('sputnik.wsapi_app')
 local my_app = sputnik.wsapi_app.new{
-   VERSIUM_PARAMS = { '$dir/wiki-data/' },
+   VERSIUM_PARAMS = { [[$dir/wiki-data/]] },
    BASE_URL       = '/cgi-bin/sputnik.cgi',
    PASSWORD_SALT  = '$password_salt',
    TOKEN_SALT     = '$token_salt',
@@ -28,7 +28,7 @@ local my_app = sputnik.wsapi_app.new{
 
 require("wsapi.cgi")
 wsapi.cgi.run(my_app)
-]]
+]=]
 
 
 CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

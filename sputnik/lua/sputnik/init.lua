@@ -304,6 +304,15 @@ function Sputnik:handle_request(request, response)
       response.headers[header] = value
    end
 
+   -- If we ave any cookie values, add them to the response
+   for name,value in pairs(node.cookies) do
+      if value == false then
+         response:delete_cookie(name)
+      else
+         response:set_cookie(name, {value = value, path = "/"})
+      end
+   end
+
    -- Check if the action function requested a redirect.
    if request.redirect then
       response.headers["Content-Type"] = content_type or "text/html"
@@ -525,6 +534,14 @@ function Sputnik:decorate_node(node)
    -- Create a table for storing headers and add a function to add headers to it.
    node.headers = {}
    node.add_header = function(self, header, value) self.headers[header] = value end
+
+   -- Create a table for storing cookies and add a function to add cookies to it.
+   -- The key of the cookie table should be the name of the cookie, while the
+   -- value should be the value of the cookie, or the value false, in which
+   -- case the cookie is deleted.
+
+   node.cookies = {}
+   node.set_cookie = function(self, name, value) self.cookies[name] = value end
 
    -- Add a function for redirecting. ::TODO:: check if this is used.
    node.redirect = function(node_self, url)

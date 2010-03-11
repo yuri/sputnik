@@ -72,13 +72,22 @@ local function serialize(data)
 	-- if the string contains any newlines, find a version of long quotes that will work
 	if data:find("\n") then
 		local count = 0
+
+      -- check to see if the string ends with a ], in which case we need
+      -- to start off using ]=] to prevent issues.
+      if data:find("%]$") then
+         count = 1
+      end
+
+      -- generate the open/close tags
 		local open = string.format("[%s[", string.rep("=", count))
 		local close = string.format("]%s]", string.rep("=", count))
 
+      -- search through the data looking for conflicts with open/close
 		while data:find(open, nil, true) or data:find(close, nil, true) do
+			count = count + 1
 			open = string.format("[%s[", string.rep("=", count))
 			close = string.format("]%s]", string.rep("=", count))
-			count = count + 1
 		end
 
 		return string.format("%s%s%s", open, data, close)

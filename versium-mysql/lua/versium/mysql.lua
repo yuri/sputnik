@@ -96,10 +96,10 @@ function new(params)
       INSERT_NODE = string.format("INSERT INTO %s (id,author,comment,timestamp,data) VALUES (%%s, %%s, %%s, %%s, %%s);", obj.tables.node),
       INSERT_INDEX = string.format("INSERT INTO %s (id, version) VALUES (%%s, %%s);", obj.tables.node_index),
       UPDATE_INDEX = string.format("UPDATE %s SET version=%%s WHERE id = %%s;", obj.tables.node_index),
-      GET_METADATA_ALL = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s ORDER BY timestamp;", obj.tables.node),
+      GET_METADATA_ALL = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s ORDER BY timestamp, version;", obj.tables.node),
       GET_METADATA_VERSION = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id = %%s and version = %%s;", obj.tables.node),
-      GET_METADATA_LATEST = string.format("SELECT n.id,n.version,timestamp,author,comment FROM %s as n NATURAL JOIN %s WHERE n.id = %%s ORDER BY timestamp;", obj.tables.node, obj.tables.node_index),
-      GET_COMPLETE_HISTORY = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id like %%s ORDER BY timestamp DESC LIMIT %%s, %%s;", obj.tables.node)
+      GET_METADATA_LATEST = string.format("SELECT n.id,n.version,timestamp,author,comment FROM %s as n NATURAL JOIN %s WHERE n.id = %%s ORDER BY timestamp, version;", obj.tables.node, obj.tables.node_index),
+      GET_COMPLETE_HISTORY = string.format("SELECT id,version,timestamp,author,comment FROM %s WHERE id like %%s ORDER BY timestamp DESC, version LIMIT %%s, %%s;", obj.tables.node)
    }
 
    return obj 

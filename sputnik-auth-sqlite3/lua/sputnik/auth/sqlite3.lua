@@ -89,6 +89,7 @@ function new(sputnik, params)
       USER_PWHASH = string.format("SELECT password from %s WHERE username = %%s;", obj.tables.user),
       GET_META = string.format("SELECT value from %s WHERE username = %%s and name = %%s;", obj.tables.metadata),
       ADD_USER = string.format("INSERT INTO %s (username, password) VALUES (%%s, %%s);", obj.tables.user),
+      SET_PASSWORD = string.format("UPDATE %s SET password = %%s where username = %%s;", obj.tables.user),
       ADD_META = string.format("INSERT INTO %s (username, name, value) VALUES (%%s, %%s, %%s);", obj.tables.metadata),
       SET_META = string.format("INSERT INTO %s (username, name, value) VALUES (%%s, %%s, %%s) ON DUPLICATE KEY UPDATE value = %%s;", obj.tables.metadata),
 	}
@@ -252,6 +253,39 @@ function Auth:user_is_recent(username)
       return false
    end
 end
+
+------------------------------------------------------------------
+-- Sets a password for the user. (An optional function.)
+--
+-- @param username the username to add
+-- @param password the raw password
+-- @return success a boolean value indicating if the add was
+-- successful.
+-- @return err an error message if the add was not successful
+
+function Auth:set_password(username, password)
+
+   if not self:user_exists(username) then
+      return nil,  errors.no_such_user(username)
+   end
+
+   local cmd = self:prepare(self.queries.GET_META, username, "creation_time")
+   local cur = self.con:execute(cmd)
+   local creation_time = cur:fetch("*a")
+   cur:close()
+
+   local pwhash = get_salted_hash(creation_time, self.password_salt, password)
+
+   username = username:lower()
+
+   -- Update the user table
+   local cmd = self:prepare(self.queries.SET_PASSWORD, pwhash, username)
+   local res = self.con:execute(cmd)
+   assert(res == 1)
+
+   return true
+end
+
 
 ------------------------------------------------------------------
 -- Adds a user/password pair to the password file

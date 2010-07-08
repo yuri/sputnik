@@ -132,16 +132,18 @@ actions = {}
 --                       dispatches to).
 -----------------------------------------------------------------------------
 function actions.post(node, request, sputnik)
+
    for k,v in pairs(request.params) do
       local action = string.match(k, "^action_(.*)$")
       if action then
          function err_msg(err_code, message)
             request.try_again = "true"
-            node:post_error(node.translator.translate_key(err_code)..(message or ""))
+            node:post_translated_error(err_code, message or "")
          end
 
          -- check the validity of the request
          local ok, err = check_post_parameters(node, request, sputnik)
+         request.post_parameters_checked = true
          if not ok then
             err_msg(err)
          end

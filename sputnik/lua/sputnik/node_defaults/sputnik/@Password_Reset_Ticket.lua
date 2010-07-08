@@ -7,14 +7,16 @@ NODE.permissions= [[
    allow(all_users, "reset_password")
 ]]
 NODE.actions= [[
-  show = "register.new_password_form"
-  reset_password = "register.reset_password"
+  show = "register.show_password_reset_ticket"
+  reset_password = "register.fulfill_password_reset_ticket"
 ]]
 NODE.fields = [[
   hash = {100}
   username = {101}
   email = {102}
   numtries = {103}
+  invalidated = {104}
+  expiration_time = {105}
 ]]
 NODE.edit_ui = [[
   reset()
@@ -23,5 +25,6 @@ NODE.edit_ui = [[
   hash     = {3, "readonly_text"}
   numtries = {4, "text_field"}
   invalidated = {5, "readonly_text"}
+  expiration_time = {6, "readonly_text"}
 ]]
 

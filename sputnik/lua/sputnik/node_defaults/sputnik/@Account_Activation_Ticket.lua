@@ -7,9 +7,8 @@ NODE.permissions= [[
    allow(all_users, "activate")
 ]]
 NODE.actions= [[
-  show = "register.confirm"
-  activate = "register.activate"
-  submit = "register.submit"
+  show = "register.show_account_activation_ticket"
+  activate = "register.fulfill_account_activation_ticket"
 ]]
 NODE.fields = [[
   hash = {100}

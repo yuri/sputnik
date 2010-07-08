@@ -712,6 +712,14 @@ Thank you!
 ]]
 }
 
+PASSWORD_RESET_REQUEST = {
+   en_US = "Password reset request"
+}
+
+PASSWORD_RESET = {
+   en_US = "Password reset"
+}
+
 -- The body of the account activation email
 PASSWORD_RESET_MESSAGE_BODY = {
    en_US = [[
@@ -724,14 +732,22 @@ Thank you!
 ]]
 }
 
-
 ERROR_SENDING_ACTIVATION_EMAIL = {
    en_US = "Sorry, there was a problem sending your activation email."
 }
 
+ERROR_SENDING_PASSWORD_RESET_EMAIL = {
+   en_US = "Sorry, there was a problem sending your password reset email."
+}
+
 ACTIVATION_MESSAGE_SENT = {
    en_US = [[ An activation message was sent to your email address.  
-              Please check your email use the link in the message to activate your account.]]
+              Please check your email in a few minutes and use the link in the message to activate your account.]]
+}
+
+PASSWORD_RESET_MESSAGE_SENT = {
+   en_US = [[ A message was sent to your email address.  
+              Please check your email in a few minutes and use the link in the message to reset your password.]]
 }
 
 
@@ -758,7 +774,6 @@ EDIT_FORM_EMAIL = {
    en_US = "Email"
 }
 
-
 -- Form label for terms of service
 EDIT_FORM_AGREE_TOS = {
    en_US = "Terms of Service"
@@ -769,8 +784,16 @@ EDIT_FORM_NEW_PASSWORD_CONFIRM = {
    en_US = "Confirm Password"
 }
 
+CONFIRM = {
+   en_US = "confirm"
+}
+
 TWO_VERSIONS_OF_NEW_PASSWORD_DO_NOT_MATCH = {
    en_US = "Two version of the new password do not match."
+}
+
+EMAIL_DOES_NOT_MATCH_ACCOUNT = {
+   en_US = "The email address you entered does not match the one on this account."
 }
 
 NEW_EMAIL_NOT_VALID = {
@@ -785,13 +808,20 @@ USERNAME_TAKEN = {
    en_US = "This user name is already taken."
 }
 
+INCORRECT_USERNAME = {
+   en_US = "Please check the username."
+}
+
 SUCCESSFULLY_CREATED_ACCOUNT = {
    en_US = "Successfully created your new account."
 }
 
+SUCCESSFULLY_CHANGED_PASSWORD = {
+   en_US = "Your password has been reset."
+}
 
 PLEASE_CONFIRM_PASSWORD = {
-   en_US = "Please confirm new password"
+   en_US = "Please confirm the new password"
 }
 
 COULD_NOT_CONFIRM_NEW_PASSWORD = {

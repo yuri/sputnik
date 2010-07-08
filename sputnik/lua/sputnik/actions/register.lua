@@ -490,7 +490,7 @@ function actions.reset_password(node, request, sputnik)
          local status = sputnik.auth:set_password(node.username, password)
          assert(status)
          request.user, request.auth_token = sputnik.auth:authenticate(node.username, password)   
-         node:post_notice(node.translator.translate_key("SUCCESSFULLY_CHANGED_PASSWORD for "..node.username.." to "..password))
+         node:post_notice(node.translator.translate_key("SUCCESSFULLY_CHANGED_PASSWORD"))
       end
    end
    node.inner_html = ""

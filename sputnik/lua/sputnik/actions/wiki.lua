@@ -783,7 +783,7 @@ function actions.edit (node, request, sputnik, etc)
    local captcha_html = ""
    if not request.user and sputnik.captcha then
       for _, field in ipairs(sputnik.captcha:get_fields()) do
-         table.insert(field_list, field)
+         table.insert(form.field_list, field)
       end
       captcha_html = node.translator.translate_key("ANONYMOUS_USERS_MUST_ENTER_CAPTCHA")..sputnik.captcha:get_html()
    end

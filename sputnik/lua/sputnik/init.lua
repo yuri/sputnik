@@ -32,6 +32,7 @@ require("sputnik.actions.wiki")
 require("sputnik.i18n")
 require("sputnik.util")
 require("sputnik.wsapi_app")
+local html_forms = require("sputnik.util.html_forms")
 local zlib_loaded, zlib = pcall(require, "zlib")
 
 new_wsapi_run_fn = sputnik.wsapi_app.new  -- for backwards compatibility
@@ -579,6 +580,29 @@ function Sputnik:decorate_node(node)
    function node:add_javascript_snippet(snippet)
       return add(self.javascript_snippets, snippet, {snippet=snippet})
    end
+   local sputnik = self
+   function node:make_post_form(args, cfields, cfield_names)
+      local post_timestamp = os.time()
+      local post_token = sputnik.auth:timestamp_token(post_timestamp)
+      local args = { 
+               field_spec = args.field_spec,
+               templates  = self.templates, 
+               translator = self.translator,
+               values     = args.values,
+               hash_fn    = function(field_name)
+                               return sputnik:hash_field_name(field_name, post_token)
+                            end
+            }
+      local html_for_fields, field_list = html_forms.make_html_form(args, cfields, cfield_names)
+      assert(html_for_fields)
+      return {
+               post_timestamp = post_timestamp,
+               post_token = post_token,
+               html_for_fields = html_for_fields,
+               field_list = field_list
+      }
+   end
+
    return node
 end  
 

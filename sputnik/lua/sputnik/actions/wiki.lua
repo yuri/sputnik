@@ -709,7 +709,7 @@ function actions.edit (node, request, sputnik, etc)
    -- Add the editpage stylesheet
    node:add_javascript_link(sputnik:make_url("sputnik/js/editpage.js"))
 
-   -- select the parameters that should be copied
+   -- Select the parameters that should be copied
    local fields = {}
    for field, field_params in pairs(node.fields) do
       if not field_params.virtual then
@@ -732,17 +732,13 @@ function actions.edit (node, request, sputnik, etc)
       fields[field_name] = ""
    end
 
-   local post_timestamp = os.time()
-   local post_token = sputnik.auth:timestamp_token(post_timestamp)
-   
+   -- Setup the field spec
    local edit_ui_field = etc.edit_ui_field
    if request.admin_edit then
       edit_ui_field = edit_ui_field or "admin_edit_ui"
    else
       edit_ui_field = edit_ui_field or "edit_ui"
    end 
-
-   sputnik.logger:debug(node[edit_ui_field]..honeypots)
 
    -- Pre-compile the field spec
    local cfields, cfield_names = html_forms.compile_field_spec(node[edit_ui_field]..honeypots)
@@ -776,17 +772,13 @@ function actions.edit (node, request, sputnik, etc)
    end
 
 
+   -- Make the form
+
    local form_params = {
       field_spec = node[edit_ui_field]..honeypots, 
-      templates  = node.templates, 
-      translator = node.translator,
       values     = fields,
-      hash_fn    = function(field_name)
-         return sputnik:hash_field_name(field_name, post_token)
-      end
    }
-
-   local html_for_fields, field_list = html_forms.make_html_form(form_params, cfields, cfield_names)
+   local form = node:make_post_form(form_params, cfields, cfield_names)
 
    local captcha_html = ""
    if not request.user and sputnik.captcha then
@@ -802,11 +794,11 @@ function actions.edit (node, request, sputnik, etc)
                                              preview = request.preview,
                                              summary = fields.summary
                                           },
-                        html_for_fields = html_for_fields,
+                        html_for_fields = form.html_for_fields,
                         node_name       = node.name,
-                        post_fields     = table.concat(field_list,","),
-                        post_token      = post_token,
-                        post_timestamp  = post_timestamp,
+                        post_fields     = table.concat(form.field_list,","),
+                        post_token      = form.post_token,
+                        post_timestamp  = form.post_timestamp,
                         action_url      = sputnik.config.BASE_URL,
                         captcha         = captcha_html,
                      }
@@ -1001,44 +993,40 @@ end
 
 
 function get_login_form(node, request, sputnik)
-   local post_timestamp = os.time()
-   local post_token = sputnik.auth:timestamp_token(post_timestamp)
+   
+   -- prepare the fieldspec
    local field_spec = [[
       --please_login = {4.0, "note"}
       user = {4.1, "text_field", div_class="autofocus"}
       password = {4.2, "password"}
    ]]
-
    if request.params.next then
       field_spec = field_spec .. [[
       next = {4.3, "hidden", no_label = true, div_class="hidden"}
       ]]
    end
 
-   local html_for_fields, field_list = html_forms.make_html_form{
-                                          field_spec = field_spec,
-                                          templates  = node.templates, 
-                                          translator = node.translator,
-                                          values     = {
-                                             user = "",
-                                             password = "",
-                                             next = request.params.next,
-                                          },
-                                          hash_fn    = function(field_name)
-                                                          return sputnik:hash_field_name(field_name, post_token)
-                                                       end
-                                       }
+   -- generate the form
+   local form = node:make_post_form{
+                   field_spec = field_spec,
+                   values     = {
+                      user = "",
+                      password = "",
+                      next = request.params.next,
+                   },
+                }
+
+   assert(form.html_for_fields)
 
    return cosmo.f(node.templates.LOGIN_FORM){
-                        html_for_fields = html_for_fields,
+                        html_for_fields = form.html_for_fields,
                         node_name       = request.params.next or node.name,
                         post_fields     = "user,password,next",
-                        post_token      = post_token,
-                        post_timestamp  = post_timestamp,
+                        post_token      = form.post_token,
+                        post_timestamp  = form.post_timestamp,
                         action_url      = sputnik:make_url(sputnik.config.LOGIN_NODE),
                         register_link   = sputnik:make_url(sputnik.config.REGISTRATION_NODE)
                      }
-
 
 end
 

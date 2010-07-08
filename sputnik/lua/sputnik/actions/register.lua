@@ -16,6 +16,11 @@ CONFIRMATION_FORM_SPEC = [[
    new_password = {1.31, "password"}
 ]]
 
+NEW_PASSWORD_FORM_SPEC = [[
+   new_password = {1.31, "password"}
+   new_password_confirm = {1.32, "password"}
+]]
+
 actions = {}
 
 -----------------------------------------------------------------------------
@@ -78,7 +83,7 @@ function actions.show_form(node, request, sputnik)
       post_timestamp  = post_timestamp,
       action_url      = sputnik:make_url(node.name),
       action          = "submit",
-      submitLabel     = node.translator.translate_key("SUBMIT"),
+      submit_label    = node.translator.translate_key("SUBMIT"),
       captcha         = captcha_html,
    }
 
@@ -86,37 +91,110 @@ function actions.show_form(node, request, sputnik)
 end
 
 
-function create_email_activation_ticket(args)
+function actions.show_password_reset_form(node, request, sputnik)
+   -- prepare the timestamp and token
+   local post_timestamp = os.time()
+   local post_token = sputnik.auth:timestamp_token(post_timestamp)
+
+   -- prepare the edit form
+   local html_for_fields, field_list = html_forms.make_html_form{
+      field_spec = [[
+                      username = {1.30, "text_field", div_class="autofocus"}
+                      email = {1.33, "text_field"}
+                   ]],
+      values     = {
+                      username = request.params.username or "",
+                      email = request.params.email or "",
+                   },
+      templates  = node.templates, 
+      translator = node.translator,
+      hash_fn    = function(field_name)
+                      return sputnik:hash_field_name(field_name, post_token)
+                   end
+   }
+   
+   local captcha_html = ""
+   if sputnik.captcha then
+      for _, field in ipairs(sputnik.captcha:get_fields()) do
+         table.insert(field_list, field)
+      end
+      captcha_html = sputnik.captcha:get_html()
+   end
+
+   node.inner_html = cosmo.f(node.templates.REGISTRATION){
+      html_for_fields = html_for_fields,
+      node_name       = node.name,
+      post_fields     = table.concat(field_list,","),
+      post_token      = post_token,
+      post_timestamp  = post_timestamp,
+      action_url      = sputnik:make_url(node.name),
+      action          = "submit",
+      submit_label     = node.translator.translate_key("SUBMIT"),
+      captcha         = captcha_html,
+   }
+
+   return node.wrappers.default(node, request, sputnik)
+end
+
+
+function create_generic_ticket(args)
    local sputnik = args.sputnik 
    local node = args.node
    assert(node)
+
    -- Create the activation ticket
-   local uid = md5.sumhexa(args.username .. sputnik:get_uid("register") .. os.time())
-   local prefix = args.sputnik.config.ADMIN_NODE_PREFIX
-   local ticket_id = (prefix .. "activate/%s"):format(uid)
+   local uid = md5.sumhexa(args.username .. sputnik:get_uid(args.uid_node_suffix) .. os.time())
+   
+   local ticket_id = (args.prefix.."/%s"):format(uid)
    local ticket = sputnik:get_node(ticket_id)
    ticket:update{
-            prototype = "sputnik/@Account_Activation_Ticket",
+            prototype = args.ticket_node_prototype,
             username  = args.username,
             email     = args.email,
             hash      = args.hash,
             numtries  = "0"
          }
    ticket = sputnik:save_node(ticket, request, "Sputnik",
-      "Creation of account activation ticket")
+      "Creation of ticket for account activation or password reset")
 
    -- Email the user
    local link = "http://" .. sputnik.config.DOMAIN .. sputnik:make_url(ticket_id)
    local status, err = sputnik:sendmail{
       from    = sputnik.config.CONFIRMATION_ADDRESS_FROM,
       to      = args.email,
-      subject = node.translator.translate_key("ACCOUNT_ACTIVATION"),
-      body    = cosmo.f(node.translator.translate_key("ACTIVATION_MESSAGE_BODY")){
+      subject = node.translator.translate_key(args.subject_key),
+      body    = cosmo.f(node.translator.translate_key(args.message_body_key)){
                    site_name       = sputnik.config.DOMAIN,
-                   activation_link = link, 
+                   link = link, 
                 }
    }
    return status==1, err
+end
+
+function create_email_activation_ticket(args)
+   local new_args = {
+      uid_node_suffix = "register",
+      prefix = args.sputnik.config.ADMIN_NODE_PREFIX .."activate",
+      ticket_node_prototype = "sputnik/@Account_Activation_Ticket",
+      subject_key = "ACCOUNT_ACTIVATION",
+      message_body_key = "ACTIVATION_MESSAGE_BODY",
+   }
+   local mt = {__index=args}
+   setmetatable(new_args, mt)
+   return create_generic_ticket(new_args)
+end
+
+function create_password_reset_ticket(args)
+   local new_args = {
+      uid_node_suffix = "register",
+      prefix = args.sputnik.config.ADMIN_NODE_PREFIX .."password_reset",
+      ticket_node_prototype = "sputnik/@Password_Reset_Ticket",
+      subject_key = "PASSWORD_RESET",
+      message_body_key = "PASSWORD_RESET_MESSAGE_BODY",
+   }
+   local mt = {__index=args}
+   setmetatable(new_args, mt)
+   return create_generic_ticket(new_args)
 end
 
 -----------------------------------------------------------------------------
@@ -205,6 +283,63 @@ function actions.submit(node, request, sputnik)
    return node.wrappers.default(node, request, sputnik)
 end
 
+--------------------------------------------------------------------
+--- Handle the submission of a request for a password reset (before the confirmation email)
+
+
+function actions.submit_password_reset(node, request, sputnik)
+   function err_msg(err_code)
+      request.try_again = true
+      node:post_error(node.translator.translate_key(err_code))
+   end
+
+   local wiki = require("sputnik.actions.wiki")
+   local post_ok, err = wiki.check_post_parameters(node, request, sputnik)
+   if not post_ok then
+      err_msg(err)
+   else
+      local p = request.params
+      -- the form is legit, let's check that username and password are ok
+
+      if sputnik.auth:user_exists(p.username) then
+         local correct_email = sputnik.auth:get_metadata(p.username, "email")
+         if correct_email ~= p.email then
+            err_msg("NEW_EMAIL_NOT_VALID")
+         end
+      else
+         err_msg("NEW_EMAIL_NOT_VALID")
+      end
+
+      -- test captcha, if configured
+      if sputnik.captcha then
+         local captcha_ok, err = sputnik.captcha:verify(request.POST, request.ip)
+         if not captcha_ok then
+            err_msg("COULD_NOT_VERIFY_CAPTCHA", err)
+         end
+      end
+   end
+
+   if request.try_again then
+      return node.actions.show(node, request, sputnik)
+   end
+
+   local ok, err = create_password_reset_ticket{
+         username  = request.params.username,
+         email     = request.params.email,
+         hash      = md5.sumhexa(request.params.username),
+         sputnik   = sputnik,      
+         node      = node,
+   }
+   if ok then
+      node:post_success(node.translator.translate_key("ACTIVATION_MESSAGE_SENT"))
+   else
+      node:post_error(node.translator.translate_key("ERROR_SENDING_ACTIVATION_EMAIL").." ("..err..")")
+   end
+
+   node.inner_html = ""
+   return node.wrappers.default(node, request, sputnik)
+end
+
 -----------------------------------------------------------------------------
 -- Displays the activation form.
 -----------------------------------------------------------------------------
@@ -234,9 +369,48 @@ function actions.confirm(node, request, sputnik)
       post_fields     = table.concat(field_list,","),
       post_token      = post_token,
       post_timestamp  = post_timestamp,
-      submitLabel     = node.translator.translate_key("CONFIRM"),
+      submit_label     = node.translator.translate_key("CONFIRM"),
       action_url      = sputnik:make_url(node.name),
       action          = "activate",
+      captcha         = "",
+   }
+
+   node:post_notice(node.translator.translate_key("PLEASE_CONFIRM_PASSWORD"))
+   return node.wrappers.default(node, request, sputnik)
+end
+
+-----------------------------------------------------------------------------
+-- Handles the new password entry form
+-----------------------------------------------------------------------------
+function actions.new_password_form(node, request, sputnik)
+   local fields = {}
+   fields.new_password = request.params.new_password or ""
+
+   local post_timestamp = os.time()
+   local post_token = sputnik.auth:timestamp_token(post_timestamp)
+
+   local html_for_fields, field_list = html_forms.make_html_form{
+      field_spec = NEW_PASSWORD_FORM_SPEC,
+      templates  = node.templates, 
+      translator = node.translator,
+      values     = fields,
+      hash_fn    = function(field_name)
+         return sputnik:hash_field_name(field_name, post_token)
+      end
+   }
+
+   table.insert(field_list, "recaptcha_challenge_field")
+   table.insert(field_list, "recaptcha_response_field")
+
+   node.inner_html = cosmo.f(node.templates.REGISTRATION){
+      html_for_fields = html_for_fields,
+      node_name       = node.name,
+      post_fields     = table.concat(field_list,","),
+      post_token      = post_token,
+      post_timestamp  = post_timestamp,
+      submit_label     = node.translator.translate_key("CONFIRM"),
+      action_url      = sputnik:make_url(node.name),
+      action          = "reset_password",
       captcha         = "",
    }
 
@@ -290,4 +464,38 @@ function actions.activate(node, request, sputnik)
    node.inner_html = ""
    return node.wrappers.default(node, request, sputnik)
 end
+
+-----------------------------------------------------------------------------
+-- Handles submitted new password form.
+-----------------------------------------------------------------------------
+function actions.reset_password(node, request, sputnik)
+   function err_msg(err_code)
+      request.try_again = true
+      node:post_error(node.translator.translate_key(err_code))
+   end
+
+   local wiki = require("sputnik.actions.wiki")
+   local post_ok, err = wiki.check_post_parameters(node, request, sputnik)
+   if not post_ok then
+      err_msg(err)
+   else
+      local password = request.params.new_password or ""
+
+      if password ~= request.params.new_password_confirm then
+         err_msg("TWO_VERSIONS_OF_NEW_PASSWORD_DO_NOT_MATCH")
+      elseif not sputnik.auth:user_exists(node.username) then
+         err_msg("INVALID_PASSWORD_RESET_TICKET")
+         return actions.show_form(node, request, sputnik)
+      else
+         local status = sputnik.auth:set_password(node.username, password)
+         assert(status)
+         request.user, request.auth_token = sputnik.auth:authenticate(node.username, password)   
+         node:post_notice(node.translator.translate_key("SUCCESSFULLY_CHANGED_PASSWORD for "..node.username.." to "..password))
+      end
+   end
+   node.inner_html = ""
+   return node.wrappers.default(node, request, sputnik)
+end
+
+
 

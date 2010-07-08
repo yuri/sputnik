@@ -278,7 +278,7 @@ REGISTRATION = [===[
  $html_for_fields
  $captcha
  <div class="submit">
- <button class="submit positive" type="submit" accesskey="s" name="action_submit">Register</button>
+ <button class="submit positive" type="submit" accesskey="s" name="action_submit">$submit_label</button>
  </div>
 </form> 
 ]===]

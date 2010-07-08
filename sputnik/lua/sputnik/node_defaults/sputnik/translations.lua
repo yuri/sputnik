@@ -38,6 +38,10 @@ REGISTER = {
    pt_BR = "crie uma conta",
 }
 
+SUBMIT = {
+   en_US = "submit",
+}
+
 -- The login button
 
 LOGIN = {
@@ -702,11 +706,24 @@ In order to activate your account at $site_name, please click the following link
 If the link isn't click-able, please copy and paste the URL into your web browser.
 You will be asked to confirm the registered information.
 
-$activation_link
+$link
 
 Thank you!
 ]]
 }
+
+-- The body of the account activation email
+PASSWORD_RESET_MESSAGE_BODY = {
+   en_US = [[
+In order to reset the password for your account at $site_name, please click the following link.
+If the link isn't click-able, please copy and paste the URL into your web browser.
+
+$link
+
+Thank you!
+]]
+}
+
 
 ERROR_SENDING_ACTIVATION_EMAIL = {
    en_US = "Sorry, there was a problem sending your activation email."
@@ -723,6 +740,11 @@ EDIT_FORM_NEW_USERNAME = {
    en_US = "User name"
 }
 
+-- Form label for new user name
+EDIT_FORM_USERNAME = {
+   en_US = "User name"
+}
+
 -- Form label for new password
 EDIT_FORM_NEW_PASSWORD = {
    en_US = "Password"
@@ -731,6 +753,11 @@ EDIT_FORM_NEW_PASSWORD = {
 EDIT_FORM_NEW_EMAIL = {
    en_US = "Email"
 }
+
+EDIT_FORM_EMAIL = {
+   en_US = "Email"
+}
+
 
 -- Form label for terms of service
 EDIT_FORM_AGREE_TOS = {

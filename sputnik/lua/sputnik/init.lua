@@ -529,6 +529,13 @@ function Sputnik:decorate_node(node)
       node["post_"..class] = function(self, message) 
          table.insert(self.messages, {message=message, class=class})
       end
+      node["post_translated_"..class] = function(self, key, details) 
+         local message = self.translator.translate_key(key)
+         if details then
+            message = message.." ("..details..")"
+         end
+         table.insert(self.messages, {message=message, class=class})
+      end
    end
 
    -- Create a table for storing headers and add a function to add headers to it.

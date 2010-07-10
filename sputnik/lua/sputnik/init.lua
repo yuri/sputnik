@@ -1045,7 +1045,7 @@ function Sputnik:sendmail(args)
    if self.config.EMAIL_TEST_MODE then
       print("\nTo: "..args.to.."\nFrom: "..args.from.."\nSubject: "..args.subject)
       print("\n"..(args.body or "").."\n")
-      return true
+      return 1
    else
       return sputnik.util.sendmail(args, self)
    end

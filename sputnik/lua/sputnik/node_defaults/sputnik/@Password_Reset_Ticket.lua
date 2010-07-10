@@ -3,12 +3,11 @@ NODE = {
    title = "Reset Password",
 }
 NODE.permissions= [[
-   --deny(all_users, "edit")
-   allow(all_users, "reset_password")
+   allow(all_users, "submit")
 ]]
 NODE.actions= [[
   show = "register.show_password_reset_ticket"
-  reset_password = "register.fulfill_password_reset_ticket"
+  submit = "register.fulfill_password_reset_ticket"
 ]]
 NODE.fields = [[
   hash = {100}

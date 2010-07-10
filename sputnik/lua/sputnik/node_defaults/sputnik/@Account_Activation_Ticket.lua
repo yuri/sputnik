@@ -3,12 +3,11 @@ NODE = {
    title = "New Account Activation",
 }
 NODE.permissions= [[
-   --deny(all_users, "edit")
-   allow(all_users, "activate")
+   allow(all_users, "submit")
 ]]
 NODE.actions= [[
   show = "register.show_account_activation_ticket"
-  activate = "register.fulfill_account_activation_ticket"
+  submit = "register.fulfill_account_activation_ticket"
 ]]
 NODE.fields = [[
   hash = {100}

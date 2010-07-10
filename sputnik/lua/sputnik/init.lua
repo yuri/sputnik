@@ -1042,7 +1042,13 @@ end
 -- Sends email on Sputnik's behalf.
 -----------------------------------------------------------------------------
 function Sputnik:sendmail(args)
-   return sputnik.util.sendmail(args, self)
+   if self.config.EMAIL_TEST_MODE then
+      print("\nTo: "..args.to.."\nFrom: "..args.from.."\nSubject: "..args.subject)
+      print("\n"..(args.body or "").."\n")
+      return true
+   else
+      return sputnik.util.sendmail(args, self)
+   end
 end
 
 

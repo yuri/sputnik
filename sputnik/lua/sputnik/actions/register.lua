@@ -243,7 +243,6 @@ end
 -- Creates a password reset ticket and emails it to the user.
 -----------------------------------------------------------------------------
 function actions.create_password_reset_ticket(node, request, sputnik)
-
    assert(request.post_parameters_checked)
    local p = request.params
 
@@ -265,7 +264,6 @@ function actions.create_password_reset_ticket(node, request, sputnik)
    local ok, err = create_password_reset_ticket{
          username  = request.params.username,
          email     = request.params.email,
-         hash      = md5.sumhexa(request.params.username),
          sputnik   = sputnik,      
          node      = node,
          hours_before_expiration = sputnik.config.HOURS_BEFORE_PASSWORD_TICKET_EXPIRES or 2
@@ -310,6 +308,13 @@ end
 -----------------------------------------------------------------------------
 function actions.show_password_reset_ticket(node, request, sputnik)
 
+   -- Check that the ticket has been invalidated or expired
+   if node.invalidated or node.expiration_time < os.time() then
+      node:post_translated_error("PASSWORD_RESET_TICKET_EXPIRED")
+      node.inner_html = ""
+      return node.wrappers.default(node, request, sputnik)
+   end
+
    local form = node:make_post_form{
       field_spec = [[
                         new_password = {1.31, "password"}
@@ -336,6 +341,12 @@ end
 -- Fulfills the activation ticket upon user's confirmation of the password.
 -----------------------------------------------------------------------------
 function actions.fulfill_account_activation_ticket(node, request, sputnik)
+
+   assert(request.post_parameters_checked)   
+   -- In case of any prior problems, send them back to the form
+   if request.try_again then
+      return actions.show_account_activation_ticket(node, request, sputnik)
+   end
 
    -- Check that the password matches the hash stored in the ticket
    local password = request.params.new_password or ""
@@ -379,21 +390,41 @@ end
 -----------------------------------------------------------------------------
 function actions.fulfill_password_reset_ticket(node, request, sputnik)
 
+   assert(request.post_parameters_checked)   
+
+   -- Check that the ticket has been invalidated or expired
+   if node.invalidated or node.expiration_time < os.time() then
+      node:post_translated_error("PASSWORD_RESET_TICKET_EXPIRED")
+      node.inner_html = ""
+      return node.wrappers.default(node, request, sputnik)
+   end
+
    -- Check that the new password is ok
    local password = request.params.new_password or ""
    if password ~= request.params.new_password_confirm then
       node:post_translated_error("TWO_VERSIONS_OF_NEW_PASSWORD_DO_NOT_MATCH")
-      return actions.show_password_reset_ticket(node, request, sputnik)
+      request.try_again = true
    end
 
    -- Check that the user exists
    if not sputnik.auth:user_exists(node.username) then
       node:post_translated_error("INVALID_PASSWORD_RESET_TICKET")
+      request.try_again = true
+   end
+
+   -- In case of any problems so far, send them back to the form
+   if request.try_again then
       return actions.show_password_reset_ticket(node, request, sputnik)
    end
 
+
    -- Go ahead and try changing the password
    local ok = sputnik.auth:set_password(node.username, password)
+   
+   -- Cancel the ticket
+   sputnik:update_node_with_params(node, {invalidated = "true"})
+   sputnik:activate_node(node)
+   node = sputnik:save_node(node, request, "Sputnik", "Cancelled after used")
 
    -- Report success or failure
    if ok then

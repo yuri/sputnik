@@ -754,6 +754,14 @@ PASSWORD_RESET_MESSAGE_SENT = {
               Please check your email in a few minutes and use the link in the message to reset your password.]]
 }
 
+INVALID_PASSWORD_RESET_TICKET = {
+   en_US = [[This password reset ticket is invalid.]]
+}
+
+PASSWORD_RESET_TICKET_EXPIRED = {
+   en_US = [[This password reset ticket has expired.]]
+}
+
 
 -- Form label for new user name
 EDIT_FORM_NEW_USERNAME = {

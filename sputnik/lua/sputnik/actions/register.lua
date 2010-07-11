@@ -28,10 +28,10 @@ function actions.show_registration_form(node, request, sputnik)
    end
    -- Add the terms of service acceptance checkbox if configured
    if sputnik.config.TERMS_OF_SERVICE_NODE then
-      local tos_template = node.translator.translate_key("I_AGREE_TO_TERMS_OF_SERVICE")
-      local text = cosmo.fill(tos_template, {
+      local tos = node.translator.translate_key("I_AGREE_TO_TERMS_OF_SERVICE")
+      local text = cosmo.f(tos){
          url = sputnik:make_url(sputnik.config.TERMS_OF_SERVICE_NODE),
-      })
+      }
       field_spec = field_spec..[[agree_tos = {1.34, "checkbox_text", text="]]
                              ..text..[["}]]
    end
@@ -227,8 +227,9 @@ function actions.submit_registration_form(node, request, sputnik)
       request.try_again = true
    end
 
-   -- Optionally check for TOS acceptance
-   if sputnik.config.TERMS_OF_SERVICE_NODE and not p.agree_tos then
+   -- Check for TOS acceptance
+   local agree_tos = p.agree_tos and p.agree_tos~=""
+   if sputnik.config.TERMS_OF_SERVICE_NODE and not agree_tos then
       node:post_translated_error("MUST_CONFIRM_TOS")
       request.try_again = true
    end
@@ -249,14 +250,15 @@ function actions.submit_registration_form(node, request, sputnik)
             node      = node,
       }
       if ok then
-         node:post_success(node.translator.translate_key("ACTIVATION_MESSAGE_SENT"))
+         node:post_translated_success("ACTIVATION_MESSAGE_SENT")
       else
-         node:post_error(node.translator.translate_key("ERROR_SENDING_ACTIVATION_EMAIL").." ("..err..")")
+         node:post_traslated_error("ERROR_SENDING_ACTIVATION_EMAIL", err)
       end
    else
       -- Otherwise create an account right away
       create_new_account(node, request, sputnik, p.new_username, p.new_password)
-      request.user, request.auth_token = sputnik.auth:authenticate(p.new_username, p.new_password)
+      request.user, request.auth_token = sputnik.auth:authenticate(
+                                               p.new_username, p.new_password)
    end
    node.inner_html = ""
    return node.wrappers.default(node, request, sputnik)
@@ -289,7 +291,8 @@ function actions.create_password_reset_ticket(node, request, sputnik)
          email     = p.email,
          sputnik   = sputnik,
          node      = node,
-         hours_before_expiration = sputnik.config.HOURS_BEFORE_PASSWORD_TICKET_EXPIRES or 2
+         hours_before_expiration =
+                     sputnik.config.HOURS_BEFORE_PASSWORD_TICKET_EXPIRES or 2
    }
 
    -- Report success or failure
@@ -402,8 +405,10 @@ function actions.fulfill_account_activation_ticket(node, request, sputnik)
    end
 
    -- All good, create the account
-   create_new_account(node, request, sputnik, node.username, p.new_password, {email = node.email})
-   request.user, request.auth_token = sputnik.auth:authenticate(node.username, password)
+   create_new_account(node, request, sputnik, node.username, p.new_password,
+                      {email = node.email})
+   request.user, request.auth_token = sputnik.auth:authenticate(node.username,
+                                                                password)
    node.inner_html = ""
    return node.wrappers.default(node, request, sputnik)
 end
@@ -452,7 +457,8 @@ function actions.fulfill_password_reset_ticket(node, request, sputnik)
 
    -- Report success or failure
    if ok then
-      request.user, request.auth_token = sputnik.auth:authenticate(node.username, password)
+      request.user, request.auth_token = sputnik.auth:authenticate(node.username,
+                                                                   password)
       node:post_translated_success("SUCCESSFULLY_CHANGED_PASSWORD")
    else
       node:post_error("The new password could not be set.") -- ::todo::

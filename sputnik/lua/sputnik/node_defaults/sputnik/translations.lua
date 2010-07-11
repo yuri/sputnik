@@ -172,7 +172,7 @@ BY_AUTHOR = {
 
 -- A phrase introducing the author of the edit in global history
 AUTHOR_SAVED_VERSION = {
-   en_US = "<img alt='author' src='$author_icon'/> <a $author_link>$author</a> at $time: <a $version_link>$version</a>",
+   en_US = "<img alt='author' src='$author_icon'/> $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] at $time: <a $version_link>$version</a>",
    ru    = "<img alt='author' src='$author_icon'/> <a $author_link>$author</a> сохранил <a $version_link>$version</a> в $time",
    pt_BR = "<img alt='author' src='$author_icon'/> <a $author_link>$author</a> guardou <a $version_link>$version</a> ás $time",
 }
@@ -617,14 +617,14 @@ CANCEL = {
 
 -- In diff mode, this is the phrase introducing the user name of the first author
 BY_AUTHOR1 = {
-   en_US = "by $author1 on $date1 at $time1",
+   en_US = "by $if_link_to_author1[====[<a $link>]====]$author1$if_link_to_author1[====[</a>]====] on $date1 at $time1",
    ru    = "(автор: $author1, время: $date1, $time1)", 
    pt_BR = "por $author1 ($date1, $time1)",
 }
 
 -- In diff mode, this is the phrase introducing the user name of the second author
 BY_AUTHOR2 = { "by $author2",
-   en_US = "by $author2 on $date2 at $time2",
+   en_US = "by $if_link_to_author2[====[<a $link>]====]$author2$if_link_to_author2[====[</a>]====] on $date2 at $time2",
    ru    = "(автор: $author2, время: $date2, $time2)", 
    pt_BR = "por $author2 ($date2, $time2)",
 }
@@ -827,6 +827,15 @@ INCORRECT_USERNAME = {
 SUCCESSFULLY_CREATED_ACCOUNT = {
    en_US = "Successfully created your new account."
 }
+
+SUCCESSFULLY_CREATED_USER_NODE = {
+   en_US = "Successfully created your profile node."
+}
+
+COULD_NOT_CREATE_USER_NODE = {
+   en_US = "Could not create your profile node."
+}
+
 
 SUCCESSFULLY_CHANGED_PASSWORD = {
    en_US = "Your password has been reset."

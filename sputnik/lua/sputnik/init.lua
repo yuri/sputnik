@@ -1050,6 +1050,16 @@ end
 
 
 -----------------------------------------------------------------------------
+-- Returns a url of the user's profile node or nil
+-----------------------------------------------------------------------------
+function Sputnik:make_link_to_user(user)
+   if self.config.USE_USER_NODES and user then
+      local prefix = self.config.USER_NODE_PREFIX or "people/"
+      return self:make_link(prefix..user)
+   end
+end
+
+-----------------------------------------------------------------------------
 -- Sends email on Sputnik's behalf.
 -----------------------------------------------------------------------------
 function Sputnik:sendmail(args)

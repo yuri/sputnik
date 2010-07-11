@@ -370,14 +370,15 @@ end
 -----------------------------------------------------------------------------
 
 local function author_or_ip(edit)
+
    if not edit.author or edit.author == "" then
       if edit.ip then
-         return edit.ip, "User at IP "..edit.ip:gsub("%.", "-")
+         return edit.ip --, "User at IP "..edit.ip:gsub("%.", "-")
       else
-         return "Anonymous", "Anonymous User"
+         return "Anonymous"
       end
    elseif edit.author:match("@") then
-      return edit.author:gsub("@.*", "@..."), edit.author:gsub("@", "_at_")
+      return edit.author:gsub("@.*", "@...") --, edit.author:gsub("@", "_at_")
    else
       return edit.author, edit.author
    end
@@ -417,7 +418,9 @@ function actions.history(node, request, sputnik)
                date         = sputnik:format_time(edit.timestamp, "%Y/%m/%d"),
                time         = sputnik:format_time(edit.timestamp, "%H:%M %z"),
                title        = node.name,
-               author_link  = sputnik:make_link(author_id_for_link),
+               if_author_link = cosmo.c(author_id_for_link){
+                                     author_link  = sputnik:make_link_to_user(author_id_for_link),
+                                },
                author_icon  = sputnik:get_user_icon(edit.author),
                author       = author_display,
                if_summary   = cosmo.c(edit.comment:len() > 0){
@@ -493,7 +496,8 @@ function actions.complete_history(node, request, sputnik)
          old_date = new_date
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
-            local author_display, author_ip_for_link = author_or_ip(edit)
+            local author_display, author_id = author_or_ip(edit)
+            local author_link = sputnik:make_link_to_user(author_id)
             cosmo.yield{
                version_link = sputnik:make_link(edit.id, nil, {version = edit.version}),
                diff_link    = sputnik:make_link(edit.id, "diff", {version=edit.version, other=edit.previous}),
@@ -506,7 +510,9 @@ function actions.complete_history(node, request, sputnik)
                if_edit      = cosmo.c(true){},
                time         = sputnik:format_time(edit.timestamp, "%H:%M %z"),
                title        = edit.id,
-               author_link  = sputnik:make_link(author_ip_for_link),
+               if_author_link = cosmo.c(author_link){
+                                    author_link  = author_link,
+                                },
                author_icon  = sputnik:get_user_icon(edit.author),
                author       = author_display,
                if_summary   = cosmo.c(edit.comment and edit.comment:len() > 0){
@@ -846,16 +852,23 @@ function actions.diff(node, request, sputnik)
       end
    end
 
+   local author1_display, author1_id = author_or_ip(this_node_info)
+   local author1_link = sputnik:make_link_to_user(author1_id)
+   local author2_display, author2_id = author_or_ip(other_node_info)
+   local author2_link = sputnik:make_link_to_user(author2_id)
+
    node.inner_html  = cosmo.f(node.templates.DIFF){  
                          version1 = this_node_info.version,
                          link1    = sputnik:make_link(node.id, "show", {version=request.params.version}),
-                         author1  = author_or_ip(this_node_info),
+                         author1  = author1_display,
+                         if_link_to_author1 = cosmo.c(author1_link){link = author1_link},
                          time1    = sputnik:format_time(this_node_info.timestamp, "%H:%M %z"),
                          date1    = sputnik:format_time(this_node_info.timestamp, "%Y/%m/%d"),
                          if_version2_exists = cosmo.c(version2_exists){},
                          version2 = other_node_info.version,
                          link2    = sputnik:make_link(node.id, "show", {version=request.params.other}),
-                         author2  = author_or_ip(other_node_info),
+                         author2  = author2_display,
+                         if_link_to_author2 = cosmo.c(author2_link){link = author2_link},
                          time2    = sputnik:format_time(other_node_info.timestamp, "%H:%M %z"),
                          date2    = sputnik:format_time(other_node_info.timestamp, "%Y/%m/%d"),
                          diff     = diff, 
@@ -1151,6 +1164,8 @@ function wrappers.default(node, request, sputnik)
 
    local translate = node.translator.translate
 
+   local user_link = sputnik:make_link_to_user(request.user)
+
    local values = {
       site_title       = sputnik.config.SITE_TITLE or "",
       site_subtitle       = sputnik.config.SITE_SUBTITLE or "",
@@ -1168,7 +1183,12 @@ function wrappers.default(node, request, sputnik)
       login_link       = sputnik:make_link(sputnik.config.LOGIN_NODE, nil, {next = node.name},
                                            nil, {do_not_highlight_missing=true}),
       register_link    = sputnik:make_link(sputnik.config.REGISTRATION_NODE),
-      if_logged_in     = cosmo.c(request.user){ user = sputnik:escape(request.user) },
+      if_logged_in     = cosmo.c(request.user){
+                            user = sputnik:escape(request.user),
+                            if_user_link = cosmo.c(user_link){
+                               link = user_link
+                            }
+                         },
       if_not_logged_in = cosmo.c(not request.user){},
       if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){},
       base_url         = sputnik.config.BASE_URL,

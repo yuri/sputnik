@@ -277,7 +277,8 @@ NODE.html_header    = [=[<div id="logo">
      $logo
     </div>
     <div id="login">
-     $if_logged_in[[$user / <a class="logout" title="_(LOGOUT)" $logout_link>_(LOGOUT)</a>]]
+     $if_logged_in[[ $if_user_link[====[<a $link>]====]$user$if_user_link[====[</a>]====]
+       / <a class="logout" title="_(LOGOUT)" $logout_link>_(LOGOUT)</a>]]
      $if_not_logged_in[[<a class="login_link" $login_link>_(LOGIN)</a> _(OR) <a $register_link>_(REGISTER)</a>]]
     </div>
     <div id="search">

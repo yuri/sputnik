@@ -41,7 +41,7 @@ HISTORY = [===[
 	            </td>
             <td width="400px">
              _(AUTHOR_SAVED_VERSION) $if_summary[[<ul><li>$summary</li></ul>]]
-            </td>
+           </td>
             ]=]
           </tr>
          ]==]

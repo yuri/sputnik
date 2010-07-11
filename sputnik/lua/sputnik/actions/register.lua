@@ -32,18 +32,18 @@ function actions.show_registration_form(node, request, sputnik)
       local text = cosmo.fill(tos_template, {
          url = sputnik:make_url(sputnik.config.TERMS_OF_SERVICE_NODE),
       })
-      field_spec = field_spec .. [[agree_tos = {1.34, "checkbox_text", text="]]
-                                   .. text .. [["}]]
+      field_spec = field_spec..[[agree_tos = {1.34, "checkbox_text", text="]]
+                             ..text..[["}]]
    end
 
    -- Prepare the edit form
-   local form = node:make_post_form{ 
+   local form = node:make_post_form{
       field_spec   = field_spec,
       values       = request,
       insert_hidden_fields = true,
       extra_fields = sputnik.captcha and sputnik.captcha:get_fields(),
    }
-   
+
    -- Put it all together
    node.inner_html = cosmo.f(node.templates.REGISTRATION){
       html_for_fields = form.html_for_fields,
@@ -89,12 +89,13 @@ end
 -- Creates a ticket, either for account activation or for password reset.
 -----------------------------------------------------------------------------
 function create_generic_ticket(args)
-   local sputnik = args.sputnik 
+   local sputnik = args.sputnik
    local node = args.node
    assert(node)
 
    -- Create the activation ticket
-   local uid = md5.sumhexa(args.username .. sputnik:get_uid(args.uid_node_suffix) .. os.time())
+   local uid = args.username..sputnik:get_uid(args.uid_node_suffix)..os.time()
+   uid = md5.sumhexa(uid)
       local ticket_id = (args.prefix.."/%s"):format(uid)
    local ticket = sputnik:get_node(ticket_id)
 
@@ -116,14 +117,14 @@ function create_generic_ticket(args)
       "Creation of ticket for account activation or password reset")
 
    -- Email the user
-   local link = "http://" .. sputnik.config.DOMAIN .. sputnik:make_url(ticket_id)
+   local link = "http://"..sputnik.config.DOMAIN..sputnik:make_url(ticket_id)
    local status, err = sputnik:sendmail{
       from    = sputnik.config.CONFIRMATION_ADDRESS_FROM,
       to      = args.email,
       subject = node.translator.translate_key(args.subject_key),
       body    = cosmo.f(node.translator.translate_key(args.message_body_key)){
                    site_name       = sputnik.config.DOMAIN,
-                   link = link, 
+                   link = link,
                 }
    }
    return status==1, err
@@ -164,6 +165,31 @@ function create_password_reset_ticket(args)
 end
 
 -----------------------------------------------------------------------------
+-- Creates a new account and possible a node for user's profile
+-----------------------------------------------------------------------------
+function create_new_account(node, request, sputnik, username, password, metadata)
+   sputnik.auth:add_user(username, password, metadata)
+   node:post_translated_success("SUCCESSFULLY_CREATED_ACCOUNT")
+   -- If needed, create a user node
+   if sputnik.config.USE_USER_NODES then
+      local prefix = (sputnik.config.USER_NODE_PREFIX or "people/")
+      local user_node = sputnik:get_node(prefix..username)
+      user_node:update{
+               prototype = sputnik.config.USER_NODE_PROTOTYPE or "@User_Profile",
+               title     = username,
+               creation_time = os.time(),
+            }
+      local ok, err = sputnik:save_node(user_node, request, "Sputnik")
+      if ok then
+         node:post_translated_success("SUCCESSFULLY_CREATED_USER_NODE")
+      else
+         node:post_translated_error("COULD_NOT_CREATE_USER_NODE", err)
+      end
+   end
+end
+
+
+-----------------------------------------------------------------------------
 -- Handles the submission of the registration form.
 -----------------------------------------------------------------------------
 function actions.submit_registration_form(node, request, sputnik)
@@ -173,7 +199,7 @@ function actions.submit_registration_form(node, request, sputnik)
 
    -- Check that username is acceptable
    for message, test in pairs(sputnik.config.USERNAME_RULES or {}) do
-      if not test(request.params.new_username) then 
+      if not test(p.new_username) then
          node:post_error(message)
          request.try_again = true
       end
@@ -184,19 +210,19 @@ function actions.submit_registration_form(node, request, sputnik)
 
    -- Check that the password is acceptable
    for message, test in pairs(sputnik.config.PASSWORD_RULES or {}) do
-      if not test(request.params.new_password) then 
+      if not test(p.new_password) then
          node:post_error(message)
          request.try_again = true
       end
    end
-   if p.new_password ~= p.new_password_confirm then 
+   if p.new_password ~= p.new_password_confirm then
       node:post_translated_error("TWO_VERSIONS_OF_NEW_PASSWORD_DO_NOT_MATCH")
       request.try_again = true
    end
 
    -- If an email address is required, check that it looks acceptable
    if sputnik.REQUIRE_EMAIL_CONFIRMATION
-              and not p.new_email:match("^%S+@%S+$") then 
+              and not p.new_email:match("^%S+@%S+$") then
       node:post_translated_error("NEW_EMAIL_NOT_VALID")
       request.try_again = true
    end
@@ -216,10 +242,10 @@ function actions.submit_registration_form(node, request, sputnik)
    if sputnik.config.REQUIRE_EMAIL_ACTIVATION then
       -- If activation is required, email a link to a ticket
       local ok, err = create_email_activation_ticket{
-            username  = request.params.new_username,
-            email     = request.params.new_email,
-            hash      = md5.sumhexa(request.params.new_password),
-            sputnik   = sputnik,      
+            username  = p.new_username,
+            email     = p.new_email,
+            hash      = md5.sumhexa(p.new_password),
+            sputnik   = sputnik,
             node      = node,
       }
       if ok then
@@ -229,14 +255,11 @@ function actions.submit_registration_form(node, request, sputnik)
       end
    else
       -- Otherwise create an account right away
-      sputnik.auth:add_user(request.params.new_username, request.params.new_password)
-      request.user, request.auth_token = sputnik.auth:authenticate(request.params.new_username, request.params.new_password)   
-      node:post_notice(node.translator.translate_key("SUCCESSFULLY_CREATED_ACCOUNT"))
+      create_new_account(node, request, sputnik, p.new_username, p.new_password)
+      request.user, request.auth_token = sputnik.auth:authenticate(p.new_username, p.new_password)
    end
-
    node.inner_html = ""
    return node.wrappers.default(node, request, sputnik)
-
 end
 
 -----------------------------------------------------------------------------
@@ -262,9 +285,9 @@ function actions.create_password_reset_ticket(node, request, sputnik)
 
    -- Try to create the ticket
    local ok, err = create_password_reset_ticket{
-         username  = request.params.username,
-         email     = request.params.email,
-         sputnik   = sputnik,      
+         username  = p.username,
+         email     = p.email,
+         sputnik   = sputnik,
          node      = node,
          hours_before_expiration = sputnik.config.HOURS_BEFORE_PASSWORD_TICKET_EXPIRES or 2
    }
@@ -342,14 +365,15 @@ end
 -----------------------------------------------------------------------------
 function actions.fulfill_account_activation_ticket(node, request, sputnik)
 
-   assert(request.post_parameters_checked)   
+   assert(request.post_parameters_checked)
+   local p = request.params
    -- In case of any prior problems, send them back to the form
    if request.try_again then
       return actions.show_account_activation_ticket(node, request, sputnik)
    end
 
    -- Check that the password matches the hash stored in the ticket
-   local password = request.params.new_password or ""
+   local password = p.new_password or ""
    local hash = md5.sumhexa(password)
    if node.hash ~= hash then
       -- check how many attempts have been made
@@ -365,7 +389,7 @@ function actions.fulfill_account_activation_ticket(node, request, sputnik)
          return actions.show_account_activation_ticket(node, request, sputnik)
       else -- too many tries already
          node:post_translated_error("INVALID_ACTIVATION_TICKET")
-         request.params.new_username = nil
+         p.new_username = nil
          node.inner_html = ""
          return node.wrappers.default(node, request, sputnik)
       end
@@ -378,9 +402,8 @@ function actions.fulfill_account_activation_ticket(node, request, sputnik)
    end
 
    -- All good, create the account
-   sputnik.auth:add_user(node.username, password, {email = node.email})
-   request.user, request.auth_token = sputnik.auth:authenticate(node.username, password)   
-   node:post_notice(node.translator.translate_key("SUCCESSFULLY_CREATED_ACCOUNT"))
+   create_new_account(node, request, sputnik, node.username, p.new_password, {email = node.email})
+   request.user, request.auth_token = sputnik.auth:authenticate(node.username, password)
    node.inner_html = ""
    return node.wrappers.default(node, request, sputnik)
 end
@@ -390,7 +413,8 @@ end
 -----------------------------------------------------------------------------
 function actions.fulfill_password_reset_ticket(node, request, sputnik)
 
-   assert(request.post_parameters_checked)   
+   assert(request.post_parameters_checked)
+   local p = request.params
 
    -- Check that the ticket has been invalidated or expired
    if node.invalidated or node.expiration_time < os.time() then
@@ -400,8 +424,8 @@ function actions.fulfill_password_reset_ticket(node, request, sputnik)
    end
 
    -- Check that the new password is ok
-   local password = request.params.new_password or ""
-   if password ~= request.params.new_password_confirm then
+   local password = p.new_password or ""
+   if password ~= p.new_password_confirm then
       node:post_translated_error("TWO_VERSIONS_OF_NEW_PASSWORD_DO_NOT_MATCH")
       request.try_again = true
    end
@@ -420,7 +444,7 @@ function actions.fulfill_password_reset_ticket(node, request, sputnik)
 
    -- Go ahead and try changing the password
    local ok = sputnik.auth:set_password(node.username, password)
-   
+
    -- Cancel the ticket
    sputnik:update_node_with_params(node, {invalidated = "true"})
    sputnik:activate_node(node)

@@ -2,6 +2,12 @@ module(..., package.seeall)
 
 require("saci.sandbox")
 
+local HIDDEN_FIELDS = [[
+       <input class="hidden" type="hidden" name="post_token" value="$post_token"/>
+       <input class="hidden" type="hidden" name="post_timestamp" value="$post_timestamp"/>
+       <input class="hidden" type="hidden" name="post_fields" value="$post_fields"/>
+]]
+
 function compile_field_spec(field_spec)
    local fields, field_names = {}, {}
    local sandbox = saci.sandbox.new()
@@ -115,7 +121,7 @@ function make_html_form(form_params, fields, field_names)
       field.class = field.class or ""
 
       if not (field.value == false) then
-         field.value = field.value or form_params.values[name]
+         field.value = field.value or form_params.values[name] or ""
       end
 
       if form_decorators[field_type] then
@@ -143,6 +149,19 @@ function make_html_form(form_params, fields, field_names)
          end
          html = html.."       <div class='"..field.div_class.."'>"..field.html.."       </div>\n"
       end
+   end
+
+   for _, field in ipairs(form_params.extra_fields or {}) do
+      table.insert(field_names, field)
+   end
+
+   local hidden = cosmo.f(HIDDEN_FIELDS){
+                     post_fields    = table.concat(field_names,","),
+                     post_token     = form_params.post_token,
+                     post_timestamp = form_params.post_timestamp,
+   }
+   if form_params.insert_hidden_fields then
+      html = hidden.."\n"..html
    end
    return html, field_names
 end

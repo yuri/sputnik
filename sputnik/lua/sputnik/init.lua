@@ -589,12 +589,16 @@ function Sputnik:decorate_node(node)
                templates  = self.templates, 
                translator = self.translator,
                values     = args.values,
+               insert_hidden_fields = args.insert_hidden_fields,
+               extra_fields = args.extra_fields,
+               post_token = post_token,
+               post_timestamp = post_timestamp,
                hash_fn    = function(field_name)
                                return sputnik:hash_field_name(field_name, post_token)
                             end
             }
       local html_for_fields, field_list = html_forms.make_html_form(args, cfields, cfield_names)
-      assert(html_for_fields)
+
       return {
                post_timestamp = post_timestamp,
                post_token = post_token,

@@ -14,6 +14,7 @@ templates       = {0.5, proto="concat", activate="list"}
 translations    = {0.51, proto="concat", activate="list"}
 prototype       = {0.6  }
 permissions     = {0.7,   proto="concat"}
+owners          = {0.71}
 html_main       = {0.701, proto="fallback"}
 html_head       = {0.702, proto="fallback"}
 html_menu       = {0.703, proto="fallback"}

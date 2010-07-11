@@ -178,11 +178,18 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:initialize_permissions()
    local groups = self.saci.permission_groups -- just a local alias
-   -- Define group "Admin" as any user that has is_admin set to true
+   -- Define group "admin" as any user that has is_admin set to true
    groups.Admin = function(user)
       return user and self.auth:get_metadata(user, "is_admin") == "true"
    end
 
+   -- Define "owner" as any user who is included in node.owners
+   groups.owners = function(user, node)
+      local s1 = ","..(node.owners or ""):gsub("%s","")..","
+      local s2 = ","..user..","
+      return s1:match(s2)
+   end
+   
    -- Define any group that starts with "is.<group>" as including all users
    -- for whom "is_<group>" is set to true. For example, if is_clown is set
    -- to true than user is a member of group "is.clown" and we can set:

@@ -272,9 +272,6 @@ REGISTRATION = [===[
 <h3>Create new account</h3>
 <form class="register" method="post" enctype="multipart/form-data" action="$action_url">
  <input class="hidden" type="hidden" name="p" value="$node_name.post"/>
- <input class="hidden" type="hidden" name="post_token" value="$post_token"/>
- <input class="hidden" type="hidden" name="post_timestamp" value="$post_timestamp"/>
- <input class="hidden" type="hidden" name="post_fields" value="$post_fields"/>
  $html_for_fields
  $captcha
  <div class="submit">
@@ -287,9 +284,6 @@ PASSWORD_RESET_REQUEST = [===[
 <h3>Enter the username and the email address for your account</h3>
 <form class="register" method="post" enctype="multipart/form-data" action="$action_url">
  <input class="hidden" type="hidden" name="p" value="$node_name.post"/>
- <input class="hidden" type="hidden" name="post_token" value="$post_token"/>
- <input class="hidden" type="hidden" name="post_timestamp" value="$post_timestamp"/>
- <input class="hidden" type="hidden" name="post_fields" value="$post_fields"/>
  $html_for_fields
  $captcha
  <div class="submit">

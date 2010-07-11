@@ -712,6 +712,10 @@ Thank you!
 ]]
 }
 
+INVALID_ACTIVATION_TICKET = {
+   en_US = "This activation ticket is invalid."
+}
+
 PASSWORD_RESET_REQUEST = {
    en_US = "Password reset request"
 }

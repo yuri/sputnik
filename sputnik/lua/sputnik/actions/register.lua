@@ -36,10 +36,14 @@ function actions.show_registration_form(node, request, sputnik)
                              ..text..[["}]]
    end
 
+   -- Clear the password and confirm password fields
+   request.params.new_password = nil
+   request.params.new_password_confirm = nil
+
    -- Prepare the edit form
    local form = node:make_post_form{
       field_spec   = field_spec,
-      values       = request,
+      values       = request.params,
       insert_hidden_fields = true,
       extra_fields = sputnik.captcha and sputnik.captcha:get_fields(),
    }
@@ -68,7 +72,7 @@ function actions.show_password_reset_form(node, request, sputnik)
                       username = {1.30, "text_field", div_class="autofocus"}
                       email = {1.33, "text_field"}
                    ]],
-      values     = request,
+      values     = request.params,
       insert_hidden_fields = true,
       extra_fields = sputnik.captcha and sputnik.captcha:get_fields(),
    }
@@ -312,7 +316,7 @@ function actions.show_account_activation_ticket(node, request, sputnik)
 
    local form = node:make_post_form{
       field_spec = [[  new_password = {1.31, "password"}  ]],
-      values     = request,
+      values     = request.params,
       insert_hidden_fields = true,
       extra_fields = sputnik.captcha and sputnik.captcha:get_fields(),
    }
@@ -346,7 +350,7 @@ function actions.show_password_reset_ticket(node, request, sputnik)
                         new_password = {1.31, "password"}
                         new_password_confirm = {1.32, "password"}
                    ]],
-      values = request,
+      values = request.params,
       insert_hidden_fields = true,
       extra_fields = sputnik.captcha and sputnik.captcha:get_fields(),
    }

@@ -349,10 +349,10 @@ h2.ctrigger { /* a header that controls collapsing a group, in open state */
 h2.ctrigger.closed {  /* a header that controls collapsing a group, closed */
  background: url($icon_base_url{}icons/plus.png) no-repeat right;
 }
-form.edit div.honey {  /* a honeypot field */
+form div.honey {  /* a honeypot field */
  display: none;
 }
-form.edit div.field {  /* a regular field */
+form div.field {  /* a regular field */
  background-color: #ddd;
  margin-bottom: 2px;
  padding: .5em .2em .1em .5em ;
@@ -370,16 +370,16 @@ div.grippie { /* a grippie for resizing text areas */
  width: 70px;
 }
 
-form.edit label.inline {
+form label.inline {
  display: inline-block;
  width: 200px;
 }
-form.edit textarea {
+form textarea {
  font-size: 110%;
  padding: 1em;
  width: 95%;
 }
-form.edit label {
+form label {
  padding: .5em;
 }
 

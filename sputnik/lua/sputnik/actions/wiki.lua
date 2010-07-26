@@ -1038,7 +1038,11 @@ function get_login_form(node, request, sputnik)
                         post_token      = form.post_token,
                         post_timestamp  = form.post_timestamp,
                         action_url      = sputnik:make_url(sputnik.config.LOGIN_NODE),
-                        register_link   = sputnik:make_url(sputnik.config.REGISTRATION_NODE)
+                        register_link   = sputnik:make_url(sputnik.config.REGISTRATION_NODE),
+                        if_can_reset_password = cosmo.c(sputnik.config.REQUIRE_EMAIL_ACTIVATION){
+                           link = sputnik:make_link(sputnik.config.PASSWORD_RESET_NODE or
+                                                    "sputnik/password_reset")
+                        },
                      }
 
 end

@@ -534,6 +534,10 @@ EDIT_FORM_PASSWORD = {
    pt_BR = "Senha",
 }
 
+-- A link to the password reset form
+CLICK_HERE_TO_RESET_PASSWORD = {
+   en_US = "Forgot your password? You can reset it <a $link>here</a>",
+}
 
 -- A note to the user that they must be logged in to edit
 YOU_MUST_BE_LOGGED_IN = {

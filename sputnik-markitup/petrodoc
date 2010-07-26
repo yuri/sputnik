@@ -1,0 +1,20 @@
+package    = 'Sputnik-Markitup'
+versions   = {
+   {'9.03.16', 'March 16, 2009',  'first rock release'},
+}
+summary    = 'A markitup plugin for Sputnik'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+]]
+
+license    = 'MIT/X11'
+download   = 'http://spu.tnik.org/files/sputnik-markitup-$version.tar.gz'
+push       = "scp %s tnik.org:/var/www/tnik.org/files/"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+]]
+
+-------------------------------------------------------------------------------
+

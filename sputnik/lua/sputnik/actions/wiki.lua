@@ -713,7 +713,7 @@ function actions.edit (node, request, sputnik, etc)
    etc = etc or {} -- additional parameters
 
    -- Add the editpage stylesheet
-   node:add_javascript_link(sputnik:make_url("sputnik/js/editpage.js"))
+   node:add_javascript_link(sputnik:make_url("sputnik/edit_scripts.js"))
 
    -- Select the parameters that should be copied
    local fields = {}

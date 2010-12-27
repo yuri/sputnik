@@ -2,7 +2,7 @@ module(..., package.seeall)
 
 actions = {}
 
-local jquery = require("sputnik.util.jquery")
+local jquery = require("sputnik.javascript.jquery")
 
 
 actions.js = function(page, params, sputnik)

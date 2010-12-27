@@ -178,7 +178,7 @@ p.site_subtitle { /* a subtitle for the site */
 #page { /* no styling on at the moment */
 }
 #page p {
- line-height: 1.4;
+ line-height: 1.2;
 }
 
 #breadcrumbs {
@@ -276,6 +276,11 @@ ul {
 ol {
  list-style: decimal;
  padding-left: 3em;
+}
+li {
+ line-height: 1.2;
+ padding-top: .2em;
+ padding-bottom: .2em;
 }
 
 pre {

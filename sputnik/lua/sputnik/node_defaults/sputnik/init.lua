@@ -6,54 +6,91 @@ NODE = {
 }
 NODE.content=[=====[
 
-Sputnik has a number of system nodes that control the behavior of your wiki as a whole.
-You can edit them if you are logged in as "Admin"
+Sputnik has a number of system nodes. Some of those store information that
+affects the behavior of the site. Such nodes could be edited to customize
+your Sputnik installation. You will need to be logged in as "Admin" to do so.
+Other nodes provide out of the box functionality but do not store much
+inforation. There would be little benefit to editing them.
 
-## Pages You Definitely Want to Edit
+## Nodes to Edit for Configuration or Customization
 
-* [[sputnik/config]] - the main configuration page
-* [[sputnik/navigation]] - the navigation bar
+* [[sputnik/config]] - the site-wide configuration node. This is the first
+  thing to try for any configuration.
+* [[sputnik/navigation]] - controls the navigation bar.
+* [[logo]] - the Sputnik logo. You can upload yours own image file instead.
+* [[sputnik/style]] - the stylesheet.
+* [[sputnik/passwords]] - the password file. You can edit it to give certain
+  users admin privileges, to delete accounts, etc.
 
-## Maybe Those Too, At Some Point?
+See also the @Root node below.
 
-* [[sputnik/passwords]] - the password file
-* [[sputnik/css/colors]] - a stylesheet for colors
-* [[sputnik/css/layout]] - a stylesheet for layout
-* [[sputnik/templates"]] - the templates
-* [[logo]] - the Sputnik logo (you can upload yours instead)
+## Useful System Nodes that Probably Should Not Be Edited
 
-## Less Likely
+* [[history]] - your history (also [[history.rss|history.rss]]).
+* [[sitemap]] - the list of the pages (also [[sitemap.xml|sitemap.xml]]).
+* [[sputnik/register]] - the registration page.
+* [[sputnik/version]] - version information.
 
-* [[sputnik/translations]] - the text and templates
-* [[@Binary_File.lua]]
-* [[@CSS.lua]]
-* [[@JavaScript.lua]]
-* [[@Lua_Config.lua]]
-* [[@Root.lua]]
-* [[@Text_Config.lua]]
+## Built-in Prototype Nodes
 
-## Those Probably Not
+A node can inherit properties of other nodes by having its "prototype" field
+set to the name of that node. As a convention, we usually prefix prototype
+nodes with "@", but this is just a convention. Here are prototype nodes
+available out of the box. (You can add your own.) Note that many of the
+prototype nodes cannot be viewed. Instead, you can look at their "raw"
+representation or configure them by changing ".raw" to ".configure".
 
-* [[history]] - your history (also [[history.rss|history.rss]])
-* [[sitemap]] - the list of the pages (also [[sitemap.xml|sitemap.xml]])
-* [[register]] - the registration page
-* [[version]] - version information
-* [[sputnik/js/editpage.js|sputnik/js/editpage.js]] - javascript for the editor
-* [[sputnik/css/yui_reset]] - YUI reset library
-* [[sputnik/jquery]] - JQuery library
-* [[sputnik/jquer/textarearesizer]] - a script to resize the text area
+* [[@Root.raw]] - the root prototype node.
+    * All nodes inherit from @Root directly or indirectly. So, edits to this
+      node will thus affect **all** nodes.
+* [[@Binary_File.raw]] - a prototype for nodes that store binary files.
+* [[@CSS.raw]] - a prototype for nodes that store CSS code.
+* [[@JavaScript.raw]] - a prototype for nodes that store Javascript.
+* [[@Image.raw]] - a prototype for nodes that store images.
+* [[@Lua_Config.raw]] - a prototype for nodes that store Lua configurations.
+* [[@Text_Config.raw]] - a prototype for nodes that store plain-text
+  configurations.
+* [[@User_Profile.raw]] - a prototype for nodes representing users.
+
+### More Complicated Prototypes
+
+* [[@Collection.raw]] - a prototype for a node that represents a collection
+  of items.
+* [[@Comment.raw]] - a prototype for a node that represents a comment.
+* [[@Discussion.raw]] - a @Disscussion is a [[@Collection.raw]] of
+  [[@Comment.raw]]s.
+* [[@Discussion_Forum.raw]] - a @Disscussion_Forum is a [[@Collection.raw]]
+  of [[@Discussion.raw]]s.
+* [[@UID.raw]] - a prototype for nodes that are used for generating unique IDs.
+
+## Additional System Nodes That Store Configurations or Javascript
+
+* [[sputnik/translations]] - the text used in the UI.
+* [[sputnik/templates]] - the templates for site-wide elements.
+* [[sputnik/scripts]] - Sputnik's Javascript for a regular node.
+* [[sputnik/edit_scripts]] - Javascript for the editing mode.
+
+## Icon Nodes
+
 * [[sputnik/icons/admin]]
 * [[sputnik/icons/anon]]
 * [[sputnik/icons/attach]]
+* [[sputnik/icons/basic_node]]
 * [[sputnik/icons/diff]]
+* [[sputnik/icons/discussion]]
 * [[sputnik/icons/edit]]
-* [[sputnik/icons/feed]]
-* [[sputnik/icons/feed_medium]]
+* [[sputnik/icons/forum]]
 * [[sputnik/icons/history]]
+* [[sputnik/icons/logout]]
 * [[sputnik/icons/lua]]
+* [[sputnik/icons/minus]]
 * [[sputnik/icons/picture]]
+* [[sputnik/icons/plus]]
+* [[sputnik/icons/rss]]
+* [[sputnik/icons/search]]
 * [[sputnik/icons/sputnik]]
 * [[sputnik/icons/system]]
+* [[sputnik/icons/star]]
 * [[sputnik/icons/user]]
 
 ]=====]

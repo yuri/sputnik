@@ -284,7 +284,7 @@ ol {
  list-style: decimal;
  padding-left: 3em;
 }
-li {
+#content>ul li, #content>ol li {
  line-height: 1.3;
  padding-top: .2em;
  padding-bottom: .2em;

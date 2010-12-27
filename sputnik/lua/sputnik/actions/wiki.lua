@@ -984,16 +984,20 @@ end
 function actions.show_users(node, request, sputnik)
 
    local TEMPLATE = [[
-   <table><thead><td>username</td><td>registration time</td></thead>
+   <table class="sorttable" width="100%">
+    <thead>
+     <tr><th>username</th><th>registration time</th></tr>
+    </thead>
    $do_users[=[<tr><td><a $link>$username</a></td><td>$time</td></tr>
    ]=]
    </table>
    ]]
 
    local users = {}
+   local prefix = (sputnik.config.USER_NODE_PREFIX or "people/")
    for username, record in pairs(node.content.USERS) do
       table.insert(users, 
-                   { username = username, link = sputnik:make_link(username),
+                   { username = username, link = sputnik:make_link(prefix..username),
                      time     = sputnik:format_time(record.creation_time, 
                                                     "%Y/%m/%d %H:%M %z")
                    })

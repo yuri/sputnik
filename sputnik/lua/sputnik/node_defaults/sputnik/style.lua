@@ -257,6 +257,18 @@ blockquote p {
  padding-top: .5em;
 }
 
+table {
+ border: 1px solid gray;
+}
+table tr td, table tr th {
+ border: 1px solid gray;
+ padding: .5em;
+}
+
+table tr th {
+ font-weight: bold;
+}
+
 ul {
  list-style: disc;
  padding-left: 3em;

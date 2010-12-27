@@ -172,12 +172,13 @@ end
 -- Creates a new account and possible a node for user's profile
 -----------------------------------------------------------------------------
 function create_new_account(node, request, sputnik, username, password, metadata)
-   sputnik.auth:add_user(username, password, metadata)
+   lcased_username = username:lower()
+   sputnik.auth:add_user(lcased_username, password, metadata)
    node:post_translated_success("SUCCESSFULLY_CREATED_ACCOUNT")
    -- If needed, create a user node
    if sputnik.config.USE_USER_NODES then
       local prefix = (sputnik.config.USER_NODE_PREFIX or "people/")
-      local user_node = sputnik:get_node(prefix..username)
+      local user_node = sputnik:get_node(prefix..lcased_username)
       user_node:update{
                prototype = sputnik.config.USER_NODE_PROTOTYPE or "@User_Profile",
                title     = username,

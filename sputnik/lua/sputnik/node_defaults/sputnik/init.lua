@@ -1,10 +1,15 @@
 module(..., package.seeall)
 
 NODE = {
-   title="Sputnik",
+   title="Sputnik's System Nodes",
    category="_special_pages"
 }
 NODE.content=[=====[
+
+<span class="teaser">
+ Sputnik is a collection of nodes. Most of them are for you to create,
+ but a few basic ones are included with the installation.
+</span>
 
 Sputnik has a number of system nodes. Some of those store information that
 affects the behavior of the site. Such nodes could be edited to customize
@@ -17,7 +22,7 @@ inforation. There would be little benefit to editing them.
 * [[sputnik/config]] - the site-wide configuration node. This is the first
   thing to try for any configuration.
 * [[sputnik/navigation]] - controls the navigation bar.
-* [[logo]] - the Sputnik logo. You can upload yours own image file instead.
+* [[logo]] - the Sputnik logo. You can upload your own image file instead.
 * [[sputnik/style]] - the stylesheet.
 * [[sputnik/passwords]] - the password file. You can edit it to give certain
   users admin privileges, to delete accounts, etc.
@@ -40,9 +45,9 @@ available out of the box. (You can add your own.) Note that many of the
 prototype nodes cannot be viewed. Instead, you can look at their "raw"
 representation or configure them by changing ".raw" to ".configure".
 
-* [[@Root.raw]] - the root prototype node.
-    * All nodes inherit from @Root directly or indirectly. So, edits to this
-      node will thus affect **all** nodes.
+* [[@Root.raw]] - the root prototype node. All nodes inherit from @Root
+  directly or indirectly. So, edits to this node will thus affect **all**
+  nodes.
 * [[@Binary_File.raw]] - a prototype for nodes that store binary files.
 * [[@CSS.raw]] - a prototype for nodes that store CSS code.
 * [[@JavaScript.raw]] - a prototype for nodes that store Javascript.
@@ -72,26 +77,26 @@ representation or configure them by changing ".raw" to ".configure".
 
 ## Icon Nodes
 
-* [[sputnik/icons/admin]]
-* [[sputnik/icons/anon]]
-* [[sputnik/icons/attach]]
-* [[sputnik/icons/basic_node]]
-* [[sputnik/icons/diff]]
-* [[sputnik/icons/discussion]]
-* [[sputnik/icons/edit]]
-* [[sputnik/icons/forum]]
-* [[sputnik/icons/history]]
-* [[sputnik/icons/logout]]
-* [[sputnik/icons/lua]]
-* [[sputnik/icons/minus]]
-* [[sputnik/icons/picture]]
-* [[sputnik/icons/plus]]
-* [[sputnik/icons/rss]]
-* [[sputnik/icons/search]]
-* [[sputnik/icons/sputnik]]
-* [[sputnik/icons/system]]
-* [[sputnik/icons/star]]
-* [[sputnik/icons/user]]
+* [[icons/admin]]
+* [[icons/anon]]
+* [[icons/attach]]
+* [[icons/basic_node]]
+* [[icons/diff]]
+* [[icons/discussion]]
+* [[icons/edit]]
+* [[icons/forum]]
+* [[icons/history]]
+* [[icons/logout]]
+* [[icons/lua]]
+* [[icons/minus]]
+* [[icons/picture]]
+* [[icons/plus]]
+* [[icons/rss]]
+* [[icons/search]]
+* [[icons/sputnik]]
+* [[icons/system]]
+* [[icons/star]]
+* [[icons/user]]
 
 ]=====]
 

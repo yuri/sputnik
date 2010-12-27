@@ -13,10 +13,10 @@ Congratulations, you just installed [Sputnik](http://spu.tnik.org/)!
 NODE.content=[===[
 
 <span class="teaser">
- Congratulations, you just installed [Sputnik](http://spu.tnik.org/)!
+ Congratulations, you've got [Sputnik](http://spu.tnik.org/)!
 </span>
 
-What's next? 
+What's next?
 
 **First**, check if can you edit pages.  (Click the pencil icon on this page.)
 <b>If you experience problems editing a page, check that your data directory is writable by your web server.</b>
@@ -24,16 +24,15 @@ What's next?
 **Second**, click on "register" and create an account called "Admin". This
 account will be special - you will be able to use it to edit pages that are
 not editable by other users.  You can also create a "regular" account for
-yourself, calling it something like "Bob" or "Andre".
+yourself, calling it something like "Alice" or "Bob".
 
-After that, logged in as "Admin", you can do some customizations.  See
+After that, logged in as "Admin", you can do some customizations.  See node
 [[sputnik]] for the complete list of options, but here are some basic ideas:
 
-Edit [[sputnik/config.edit]] page to change the title of your wiki, set the domain
-of your server, a URL for your logo, etc.  While there, you can also edit the
-``NICE_URL`` parameter to whatever you want the your "short" URLs to start
-with.  E.g., if you set it to "/mysite/" your wikilinks will point to
-"/mysite/Page_Name".
+Edit [[sputnik/config.edit]] node to change the title of your wiki and the domain
+of your server.  While there, you can also edit the ``NICE_URL`` parameter to
+whatever you want the your "short" URLs to start with.  E.g., if you set it to
+"/mysite/" your wikilinks will point to "/mysite/Page_Name".
 
 Also, edit the [[sputnik/navigation.edit]] page to set your navigation bar.
 If you are new to Lua, don't get scared.  Use the "preview" button to check

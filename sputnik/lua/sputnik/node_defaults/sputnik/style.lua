@@ -287,10 +287,10 @@ pre code {
  background: #fffaf0;
  border-left: 1px solid gray;
  display: block;
- margin-left: 2em;
  padding: 1em;
  padding-bottom: .5em;
  padding-top: .5em;
+ font-size: 90%;
 }
 
 

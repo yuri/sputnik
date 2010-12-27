@@ -741,7 +741,15 @@ end
 -- This needs to be refactored. ::TODO::
 -----------------------------------------------------------------------------
 function Sputnik:get_complete_history(limit, date_prefix, id_prefix)
-   return self.saci:get_complete_history(id_prefix, date_prefix, limit)
+   local history = self.saci:get_complete_history(id_prefix, date_prefix, limit)
+   local new_history = {}
+   for i, v in ipairs(history) do
+      local id = v.id:sub(0,8)
+      if id~="sputnik/" then
+         table.insert(new_history, v)
+      end
+   end
+   return new_history
 end
 
 -----------------------------------------------------------------------------

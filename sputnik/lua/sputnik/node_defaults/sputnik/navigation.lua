@@ -11,11 +11,8 @@ NAVIGATION = {
      {id="index", title="Start"},
      {id="Another Page", title="Some Other Page"},
    },      
-   {id="News", title="Timeline",
-     {id="News"},
-     {id="Future Plans"},
+   {id="history", title="Timeline",
      {id="history", title="Recent Wiki Edits"},
-     {id="history/edits_by_recent_users", title="Edits by Recent Users"},
      {id="history.rss", title="RSS Feed"},
    },
 }

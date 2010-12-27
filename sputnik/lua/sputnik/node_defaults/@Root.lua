@@ -181,6 +181,7 @@ permissions=[[
    --deny(Anonymous, edit_and_save)
    allow(Admin, "reload")
    allow(Admin, "configure")
+   allow(Admin, "raw")
 ]]
 }
 

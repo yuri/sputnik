@@ -261,9 +261,15 @@ blockquote p {
 table {
  border: 1px solid gray;
 }
+table.noborder {
+ border: none;
+}
 table tr td, table tr th {
  border: 1px solid gray;
  padding: .5em;
+}
+table.noborder tr td, table.noborder tr th {
+ border: none;
 }
 
 table tr th {

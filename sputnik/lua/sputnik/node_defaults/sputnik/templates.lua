@@ -25,7 +25,7 @@ HISTORY = [===[
       <form action="$base_url">
        <input type="hidden" class="hidden" name="p" value="$node_name.diff"/>
        <input type="submit" value="_(DIFF_SELECTED_VERSIONS)"/>
-       <table width="100%">
+       <table class="noborder" width="100%">
         <tbody>
          $do_revisions[==[
           <tr> 
@@ -52,7 +52,7 @@ HISTORY = [===[
 
 
 COMPLETE_HISTORY = [===[
-      <table width="100%">
+      <table class="noborder" width="100%">
         <tbody>
          $do_revisions[==[
             $if_new_date[=[

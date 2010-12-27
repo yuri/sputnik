@@ -96,6 +96,8 @@ blockquote, q {
 
 body {
  background-color: gray;
+ font-family: Verdana, Tahoma, Helvetica, Arial, "sans-serif";
+ font-size: 11pt;
 }
 #container {
  background-color: white;
@@ -178,7 +180,8 @@ p.site_subtitle { /* a subtitle for the site */
 #page { /* no styling on at the moment */
 }
 #page p {
- line-height: 1.2;
+ line-height: 1.3;
+ width: 80%;
 }
 
 #breadcrumbs {
@@ -218,9 +221,6 @@ h1, h2, h3 {
  margin-top: 1em;
  padding-bottom: .5em;
 }
-h1, h2, h3, #logo, #page_title {
- font-family: Verdana, Tahoma, Helvetica, Arial, "sans-serif";
-}
 h4, h5, h6, p {
  margin: 5px 0 5px 0;
  padding: 5px 0 5px 0;
@@ -247,12 +247,13 @@ h4 {
 
 blockquote {
  border-left: 2px solid #cccccc;
- line-height: 1;
+ line-height: 1.1;
  margin-left: 5em;
  padding-left: 1em;
+ width: 80%;
 }
 blockquote p {
- line-height: 1;
+ line-height: 1.1;
  padding-bottom: .5em;
  padding-top: .5em;
 }
@@ -278,9 +279,10 @@ ol {
  padding-left: 3em;
 }
 li {
- line-height: 1.2;
+ line-height: 1.3;
  padding-top: .2em;
  padding-bottom: .2em;
+ width: 80%;
 }
 
 pre {
@@ -302,7 +304,8 @@ pre code {
 /* Extra content rules */
 
 .teaser {
- font-size: 120%;
+ font-size: 130%;
+ font-weight: bold;
 }
 a.footnote {
  font-size:10px;

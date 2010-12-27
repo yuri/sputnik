@@ -291,6 +291,20 @@ ol {
  width: 80%;
 }
 
+ul.post-toolbar {
+ list-display: none;
+ padding: 0;
+ border-bottom: 1px solid #aaa;
+}
+ul.post-toolbar li {
+ display: inline;
+ font-size: 70%;
+}
+ul.post-toolbar li a {
+ text-decoration: none;
+ color: #aaa;
+}
+
 pre {
  font-family: "monospace";
  margin-bottom: 2em;

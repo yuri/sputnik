@@ -1,8 +1,6 @@
 module(..., package.seeall)
 NODE = {
    icon = "icons/bug.png",
-   translations = "tickets/translations",
-   templates    = "tickets/templates",
    prototype = "@Discussion",
 }
 
@@ -87,7 +85,7 @@ NODE.html_content = [======[
 $markup{$content}
 
 <br/><br/><br/>
-<a href="$make_url{$new_id, "edit", comment_parent=$id}">Post a comment</a>
+<a href="$make_url{$new_id, "edit_new", comment_parent=$id}">Post a comment</a>
 <br/><br/><br/>
 
 <ol class="discussion">
@@ -100,8 +98,8 @@ $markup{$content}
   <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
-   <li><a href="$make_url{$new_id, "edit", comment_parent=$id}">_(REPLY)</a></li> 
-   <li><a href="$make_url{$new_id, "edit", comment_parent=$id, quote="true"}">_(QUOTE)</a></li> 
+   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id}">_(REPLY)</a></li> 
+   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id, quote="true"}">_(QUOTE)</a></li> 
   </ul>
   </div>
   <div class="content">

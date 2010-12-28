@@ -1,8 +1,6 @@
 module(..., package.seeall)
 NODE = {
    title      = "Tickets",
-   --actions    = [[show = "tickets.list"]],
-   templates  = "tickets/templates",
    prototype  = "@Collection",
 }
 
@@ -88,7 +86,6 @@ NODE.html_content = [======[
 <table class="sortable" width="100%">
  <thead>
   <tr>
-   <th>&nbsp;</th>
    <th>id</th>
    <th>priority</th>
    <th>issue</th>
@@ -98,7 +95,6 @@ NODE.html_content = [======[
  </thead>
  $do_nodes[[
   <tr>
-   <td><a href="$url{}.edit"><img src="$make_url{"icons/edit"}.png"/></a></td>
    <td><a href="$url">$short_id</a></td>
    <td>$priority_to_stars{$priority}</td>
    <td>$title</td>

@@ -63,7 +63,6 @@ TOOLBAR_ICONS = {
 }
 
 NEW_NODE_PROTOTYPES = {
-   {"", title="Basic", icon="icons/basic_node.png"},
    {"@Image", title="Image", icon="icons/picture.png"},
    {"@Binary_File", title="Binary File", icon="icons/attach.png"},
    {"@Collection", title="Collection", icon = "icons/collection.png"},

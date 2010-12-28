@@ -321,6 +321,9 @@ function Sputnik:handle_request(request, response)
       end
    end
 
+   -- Reset the node cache.
+   if self.saci.reset_cache then self.saci:reset_cache() end
+
    -- Check if the action function requested a redirect.
    if request.redirect then
       response.headers["Content-Type"] = content_type or "text/html"
@@ -357,8 +360,6 @@ function Sputnik:handle_request(request, response)
       response:write(content)
    end
 
-   -- Reset the node cache.
-   if self.saci.reset_cache then self.saci:reset_cache() end
    return response
 end
 

@@ -54,6 +54,7 @@ show            = "wiki.show"
 show_content    = "wiki.show_content"
 history         = "wiki.history"
 edit            = "wiki.edit"
+edit_new        = "wiki.edit_new"
 configure       = "wiki.configure"
 post            = "wiki.post"
 rss             = "wiki.rss"
@@ -64,6 +65,7 @@ raw_content     = "wiki.raw_content"
 login           = "wiki.show_login_form"
 sputnik_version = "wiki.sputnik_version"
 save            = "wiki.save"
+create          = "wiki.create"
 preview         = "wiki.preview"
 preview_content = "wiki.preview_content"
 cancel          = "wiki.cancel"
@@ -173,6 +175,8 @@ permissions=[[
    deny(all_users, all_actions)
    allow(all_users, show)  -- show, show_content, cancel
    allow(all_users, edit_and_save) -- edit, save, preview
+   allow(all_users, "edit_new") -- edit, save, preview
+   allow(all_users, "create") -- edit, save, preview
    allow(all_users, "post")  --needed for login
    allow(all_users, "login")
    allow(all_users, history_and_diff)

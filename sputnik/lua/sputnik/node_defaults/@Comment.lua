@@ -27,3 +27,7 @@ comment_section  = {1.401, "div_start", id="comment_section", closed="true"}
  comment_author = {1.403, "text_field"}
 comment_section_end = {1.404, "div_end"}
 ]]
+
+NODE.permissions = [[
+deny(all_users, edit_and_save)
+]]

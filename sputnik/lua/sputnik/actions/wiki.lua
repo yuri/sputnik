@@ -174,6 +174,25 @@ function actions.post(node, request, sputnik)
 end
 
 -----------------------------------------------------------------------------
+-- Saves a new node based on query params, then redirects to the node.
+--
+-- @param node
+-- @param request        request.params fields are used to update the node.
+-- @param sputnik        used to save and reload the node.  
+-----------------------------------------------------------------------------
+
+function actions.create(node, request, sputnik)
+   if sputnik:node_exists(node.id) then
+      node:post_error("Node already exists.")
+      node.inner_html = ""
+      return node.wrappers.default(node, request, sputnik)
+   else
+      request.create_new = true
+      return node.actions.save(node, request, sputnik, etc)
+   end
+end
+
+-----------------------------------------------------------------------------
 -- Saves/updates the node based on query params, then redirects to the new
 -- version of the node.
 --
@@ -300,26 +319,6 @@ end
 -- @param sputnik        passed to show_content.
 -----------------------------------------------------------------------------
 
-TMPL = [=[
-<p>
- <span class="teaser">
-  $note
- </span>
-</p>
-
-<br/><br/>
-
-<table style="border: none">
-$do_prototypes[[
-  <tr>
-   <td><a href="$url"><img src="$icon_base_url{}$icon"/></a></td>
-   <td><a href="$url">$name</a></li></td>
-  </tr>
-]]
-</table>
-]=]
-
-
 function actions.show(node, request, sputnik)
    if node.redirect_destination and node.redirect_destination~="" then
       return actions.redirect(node, request, sputnik)
@@ -327,19 +326,16 @@ function actions.show(node, request, sputnik)
 
    if node.is_a_stub then
       request.is_indexable = false
-
-      --node:post_notice(node.translator.translate_key("PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE"))
-
-      node.inner_html = cosmo.f(TMPL){
-         note = node.translator.translate_key("PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE"),
+      node.inner_html = cosmo.f(node.templates.NEW_NODE){
          icon_base_url = sputnik.config.ICON_BASE_URL or sputnik.config.NICE_URL,
+         edit_url = sputnik:make_url(node.id, "edit_new"),
          do_prototypes = function()
                             local prototypes = sputnik.config.NEW_NODE_PROTOTYPES or {}
                             for i,v in ipairs(prototypes) do
                                cosmo.yield{
                                   name =v.title or v[1],
                                   icon = v.icon,
-                                  url  =sputnik:make_url(node.id, "edit", {prototype=v[1]})
+                                  url  =sputnik:make_url(node.id, "edit_new", {prototype=v[1]})
                                }
                             end
                          end
@@ -705,6 +701,20 @@ end
 
 
 -----------------------------------------------------------------------------
+-- Shows HTML for the edit field for a non-existent node.
+-----------------------------------------------------------------------------
+function actions.edit_new (node, request, sputnik, etc)
+   if sputnik:node_exists(node.id) then
+      node:post_error("Node already exists.")
+      node.inner_html = ""
+      return node.wrappers.default(node, request, sputnik)
+   else
+      request.edit_new = true
+      return node.actions.edit(node, request, sputnik, etc)
+   end
+end
+
+-----------------------------------------------------------------------------
 -- Shows HTML for the standard Edit field.
 -----------------------------------------------------------------------------
 function actions.edit (node, request, sputnik, etc)
@@ -794,7 +804,11 @@ function actions.edit (node, request, sputnik, etc)
       captcha_html = node.translator.translate_key("ANONYMOUS_USERS_MUST_ENTER_CAPTCHA")..sputnik.captcha:get_html()
    end
 
-   
+   local action="save"
+   if request.edit_new then
+      action = "create"
+   end
+
    node.inner_html = cosmo.f(node.templates.EDIT){
                         if_preview      = cosmo.c(request.preview){
                                              preview = request.preview,
@@ -806,6 +820,7 @@ function actions.edit (node, request, sputnik, etc)
                         post_token      = form.post_token,
                         post_timestamp  = form.post_timestamp,
                         action_url      = sputnik.config.BASE_URL,
+                        action          = action,
                         captcha         = captcha_html,
                      }
 

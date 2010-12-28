@@ -877,6 +877,18 @@ PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE = {
              Please pick one of the node types below.]]
 }
 
+THIS_NODE_DOES_NOT_EXIST_BUT_YOU_CAN_CREATE_IT = {
+   en_US = [[The node by this name does not exist, but you can create it.]]
+}
+
+CREATE_A_BASIC_NODE = {
+   en_US = [[Create a basic node.]]
+}
+
+OR_SELECT_ANOTHER_NODE_TYPE = {
+   en_US = [[Or pick one of the other node types below.]]
+}
+
 THIS_PAGE_DEFINED_THE_FOLLOWING_ACTIONS = {
    en_US = "This node supports the following commands:"
 }

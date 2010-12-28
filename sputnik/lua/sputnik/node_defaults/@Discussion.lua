@@ -56,8 +56,8 @@ NODE.html_content = [=[
   <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
-   <li><a href="$make_url{$new_id, "edit", comment_parent=$id}">_(REPLY)</a></li> 
-   <li><a href="$make_url{$new_id, "edit", comment_parent=$id, quote="true"}">_(QUOTE)</a></li> 
+   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id}">_(REPLY)</a></li> 
+   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id, quote="true"}">_(QUOTE)</a></li> 
   </ul>
   </div>
   <div class="content">
@@ -73,8 +73,8 @@ NODE.html_content = [=[
   <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
-   <li><a href="$make_url{$new_id, "edit", comment_parent=$id}">_(REPLY)</a></li> 
-   <li><a href="$make_url{$new_id, "edit", comment_parent=$id, quote="true"}">_(QUOTE)</a></li> 
+   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id}">_(REPLY)</a></li> 
+   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id, quote="true"}">_(QUOTE)</a></li> 
   </ul>
   </div>
   <div class="content">

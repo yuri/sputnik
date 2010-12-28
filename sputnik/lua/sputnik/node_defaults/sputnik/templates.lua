@@ -145,14 +145,14 @@ EDIT = [===[
         <h2>_(PREVIEWING_UNSAVED_CHANGES)</h2>
         <div class="preview">$preview</div>
         <div class="submit">
-         <button class="positive" type="submit" name="action_save" accesskey="s">_(SAVE)</button>
+         <button class="positive" type="submit" name="action_$action" accesskey="s">_(SAVE)</button>
          <button class="negative" type="submit" name="action_show" accesskey="c">_(CANCEL)</button>
          <label>or continue editing below</label>
         </div>
        ]]
        $html_for_fields
        <div class="submit">
-        <button class="positive" type="submit" accesskey="s" name="action_save">_(SAVE)</button>
+        <button class="positive" type="submit" accesskey="s" name="action_$action">_(SAVE)</button>
         <button class="positive" type="submit" accesskey="s" name="action_preview">_(PREVIEW)</button>
         <button class="negative" type="submit" accesskey="s" name="action_cancel">_(CANCEL)</button>
       </div>
@@ -202,6 +202,34 @@ LOGIN_FORM              = [===[
       ]=]
 
 ]===]
+
+NEW_NODE = [===[
+<p>
+ <span class="teaser">
+  _(THIS_NODE_DOES_NOT_EXIST_BUT_YOU_CAN_CREATE_IT)
+ </span>
+</p>
+
+<table class="noborder" style="padding-left: 5em">
+  <tr>
+   <td><a href="$edit_url"><img src="$icon_base_url{}icons/basic_node.png"/></a></td>
+   <td><a href="$edit_url">_(CREATE_A_BASIC_NODE)</a></li></td>
+  </tr>
+</table>
+
+
+<p>_(OR_SELECT_ANOTHER_NODE_TYPE)</p>
+
+<table class="noborder" style="padding-left: 5em">
+$do_prototypes[[
+  <tr>
+   <td><a href="$url"><img src="$icon_base_url{}$icon"/></a></td>
+   <td><a href="$url">$name</a></li></td>
+  </tr>
+]]
+</table>
+]===]
+
 --------------------------------------------------------------------------------
 ------- DEALING WITH LUA CODE --------------------------------------------------
 --------------------------------------------------------------------------------

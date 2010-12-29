@@ -212,7 +212,7 @@ p.site_subtitle { /* a subtitle for the site */
 b, strong {
  font-weight: bold;
 }
-i, emphasis {
+i, em, emphasis {
  font-style:italic;
 }
 

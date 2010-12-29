@@ -1,0 +1,62 @@
+<rss version="2.0">
+ <channel>
+  <title>SACI</title>
+  <description/>
+   <link>http://spu.tnik.org/en/Saci</link>
+     
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 10.12.28</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-10.12.28.tar.gz</guid>
+    <description>fixing a few bugs</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 9.03.16</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-9.03.16.tar.gz</guid>
+    <description>get_visible_children and some error and some bug fixes</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 9.02.15</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-9.02.15.tar.gz</guid>
+    <description>misc changes since August 2008</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 8.08.08</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-8.08.08.tar.gz</guid>
+    <description>added node caching to avoid fetching the same nodes again and again</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 8.07.21</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-8.07.21.tar.gz</guid>
+    <description>more child methods, new versium</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 8.07.07</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-8.07.07.tar.gz</guid>
+    <description>allowed missing fields (commit 94d0259)</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 8.06.22</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-8.06.22.tar.gz</guid>
+    <description>made serialized nodes look pretty</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 8.06.11</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-8.06.11.tar.gz</guid>
+    <description>allowed anonymous revisions</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 8.05.24</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-8.05.24.tar.gz</guid>
+    <description>made a test release of Saci</description>
+   </item>
+ </channel>
+</rss>

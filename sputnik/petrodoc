@@ -1,5 +1,6 @@
 package    = 'Sputnik'
 versions   = {
+   {'10.12.28', 'December 28, 2010',  'new design, password reset, user nodes'},
    {'9.03.16', 'March 16, 2009',  'better forums, save hooks'},
    {'9.03.03', 'March 3, 2009',  'new editor system, configure action, defaults for parameters, configurable toolbar, buttons for creating nodes'},
    {'9.02.16', 'February 16, 2009',  'replaced the icons with LGPL ones'},
@@ -47,15 +48,15 @@ push       = "scp %s tnik.org:/var/www/tnik.org/files/"
 --------------------------------------------------------------------------------
 
 dependencies = [[
-  'saci == 9.03.16',
+  'saci == 10.12.28',
   'cosmo >= 8.04.14',
   'xssfilter >= 8.07.07',
-  'colors >= 8.05.26',
   'markdown >= 0.32',
   'md5 >= 1.1',
   'wsapi >= 1.0',
   'luasocket >= 2.0',
   'coxpcall >= 1.13',
+  'sputnik-markitup == 9.03.16',
 ]]
 
 -------------------------------------------------------------------------------

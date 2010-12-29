@@ -1,5 +1,6 @@
 package    = 'Versium'
 versions   = {
+   {'10.12.28', 'December 28, 2010', 'adding support for a generic key-value storage to work with things like TokyoTyrant'},
    {'9.02.15', 'February 15, 2009',  'misc changes since August 2008'},
    {'8.07.21', 'July 21, 2008',  'fixed the handling of time zones'},
    {'8.07.07', 'July 7, 2008',   'fixed hour conversion and a bug with out of sequence IDs in filedir'},

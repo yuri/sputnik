@@ -1,0 +1,50 @@
+<rss version="2.0">
+ <channel>
+  <title>Versium</title>
+  <description/>
+   <link>http://spu.tnik.org/en/Versium</link>
+     
+   <item>
+    <link>http://spu.tnik.org/files/versium-$version.tar.gz</link>
+    <title>Versium 10.12.28</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/versium-10.12.28.tar.gz</guid>
+    <description>adding support for a generic key-value storage to work with things like TokyoTyrant</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/versium-$version.tar.gz</link>
+    <title>Versium 9.02.15</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/versium-9.02.15.tar.gz</guid>
+    <description>misc changes since August 2008</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/versium-$version.tar.gz</link>
+    <title>Versium 8.07.21</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/versium-8.07.21.tar.gz</guid>
+    <description>fixed the handling of time zones</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/versium-$version.tar.gz</link>
+    <title>Versium 8.07.07</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/versium-8.07.07.tar.gz</guid>
+    <description>fixed hour conversion and a bug with out of sequence IDs in filedir</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/versium-$version.tar.gz</link>
+    <title>Versium 8.06.22</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/versium-8.06.22.tar.gz</guid>
+    <description>refactored diff logic into a separate rock</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/versium-$version.tar.gz</link>
+    <title>Versium 8.05.24</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/versium-8.05.24.tar.gz</guid>
+    <description>made a test release of new versium</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/versium-$version.tar.gz</link>
+    <title>Versium 8.03.28</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/versium-8.03.28.tar.gz</guid>
+    <description>separated SACI into its own rock</description>
+   </item>
+ </channel>
+</rss>

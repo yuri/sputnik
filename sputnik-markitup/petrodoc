@@ -10,7 +10,6 @@ detailed   = [[
 
 license    = 'MIT/X11'
 download   = 'http://spu.tnik.org/files/sputnik-markitup-$version.tar.gz'
-push       = "scp %s tnik.org:/var/www/tnik.org/files/"
 --------------------------------------------------------------------------------
 
 dependencies = [[

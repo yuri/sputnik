@@ -216,6 +216,13 @@ EDIT_FORM_TITLE = {
    pt_BR = "Título da Página",
 }
 
+-- A lable for the "owners" parameter
+EDIT_FORM_OWNERS = {
+   en_US = "Owners",
+   ru    = "Хозяева",
+   pt_BR = "Donos",
+}
+
 -- A label for the section of the form with advanced parameters
 EDIT_FORM_ADVANCED_SECTION = {
    en_US = "Advanced Fields",

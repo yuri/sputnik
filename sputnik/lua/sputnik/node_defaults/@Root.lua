@@ -91,6 +91,7 @@ content_section_end = {1.4, "div_end"}
 advanced_section = {2.0, "div_start", id="advanced"}
  page_name       = {2.21, "readonly_text"}
  title           = {2.22, "text_field"}
+ owners          = {2.221, "text_field"}
  breadcrumb      = {2.23, "text_field"}
  category        = {2.24, "select", options = {}}
  prototype       = {2.25, "hidden", no_label=true, div_class="hidden"}

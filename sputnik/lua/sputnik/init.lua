@@ -85,6 +85,16 @@ function Sputnik:init(initial_config)
    self.config = initial_config or {} -- temporarily
    self.initial_config = initial_config -- for reloading
 
+   -- Initialize default storage configuration options. If the configuration
+   -- node overwrites these values, they won't actually be used as storage
+   -- will have already been initialized using these values
+   if not self.config.ROOT_PROTOTYPE then
+      self.config.ROOT_PROTOTYPE = DEFAULT_PROTOTYPE_NODE
+   end
+   if not self.config.VERSIUM_STORAGE_MODULE then
+      self.config.VERSIUM_STORAGE_MODULE = DEFAULT_STORAGE_MODULE
+   end
+
    -- Initialize storage - do this before loading stored configurations.
    self:initialize_storage()
 
@@ -125,9 +135,9 @@ end
 function Sputnik:initialize_storage()
    -- create an instance of Saci
    self:assert_config("VERSIUM_PARAMS", " to initialize storage.")
-   self.saci = saci.new(self.config.VERSIUM_STORAGE_MODULE or DEFAULT_STORAGE_MODULE,
+   self.saci = saci.new(self.config.VERSIUM_STORAGE_MODULE,
                         self.config.VERSIUM_PARAMS,
-                        self.config.ROOT_PROTOTYPE or DEFAULT_PROTOTYPE_NODE)
+                        self.config.ROOT_PROTOTYPE)
    -- put config values into Saci's sandbox so that they would be available
    -- to all code run in a sandbox.
    self.saci.sandbox_values = setmetatable({}, {__index = self.config})

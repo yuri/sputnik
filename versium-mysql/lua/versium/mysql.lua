@@ -65,7 +65,7 @@ function new(params)
    end
 
    -- Create the new object
-   local obj = {con=con, versium=versium}
+   local obj = {env=env, con=con, versium=versium, params=params}
    setmetatable(obj, MySQLVersium_mt)
 
    obj.tables = {}
@@ -142,11 +142,25 @@ end
 -----------------------------------------------------------------------------
 -- Executes a query using the MySQL connection.  This function is exposed to
 -- allow other code to hook it if necessary, since we cannot hook con.execute
--- 
--- @param query          the query to be executed 
+--
+-- @param query          the query to be executed
+-- @param noreconnect    do not attempt to reconnect to server if it has died
 -----------------------------------------------------------------------------
-function MySQLVersium:execute(query)
-   return self.con:execute(query)
+function MySQLVersium:execute(query, noreconnect)
+   local cur, err = self.con:execute(query)
+   if cur then
+      return cur
+   elseif cur == nil and err and err:match("gone away") and not noreconnect then
+      -- Reopen the connection to the MySQL server
+      local con = self.env:connect(unpack(self.params))
+      if con then
+         self.con = con
+         return self:execute(query, true)
+      else
+         return nil, err
+      end
+   end
+   return cur, err
 end
 
 -----------------------------------------------------------------------------

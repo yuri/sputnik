@@ -10,7 +10,7 @@ $(document).ready(function() {
       clearTimeout(timerId);
       timerId = setTimeout(function() {
          $.post("$url"  ,
-                { p: "sputnik/js/editpage.validate_lua", code: code },
+                { p: "sputnik/scripts.validate_lua", code: code },
                 function(data) {
                    if (data == "valid") {
                       $(field).css("background-color", "$valid");

@@ -322,6 +322,11 @@ function Sputnik:handle_request(request, response)
       response.headers[header] = value
    end
 
+   -- If the action altered the status code, set that in the response
+   if type(node.status) == "number" then
+      response.status = node.status
+   end
+
    -- If we ave any cookie values, add them to the response
    for name,value in pairs(node.cookies) do
       if value == false then
@@ -574,6 +579,11 @@ function Sputnik:decorate_node(node)
       node_self.headers["Location"] = url
    end
 
+   -- Add a function allowing for custom status codes (such as 404)
+   node.setstatus = function(node_self, status)
+      node_self.status = status
+   end
+   
    -- Add tables and functions for CSS and Javascript.
    node.css_links = {}
    node.css_snippets = {}

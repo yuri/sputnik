@@ -26,6 +26,7 @@ module(..., package.seeall)
 
 require("md5")
 require("wsapi.util")
+require('wsapi.request')
 require("cosmo")
 require("saci")
 require("sputnik.actions.wiki")
@@ -878,11 +879,12 @@ function Sputnik:make_url(node_name, action, params, anchor)
    end
 
    local dirified = self:dirify(node_name) --wsapi.util.url_encode()
+   local url, node
+   local params = params or {}
 
-   local url
-
-   -- first the node name
+   -- interwiki urls
    if interwiki_handler then
+      -- first the node name
       local handler_type = type(interwiki_handler)
       if handler_type == "string" then
          if interwiki_handler:match("%%s") then
@@ -895,29 +897,36 @@ function Sputnik:make_url(node_name, action, params, anchor)
       else
          error("Interwiki handler should be string or function, but is "..handler_type)
       end
-   else
-      url = self.config.NICE_URL..dirified
-   end
 
-   -- then the action and HOME_PAGE
-   if action and action~="show" then 
-      url = url.."."..action
-   elseif dirified==self.config.HOME_PAGE and #(params or {})==0 then
-      url = self.config.HOME_PAGE_URL
-   end
-
-   -- then the parameters
-   if params and next(params) then
-
-      for k, v in pairs(params or {}) do
-         if k~="p" then
-            url = url.."&"..wsapi.util.url_encode(k).."="
-                          ..wsapi.util.url_encode(v or "")
-         end
+      -- then the action
+      if action and action~="show" then
+         url = url.."."..action
+      elseif dirified == self.config.HOME_PAGE then
+         url = self.config.HOME_PAGE_URL
       end
+
+   else
+      -- concatenate the action to the node_name
+      if action and action ~= "show" then
+         node = dirified.."."..action
+      else
+         node = dirified
+      end
+
+      -- url without query string
+      if self.config.USE_NICE_URL then
+         url = self.config.BASE_URL..node
+      else
+         url = self.config.BASE_URL
+         params["p"] = node
+      end
+
+      -- encode query string and create url
+      url = wsapi.request.methods:link(url, params)
    end
 
-   -- finally the anchor
+
+   -- finally add the anchor
    if anchor then
       url = url.."#"..anchor
    end

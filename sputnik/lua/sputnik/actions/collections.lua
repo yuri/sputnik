@@ -21,10 +21,10 @@ local function format_list(nodes, template, sputnik, node, request)
             do_nodes = function()
                           for i, node in ipairs(nodes) do
                              local t = {
-                                url = sputnik.config.NICE_URL..node.id,
+                                url = sputnik:make_url(node.id),
                                 id  = node.id,
                                 short_id = node.id:match("[^%/]*$"),
-                                nice_url = sputnik.config.NICE_URL,
+                                nice_url = sputnik.config.BASE_URL,
                              }
                              for k, v in pairs(node.fields) do
                                  t[k] = tostring(node[k])
@@ -103,10 +103,10 @@ function actions.show(node, request, sputnik)
          for i, node in ipairs(non_proto_nodes) do
              sputnik:decorate_node(node)
             local t = {
-               url = sputnik.config.NICE_URL..node.id,
+               url = sputnik:make_url(node.id),
                id  = node.id,
                short_id = node.id:match("[^%/]*$"),
-               nice_url = sputnik.config.NICE_URL,
+               nice_url = sputnik.config.BASE_URL,
                logged_in_user = request.user,
             }
             for k, v in pairs(node.fields) do

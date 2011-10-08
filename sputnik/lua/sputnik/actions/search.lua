@@ -61,7 +61,7 @@ actions.show_results = function(node, request, sputnik)
                                          cosmo.yield {
                                             name = node.id:gsub("_", " "),
                                             title = node.title,
-                                            url = sputnik.config.NICE_URL..node.id,
+                                            url = sputnik:make_url(node.id),
                                             --backlinks = weights[node.id] or 0,
                                             snippet = "", --snippets[id],
                                             time = sputnik:format_time(metadata.timestamp, "%Y/%m/%d")

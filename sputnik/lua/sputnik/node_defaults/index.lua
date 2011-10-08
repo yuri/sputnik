@@ -30,9 +30,9 @@ After that, logged in as "Admin", you can do some customizations.  See node
 [[sputnik]] for the complete list of options, but here are some basic ideas:
 
 Edit [[sputnik/config.edit]] node to change the title of your wiki and the domain
-of your server.  While there, you can also edit the ``NICE_URL`` parameter to
-whatever you want the your "short" URLs to start with.  E.g., if you set it to
-"/mysite/" your wikilinks will point to "/mysite/Page_Name".
+of your server.  While there, you can also set the ``USE_NICE_URL`` to ``true``
+and edit the ``BASE_URL``parameter to whatever you want to use shorter URLs.
+E.g., if you set it to "/mysite/" your wikilinks will point to "/mysite/Page_Name".
 
 Also, edit the [[sputnik/navigation.edit]] page to set your navigation bar.
 If you are new to Lua, don't get scared.  Use the "preview" button to check

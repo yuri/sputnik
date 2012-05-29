@@ -3,7 +3,22 @@ require("mime")
 CHUNK_LENGTH = 78
 
 USAGE = [[
-sputnik encode-binary /path/to/binary.file
+NAME:
+        sputnik encode-binary
+
+SYNOPSIS:
+
+        sputnik encode-binary <path>
+
+DESCRIPTION:
+
+        Encodes a binary file for including in Sputnik as a binary node.
+        
+OPTIONS:
+
+        <path>
+            The path to the file that is to be encoded.
+
 ]]
 
 function execute(arg, sputnik)

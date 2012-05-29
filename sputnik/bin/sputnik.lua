@@ -19,27 +19,9 @@ local function parse_args(arg)
    return parsed
 end
 
-BASIC_USAGE = [[
-
-Sputnik - A Extensible Wiki in Lua
-
-Usage: sputnik <command> --option1=value --option2=value
-
-Some of the possible commands are:
-
-    start-xavante
-    make-cgi
-]]
-
 local function main()
    local options = parse_args(arg)
-
-   local command = options[1]
-   if not command then
-      print(BASIC_USAGE)
-      return
-   end
-
+   local command = options[1] or "help"
    local config_path = options.config or "sputnik.config"
 
    config = pcall(dofile, config_path)

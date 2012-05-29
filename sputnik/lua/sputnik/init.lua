@@ -914,7 +914,7 @@ function Sputnik:make_url(node_name, action, params, anchor)
       end
 
       -- url without query string
-      if self.config.USE_NICE_URL then
+      if self.config.USE_NICE_URLS then
          url = self.config.BASE_URL..node
       else
          url = self.config.BASE_URL

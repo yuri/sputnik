@@ -10,7 +10,7 @@ NODE.content = [=============[
 SITE_TITLE     = "Sputnik"            -- change the title of the site
 SITE_SUBTITLE  = "An extensible wiki in Lua"       -- change the subtitle of the site
 DOMAIN         = "localhost:8080"     -- set for RSS feeds to work properly
---USE_NICE_URL   = false                -- set if you want "nicer" URLs
+--USE_NICE_URLS   = true              -- uncomment to activate "nice" URLs
 MAIN_COLOR     = 200                  -- pick a number from 0 to 360
 --BODY_BG_COLOR  = "white"
 

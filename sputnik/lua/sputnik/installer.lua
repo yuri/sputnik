@@ -10,7 +10,6 @@ require('sputnik.wsapi_app')
 return sputnik.wsapi_app.new{
    VERSIUM_PARAMS = { [[$dir/wiki-data/]] },
    BASE_URL       = '/',
-   NICE_URL       = '/', 
    PASSWORD_SALT  = '$password_salt',
    TOKEN_SALT     = '$token_salt',
 }

@@ -49,7 +49,7 @@ local function main()
    if ok then
       handler.execute(options)
    else
-      print("Couldn't find handler for command '"..command.."'.")
+      print("Couldn't find or load handler for command '"..command.."'.")
    end
 end
 

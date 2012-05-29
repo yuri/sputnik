@@ -18,7 +18,7 @@ end
 
 xavante_is_finished = function() return false end
 
-function start(handler)
+function start(handler, port)
 
    local handler_fn
    if type(handler) == "string" then
@@ -36,7 +36,7 @@ function start(handler)
 
    xavante.start_message(xavante_start_message)
    xavante.HTTP{
-	   server = {host = "*", port = 8080},
+	   server = {host = "*", port = port or 8080},
 	   defaultHost = {
 		  rules = {
 		     { match = {"^/(.+)$"},

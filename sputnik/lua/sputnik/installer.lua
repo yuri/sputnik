@@ -8,7 +8,7 @@ REQUIRE_LUAROCKS = [[pcall(require, "luarocks.require")]]
 WS_SCRIPT_TEMPLATE = [=[
 require('sputnik.wsapi_app')
 return sputnik.wsapi_app.new{
-   VERSIUM_PARAMS = { [[$dir/wiki-data/]] },
+   VERSIUM_PARAMS = { [[$data_directory]] },
    BASE_URL       = '/',
    PASSWORD_SALT  = '$password_salt',
    TOKEN_SALT     = '$token_salt',
@@ -19,7 +19,7 @@ CGI_TEMPLATE = [=[#! $dir/bin/lua
 $require_luarocks
 require('sputnik.wsapi_app')
 local my_app = sputnik.wsapi_app.new{
-   VERSIUM_PARAMS = { [[$dir/wiki-data/]] },
+   VERSIUM_PARAMS = { [[$data_directory]] },
    BASE_URL       = '/cgi-bin/sputnik.cgi',
    PASSWORD_SALT  = '$password_salt',
    TOKEN_SALT     = '$token_salt',
@@ -52,19 +52,23 @@ function make_salt(length)
 end
 
 
-function make_script(dir, subpath, template, options)
+function make_script(data_directory, working_directory, filename, template, options)
 
    options = options or {}
+   
+   working_directory = working_directory or lfs.currentdir()
+   local file_path = working_directory.."/"..filename
+   data_directory = data_directory or working_directory.."/wiki-data/"
+   if (data_directory:sub(-1)~= "/") then
+       data_directory = data_directory.."/"
+   end
 
-   dir = dir or lfs.currentdir()
-   local path = dir.."/"..subpath
-
-   if lfs.attributes(path) then
-      print("Cannot create '"..path.."': file already exists.")
+   if lfs.attributes(file_path) then
+      print("Cannot create '"..file_path.."': file already exists.")
       print("Delete the file, then try again.")
       return
    end
-   local out, err = io.open(path, "w")
+   local out, err = io.open(file_path, "w")
    if err then
       print("Could not create file '"..path.."':")
       print(err)
@@ -77,7 +81,7 @@ function make_script(dir, subpath, template, options)
    end
 
    local content = cosmo.f(template){
-                      dir           = dir, 
+                      data_directory = data_directory, 
                       password_salt = password_salt,
                       token_salt    = token_salt,
                       require_luarocks = require_luarocks,
@@ -86,10 +90,10 @@ function make_script(dir, subpath, template, options)
    out:close()
 end
 
-function make_wsapi_script(dir, subpath, options)
-   make_script(dir, subpath, WS_SCRIPT_TEMPLATE, options)
+function make_wsapi_script(data_directory, working_directory, filename, options)
+   make_script(data_directory, working_directory, filename, WS_SCRIPT_TEMPLATE, options)
 end
 
-function make_cgi_file(dir, subpath, options)
-   make_script(dir, subpath, CGI_TEMPLATE, options)
+function make_cgi_file(data_directory, working_directory, filename, options)
+   make_script(data_directory, working_directory, filename, CGI_TEMPLATE, options)
 end

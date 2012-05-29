@@ -922,7 +922,7 @@ function Sputnik:make_url(node_name, action, params, anchor)
       end
 
       -- encode query string and create url
-      url = wsapi.request.methods:link(url, params)
+      url = url .. wsapi.request.methods:qs_encode(params)
    end
 
 

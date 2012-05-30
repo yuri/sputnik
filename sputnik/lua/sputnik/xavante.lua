@@ -36,17 +36,27 @@ function start(handler, port)
 
    xavante.start_message(xavante_start_message)
    xavante.HTTP{
-	   server = {host = "*", port = port or 8080},
-	   defaultHost = {
-		  rules = {
-		     { match = {"^/(.+)$"},
-		       with  = xavante.redirecthandler, params = {"/?p=%1"}
-		     },
-		     { match = {"^/$"},
-               with  = wsapi.xavante.makeHandler(handler_fn, "", "", ""),
-		     },
-		  }
-	   },
+      server = {host = "*", port = port or 8080},
+      defaultHost = {
+        rules = {
+           { match = {"^/(.+)$"},
+             with  = xavante.redirecthandler,
+             params = {
+                "/", 
+                function(req,res,cap)
+                   req.cmd_url = "/?p="..cap[1]
+                   if req.parsed_url.query then
+                      req.cmd_url = req.cmd_url.."&"..req.parsed_url.query
+                   end 
+                   return "reparse" 
+                end
+             }
+           },
+           { match = {"^/$"},
+             with  = wsapi.xavante.makeHandler(handler_fn, "", "", ""),
+           },
+        }
+      },
    }
    xavante.start(xavante_is_finished, XAVANTE_TIMEOUT)
 end

@@ -1,10 +1,10 @@
-module(..., package.seeall) --  sputnik.auth.mysql
+module(..., package.seeall)
 
 -----------------------------------------------------------------------------
--- Implements Sputnik's authentication API using a MySQL database.
+-- Implements Sputnik's authentication API using a LuaSQL database database
+-- connection.
 -----------------------------------------------------------------------------
 
-require("luasql.mysql")
 local errors = require("sputnik.auth.errors")
 
 local Auth = {}
@@ -47,11 +47,18 @@ function new(sputnik, params)
    -- recent - A time in seconds for which a user is considered recent
 	-- connect - A list that is passed to the luasql connection function
 
-   -- Try to connect to the given database
-  	local env = luasql.mysql()
-	local con = env:connect(unpack(params))
+   local db_module = params[1]
+   local db = require("luasql."..db_module)
 
-	assert(con, errors.initialization_error("Could not connect to MySQL database"))
+   -- Try to connect to the given database
+  	local env = db[db_module]()
+  	local remaining_params = {}
+  	for i = 2, #params do
+  	   remaining_params[i-1]=params[i]
+  	end
+	local con = env:connect(unpack(remaining_params))
+
+	assert(con, errors.initialization_error("Could not connect to the database"))
 
    params.prefix = params.prefix or "auth_"
    params.password_salt = params.password_salt or sputnik.config.PASSWORD_SALT
@@ -66,6 +73,7 @@ function new(sputnik, params)
       password_salt = params.password_salt,
       token_salt = params.token_salt,
       recent = params.recent,
+      db_module = db_module,
    }
 	setmetatable(obj, Auth_mt)
 
@@ -115,6 +123,9 @@ function Auth:prepare(statement, ...)
          local type = type(value)
 
          if type == 'string' then
+            if self.db_module=="sqlite3" and value:find("%z") then
+               error("sqlite3 cannot store embedded zeros")
+            end
             value = "'" .. self.con:escape(value) .. "'"
          elseif type == 'nil' then
             value = 'null'
@@ -142,7 +153,7 @@ function Auth:user_exists(username)
    username = username:lower()
    local cmd = self:prepare(self.queries.USER_EXISTS, username)
    local cur = self.con:execute(cmd)
-   local row = cur:fetch("*a")
+   local row = cur:fetch()
    cur:close()
 
    return row and (tonumber(row) == 1)
@@ -174,19 +185,19 @@ function Auth:authenticate(username, password)
 
    local cmd = self:prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
-   local time = cur:fetch("*a")
+   local time = cur:fetch()
    cur:close()
 
    local hash = get_salted_hash(time, self.password_salt, password)
    local cmd = self:prepare(self.queries.USER_AUTH, username, hash)
    local cur = self.con:execute(cmd)
-   local row = cur:fetch("*a")
+   local row = cur:fetch()
    cur:close()
 
    -- Get the display name for this user
    local cmd = self:prepare(self.queries.GET_META, username, "display")
    local cur = self.con:execute(cmd)
-   local display = cur:fetch("*a")
+   local display = cur:fetch()
    cur:close()
 
    if row and (tonumber(row) == 1) then
@@ -208,7 +219,7 @@ function Auth:validate_token(username, token)
    username = username:lower()
    local cmd = self:prepare(self.queries.USER_PWHASH, username)
    local cur = assert(self.con:execute(cmd))
-   local row = cur:fetch("a")
+   local row = cur:fetch()
    cur:close()
    
    if row then
@@ -217,7 +228,7 @@ function Auth:validate_token(username, token)
          -- Get the display name for this user
          local cmd = self:prepare(self.queries.GET_META, username, "display")
          local cur = self.con:execute(cmd)
-         local display = cur:fetch("*a")
+         local display = cur:fetch()
          cur:close()
 
          return display
@@ -238,7 +249,7 @@ function Auth:user_is_recent(username)
    username = username:lower()
    local cmd = self:prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
-   local time = cur:fetch("*a")
+   local time = cur:fetch()
    cur:close()
 
    if time then
@@ -267,7 +278,7 @@ function Auth:set_password(username, password)
 
    local cmd = self:prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
-   local creation_time = cur:fetch("*a")
+   local creation_time = cur:fetch()
    cur:close()
 
    local pwhash = get_salted_hash(creation_time, self.password_salt, password)
@@ -331,7 +342,7 @@ function Auth:get_metadata(username, key)
 
    local cmd = self:prepare(self.queries.GET_META, username, key)
    local cur = assert(self.con:execute(cmd))
-   local data = cur:fetch("*a")
+   local data = cur:fetch()
    cur:close()
 
    return data

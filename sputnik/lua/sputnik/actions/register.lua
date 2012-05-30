@@ -16,6 +16,11 @@ actions = {}
 -----------------------------------------------------------------------------
 function actions.show_registration_form(node, request, sputnik)
 
+   if sputnik.config.DISABLE_REGISTRATION then
+      node.inner_html = node.translator.translate_key("REGISTRATION_IS_DISABLED")
+      return node.wrappers.default(node, request, sputnik)   
+   end
+
    -- Setup the fieldspec
    field_spec = [[
                    new_username = {1.30, "text_field", div_class="autofocus"}
@@ -198,6 +203,11 @@ end
 -- Handles the submission of the registration form.
 -----------------------------------------------------------------------------
 function actions.submit_registration_form(node, request, sputnik)
+
+   if sputnik.config.DISABLE_REGISTRATION then
+      node.inner_html = node.translator.translate_key("REGISTRATION_IS_DISABLED")
+      return node.wrappers.default(node, request, sputnik)   
+   end
 
    assert(request.post_parameters_checked)
    local p = request.params

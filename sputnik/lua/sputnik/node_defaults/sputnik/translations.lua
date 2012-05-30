@@ -801,6 +801,12 @@ EDIT_FORM_REDIRECT_DESTINATION = {
 -----  REGISTRATION  --------------------------------------------------------
 -----------------------------------------------------------------------------
 
+-- Informs a user that registration is not available. (Users normally wouldn't
+-- see this, since the link to the registration page would not be shown to them.)
+REGISTRATION_IS_DISABLED = {
+   en_US = "Sorry, registration of new users is not currently allowed."
+}
+
 -- User agrees to terms of service.
 I_AGREE_TO_TERMS_OF_SERVICE = {
    en_US = "I have read to and agree to the <a href='$url' target='_blank'>Terms of Service</a><br />",

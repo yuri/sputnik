@@ -1205,7 +1205,6 @@ function wrappers.default(node, request, sputnik)
                                            nil, {do_not_highlight_missing = true}),
       login_link       = sputnik:make_link(sputnik.config.LOGIN_NODE, nil, {next = node.name},
                                            nil, {do_not_highlight_missing=true}),
-      register_link    = sputnik:make_link(sputnik.config.REGISTRATION_NODE),
       if_logged_in     = cosmo.c(request.user){
                             user = sputnik:escape(request.user),
                             if_user_link = cosmo.c(user_link){
@@ -1213,6 +1212,9 @@ function wrappers.default(node, request, sputnik)
                             }
                          },
       if_not_logged_in = cosmo.c(not request.user){},
+      if_can_register  = cosmo.c(not sputnik.config.DISABLE_REGISTRATION){
+                             register_link    = sputnik:make_link(sputnik.config.REGISTRATION_NODE),
+                         },
       if_search        = cosmo.c(sputnik.config.SEARCH_PAGE){},
       base_url         = sputnik.config.BASE_URL,
       search_page      = sputnik.config.SEARCH_PAGE,

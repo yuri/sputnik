@@ -15,7 +15,7 @@ return sputnik.wsapi_app.new{
 }
 ]=]
 
-CGI_TEMPLATE = [=[#! $dir/bin/lua
+CGI_TEMPLATE = [=[#! $lua
 $require_luarocks
 require('sputnik.wsapi_app')
 local my_app = sputnik.wsapi_app.new{
@@ -77,14 +77,17 @@ function make_script(data_directory, working_directory, filename, template, opti
 
    local require_luarocks = REQUIRE_LUAROCKS
    if options.without_luarocks then
-      require_luarocks = ""
+      require_luarocks = "--"..require_luarocks
    end
+
+   local lua = LUA or working_directory.."/bin/lua"
 
    local content = cosmo.f(template){
                       data_directory = data_directory, 
                       password_salt = password_salt,
                       token_salt    = token_salt,
                       require_luarocks = require_luarocks,
+                      lua = lua
                    }
    out:write(content)
    out:close()

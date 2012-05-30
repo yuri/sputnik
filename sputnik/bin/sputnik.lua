@@ -1,8 +1,14 @@
 
-pcall(require, "luarocks.require")
+LUA = "/usr/bin/env lua5.1"
+--WITHOUT_LUAROCKS = true  -- uncomment to disable Luarocks
+
+if USE_LUAROCKS then
+   pcall(require, "luarocks.require")
+end
 
 local function parse_args(arg)
    local parsed = {}
+   
    for i,v in ipairs(arg) do
       local flag, val = v:match('^%-%-(%w+)=(.*)')
       if flag then

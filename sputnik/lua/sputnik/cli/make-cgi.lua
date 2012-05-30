@@ -9,6 +9,7 @@ NAME:
 SYNOPSIS:
 
         sputnik make-cgi [<data_directory>] [<destination_directory>]
+        [--without-luarocks]
 
 DESCRIPTION:
 
@@ -29,6 +30,8 @@ OPTIONS:
             The directory where sputnik.ws and sputnik.cgi files will be written.
             The default is the current working directory.
 
+        --without-luarocks
+            The generated CGI script won't attempt to load luarocks.
 ]]
 
 function execute(args, sputnik)

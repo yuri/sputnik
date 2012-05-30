@@ -14,8 +14,9 @@ end
 
 actions.fancy_css = function(page, params, sputnik)
    require"saci.sandbox"
+
    local data, e = saci.sandbox.new{
-                      icon_base_url    = sputnik.config.ICON_BASE_URL or sputnik.config.NICE_URL,
+                      icon_base_url = sputnik:make_url_prefix(sputnik.config.ICON_BASE_URL),
                       string = string,
                       table  = table,
                       ipairs = ipairs,

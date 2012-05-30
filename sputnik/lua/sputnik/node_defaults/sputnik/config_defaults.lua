@@ -18,27 +18,26 @@ NODE.content = [=============[
 SITE_TITLE     = "My New Wiki"        -- change the title of the site
 SITE_SUBTITLE  = "Don't panic!"       -- change the subtitle of the site
 DOMAIN         = "localhost:8080"     -- set for RSS feeds to work properly
---USE_NICE_URLS   = true              -- uncomment to activate "nice" URLs
-
-HOME_PAGE      = "index"
-HOME_PAGE_URL  = BASE_URL             -- or BASE_URL.."?p="..HOME_PAGE
 COOKIE_NAME    = "Sputnik"            -- change if you run several
+TIME_ZONE      = "+0000"
+TIME_ZONE_NAME = "<abbr title='Greenwich Mean Time'>GMT</abbr>"
+
+HOME_PAGE_URL  = BASE_URL
+HOME_PAGE      = "index"              -- the id of the homepage node
 SEARCH_PAGE    = "search"             -- comment out remove the search box
 
 --SEARCH_CONTENT = "Installation"
 
-TIME_ZONE      = "+0000"
-TIME_ZONE_NAME = "<abbr title='Greenwich Mean Time'>GMT</abbr>"
 
 -----------------------------------------------------------------------------
 --------- URLs --------------------------------------------------------------
 -----------------------------------------------------------------------------
 
-ICON_BASE_URL  = BASE_URL.."?p="             -- change this to host icons elsewhere
-CSS_BASE_URL   = BASE_URL.."?p="             -- change this to host CSS elsewhere
-JS_BASE_URL    = BASE_URL.."?p="             -- change this to host JS elsewhere
-LOGO_URL       = ICON_BASE_URL.."logo.png"
-FAVICON_URL    = ICON_BASE_URL.."icons/sputnik.png"
+--ICON_BASE_URL  = "/some/path/icons/"       -- set this to host icons elsewhere
+--CSS_BASE_URL   = "/some/path/css/"         -- set this to host CSS elsewhere
+--JS_BASE_URL    = "/some/path/js/"          -- set this to host JavaScript elsewhere
+FAVICON_NODE     = "icons/sputnik.png"
+--FAVICON_URL    = ICON_BASE_URL..FAVICON_NODE
 
 -----------------------------------------------------------------------------
 --------- Interface ---------------------------------------------------------

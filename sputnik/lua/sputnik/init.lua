@@ -857,6 +857,7 @@ end
 --   GENERATING URLS
 --=========================================================================--
 
+local URL_PREFIX_CODE = 671521433 -- a random number
 
 -----------------------------------------------------------------------------
 -- Makes a URL from a table of parameters.
@@ -870,6 +871,8 @@ end
 function Sputnik:make_url(node_name, action, params, anchor)
    if not node_name or node_name=="" then
       node_name = self.config.HOME_PAGE
+   elseif node_name == URL_PREFIX_CODE then
+      node_name = ""
    end
 
    local interwiki_code = node_name:match("^([^%:]*)%:")
@@ -934,6 +937,15 @@ function Sputnik:make_url(node_name, action, params, anchor)
    return self:escape(url), node_name
 end
 
+-----------------------------------------------------------------------------
+-- Makes a URL prefix that could be turned into a proper Sputnik URL by
+-- appending a node name at the end.
+--
+-- @param prefix         a prefix that would be used if defined
+-----------------------------------------------------------------------------
+function Sputnik:make_url_prefix(prefix)
+   return prefix or self:make_url(URL_PREFIX_CODE)
+end
 
 -----------------------------------------------------------------------------
 -- Makes a link from a table of parameters.

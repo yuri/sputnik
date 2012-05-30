@@ -327,7 +327,7 @@ function actions.show(node, request, sputnik)
    if node.is_a_stub then
       request.is_indexable = false
       node.inner_html = cosmo.f(node.templates.NEW_NODE){
-         icon_base_url = sputnik.config.ICON_BASE_URL or sputnik.config.BASE_URL,
+         icon_base_url = sputnik:make_url_prefix(sputnik.config.ICON_BASE_URL),
          edit_url = sputnik:make_url(node.id, "edit_new"),
          do_prototypes = function()
                             local prototypes = sputnik.config.NEW_NODE_PROTOTYPES or {}
@@ -1230,9 +1230,9 @@ function wrappers.default(node, request, sputnik)
 
       -- "links" include "href="
       show_link        = sputnik:make_link(node.id),
-      icon_base_url    = sputnik.config.ICON_BASE_URL or sputnik.config.BASE_URL.."?p=",
-      css_base_url     = sputnik.config.CSS_BASE_URL or sputnik.config.BASE_URL.."?p=",
-      js_base_url      = sputnik.config.JS_BASE_URL or sputnik.config.BASE_URL.."?p=",
+      icon_base_url    = sputnik:make_url_prefix(sputnik.config.ICON_BASE_URL),
+      css_base_url     = sputnik:make_url_prefix(sputnik.config.CSS_BASE_URL),
+      js_base_url      = sputnik:make_url_prefix(sputnik.config.JS_BASE_URL),
       do_toolbar       = function(args)
                             local icons = sputnik.config.TOOLBAR_ICONS
                             for i, command in ipairs(sputnik.config.TOOLBAR_COMMANDS) do
@@ -1256,10 +1256,9 @@ function wrappers.default(node, request, sputnik)
                             return sputnik:make_url(unpack(args))
                          end,
       base_url         = sputnik.config.BASE_URL, -- for mods
-      nice_url         = (base_url or "").."?p=", --sputnik.config.NICE_URL, -- for mods
       home_page_url    = sputnik.config.HOME_PAGE_URL,
-      logo_url         = sputnik.config.LOGO_URL,
-      favicon_url      = sputnik.config.FAVICON_URL,
+      favicon_url      = sputnik.config.FAVICON_URL
+                         or sputnik:make_url(sputnik.config.FAVICON_NODE),
       -- icons are urls of images
       if_title_icon    = cosmo.c(node.icon and node.icon~=""){title_icon = sputnik:make_url(node.icon)},
    }

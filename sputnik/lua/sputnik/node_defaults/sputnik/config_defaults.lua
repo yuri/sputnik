@@ -19,8 +19,6 @@ SITE_TITLE     = "My New Wiki"        -- change the title of the site
 SITE_SUBTITLE  = "Don't panic!"       -- change the subtitle of the site
 DOMAIN         = "localhost:8080"     -- set for RSS feeds to work properly
 COOKIE_NAME    = "Sputnik"            -- change if you run several
-TIME_ZONE      = "+0000"
-TIME_ZONE_NAME = "<abbr title='Greenwich Mean Time'>GMT</abbr>"
 
 HOME_PAGE_URL  = BASE_URL
 HOME_PAGE      = "index"              -- the id of the homepage node
@@ -28,6 +26,8 @@ SEARCH_PAGE    = "search"             -- comment out remove the search box
 
 --SEARCH_CONTENT = "Installation"
 
+TIME_ZONE      = "+0000"
+TIME_ZONE_NAME = "<abbr title='Greenwich Mean Time'>GMT</abbr>"
 
 -----------------------------------------------------------------------------
 --------- URLs --------------------------------------------------------------

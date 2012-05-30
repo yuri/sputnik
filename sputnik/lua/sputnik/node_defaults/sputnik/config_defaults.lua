@@ -19,8 +19,6 @@ SITE_TITLE     = "My New Wiki"        -- change the title of the site
 SITE_SUBTITLE  = "Don't panic!"       -- change the subtitle of the site
 DOMAIN         = "localhost:8080"     -- set for RSS feeds to work properly
 --USE_NICE_URLS   = true              -- uncomment to activate "nice" URLs
-MAIN_COLOR     = 200                  -- pick a number from 0 to 360
---BODY_BG_COLOR  = "white"
 
 HOME_PAGE      = "index"
 HOME_PAGE_URL  = BASE_URL             -- or BASE_URL.."?p="..HOME_PAGE

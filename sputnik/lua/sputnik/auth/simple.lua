@@ -17,14 +17,6 @@ local function load_users(sputnik, name)
    return node.content.USERS, node.raw_values.content
 end
 
-local function get_salted_hash(time, salt, password)
-   return md5.sumhexa(time .. salt .. password)
-end
-
-local function user_token(user, salt, hash)
-   return md5.sumhexa(user .. salt .. "Sputnik")
-end
-
 -----------------------------------------------------------------------------
 -- Creates a new instance of the authentication module for use in Sputnik
 --
@@ -36,15 +28,11 @@ function new(sputnik, params)
    -- Set up default parameters
    params = params or {}
    params.node = params.node or "sputnik/passwords"
-   params.password_salt = params.password_salt or sputnik.config.PASSWORD_SALT
-   params.token_salt = params.token_salt or sputnik.config.TOKEN_SALT
    params.recent = params.recent or (14 * 24 * 60 * 60)
 
    local obj = setmetatable({}, Simple_mt)
    obj.sputnik = sputnik
    obj.node = params.node
-   obj.password_salt = params.password_salt
-   obj.token_salt = params.token_salt
    obj.noauto = params.NO_AUTO_REGISTRATION
    obj.recent = params.recent
    obj.users = load_users(obj.sputnik, obj.node)
@@ -65,32 +53,21 @@ function Simple:user_exists(username)
 end
 
 ------------------------------------------------------------------
--- Returns a token for the specified timestamp.  This is provided
--- for use outside the authentication system
---
--- @param timestamp - the timestamp to use when generating token
--- @return token a hashed token representing the given timestamp
-
-function Simple:timestamp_token(timestamp)
-   return md5.sumhexa(timestamp .. self.token_salt)
-end
-
-------------------------------------------------------------------
 -- Attempt to authenticate a given user with a given password
 --
--- @param user the username to authenticate
--- @param password the raw password to authenticate with
--- @return user the name of the authenticated user
--- @return token a hashed token for the user
+-- @param user           the username to authenticate
+-- @param password       the raw password to authenticate with
+-- @return user          the name of the authenticated user
+-- @return token         a hashed token for the user
 
 function Simple:authenticate(username, password)
    username = username:lower()
    local entry = self.users[username]
 
    if entry then
-      local hash = get_salted_hash(entry.creation_time, self.password_salt, password)
+      local hash = self.sputnik:hash_password(password, entry.creation_time, entry.hash)
       if hash == entry.hash then 
-         return entry.display, user_token(username, self.token_salt, entry.hash)
+         return entry.display, self.sputnik:make_token(username..entry.hash)
       else
          return nil, errors.wrong_password(username)
       end
@@ -112,7 +89,7 @@ function Simple:validate_token(username, token)
    local entry = self.users[username]
 
    if self:user_exists(username) then
-      if user_token(username, self.token_salt, entry.hash) == token then
+      if self.sputnik:make_token(username..entry.hash) == token then
          return entry.display
       else
          return false, errors.wrong_password(username)
@@ -163,7 +140,7 @@ function Simple:add_user(username, password, metadata)
    metadata = metadata or {}
    metadata.creation_time = now
    metadata.display = username
-   metadata.hash = get_salted_hash(now, self.password_salt, password)
+   metadata.hash = self.sputnik:hash_password(password, now)
    username = username:lower()
    if username == "admin" then
       metadata.is_admin = "true"

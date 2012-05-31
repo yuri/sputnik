@@ -10,15 +10,6 @@ local errors = require("sputnik.auth.errors")
 local Auth = {}
 local Auth_mt = {__metatable = {}, __index = Auth}
 
--- Utility functions
-local function get_salted_hash(time, salt, password)
-   return md5.sumhexa(time .. salt .. password)
-end
-
-local function user_token(user, salt, hash)
-   return md5.sumhexa(user .. salt .. "Sputnik")
-end
-
 local schemas = {}
 schemas.user = [[
 CREATE TABLE IF NOT EXISTS %s ( 
@@ -61,19 +52,14 @@ function new(sputnik, params)
 	assert(con, errors.initialization_error("Could not connect to the database"))
 
    params.prefix = params.prefix or "auth_"
-   params.password_salt = params.password_salt or sputnik.config.PASSWORD_SALT
-   params.token_salt = params.token_salt or sputnik.config.TOKEN_SALT
    params.recent = params.recent or (14 * 24 * 60 * 60)
-
-   assert(params.token_salt, errors.initialization_error("Cannot proceed without token salt"))
 
    -- Create the new object
 	local obj = {
       con = con,
-      password_salt = params.password_salt,
-      token_salt = params.token_salt,
       recent = params.recent,
       db_module = db_module,
+      sputnik = sputnik,
    }
 	setmetatable(obj, Auth_mt)
 
@@ -160,17 +146,6 @@ function Auth:user_exists(username)
 end
 
 ------------------------------------------------------------------
--- Returns a token for the specified timestamp.  This is provided
--- for use outside the authentication system
---
--- @param timestamp - the timestamp to use when generating token
--- @return token a hashed token representing the given timestamp
-
-function Auth:timestamp_token(timestamp)
-   return md5.sumhexa(timestamp .. self.token_salt)
-end
-
-------------------------------------------------------------------
 -- Attempt to authenticate a given user with a given password
 --
 -- @param username the username to authenticate
@@ -179,20 +154,23 @@ end
 -- @return token a hashed token for the user
 function Auth:authenticate(username, password)
    username = username:lower()
-   if not self:user_exists(username) then
+   local cmd = self:prepare(self.queries.USER_PWHASH, username)
+   local cur = assert(self.con:execute(cmd))
+   local stored_hash = cur:fetch()
+   
+   if not stored_hash then
       return nil, errors.no_such_user(username)
    end
-
+   
    local cmd = self:prepare(self.queries.GET_META, username, "creation_time")
    local cur = self.con:execute(cmd)
    local time = cur:fetch()
    cur:close()
 
-   local hash = get_salted_hash(time, self.password_salt, password)
-   local cmd = self:prepare(self.queries.USER_AUTH, username, hash)
-   local cur = self.con:execute(cmd)
-   local row = cur:fetch()
-   cur:close()
+   local hash = self.sputnik:hash_password(password, time, stored_hash)
+   if hash~=stored_hash then
+      return nil, errors.wrong_password(username)
+   end
 
    -- Get the display name for this user
    local cmd = self:prepare(self.queries.GET_META, username, "display")
@@ -200,11 +178,7 @@ function Auth:authenticate(username, password)
    local display = cur:fetch()
    cur:close()
 
-   if row and (tonumber(row) == 1) then
-      return display, user_token(username, self.token_salt, hash)
-   else
-      return nil, errors.wrong_password(username)
-   end
+   return display, self.sputnik:make_token(username..hash)
 end
 
 ------------------------------------------------------------------
@@ -215,16 +189,16 @@ end
 -- @param token the actual token hash
 -- @return user the name of the authenticated user
 
-function Auth:validate_token(username, token)
+function Auth:validate_token(username, correct_token)
    username = username:lower()
    local cmd = self:prepare(self.queries.USER_PWHASH, username)
    local cur = assert(self.con:execute(cmd))
-   local row = cur:fetch()
+   local password = cur:fetch()
    cur:close()
    
-   if row then
-      local hash = user_token(username, self.token_salt, row.password)
-      if token == hash then
+   if password then
+      local token = self.sputnik:make_token(username..password)
+      if token == correct_token then
          -- Get the display name for this user
          local cmd = self:prepare(self.queries.GET_META, username, "display")
          local cur = self.con:execute(cmd)
@@ -281,7 +255,7 @@ function Auth:set_password(username, password)
    local creation_time = cur:fetch()
    cur:close()
 
-   local pwhash = get_salted_hash(creation_time, self.password_salt, password)
+   local pwhash = self.sputnik:hash_password(password, creation_time)
 
    username = username:lower()
 
@@ -309,7 +283,7 @@ function Auth:add_user(username, password, metadata)
       return nil, errors.user_already_exists(username)
    end
 
-   local pwhash = get_salted_hash(now, self.password_salt, password)
+   local pwhash = self.sputnik:hash_password(password, now)
    metadata = metadata or {}
    metadata.creation_time = now
    metadata.display = username

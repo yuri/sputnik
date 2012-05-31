@@ -35,6 +35,7 @@ require("sputnik.util")
 require("sputnik.wsapi_app")
 local html_forms = require("sputnik.util.html_forms")
 local zlib_loaded, zlib = pcall(require, "zlib")
+local posix_loaded, posix = pcall(require, "posix")
 
 new_wsapi_run_fn = sputnik.wsapi_app.new  -- for backwards compatibility
 
@@ -244,7 +245,7 @@ function Sputnik:handle_request(request, response)
    -- Get some basic things out of the way
    self:assert_config("BASE_URL", " to handle requests.")
    if not self.cookie_name then
-      local base_url_hash = md5.sumhexa(self.config.BASE_URL)
+      local base_url_hash = md5.sumhexa(self.config.BASE_URL) -- use MD5 here
       self.cookie_name = self.config.COOKIE_NAME.."_"..base_url_hash
    end
    self.auth = self.auth_mod.new(self, self.config.AUTH_MODULE_PARAMS)
@@ -460,6 +461,49 @@ function Sputnik:translate_request (request)
    return request
 end
 
+-----------------------------------------------------------------------------
+-- Generates a cryptographic hash.
+-----------------------------------------------------------------------------
+function Sputnik:cryptohash(text, salt)
+   if self.config.USE_POSIX_CRYPT then      
+      assert(posix_loaded, "USE_POSIX_CRYPT requires luaposix library.")
+      if salt:sub(1,1)~="$" then
+         -- a brand new salt - generate crypt(3)-style salt, taking md5
+         -- hash of the original salt to avoid revealing it
+         salt = "$5$"..md5.sumhexa(salt).."$"
+      end
+      return posix.crypt(text, salt)
+   else
+      return md5.sumhexa(salt..text) -- salt..text for backward compatibility
+   end
+end
+
+-----------------------------------------------------------------------------
+-- Generates a cryptographic hash of a password.
+-----------------------------------------------------------------------------
+function Sputnik:hash_password(password, timestamp, hash)
+   local salt
+   if self.config.USE_POSIX_CRYPT and hash and hash:sub(1,1)=="$" then
+      -- if using POSIX crypt(3) and a hash is provided and it looks like a
+      -- crypt(3) style salt, then use it as a salt
+      salt = hash
+   else
+      -- if not, generate a new salt, keeping order for backward compatibility
+      salt = timestamp..self.config.PASSWORD_SALT 
+   end
+   return self:cryptohash(password, salt)
+end
+
+-----------------------------------------------------------------------------
+-- Generates a cryptographic token that can be passed around for
+-- authentication.
+-----------------------------------------------------------------------------
+function Sputnik:make_token(text)
+   local text = text..self.config.TOKEN_SALT
+   local salt = self.config.TOKEN_SALT
+   local hash = self:cryptohash(text, salt)
+   return hash:gsub("[^%w]", "") -- strip non alphanumeric characters
+end
 
 -----------------------------------------------------------------------------
 -- Generates a hash for a POST field name.
@@ -612,7 +656,7 @@ function Sputnik:decorate_node(node)
    local sputnik = self
    function node:make_post_form(args, cfields, cfield_names)
       local post_timestamp = os.time()
-      local post_token = sputnik.auth:timestamp_token(post_timestamp)
+      local post_token = sputnik:make_token(post_timestamp)
       local args = { 
                field_spec = args.field_spec,
                templates  = self.templates, 
@@ -820,7 +864,7 @@ function Sputnik:get_uid(namespace, type)
    -- Generate the values we'll use in the initial hash
    local memory = collectgarbage("count")
    local time = os.time() + os.clock()
-   local hash = md5.sumhexa(namespace .. memory .. time)
+   local hash = md5.sumhexa(namespace .. memory .. time) -- use MD5 here
 
    -- Create and store a node
    local node_name = self.config.ADMIN_NODE_PREFIX .. "_uid:" .. namespace
@@ -846,7 +890,7 @@ function Sputnik:get_uid(namespace, type)
    if type == "number" then
 	  return history_id
    else
-	  return md5.sumhexa(namespace .. memory .. time .. history_id)
+	  return md5.sumhexa(namespace .. memory .. time .. history_id) -- use MD5 here
    end
 end
 
@@ -1005,8 +1049,10 @@ function Sputnik:get_user_icon(user)
          email = user
       end
       if email then
-         icon = "http://www.gravatar.com/avatar/"..md5.sumhexa(email)
+         icon = "http://www.gravatar.com/avatar/"
+                ..md5.sumhexa(email) -- must be specifically MD5, not any hash
                 .."?s=22&d="..sputnik.util.escape_url(icon)
+                
       end
    end
    icon = self:escape(icon)

@@ -100,7 +100,7 @@ function check_post_parameters(node, request, sputnik)
       return false, "MISSING_POST_TIME_STAMP"
    elseif (os.time()-tonumber(timestamp)) > timeout then 
       return false, "YOUR_POST_TOKEN_HAS_EXPIRED"
-   elseif  sputnik.auth:timestamp_token(timestamp) ~= token then 
+   elseif  sputnik:make_token(timestamp) ~= token then 
       return false, "YOUR_POST_TOKEN_IS_INVALID"
    else
       return true

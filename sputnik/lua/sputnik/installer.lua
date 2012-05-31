@@ -8,10 +8,11 @@ REQUIRE_LUAROCKS = [[pcall(require, "luarocks.require")]]
 WS_SCRIPT_TEMPLATE = [=[
 require('sputnik.wsapi_app')
 return sputnik.wsapi_app.new{
-   VERSIUM_PARAMS = { [[$data_directory]] },
-   BASE_URL       = '/',
-   PASSWORD_SALT  = '$password_salt',
-   TOKEN_SALT     = '$token_salt',
+   VERSIUM_PARAMS  = { [[$data_directory]] },
+   BASE_URL        = '/',
+   PASSWORD_SALT   = '$password_salt',
+   TOKEN_SALT      = '$token_salt',
+   $use_posix_crypt
 }
 ]=]
 
@@ -19,10 +20,11 @@ CGI_TEMPLATE = [=[#! $lua
 $require_luarocks
 require('sputnik.wsapi_app')
 local my_app = sputnik.wsapi_app.new{
-   VERSIUM_PARAMS = { [[$data_directory]] },
-   BASE_URL       = '/cgi-bin/sputnik.cgi',
-   PASSWORD_SALT  = '$password_salt',
-   TOKEN_SALT     = '$token_salt',
+   VERSIUM_PARAMS  = { [[$data_directory]] },
+   BASE_URL        = '/cgi-bin/sputnik.cgi',
+   PASSWORD_SALT   = '$password_salt',
+   TOKEN_SALT      = '$token_salt',
+   $use_posix_crypt
 }
 
 require("wsapi.cgi")
@@ -79,6 +81,12 @@ function make_script(data_directory, working_directory, filename, template, opti
    if options.without_luarocks then
       require_luarocks = "--"..require_luarocks
    end
+   
+   local posix_loaded, posix = pcall(require, "posix")
+   local use_posix_crypt = "USE_POSIX_CRYPT = true,"
+   if not posix_loaded then
+      use_posix_crypt = "--"..use_posix_crypt.." -- better security, requires luaposix"
+   end
 
    local lua = LUA or working_directory.."/bin/lua"
 
@@ -87,6 +95,7 @@ function make_script(data_directory, working_directory, filename, template, opti
                       password_salt = password_salt,
                       token_salt    = token_salt,
                       require_luarocks = require_luarocks,
+                      use_posix_crypt = use_posix_crypt,
                       lua = lua
                    }
    out:write(content)

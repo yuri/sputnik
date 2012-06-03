@@ -33,11 +33,16 @@ local function main()
    config = pcall(dofile, config_path)
    --print(config.VERSIUM_PARAMS[1])   
 
-   local ok, handler = pcall(require, "sputnik.cli."..command)
-   if ok then
+   if options["show-errors"] then
+      local handler = require("sputnik.cli."..command)
       handler.execute(options)
    else
-      print("Couldn't find or load handler for command '"..command.."'.")
+      local ok, handler = pcall(require, "sputnik.cli."..command)
+      if ok then
+         handler.execute(options)
+      else
+         print("Couldn't find or load handler for command '"..command.."'.")
+      end
    end
 end
 

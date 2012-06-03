@@ -1,7 +1,7 @@
 module(..., package.seeall)
 
-local GENERIC_USAGE = [[
-usage: sputnik <command> [--option1=value] [--option2=value]
+local GENERIC_USAGE = [===[
+usage: sputnik <command> [--option1[=<value>]] [--option2[=<value>]]
 
 Some of the possible commands on which you can get help:
 
@@ -10,7 +10,12 @@ Some of the possible commands on which you can get help:
     encode-binary
 
 See 'sputnik help <command>' for more information on a specific command.
-]]
+
+The following options are applicable to all commands:
+
+    --show-errors
+        Display errors encountered while loading the command handler.
+]===]
 
 function execute(args, sputnik)
    local command = args[2]

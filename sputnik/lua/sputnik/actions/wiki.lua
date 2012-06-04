@@ -340,6 +340,15 @@ function actions.show(node, request, sputnik)
                             end
                          end
       }
+   elseif node.is_deleted then
+      request.is_indexable = false
+      local notice = node.translator.translate_key("THIS_NODE_IS_MARKED_DELETED")
+      if node:check_permissions(request.user, "edit") then
+         notice = notice.." "
+                  ..node.translator.translate_key("YOU_MAY_BE_ABLE_TO_UNDELETE_THIS_NODE")
+      end
+      node:post_notice(notice)
+      node.inner_html = ""
    else 
       request.is_indexable = true
       node.inner_html = node.actions.show_content(node, request, sputnik)
@@ -634,6 +643,8 @@ function get_visible_nodes(sputnik, user, prefix, options)
          -- Skip the root prototype
       elseif node.id:sub(1, #sputnik.config.ADMIN_NODE_PREFIX) == sputnik.config.ADMIN_NODE_PREFIX then
          -- Skip anything under the admin prefix
+      elseif node.is_deleted then
+         -- Skip nodes marked as "deleted."   
       elseif node:check_permissions(user, "show") then
          table.insert(nodes, node)
       else

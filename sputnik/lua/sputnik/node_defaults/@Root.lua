@@ -5,6 +5,7 @@ fields = [[
 -- Think twice before editing this ------------------------
 fields          = {0.0, proto="concat", activate="lua"}
 title           = {0.1  }
+is_deleted      = {0.11 }
 category        = {0.2  }
 actions         = {0.3, proto="concat", activate="lua"}
 action_hooks    = {0.31, proto="concat", activate="lua"}
@@ -90,6 +91,7 @@ content_section_end = {1.4, "div_end"}
 -------------------------- advanced fields -------------
 advanced_section = {2.0, "div_start", id="advanced"}
  page_name       = {2.21, "readonly_text"}
+ is_deleted      = {2.211, "checkbox"} 
  title           = {2.22, "text_field"}
  owners          = {2.221, "text_field"}
  breadcrumb      = {2.23, "text_field"}

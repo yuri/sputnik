@@ -680,6 +680,10 @@ function Sputnik:decorate_node(node)
       }
    end
 
+   if node.is_deleted == "" then
+      node.is_deleted = false
+   end
+
    return node
 end  
 

@@ -238,6 +238,12 @@ EDIT_FORM_PAGE_NAME = {
    es_VE = "Nombre de página (para URL)",
 }
 
+-- A label for the "is_deleted" parameter
+
+EDIT_FORM_IS_DELETED = {
+   en_US = "Mark this node as deleted",
+}
+
 -- A lable for the "title" parameter
 EDIT_FORM_TITLE = {
    en_US = "Page Title",
@@ -1027,6 +1033,15 @@ PLEASE_PICK_A_TYPE_TO_CREATE_A_NEW_NODE = {
 
 THIS_NODE_DOES_NOT_EXIST_BUT_YOU_CAN_CREATE_IT = {
    en_US = [[The node by this name does not exist, but you can create it.]]
+}
+
+THIS_NODE_IS_MARKED_DELETED = {
+   en_US = [[This node has been marked as deleted.]]
+}
+
+YOU_MAY_BE_ABLE_TO_UNDELETE_THIS_NODE = {
+   en_US = [[ You may be able to undelete it under "Advanced Fields" in the edit
+              form. ]]
 }
 
 CREATE_A_BASIC_NODE = {

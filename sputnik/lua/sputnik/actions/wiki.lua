@@ -1106,17 +1106,19 @@ end
 function actions.sputnik_version(node, request, sputnik)
    request.is_indexable = false
    local rocks = {}
-   if luarocks and luarocks.loader then
+   --[[if luarocks and luarocks.loader then
       for _, rock in ipairs(sputnik.config.ROCK_LIST_FOR_VERSION or {}) do
          local __, version = luarocks.loader.which(rock)
-         print (rock, __, version)
          table.insert(rocks, {rock=rock, version=version or "unknown"})
       end
-   end
+   end]]
+
+   local version = require("sputnik.doc.version")
 
    node.inner_html = cosmo.f(node.templates.VERSION){
-                        installer = sputnik.config.VERSION or "UNKNOWN",
-                        rocks     = rocks
+                        version = version.VERSION or "UNKNOWN",
+                        rocks     = rocks,
+                        if_show_rocks = cosmo.c(false){},
                      }
    return node.wrappers.default(node, request, sputnik)
 end

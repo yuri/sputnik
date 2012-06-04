@@ -325,10 +325,9 @@ PASSWORD_RESET_REQUEST = [===[
 ]===]
 
 VERSION = [=[
-   <h2>Installer Version</h2>
+   $version
 
-   $installer
-
+   $if_show_rocks[==[
    <h2>Specific Rocks</h2> 
 
    <table>
@@ -338,7 +337,8 @@ VERSION = [=[
      <td>$version</td>
     </tr>
     ]]
-   </table>  
+   </table>
+   ]==]
 ]=]
 
 ]=====]

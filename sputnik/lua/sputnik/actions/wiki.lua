@@ -397,7 +397,9 @@ end
 -- @param sputnik        used to access history.
 -----------------------------------------------------------------------------
 function actions.history(node, request, sputnik)
-   local history = sputnik:get_history(node.name, 200, request.params.date)
+   local history = sputnik:get_history(node.name,
+                                       sputnik.config.MAX_ITEMS_IN_HISTORY or 200,
+                                       request.params.date)
 
    -- cosmo iterator for revisions
    local function do_revisions()

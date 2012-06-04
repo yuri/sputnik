@@ -57,15 +57,18 @@ actions.show_results = function(node, request, sputnik)
    node.inner_html = util.f(TEMPLATE){
                         do_nodes = function()
                                       for i, node in ipairs(nodes) do
-                                         local metadata = sputnik.saci:get_node_info(node.id)
-                                         cosmo.yield {
-                                            name = node.id:gsub("_", " "),
-                                            title = node.title,
-                                            url = sputnik:make_url(node.id),
-                                            --backlinks = weights[node.id] or 0,
-                                            snippet = "", --snippets[id],
-                                            time = sputnik:format_time(metadata.timestamp, "%Y/%m/%d")
-                                         }
+                                         if node:check_permissions(request.user, "show")
+                                               and not (node.is_deleted=="yes") then
+                                            local metadata = sputnik.saci:get_node_info(node.id)
+                                               cosmo.yield {
+                                               name = node.id:gsub("_", " "),
+                                               title = node.title,
+                                               url = sputnik:make_url(node.id),
+                                               --backlinks = weights[node.id] or 0,
+                                               snippet = "", --snippets[id],
+                                               time = sputnik:format_time(metadata.timestamp, "%Y/%m/%d")
+                                            }
+                                         end
                                       end
                         end,
                      }

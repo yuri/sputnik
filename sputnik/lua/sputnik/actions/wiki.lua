@@ -1106,9 +1106,10 @@ end
 function actions.sputnik_version(node, request, sputnik)
    request.is_indexable = false
    local rocks = {}
-   if luarocks and luarocks.require then
+   if luarocks and luarocks.loader then
       for _, rock in ipairs(sputnik.config.ROCK_LIST_FOR_VERSION or {}) do
-         local __, version = luarocks.require.get_rock_from_module(rock)
+         local __, version = luarocks.loader.which(rock)
+         print (rock, __, version)
          table.insert(rocks, {rock=rock, version=version or "unknown"})
       end
    end

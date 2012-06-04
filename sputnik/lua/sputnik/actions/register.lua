@@ -236,7 +236,7 @@ function actions.submit_registration_form(node, request, sputnik)
    end
 
    -- If an email address is required, check that it looks acceptable
-   if sputnik.REQUIRE_EMAIL_CONFIRMATION
+   if sputnik.REQUIRE_EMAIL_ACTIVATION
               and not p.new_email:match("^%S+@%S+$") then
       node:post_translated_error("NEW_EMAIL_NOT_VALID")
       request.try_again = true

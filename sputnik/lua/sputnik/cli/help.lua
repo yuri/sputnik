@@ -8,6 +8,7 @@ Some of the possible commands on which you can get help:
     make-cgi
     start-xavante
     encode-binary
+    topic
 
 See 'sputnik help <command>' for more information on a specific command.
 

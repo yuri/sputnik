@@ -1,5 +1,6 @@
 package    = 'SACI'
 versions   = {
+   {'12.06.04', 'June 5, 2012',  'putting versium, saci, and some common plugins into one rock'},
    {'10.12.28', 'December 28, 2010',  'fixing a few bugs'},
    {'9.03.16', 'March 16, 2009',  'get_visible_children and some error and some bug fixes'},
    {'9.02.15', 'February 15, 2009',  'misc changes since August 2008'},
@@ -23,7 +24,7 @@ homepage   = 'http://spu.tnik.org/en/Saci'
 favicon    = 'http://media.freewisdom.org/etc/sputnik-icon.png'
 download   = 'http://spu.tnik.org/files/saci-$version.tar.gz'
 --download   = "/tmp/versium-$version.tar.gz"
-push       = "scp %s tnik.org:/var/www/tnik.org/files/"
+push       = "scp %s tnik.org:/var/www/sputnik.freewisdom.org/files/"
 --push       = "cp %s /tmp/"
 logo       = 'saci.png'
 keywords   = 'lua, versioned storage, file system, sql, database'
@@ -32,7 +33,6 @@ rss        = homepage.."releases.rss"
 
 dependencies = [[
   'cosmo >= 7.12.24',
-  'versium == 10.12.28',
 ]]
 
 TOC = {

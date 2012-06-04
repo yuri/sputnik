@@ -6,6 +6,12 @@
      
    <item>
     <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
+    <title>SACI 12.06.04</title>
+    <guid isPermalink="true">http://spu.tnik.org/files/saci-12.06.04.tar.gz</guid>
+    <description>putting versium, saci, and some common plugins into one rock</description>
+   </item>
+   <item>
+    <link>http://spu.tnik.org/files/saci-$version.tar.gz</link>
     <title>SACI 10.12.28</title>
     <guid isPermalink="true">http://spu.tnik.org/files/saci-10.12.28.tar.gz</guid>
     <description>fixing a few bugs</description>

@@ -1,4 +1,4 @@
-
+#! /usr/bin/env lua5.1
 LUA = "/usr/bin/env lua5.1"
 --WITHOUT_LUAROCKS = true  -- uncomment to disable Luarocks
 

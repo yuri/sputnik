@@ -1,5 +1,6 @@
 package    = 'Sputnik'
 versions   = {
+   {'12.06.04', 'June 4, 2012',  'use of crypt(3), merging sql auth modules, merging packages into fewer rocks, built-in help'},
    {'10.12.28', 'December 28, 2010',  'new design, password reset, user nodes'},
    {'9.03.16', 'March 16, 2009',  'better forums, save hooks'},
    {'9.03.03', 'March 3, 2009',  'new editor system, configure action, defaults for parameters, configurable toolbar, buttons for creating nodes'},
@@ -44,11 +45,11 @@ detailed   = [[
 
 license    = 'MIT/X11'
 download   = 'http://spu.tnik.org/files/sputnik-$version.tar.gz'
-push       = "scp %s tnik.org:/var/www/tnik.org/files/"
+push       = "scp %s tnik.org:/var/www/sputnik.freewisdom.org/files/"
 --------------------------------------------------------------------------------
 
 dependencies = [[
-  'saci == 10.12.28',
+  'saci == 12.06.04',
   'cosmo >= 8.04.14',
   'xssfilter >= 8.07.07',
   'markdown >= 0.32',
@@ -56,7 +57,6 @@ dependencies = [[
   'wsapi >= 1.0',
   'luasocket >= 2.0',
   'coxpcall >= 1.13',
-  'sputnik-markitup == 9.03.16',
 ]]
 
 -------------------------------------------------------------------------------

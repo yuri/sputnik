@@ -84,6 +84,7 @@ MIME_TYPES = {
    ["image/gif"] = "gif",
    ["application/pdf"] = "pdf",
    ["text/plain"] = "txt",
+   ["application/x-font-woff"] = "woff",
 }
 
 --- configure interwiki links for sister-sites

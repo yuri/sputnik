@@ -1,21 +1,20 @@
 module(..., package.seeall)
 
-require("mime")
-require("ltn12")
+local base64 = require("sputnik.util.base64")
 
-local base64_wrap = ltn12.filter.chain(mime.encode("base64"), mime.wrap("base64"))
+
 
 actions = {}
 
 function actions.mimetype(node, request, sputnik)
-	local type = node.file_type
-	local ext = sputnik.config.MIME_TYPES[type]
-	if ext == request.action then        
-        return mime.unb64(node.content), type
-	else
-		node:post_error("Requested action does not match file content: " .. tostring(node.type))
-		return node.wrappers.default(node, request, sputnik)
-	end
+   local file_type = node.file_type
+   local ext = sputnik.config.MIME_TYPES[file_type]
+   if ext == request.action then        
+      return base64.decode(node.content), file_type
+   else
+      node:post_error("Requested action does not match file content: " .. tostring(file_type))
+      return node.wrappers.default(node, request, sputnik)
+   end
 end
 
 local TPL_FILE_INFO = [=[
@@ -56,7 +55,7 @@ function actions.download(node, request, sputnik)
 	local mime_type = node.file_type
 	-- Set the Content-disposition header, and suggest a filename
 	node:add_header("Content-Disposition", "attachment; filename=\""..node.file_name.."\"")
-	return mime.unb64(node.content), mime_type
+	return base64.decode(node.content), mime_type
 end
 
 function actions.save(node, request, sputnik)
@@ -77,7 +76,7 @@ function actions.save(node, request, sputnik)
       if name and name:match("%S") and size > 0 then
          -- A file was uploaded 
 
-         request.params.content = base64_wrap(info.contents)
+         request.params.content = base64.encode_and_wrap(info.contents)
          request.params.file_type = type
          request.params.file_name = tostring(name)
          request.params.file_size = tostring(size)

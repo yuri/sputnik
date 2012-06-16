@@ -1,6 +1,6 @@
 module(..., package.seeall)
-require("mime")
-CHUNK_LENGTH = 78
+
+local base64 = require("sputnik.util.base64")
 
 USAGE = [[
 NAME:
@@ -21,16 +21,20 @@ OPTIONS:
 
 ]]
 
+
+
 function execute(arg, sputnik)
    local path = arg[2]
    assert(path, "Please specify path to the file")
 
    print("\nBase64 encoding for "..path..":")
 
-   local long_line = mime.b64(io.open(path):read("*all"))
-   content = "\n"
-   for i=1,long_line:len(),CHUNK_LENGTH-1 do
-      content = content..long_line:sub(i, i+CHUNK_LENGTH-2).."\n"
+   local raw = io.open(path, "rb"):read("*all")
+   local encoded = base64.encode_and_wrap(raw)
+   
+   if base64.decode(encoded)~=raw then
+      print ("FAILED ROUNDTRIP")
+   else
+      print(encoded)
    end
-   print(content)
 end

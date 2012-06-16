@@ -79,7 +79,7 @@ If you really want to install Sputnik by hand using the source code in this
 directory, you will need the following dependencies:
 
 1. Lua5.1
-2. Binary Lua libraries: luasocket, MD5, lpeg, luafilesystem* 
+2. Binary Lua libraries: luasocket, lbase64, MD5, lpeg, luafilesystem* 
 3. Pure-lua Lua libraries: cosmo, coxpcall, wsapi, diff, markdown*
 
 Note: luafilesystem and markdown are not strictly speaking required, but are

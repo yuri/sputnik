@@ -188,6 +188,9 @@ BASE_URL and are treated as a part of the "script path" (e.g.,
 "/wiki/Some_Page"). If USE_NICE_URLS is false, the node ids is passed
 as one of query parameters ("p", e.g. "/wiki?p=Some_Page").
 
+There is also a number of parameters that can be used to point Sputnik
+to resources such as images, CSS, etc. stored at some other path.
+
 BASE_URL
     The base for Sputnik's URLs. (See above.) The choice of BASE_URL
     will depend on the server used.
@@ -205,6 +208,30 @@ DOMAIN
     set this value is used for generating fully qualified URLs. This
     is necessary for RSS and email activation / password reset to
     work.
+
+HOME_PAGE_URL
+    The main URL of the site. (E.g., this is the URL that will be
+    linked from the logo.)
+
+FAVICON_URL
+    An alternative URL for the favicon.
+    
+CSS_BASE_URL
+    An alternative prefix at which CSS files are served. You should
+    set this if you want to serve them statically.
+
+JS_BASE_URL
+    An alternative prefix at which Javascript files are served. You
+    should set this if you want to serve them statically.
+
+ICON_BASE_URL
+    An alternative prefix at which icon files are served. You should
+    set this if you want to serve them statically.
+    
+FONT_BASE_URL
+    An alternative prefix at which font files are served. You should
+    set this if you want to serve them statically.
+
 ]]
 
 topics.captcha = [[
@@ -413,14 +440,9 @@ topics.etc = [[
 Here is a list of additional parameters which are not currently
 otherwise documented.
 
-CSS_BASE_URL
 DISABLE_XSS_FILTER
-FAVICON_URL
-HOME_PAGE_URL
 HOURS_BEFORE_PASSWORD_TICKET_EXPIRES
-ICON_BASE_URL
 INIT_FUNCTION
-JS_BASE_URL
 LUA_VALIDATION_COLOR_INVALID
 LUA_VALIDATION_COLOR_UNKNOWN
 LUA_VALIDATION_COLOR_VALID

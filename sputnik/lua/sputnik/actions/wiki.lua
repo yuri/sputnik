@@ -1264,7 +1264,6 @@ function wrappers.default(node, request, sputnik)
       icon_base_url    = sputnik:make_url_prefix(sputnik.config.ICON_BASE_URL),
       css_base_url     = sputnik:make_url_prefix(sputnik.config.CSS_BASE_URL),
       js_base_url      = sputnik:make_url_prefix(sputnik.config.JS_BASE_URL),
-      font_base_url    = sputnik:make_url_prefix(sputnik.config.FONT_BASE_URL),
       do_toolbar       = function(args)
                             local icons = sputnik.config.TOOLBAR_ICONS
                             for i, command in ipairs(sputnik.config.TOOLBAR_COMMANDS) do

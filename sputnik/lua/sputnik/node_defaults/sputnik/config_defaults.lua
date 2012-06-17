@@ -33,9 +33,10 @@ TIME_ZONE_NAME = "<abbr title='Greenwich Mean Time'>GMT</abbr>"
 --------- URLs --------------------------------------------------------------
 -----------------------------------------------------------------------------
 
---ICON_BASE_URL  = "/some/path/icons/"       -- set this to host icons elsewhere
---CSS_BASE_URL   = "/some/path/css/"         -- set this to host CSS elsewhere
---JS_BASE_URL    = "/some/path/js/"          -- set this to host JavaScript elsewhere
+--ICON_BASE_URL  = "/some/path/"       -- set this to host icons elsewhere
+--CSS_BASE_URL   = "/some/path/"       -- set this to host CSS elsewhere
+--JS_BASE_URL    = "/some/path/"       -- set this to host JavaScript elsewhere
+--FONT_BASE_URL    = "/some/path/"     -- set this to host fonts elsewhere
 FAVICON_NODE     = "icons/sputnik.png"
 --FAVICON_URL    = ICON_BASE_URL..FAVICON_NODE
 

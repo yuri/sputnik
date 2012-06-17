@@ -51,35 +51,50 @@ function get_nav_bar (node, sputnik)
       section.accessibility_title = remove_quotes(section.title)
       section.id    = sputnik:dirify(section.id)
       section.link  = sputnik:make_link(section.id)
-      section.class = "other"
+      section.current = "other"
       section.subsections = section
       if section.id == cur_node or section.id == node.category 
          or matches(node.name, section.patterns) then
-         section.class = "current"
+         section.current = "current"
          section.accessibility_title = section.accessibility_title.." (current section)"
          nav.current_section = section
       end
+      if i==1 then
+         section.position = "first"
+      elseif i==#nav then
+         section.position = "last"
+      else
+         section.position = ""
+      end
+      
       for j, subsection in ipairs(section) do
          subsection.title = subsection.title or subsection.id
          categories[subsection.id] = subsection.title
          subsection.accessibility_title = remove_quotes(subsection.title)
          subsection.id = sputnik:dirify(subsection.id)
-         subsection.class = "other"
+         subsection.current = "other"
          subsection.link = sputnik:make_link(subsection.id)
          if subsection.id == cur_node or subsection.id == sputnik:dirify(node.category)
             or matches(node.name, subsection.patterns) then
-            section.class = "current"
+            section.current = "current"
             nav.current_section = section
-            subsection.class = "current"
+            subsection.current = "current"
             subsection.accessibility_title = subsection.accessibility_title
                                              .." (current subsection)"
+         end
+         if j==1 then
+            subsection.position = "first"
+         elseif j==#section then
+            subsection.position = "last"
+         else
+            subsection.position = ""
          end
       end
    end
 
    local default_navsection = sputnik.config.DEFAULT_NAVSECTION
    if not nav.current_section and default_navsection and nav[default_navsection] then
-      nav[default_navsection].class = "current"
+      nav[default_navsection].current = "current"
    end
 
    return nav, categories
@@ -1249,6 +1264,7 @@ function wrappers.default(node, request, sputnik)
       icon_base_url    = sputnik:make_url_prefix(sputnik.config.ICON_BASE_URL),
       css_base_url     = sputnik:make_url_prefix(sputnik.config.CSS_BASE_URL),
       js_base_url      = sputnik:make_url_prefix(sputnik.config.JS_BASE_URL),
+      font_base_url    = sputnik:make_url_prefix(sputnik.config.FONT_BASE_URL),
       do_toolbar       = function(args)
                             local icons = sputnik.config.TOOLBAR_ICONS
                             for i, command in ipairs(sputnik.config.TOOLBAR_COMMANDS) do

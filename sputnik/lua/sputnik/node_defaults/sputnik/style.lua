@@ -17,70 +17,117 @@ NODE = {
 }
 
 NODE.css_config = [[
-CONTAINER_WIDTH = "900px"
-SUBMENU_HEIGHT = "20px"
-HEADER_COLOR = "white"
-SUBMENU_COLOR = "#33374d"
-ACTIVE_GRAY = "#737373"
+BOLD_COLOR_1 = "#1B8B9A" -- a bold color used for the larger elements
+BOLD_COLOR_2 = "#093D59" -- a bold color used for the smaller elements
+TEXT_BG_COLOR = "#FFFEEF"  -- background for the main text
+BRIGHT_LIGHT_TEXT_COLOR = "white" -- for text on dark bg that should stand ot
+DULLER_LIGHT_TEXT_COLOR = "#FFDDDD" -- for text that should stand out less
+INACTIVE_MENU_COLOR = "#133D49"
 
+CONTAINER_WIDTH = "1100px"
+SUBMENU_HEIGHT = "20px"
+LEFT_MARGIN = "50px"
 ]]
 
 NODE.content = [===[
+/*-- HTML5 Boilerplate -----------------------------------------------------*/
 
-/*-- RESET ------------------------------------------------------------------
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
+audio, canvas, video { display: inline-block; *display: inline; *zoom: 1; }
+audio:not([controls]) { display: none; }
+[hidden] { display: none; }
 
-  Before applying any styling, we start with a global reset to bring
-  everything to the same baseline. The reset code is based on
-  http://meyerweb.com/eric/tools/css/reset/ 
+html { font-size: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+html, button, input, select, textarea { font-family: sans-serif; color: #222; }
+body { margin: 0; font-size: 1em; line-height: 1.4; }
 
-----------------------------------------------------------------------------*/
+::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }
+::selection { background: #fe57a1; color: #fff; text-shadow: none; }
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
- border: 0;
- font-family: inherit;
- font-size: 100%;
- font-style: inherit;
- font-weight: inherit;
- margin: 0;
- outline: 0;
- padding: 0;
- vertical-align: baseline;
-}
-/* remember to define focus styles! */
-:focus {
- outline: 0;
-}
-body {
- background: white;
- color: black;
- line-height: 1;
-}
-ol, ul {
- list-style: none;
-}
-/* tables still need 'cellspacing="0"' in the markup */
-table {
- border-collapse: separate;
- border-spacing: 0;
-}
-caption, th, td {
- font-weight: normal;
- text-align: left;
-}
-blockquote:before, blockquote:after, q:before, q:after {
- content: "";
-}
-blockquote, q {
- quotes: "" "";
+a { color: #00e; }
+a:visited { color: #551a8b; }
+a:hover { color: #06e; }
+a:focus { outline: thin dotted; }
+a:hover, a:active { outline: 0; }
+abbr[title] { border-bottom: 1px dotted; }
+b, strong { font-weight: bold; }
+blockquote { margin: 1em 40px; }
+dfn { font-style: italic; }
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0; }
+ins { background: #ff9; color: #000; text-decoration: none; }
+mark { background: #ff0; color: #000; font-style: italic; font-weight: bold; }
+pre, code, kbd, samp { font-family: monospace, serif; _font-family: 'courier new', monospace; font-size: 1em; }
+pre { white-space: pre; white-space: pre-wrap; word-wrap: break-word; }
+
+q { quotes: none; }
+q:before, q:after { content: ""; content: none; }
+small { font-size: 85%; }
+sub, sup { font-size: 75%; line-height: 0; position: relative; vertical-align: baseline; }
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+ul, ol { margin: 1em 0; padding: 0 0 0 40px; }
+dd { margin: 0 0 0 40px; }
+nav ul, nav ol { list-style: none; list-style-image: none; margin: 0; padding: 0; }
+
+img { border: 0; -ms-interpolation-mode: bicubic; vertical-align: middle; }
+svg:not(:root) { overflow: hidden; }
+figure { margin: 0; }
+
+form { margin: 0; }
+fieldset { border: 0; margin: 0; padding: 0; }
+
+label { cursor: pointer; }
+legend { border: 0; *margin-left: -7px; padding: 0; white-space: normal; }
+button, input, select, textarea { font-size: 100%; margin: 0; vertical-align: baseline; *vertical-align: middle; }
+button, input { line-height: normal; }
+button, input[type="button"], input[type="reset"], input[type="submit"] { cursor: pointer; -webkit-appearance: button; *overflow: visible; }
+button[disabled], input[disabled] { cursor: default; }
+input[type="checkbox"], input[type="radio"] { box-sizing: border-box; padding: 0; *width: 13px; *height: 13px; }
+input[type="search"] { -webkit-appearance: textfield; -moz-box-sizing: content-box; -webkit-box-sizing: content-box; box-sizing: content-box; }
+input[type="search"]::-webkit-search-decoration, input[type="search"]::-webkit-search-cancel-button { -webkit-appearance: none; }
+button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
+textarea { overflow: auto; vertical-align: top; resize: vertical; }
+input:valid, textarea:valid {  }
+input:invalid, textarea:invalid { background-color: #f0dddd; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+td { vertical-align: top; }
+
+.chromeframe { margin: 0.2em 0; background: #ccc; color: black; padding: 0.2em 0; }
+
+
+@media only screen and (min-width: 35em) {
+  
+
 }
 
+.ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; *line-height: 0; }
+.ir br { display: none; }
+.hidden { display: none !important; visibility: hidden; }
+.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
+.invisible { visibility: hidden; }
+.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:after { clear: both; }
+.clearfix { *zoom: 1; }
+
+@media print {
+  * { background: transparent !important; color: black !important; box-shadow:none !important; text-shadow: none !important; filter:none !important; -ms-filter: none !important; } 
+  a, a:visited { text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; } 
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; } 
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page { margin: 0.5cm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3 { page-break-after: avoid; }
+}
+
+/*-- End of HTML5 Boilerplate ----------------------------------------------*/
 
 /*-- The body and the #container --------------------------------------------
 
@@ -94,13 +141,20 @@ blockquote, q {
      #footer - less importnat site info
 ----------------------------------------------------------------------------*/
 
+@font-face {
+  font-family: 'HeaderFont';
+  font-style: normal;
+  font-weight: bold;  
+  src: url('$font_base_url{}sputnik/fonts/header.woff') format('woff');
+}
+
 body {
  background-color: gray;
  font-family: Verdana, Tahoma, Helvetica, Arial, "sans-serif";
  font-size: 11pt;
 }
 #container {
- background-color: white;
+ background-color: $TEXT_BG_COLOR;
  height: 100%;
  margin: 0 auto 0 auto;
  width: $CONTAINER_WIDTH;
@@ -109,7 +163,7 @@ body {
 
 /*-- #header ----------------------------------------------------------------
 
-  The header is a div that includes elements that do not change from one
+  The header is a unit that includes elements that do not change from one
   node to another. We call it a "header" since it usually comes at the top
   of the page, though we can put it anywhere.
 
@@ -117,54 +171,75 @@ body {
 ----------------------------------------------------------------------------*/
 
 #header {
- background: $HEADER_COLOR;
- height: 150px;
+ background: $BOLD_COLOR_1;
+ height: 180px;
  padding-left: 10px;
  position: relative;
 }
 
 /* #logo identifies the site and links to the front page. */
 #logo {
- background: #f0f0f0;
- border: 2px solid #303030;
- left: -40px;
+ font-family: 'HeaderFont';
+ font-weight: bold;
+ left: 0px;
  position: absolute;
- top: 10px;
+ top: 25px;
+ width: 100%;
 }
 #logo a {
  color: black;
+ font-size: 150%;
  text-decoration: none;
 }
 #logo a.home_page { /* a link to the home page */
  display: block;
- padding: 5px 20px 5px 20px;
+ padding: 5px 20px 5px $LEFT_MARGIN;
 }
 p.site_title { /* a title for the site */
  font-size: 200%;
+ line-height: 90%;
 }
 p.site_subtitle { /* a subtitle for the site */
  font-style:italic;
+ line-height: 90%;
 }
 
 /* #login contains the login status and the links to login/logout/register. */
-#login {
+#login_container {
+ background-color: $BOLD_COLOR_2;
+ left: 0px;
  position:absolute;
- top: 45px;
- left: 700px;
+ width: 100%;
  z-index: 1000;
 }
+#login {
+ color: $DULLER_LIGHT_TEXT_COLOR;
+ float:right;
+ padding: 5px 10px 5px 5px;
+}
 #login a {
- text-decoration: none;
+ color: $BRIGHT_LIGHT_TEXT_COLOR;
  font-weight: bold;
+ text-decoration: none;
 }
 
 /* #search contains a form for searching the site.*/
 #search {
- position:absolute;
  align:text;
- top: 10px;
- left: 700px;
+ left: 900px;
+ position:absolute;
+ top: 45px;
  z-index: 1000;
+}
+
+#search .search_box {
+ background-position: 2px 2px; 
+ background: white url($icon_base_url{}icons/search.png) no-repeat;
+ border-radius: 5px;
+ padding: .2em .2em .2em 1.5em;
+}
+#search .search_button {
+ display: none;
 }
 
 
@@ -173,11 +248,13 @@ p.site_subtitle { /* a subtitle for the site */
   #page groups content that relates to the particular page rather than the
   site as a whole. This includes both the actual content of the page and an
   additional set of tool or navigational elements. #page contains the
-  following divs: #breadcrumbs, #toolbar, #page_title, and #content.
+  following divs: #breadcrumbs, #toolbar, #node_title, and #content.
 
 ----------------------------------------------------------------------------*/
 
 #page { /* no styling on at the moment */
+  background-color: $TEXT_BG_COLOR;
+  border-radius: 10px 10px 0 0;
 }
 #page p {
  line-height: 1.3;
@@ -188,23 +265,24 @@ p.site_subtitle { /* a subtitle for the site */
  display: none;
 }
 
-#page_title {
- margin: 4em 1em 2em 2em;
+#node_title {
+ margin: 4em 1em 2em $LEFT_MARGIN;
 }
-#page_title a{
- color: $ACTIVE_GRAY;
+#node_title a{
+ color: $BOLD_COLOR_1;
+ font-family: 'HeaderFont';
  font-size: 240%;
  text-decoration: none;
 }
 
 #toolbar {
  float: right;
- margin: -5px 10px 0px 0px;
+ margin: 0px 10px 0px 0px;
 }
 
-#content {
+#node_content {
  height: 100%;
- padding: 2em 2em 2em 2em;
+ padding: 2em 2em 2em $LEFT_MARGIN;
 }
 
 /* Generic content tags */
@@ -226,10 +304,10 @@ h4, h5, h6, p {
  padding: 5px 0 5px 0;
 }
 h1, h2 {
- color: $ACTIVE_GRAY;
+ color: $BOLD_COLOR_2;
 }
 h1, h2 {
- border-bottom: 1px solid $ACTIVE_GRAY;
+ border-bottom: 1px solid $BOLD_COLOR_1;
 }
 h1 {
  font-size: 180%;
@@ -314,10 +392,10 @@ pre code {
  background: #fffaf0;
  border-left: 1px solid gray;
  display: block;
+ font-size: 90%;
  padding: 1em;
  padding-bottom: .5em;
  padding-top: .5em;
- font-size: 90%;
 }
 
 
@@ -433,70 +511,81 @@ form label {
 ----------------------------------------------------------------------------*/
 
 #menu {
- font-size: 120%;
  position: absolute;
- top: 120px;
- width: $CONTAINER_WIDTH;
-}
-#menu > ul {
- display: block;
- text-align: center;
- width: 100%;
- padding-left: 0em;
-}
-#menu ul li {
- display: inline;
- margin-left: 10px;
- padding-right: 1em;
-}
-#menu ul li.other ul {
- display: none;
-}
-#menu ul li.current ul {
- background: $SUBMENU_COLOR;
- float: left;
- margin-top: 1em;
- padding-top: .7em; padding-bottom: .7em;
- padding-left: 0em;
+ top: 145px;
  width: $CONTAINER_WIDTH;
  z-index: 1000;
 }
-#menu ul li.current ul li{
- display: inline;
- z-index: 1001;
-}
 #menu a {
  text-decoration: none;
+ color: $BRIGHT_LIGHT_TEXT_COLOR;
 }
-#menu ul li a {
+#menu > ul {                          /* the top level menu */
+ display: block;
+ padding: 0em;
+ text-align: left;
+ width: 100%;
+}
+#menu > ul > li {                      /* top level menu items */
+ background-color: $INACTIVE_MENU_COLOR;
+ border-bottom: none;
+ border-radius: 15px 15px 0 0;
+ display: inline;
+ margin: 1em .2em 1em .2em;
+ padding: .5em .5em 1.5em .5em;
+}
+#menu > ul > li.first {
+ margin-left: $LEFT_MARGIN;
+}
+#menu > ul > li > a {
+ font-family: HeaderFont;
+ font-size: 120%;
  padding: .3em;
 }
-#menu ul li.current a {
- border-bottom: .2em solid $SUBMENU_COLOR;
- color: $SUBMENU_COLOR;
+#menu > ul > li.current {              /* current top level item */
+ background-color: $BOLD_COLOR_2;
 }
-#menu ul li.other a {
+#menu > ul > li.other {                /* other top level items */
+ background-color: $INACTIVE_MENU_COLOR;
+}
+#menu > ul > li.other > a:hover {
+ color: yellow;
+}
+
+/* 2nd level menu */
+
+#menu > ul > li.other > ul {           /* hide all subitems of _other_ items */
+ display: none;
+}
+
+#menu > ul > li.current > ul {         /* current second level menu */
+ background: $BOLD_COLOR_2;
+ margin-top: .5em;
+ padding-left: 0em;
+ padding-top: .7em; padding-bottom: .7em;
+ position: absolute;
+ width: $CONTAINER_WIDTH;
+ z-index: 1004;
+}
+#menu > ul > li.current > ul > li {    /* current second level menu items */
+ display: inline;
+ z-index: 1005;
+}
+#menu > ul > li.current > ul > li.first {
+ margin-left: $LEFT_MARGIN;
+}
+#menu > ul > li.current > ul > li > a {
+ color: $BRIGHT_LIGHT_TEXT_COLOR;
+ font-family: HeaderFont, Arial, sans-serif;
+ margin: .3em 1em .5em 1em;
+ padding-bottom: .25em;
+ z-index: 1006;
+}
+#menu > ul > li.current > ul > li.current > a {
  border-bottom: .2em solid #555;
 }
-#menu ul li.current ul li {
- margin: 0;
- padding: 0;
-}
-#menu ul li.current ul li a {
- color: white;
- font-family: Verdana, Arial, sans-serif;
- font-size: 70%;
- margin-left: 10px;
- padding: .3em 1em .3em 1em;
-}
-#menu ul li.current ul li.current a {
- background: $ACTIVE_GRAY;
-}
-#menu ul li.current ul li.other a {
- background: $SUBMENU_COLOR;
-}
-#menu ul li.current ul li.other a:hover {
- background-color: gray;
+#menu > ul > li.current > ul > li.other > a:hover {
+ color: yellow;
 }
 
 
@@ -510,14 +599,14 @@ form label {
 
 /*
 #menu a {
+ color: $BRIGHT_LIGHT_TEXT_COLOR;
  text-decoration: none;
- color: white;
 }
 #menu > ul {
- position: absolute;
- top: 220px;
  left: 0px;
  padding: 5px 5px 5px 5px;
+ position: absolute;
+ top: 220px;
 }
 #menu > ul > li > a {
  padding: 5px 5px 5px 5px;
@@ -538,19 +627,17 @@ form label {
 ----------------------------------------------------------------------------*/
 
 #footer {
- background-color: $SUBMENU_COLOR;
- border-top: 1px solid $ACTIVE_GRAY;
- color: white;
+ background-color: $BOLD_COLOR_2;
+ color: $BRIGHT_LIGHT_TEXT_COLOR;
  margin-top: 20em;
  padding-top: 10px; padding-bottom: 10px;
  width: $CONTAINER_WIDTH;
 }
 #footer p {
- margin-left: 1em;
- margin-right: 1em;
+ margin-left: $LEFT_MARGIN;
 }
 #footer a {
- color: #aaaaff;
+ color: $DULLER_LIGHT_TEXT_COLOR;
 }
 #footer a.etc {
   font-size: .7em

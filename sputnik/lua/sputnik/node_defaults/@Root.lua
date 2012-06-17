@@ -192,41 +192,52 @@ permissions=[[
 ]]
 }
 
-NODE.html_main      = [==[<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
- <head>
+NODE.html_main      = [==[<!doctype html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
 $head
- </head>
- <body>
+</head>
+<body>
 $body
 
-  <script type="text/javascript" src="$js_base_url{}sputnik/scripts.js"></script>
-   $do_javascript_links[[<script type="text/javascript" src="$href"></script>
+  <script src="$js_base_url{}sputnik/scripts.js"></script>
+  <script>window.jQuery || document.write('<script src="$js_base_url{}sputnik/scripts.js"><\/script>')</script>
+  $do_javascript_links[[<script src="$href"></script>
   ]]
   $do_javascript_snippets[=[
-   <script type="text/javascript">/* <![CDATA[ */ $snippet /* ]]> */</script>
-  ]=] </body>
+   <script>/* <![CDATA[ */ $snippet /* ]]> */</script>
+  ]=]
+</body>
 </html>
 ]==]
 
-NODE.html_head      = [=[  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+NODE.html_head      = [=[
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="keywords" content="$html_meta_keywords"/>
   <meta name="description" content="$html_meta_description"/>
   <title>$site_title: $title</title>
-  <link type="text/css" rel="stylesheet" href="$css_base_url{}sputnik/style.css" media="all"/>
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="$css_base_url{}sputnik/style.css" media="all"/>
   $do_css_links[[<link type="text/css" rel="stylesheet" href="$href" media="$media"/>
 ]]$do_css_snippets[[
-   <style type="text/css" media="$media">$snippet</style>
+   <style media="$media">$snippet</style>
 ]]<link rel="shortcut icon" href="$favicon_url"/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_SITE)" $site_rss_link/>
   <link rel="alternate" type="application/rss+xml" title="_(RECENT_EDITS_TO_NODE)" $node_rss_link/>
-  $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]]=]
+  $if_no_index[[<meta name="ROBOTS" content="NOINDEX, NOFOLLOW"/>]]
+  
+  <script src="$js_base_url{}sputnik/early_scripts.js"></script>
+]=]
+  
 
 NODE.html_menu      = [==[<ul class="level1">$do_nav_sections[=[
-     <li class='$class level1' id='menu_item_$id'>
+     <li class='$current level1 $position' id='menu_item_$id'>
       <a title="$accessibility_title" $link>$title</a>
-      <ul class='$class level2'>$subsections[[<li class='$class level2'><a title="$accessibility_title" $link>$title</a></li>]]
+      <ul class='$current level2'>$subsections[[<li class='$current level2 $position'><a title="$accessibility_title" $link>$title</a></li>]]
        <li style="display:none">&nbsp;</li>
       </ul>
      </li>]=]
@@ -249,34 +260,41 @@ NODE.html_page      = [=[<div id="breadcrumbs">
       $if_text[====[<a $link>$title</a>]====]
      ]]
     </div>
-    <div id="page_title">$if_title_icon[[
+    <article id="node">
+    <div id="node_title">$if_title_icon[[
      <img src="$title_icon" class="title_icon" alt="type icon ($title_icon)"/>]]
      <a name="title" title="_(CURRENT_PAGE)" $show_link >$title</a> $if_old_version[[<span class="from_version">($version)</span>]]
     </div>
-    <div id="content" class="content">
+    <div id="node_content" class="node_content">
      $do_messages[[<p class="$class">$message</p>]]
 
-<!-- start page content -->$content<!-- end page content -->
+<!-- start node content -->$content<!-- end node content -->
 
     </div>
+    </article>
 ]=]
 
 NODE.html_content   = [[Not used by default.
 ]]
 
-NODE.html_body      = [[  <div id="container">
-   <div id="header">
+NODE.html_body      = [[
+  <!--[if lt IE 7]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+  <div id="container">  
+  <header id="header">
     $header
-   </div>
+  </header>
+  <div role="main">
    <div id="page">
     $page
    </div>
-   <div id="menu">
+  </div>
+  <nav id="menu">
     $menu
-   </div>
-   <div id="footer">
-     $footer
-   </div>
+  </nav>
+  <footer id="footer">
+    $footer
+  </footer>
   </div>
 ]]
 
@@ -284,12 +302,14 @@ NODE.html_body      = [[  <div id="container">
 NODE.html_header    = [=[<div id="logo">
      $logo
     </div>
+    <div id="login_container">
     <div id="login">
      $if_logged_in[[ $if_user_link[====[<a $link>]====]$user$if_user_link[====[</a>]====]
        / <a class="logout" title="_(LOGOUT)" $logout_link>_(LOGOUT)</a>]]
      $if_not_logged_in[[<a class="login_link" $login_link>_(LOGIN)</a>
        $if_can_register[=========[ _(OR) <a $register_link>_(REGISTER)</a>]=========]
      ]]
+    </div>
     </div>
     <div id="search">
      <form action="$base_url" class="search">
@@ -305,7 +325,7 @@ NODE.html_sidebar = [==[
 ]==]
 
 NODE.html_footer = [===[
-<p>_(POWERED_BY_SPUTNIK) | <a class="etc" href="href="http://validator.w3.org/check?uri=referer">XHTML 1.1</a></p>
+<p>_(POWERED_BY_SPUTNIK) | <a class="etc" href="href="http://validator.w3.org/check?uri=referer">HTML5</a></p>
 ]===]
 
 NODE.html_meta_keywords = " "

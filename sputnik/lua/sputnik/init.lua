@@ -355,10 +355,10 @@ function Sputnik:handle_request(request, response)
 
    -- Set headers for caching.
    if node.http_cache_control and node.http_cache_control~="" then
-      node.headers["Cache-Control"] = node.http_cache_control
+      response.headers["Cache-Control"] = node.http_cache_control
    end
    if node.http_expires and node.http_expires~="" then
-      node.headers["Expires"] = os.date("!%a, %d %b %Y %H:%M:%S GMT",
+      response.headers["Expires"] = os.date("!%a, %d %b %Y %H:%M:%S GMT",
                                         os.time()+3600*1000*tonumber(node.http_expires))
    end
 

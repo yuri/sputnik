@@ -27,6 +27,7 @@ INACTIVE_MENU_COLOR = "#133D49"
 CONTAINER_WIDTH = "1100px"
 SUBMENU_HEIGHT = "20px"
 LEFT_MARGIN = "50px"
+LEFT_MARGIN_FOR_MENU = "40px"
 ]]
 
 NODE.content = [===[
@@ -536,7 +537,7 @@ form label {
  padding: .5em .5em 1.5em .5em;
 }
 #menu > ul > li.first {
- margin-left: $LEFT_MARGIN;
+ margin-left: $LEFT_MARGIN_FOR_MENU;
 }
 #menu > ul > li > a {
  font-family: 'Arial', sans-serif;
@@ -573,7 +574,7 @@ form label {
  z-index: 1005;
 }
 #menu > ul > li.current > ul > li.first {
- margin-left: $LEFT_MARGIN;
+ margin-left: $LEFT_MARGIN_FOR_MENU;
 }
 #menu > ul > li.current > ul > li > a {
  color: $BRIGHT_LIGHT_TEXT_COLOR;

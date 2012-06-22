@@ -532,6 +532,10 @@ EDIT_FORM_CHILD_UID_FORMAT = {
    es_VE = "Formato de UID hijo",
 }
 
+EDIT_FORM_SORT_PARAMS = {
+    en_US = "Sort Parameters"
+}
+
 EDIT_FORM_DISC_SECTION = {
    en_US = "Discussion Fields",
    es_VE = "Campos de discusión",
@@ -725,18 +729,18 @@ CANCEL = {
 
 -- In diff mode, this is the phrase introducing the user name of the first author
 BY_AUTHOR1 = {
-   en_US = "by $author1 on $date1 at $time1",
-   ru    = "(автор: $author1, время: $date1, $time1)", 
-   pt_BR = "por $author1 ($date1, $time1)",
-   es_VE = "por $author1 ($date1, $time1)",
+   en_US = "by $if_link_to_author1[====[<a $link>]====]$author1$if_link_to_author1[====[</a>]====] on $date1 at $time1",
+   ru    = "(автор: $if_link_to_author1[====[<a $link>]====]$author1[====[</a>]====], время: $date1, $time1)", 
+   pt_BR = "por $if_link_to_author1[====[<a $link>]====]$author1[====[</a>]====] ($date1, $time1)",
+   es_VE = "por $if_link_to_author1[====[<a $link>]====]$author1[====[</a>]====] ($date1, $time1)",
 }
 
 -- In diff mode, this is the phrase introducing the user name of the second author
 BY_AUTHOR2 = { "by $author2",
-   en_US = "by $author2 on $date2 at $time2",
-   ru    = "(автор: $author2, время: $date2, $time2)", 
-   pt_BR = "por $author2 ($date2, $time2)",
-   es_VE = "por $author2 ($date2, $time2)",
+   en_US = "by $if_link_to_author1[====[<a $link>]====]$author1$if_link_to_author2[====[</a>]====] on $date2 at $time2",
+   ru    = "(автор: $if_link_to_author1[====[<a $link>]====]$author2[====[</a>]====], время: $date2, $time2)", 
+   pt_BR = "por $if_link_to_author1[====[<a $link>]====]$author2[====[</a>]====] ($date2, $time2)",
+   es_VE = "por $if_link_to_author1[====[<a $link>]====]$author2[====[</a>]====] ($date2, $time2)",
 }
 
 
@@ -849,6 +853,10 @@ Gracias.
 
 INVALID_ACTIVATION_TICKET = {
    en_US = "This activation ticket is invalid."
+}
+
+CLICK_HERE_TO_RESET_PASSWORD = {
+   en_US = "Forgot your password? You can reset it <a $link>here</a>",
 }
 
 PASSWORD_RESET_REQUEST = {
@@ -993,7 +1001,7 @@ SUCCESSFULLY_CHANGED_PASSWORD = {
 }
 
 PLEASE_CONFIRM_PASSWORD = {
-   en_US = "Please confirm new password",
+   en_US = "Please confirm the new password",
    es_VE = "Por favor confirme su nueva contraseña"
 }
 

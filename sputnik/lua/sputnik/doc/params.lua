@@ -260,12 +260,6 @@ accounts by clicking on a link in an a message sent to the email
 address they specify.  Registration can also be disabled
 altogether. Users may be required to accept terms of service.
 
-TERMS_OF_SERVICE_NODE
-    The node that stores terms of service. If this parameter is set,
-    new users will be asked to check off a checkbox saying that they
-    accept the terms.  (This node probably should not be editable by
-    regular users.)
-
 DISABLE_REGISTRATION
     If set to true, new user registration will be turned off.
     

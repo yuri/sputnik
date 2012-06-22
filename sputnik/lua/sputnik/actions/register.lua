@@ -375,7 +375,7 @@ function actions.show_password_reset_ticket(node, request, sputnik)
       captcha         = sputnik.captcha and sputnik.captcha:get_html() or "",
    }
 
-   node:post_notice(node.translator.translate_key("PLEASE_CONFIRM_PASSWORD"))
+   node:post_notice(node.translator.translate_key("PLEASE_CHOOSE_NEW_PASSWORD"))
    return node.wrappers.default(node, request, sputnik)
 end
 
@@ -457,12 +457,17 @@ function actions.fulfill_password_reset_ticket(node, request, sputnik)
       request.try_again = true
    end
 
+   -- Check if the authentication module supports password reset   
+   if not sputnik.auth.set_password then
+      node:post_translated_error("AUTH_MODULE_DOES_NOT_SUPPORT_PASSWORD_RESET")
+      request.try_again = true
+   end
+
    -- In case of any problems so far, send them back to the form
    if request.try_again then
       return actions.show_password_reset_ticket(node, request, sputnik)
    end
-
-
+   
    -- Go ahead and try changing the password
    local ok = sputnik.auth:set_password(node.username, password)
 

@@ -1005,6 +1005,14 @@ PLEASE_CONFIRM_PASSWORD = {
    es_VE = "Por favor confirme su nueva contraseña"
 }
 
+PLEASE_CHOOSE_NEW_PASSWORD = {
+   en_US = "Please choose a new password",
+}
+
+AUTH_MODULE_DOES_NOT_SUPPORT_PASSWORD_RESET = {
+   en_US = "The current authentication module does not support password reset.",
+}
+
 COULD_NOT_CONFIRM_NEW_PASSWORD = {
    en_US = "The password you entered is different from the one given originally.",
    es_VE = "La contraseña que introdujo es diferente a la que introdujo originalmente."

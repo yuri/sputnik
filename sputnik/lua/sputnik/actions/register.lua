@@ -221,6 +221,7 @@ function actions.submit_registration_form(node, request, sputnik)
    end
    if sputnik.auth:user_exists(p.new_username) then
       node:post_translated_error("USERNAME_TAKEN")
+      return actions.show_registration_form(node, request, sputnik)      
    end
 
    -- Check that the password is acceptable

@@ -44,6 +44,9 @@ FAVICON_NODE     = "icons/sputnik.png"
 --------- Interface ---------------------------------------------------------
 -----------------------------------------------------------------------------
 
+-- Whether to use web fonts
+USE_WEB_FONTS = true
+
 -- the language of the interface
 INTERFACE_LANGUAGE = "en"
 

@@ -18,6 +18,7 @@ actions.fancy_css = function(page, params, sputnik)
    local data, e = saci.sandbox.new{
                       icon_base_url = sputnik:make_url_prefix(sputnik.config.ICON_BASE_URL),
                       font_base_url = sputnik:make_url_prefix(sputnik.config.FONT_BASE_URL),
+                      if_use_web_fonts = cosmo.c(sputnik.config.USE_WEB_FONTS){},
                       string = string,
                       table  = table,
                       ipairs = ipairs,

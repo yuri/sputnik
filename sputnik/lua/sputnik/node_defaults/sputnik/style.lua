@@ -141,12 +141,13 @@ td { vertical-align: top; }
      #footer - less importnat site info
 ----------------------------------------------------------------------------*/
 
+$if_use_web_fonts[[
 @font-face {
-  font-family: 'HeaderFont';
+  font-family: 'Sputnik Header Web Font';
   font-style: normal;
   font-weight: bold;  
   src: url('$font_base_url{}sputnik/fonts/header.woff') format('woff');
-}
+}]]
 
 body {
  background-color: gray;
@@ -179,7 +180,7 @@ body {
 
 /* #logo identifies the site and links to the front page. */
 #logo {
- font-family: 'HeaderFont';
+ font-family: $if_use_web_fonts[['Sputnik Header Web Font',]] 'Arial', sans-serif;
  font-weight: bold;
  left: 0px;
  position: absolute;
@@ -270,7 +271,7 @@ p.site_subtitle { /* a subtitle for the site */
 }
 #node_title a{
  color: $BOLD_COLOR_1;
- font-family: 'HeaderFont';
+ font-family: $if_use_web_fonts[['Sputnik Header Web Font',]] 'Arial', sans-serif;
  font-size: 240%;
  text-decoration: none;
 }
@@ -538,7 +539,7 @@ form label {
  margin-left: $LEFT_MARGIN;
 }
 #menu > ul > li > a {
- font-family: HeaderFont;
+ font-family: 'Arial', sans-serif;
  font-size: 120%;
  padding: .3em;
 }
@@ -576,7 +577,7 @@ form label {
 }
 #menu > ul > li.current > ul > li > a {
  color: $BRIGHT_LIGHT_TEXT_COLOR;
- font-family: HeaderFont, Arial, sans-serif;
+ font-family: Arial, sans-serif;
  margin: .3em 1em .5em 1em;
  padding-bottom: .25em;
  z-index: 1006;

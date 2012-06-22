@@ -378,18 +378,25 @@ TIME_ZONE_NAME
 ]]
 
 topics.title = [[
-You can pick the title and subtitle of your wiki.
+You can pick the title and subtitle of your wiki. You can also decide whether
+to use a custom font for the title.
 
-SITE_SUBTITLE
+SITE_TITLE
     The title shown in the header and included in the HTML <head>
     element.
     
-SITE_TITLE
+SITE_SUBTITLE
     The sub-title that will be shown in the header.
     
 DEFAULT_NAVSECTION
     The section of the navigation bar that would be highlighted if the
     current node does not match any section.
+
+USE_WEB_FONTS
+    If Sputnik will use a web font, served from the node
+    sputnik/fonts/header.woff, for the site title and subtitle and
+    also for the page title. If you want to change the default font,
+    you can upload a new woff file into the font node.
 
 ]]
 

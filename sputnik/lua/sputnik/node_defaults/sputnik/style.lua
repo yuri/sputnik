@@ -21,7 +21,7 @@ BOLD_COLOR_1 = "#1B8B9A" -- a bold color used for the larger elements
 BOLD_COLOR_2 = "#093D59" -- a bold color used for the smaller elements
 TEXT_BG_COLOR = "#FFFEEF"  -- background for the main text
 BRIGHT_LIGHT_TEXT_COLOR = "white" -- for text on dark bg that should stand ot
-DULLER_LIGHT_TEXT_COLOR = "#FFDDDD" -- for text that should stand out less
+DULLER_LIGHT_TEXT_COLOR = "#DDDDDD" -- for text that should stand out less
 INACTIVE_MENU_COLOR = "#133D49"
 
 CONTAINER_WIDTH = "1100px"

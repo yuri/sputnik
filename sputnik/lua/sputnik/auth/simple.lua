@@ -121,6 +121,51 @@ function Simple:user_is_recent(username)
 end
 
 ------------------------------------------------------------------
+-- Update password node with new content.
+--
+-- @param new_content       new content
+-- @param username          the user to whom the change will be attributed
+-- @param summary           the edit summary that will be included
+function Simple:update_password_node(new_content, username, summary)
+   local password_node = self.sputnik:get_node(self.node)
+   local params = {
+      content = new_content,
+   }
+   password_node = self.sputnik:update_node_with_params(password_node, params)
+   password_node = self.sputnik:save_node(password_node, nil, username,
+      summary, {minor="yes"})
+   self.users = load_users(self.sputnik, self.node)
+end
+
+------------------------------------------------------------------
+-- Sets a password for the user. (An optional function.)
+--
+-- @param username the username to add
+-- @param password the raw password
+-- @return success a boolean value indicating if the add was
+-- successful.
+-- @return err an error message if the add was not successful
+
+function Simple:set_password(username, password)
+   if not self:user_exists(username) then
+      return nil,  errors.no_such_user(username)
+   end
+
+   local users, raw_users = load_users(self.sputnik, self.node)
+
+   username = username:lower()
+   local creation_time = self.users[username].creation_time
+   local pwhash = self.sputnik:hash_password(password, creation_time)
+   local hash_update = string.format("USERS[%q].hash=%q", username, pwhash)
+      
+   self:update_password_node((raw_users or "USERS={}\n").."\n"..hash_update,
+                             username,
+                             "Updated password."..username)
+   
+   return true
+end
+
+------------------------------------------------------------------
 -- Adds a user/password pair to the password file
 --
 -- @param user the username to add
@@ -154,15 +199,9 @@ function Simple:add_user(username, password, metadata)
    end
    user_as_string = user_as_string.."}"
 
-   local password_node = self.sputnik:get_node(self.node)
-
-   local params = {
-      content = (raw_users or "USERS={}\n").."\n"..user_as_string,
-   }
-   password_node = self.sputnik:update_node_with_params(password_node, params)
-   password_node = self.sputnik:save_node(password_node, nil, username,
-      "Added new user: " .. username, {minor="yes"})
-   self.users = load_users(self.sputnik, self.node)
+   self:update_password_node((raw_users or "USERS={}\n").."\n"..user_as_string,
+                             username,
+                             "Added new user: " .. username)
    return true
 end
 

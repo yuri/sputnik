@@ -188,6 +188,7 @@ function create_new_account(node, request, sputnik, username, password, metadata
       user_node:update{
                prototype = sputnik.config.USER_NODE_PROTOTYPE or "@User_Profile",
                title     = username,
+               owners    = username,
                creation_time = os.time(),
             }
       local ok, err = sputnik:save_node(user_node, request, "Sputnik")

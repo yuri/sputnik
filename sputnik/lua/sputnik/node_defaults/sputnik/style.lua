@@ -268,13 +268,17 @@ p.site_subtitle { /* a subtitle for the site */
 }
 
 #node_title {
- margin: 4em 1em 2em $LEFT_MARGIN;
+ margin: 4em 1em 10px $LEFT_MARGIN;
 }
 #node_title a{
  color: $BOLD_COLOR_1;
  font-family: $if_use_web_fonts[['Sputnik Header Web Font',]] 'Arial', sans-serif;
  font-size: 240%;
  text-decoration: none;
+}
+img.title_icon {
+ margin-bottom:15px;
+ margin-right: 5px;
 }
 
 #toolbar {

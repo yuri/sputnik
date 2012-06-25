@@ -131,6 +131,40 @@ function choose(condition, value1, value2)
 end
 
 -----------------------------------------------------------------------------
+-- An auxiliary function for sendmail, to extract an actual email address
+-- from a address field with a name.
+-----------------------------------------------------------------------------
+function _extract_email_address(from)
+   local from_email_address
+   for match in from:gmatch("[a-zA-Z]%S*@%S*[a-zA-Z]") do
+      from_email_address = match
+   end
+   if not from_email_address then
+      error("Could not find an email address in "..args.from)
+   end
+   return from_email_address
+end
+
+-----------------------------------------------------------------------------
+-- An auxiliary function for sendmail, to collect email addresses in the
+-- to, cc, and bcc fields.
+--
+-- @param recepients     a table for collecting results
+-- @param field          the field
+-----------------------------------------------------------------------------
+function _collect_recepients_for_sendmail(recepients, field)
+   if type(field)=="string" then     
+      table.insert(recepients, "<".._extract_email_address(field)..">")
+   elseif type(field)==type({}) then
+      for i, addr in ipairs(field) do
+         table.insert(recepients, "<".._extract_email_address(addr)..">")
+      end
+   else
+      error("to, cc and bcc fields must be a string or a table")
+   end
+end
+
+-----------------------------------------------------------------------------
 -- Sends email on Sputnik's behalf.
 --
 -- @param args           a table of parameters
@@ -142,10 +176,17 @@ function sendmail(args, sputnik)
    assert(args.subject, "No subject specified")
    assert(args.from, "No source specified")
 
+   local from_email_address = _extract_email_address(args.from)
+  
+   local recepients = {}
+   assert(args.to, "The destination address must be specified")
+   _collect_recepients_for_sendmail(recepients, args.to)
+   _collect_recepients_for_sendmail(recepients, args.bcc or {})
+
    local smtp = require("socket.smtp")
    local status, err = smtp.send{
-            from = args.from,
-            rcpt = "<"..args.to..">",
+            from = from_email_address,
+            rcpt = recepients,
             source = smtp.message{
                headers = {
                   from = args.from,

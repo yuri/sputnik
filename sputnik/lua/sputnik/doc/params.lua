@@ -275,10 +275,14 @@ REQUIRE_EMAIL_ACTIVATION
     link and will need to click on the link to activate their
     accounts. This requires smtp parameters to be set.
     
-CONFIRMATION_ADDRESS_FROM
+REGISTRATION_EMAIL_FROM
     The name and email address from which activation emails will be
-    set.
-    
+    set, e.g. "Igor da Silva <igor@example.com>".
+
+REGISTRATION_EMAIL_BCC
+    An address or a table of addresses that would be BCCed on all
+    activation emails.
+
 MAX_ACTIVATION_ATTEMPTS
     The number of tries the user before account activation ticket is
     invalidated. (The default is 3.)

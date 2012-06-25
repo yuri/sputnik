@@ -128,8 +128,9 @@ function create_generic_ticket(args)
    -- Email the user
    local link = "http://"..sputnik.config.DOMAIN..sputnik:make_url(ticket_id)
    local status, err = sputnik:sendmail{
-      from    = sputnik.config.CONFIRMATION_ADDRESS_FROM,
+      from    = sputnik.config.REGISTRATION_EMAIL_FROM,
       to      = args.email,
+      bcc     = sputnik.config.REGISTRATION_EMAIL_BCC,
       subject = node.translator.translate_key(args.subject_key),
       body    = cosmo.f(node.translator.translate_key(args.message_body_key)){
                    site_name       = sputnik.config.DOMAIN,

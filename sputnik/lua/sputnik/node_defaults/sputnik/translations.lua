@@ -187,10 +187,10 @@ CHOOSE_ANOTHER_MONTH = {
 
 -- A phrase introducing the author of the edit
 BY_AUTHOR = {
-   en_US = "by <a $author_link>$author</a> on $date at $time",
-   ru    = "<a $author_link>$author</a> ($date, $time)",
-   pt_BR = "por <a $author_link>$author</a> ($date, $time)",
-   es_VE = "por <a $author_link>$author</a> el ($date, a las $time)",
+   en_US = "by $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] on $date at $time",
+   ru    = "$if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] ($date, $time)",
+   pt_BR = "por $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] ($date, $time)",
+   es_VE = "por $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] el ($date, a las $time)",
 }
 
 -- A phrase introducing the author of the edit in global history

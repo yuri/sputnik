@@ -432,6 +432,7 @@ function actions.history(node, request, sputnik)
          end
          old_date = new_date
          local author_display, author_id_for_link = author_or_ip(edit)
+         local author_link = sputnik:make_link_to_user(author_id_for_link)
          if (not request.params.recent_users_only)
              or sputnik.auth:user_is_recent(edit.author) then
             cosmo.yield{
@@ -440,8 +441,8 @@ function actions.history(node, request, sputnik)
                date         = sputnik:format_time(edit.timestamp, "%Y/%m/%d"),
                time         = sputnik:format_time(edit.timestamp, "%H:%M %z"),
                title        = node.name,
-               if_author_link = cosmo.c(author_id_for_link){
-                                     author_link  = sputnik:make_link_to_user(author_id_for_link),
+               if_author_link = cosmo.c(author_link){
+                                     author_link  = author_link,
                                 },
                author_icon  = sputnik:get_user_icon(edit.author),
                author       = author_display,

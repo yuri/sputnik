@@ -833,7 +833,7 @@ ACCOUNT_ACTIVATION = {
 ACTIVATION_MESSAGE_BODY = {
    en_US = [[
 In order to activate your account at $site_name, please click the following link.
-If the link isn't click-able, please copy and paste the URL into your web browser.
+If the link isn't clickable, please copy and paste the URL into your web browser.
 You will be asked to confirm the registered information.
 
 $link
@@ -871,7 +871,7 @@ PASSWORD_RESET = {
 PASSWORD_RESET_MESSAGE_BODY = {
    en_US = [[
 In order to reset the password for your account at $site_name, please click the following link.
-If the link isn't click-able, please copy and paste the URL into your web browser.
+If the link isn't clickable, please copy and paste the URL into your web browser.
 
 $link
 

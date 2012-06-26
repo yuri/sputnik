@@ -777,6 +777,17 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:save_node(node, request, ...)
    local new_node = node
+   
+   -- Insert creator and creation time information if not specified already.
+   if not self:node_exists(node.id) then
+      if request and request.user and (new_node.creator or "")=="" then
+         new_node = self:update_node_with_params(new_node, {creator=request.user})
+      end
+      if (new_node.creation_time or "")=="" then
+         timestamp = os.date("!%Y-%m-%d %H:%M:%S")
+         new_node = self:update_node_with_params(new_node, {creation_time=timestamp})
+      end
+   end
    if type(node.save_hook) == "string" and #node.save_hook > 0 then
       local mod_name, func_name = node.save_hook:match("^(.+)%.([^%.]+)$")
       local module = require("sputnik.hooks." .. mod_name)

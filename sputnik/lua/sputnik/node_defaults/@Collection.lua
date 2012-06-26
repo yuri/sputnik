@@ -42,12 +42,16 @@ Create <a href="$new_url">new item</a>.
   <tr>
    <th>id</th>
    <th>title</th>
+   <th>added by</th>
+   <th>time added</th>
   </tr>
  </thead>
  $do_nodes[[
   <tr>
    <td><a href="$url">$id</a></td>
    <td><a href="$url">$title</a></td>
+   <td>$if_creator[=====[$if_creator_link[====[<a $creator_link>]====]$creator$if_creator_link[====[</a>]====] ]=====]</td>
+   <td>$if_creation_time[=====[$creation_time]=====]</td>
   </tr>
  ]]
  </table>

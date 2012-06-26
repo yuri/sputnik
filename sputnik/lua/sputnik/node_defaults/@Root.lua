@@ -15,6 +15,8 @@ templates       = {0.5, proto="concat", activate="list"}
 translations    = {0.51, proto="concat", activate="list"}
 prototype       = {0.6  }
 permissions     = {0.7,   proto="concat"}
+creator         = {0.7001}
+creation_time   = {0.7002}
 owners          = {0.71}
 html_main       = {0.701, proto="fallback"}
 html_head       = {0.702, proto="fallback"}
@@ -94,6 +96,8 @@ advanced_section = {2.0, "div_start", id="advanced"}
  is_deleted      = {2.211, "checkbox"} 
  title           = {2.22, "text_field"}
  owners          = {2.221, "text_field"}
+ creator         = {2.222, "text_field"}
+ creation_time   = {2.223, "text_field"}
  breadcrumb      = {2.23, "text_field"}
  category        = {2.24, "select", options = {}}
  prototype       = {2.25, "hidden", no_label=true, div_class="hidden"}

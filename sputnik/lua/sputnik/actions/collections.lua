@@ -49,6 +49,7 @@ function actions.show(node, request, sputnik)
 
    node:add_javascript_snippet(sorttable.script)
 
+   local creator_link = sputnik:make_link_to_user(node.creator)
    local values = {
       new_id  = node.id .. "/new",
       new_url = sputnik:make_url(node.id.."/new", "edit"),
@@ -60,6 +61,15 @@ function actions.show(node, request, sputnik)
       format_time = function(params)
          return sputnik:format_time(unpack(params))
       end,
+      if_creator = cosmo.c(node.creator~="") {
+                      creator = node.creator,
+                                   if_creator_link = cosmo.c(creator_link) {
+                                      creator_link = creator_link,
+                                   },
+      },
+      if_creation_time = cosmo.c(node.creation_time~="") {
+                             creation_time == node.creation_time
+      },
       make_url = function(params)
          local id, action, _, anchor = unpack(params)
          for i=1,#params do
@@ -102,12 +112,22 @@ function actions.show(node, request, sputnik)
          end
          for i, node in ipairs(non_proto_nodes) do
              sputnik:decorate_node(node)
+            local creator_link = sputnik:make_link_to_user(node.creator)
             local t = {
                url = sputnik:make_url(node.id),
                id  = node.id,
                short_id = node.id:match("[^%/]*$"),
                base_url = sputnik.config.BASE_URL,
                logged_in_user = request.user,
+               if_creator = cosmo.c(node.creator~="") {
+                               creator = node.creator,
+                               if_creator_link = cosmo.c(creator_link) {
+                                   creator_link = creator_link,
+                               },
+                            },
+               if_creation_time = cosmo.c(node.creation_time~="") {
+                               creation_time == node.creation_time
+                            }
             }
             for k, v in pairs(node.fields) do
                t[k] = tostring(node[k])

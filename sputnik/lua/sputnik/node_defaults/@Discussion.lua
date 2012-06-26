@@ -7,12 +7,10 @@ NODE.child_uid_format = "%d"
 NODE.translations = "sputnik/translations/forums"
 NODE.save_hook = "forums.save_discussion"
 NODE.sort_params = [[
- sort_key = "comment_timestamp"
- sort_type = "number"
+ sort_key = "creation_time"
+ sort_type = "string"
 ]]
 NODE.fields = [[
- author = {1.3}
- creation_time = {1.4}
  activity_time = {1.5}
  activity_node = {1.6}
  activity_author = {1.7}
@@ -28,8 +26,6 @@ NODE.edit_ui = [[
 ]]
 NODE.admin_edit_ui = [[
 disc_section  = {1.410, "div_start", id="disc_section", closed="true"}
- author = {1.412, "text_field"}
- creation_time = {1.413, "text_field"}
  activity_time = {1.414, "text_field"}
  activity_node = {1.415, "text_field"}
  activity_author = {1.416, "text_field"}
@@ -47,40 +43,44 @@ actions   = 'save="collections.save_new"'
 ]=]
 
 NODE.html_content = [=[
-<ol class="discussion">
- <li class="origpost">
-  <div class="post-header">
+  <div class="content">
+   $markup{$content}
+  </div>
   <span class="post-info">
-   Posted by $author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
+   Posted 
+   $if_creator[=====[by $if_creator_link[====[<a $creator_link>]====]$creator$if_creator_link[====[</a>]====] ]=====]
+   on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
   </span>
+
+<h2 id="comments_heading">Comments</h2>
+
+<div class="comments">
+ $do_nodes[======[
+ <article id="$short_id" class="comment reply">
+  <header class="post-header">
+      <span class="comment_id">$short_id</span>
+      <span class="comment_info">
+       Posted
+       $if_creator[=====[by $if_creator_link[====[<a $creator_link>]====]$creator$if_creator_link[====[</a>]====] ]=====]
+       on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
+      </span>
+  </header>
+  <div class="content">
+   $markup{$content}
+  </div>
   <ul class="post-toolbar">
    $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
    $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
    <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id}">_(REPLY)</a></li> 
    <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id, quote="true"}">_(QUOTE)</a></li> 
   </ul>
-  </div>
-  <div class="content">
-   $markup{$content}
-  </div>
- </li>
- $do_nodes[====[
- <a name="$short_id"></a><li class="reply">
-  <div class="post-header">
-  <span class="post-info">
-   Posted by $comment_author on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
-  </span>
-  <ul class="post-toolbar">
-   $if_user_can_edit[[<li><a href="$edit_link">_(EDIT)</a></li>]]
-   $if_user_can_configure[[<li><a href="$configure_link">_(CONFIGURE)</a></li>]]
-   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id}">_(REPLY)</a></li> 
-   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id, quote="true"}">_(QUOTE)</a></li> 
-  </ul>
-  </div>
-  <div class="content">
-   $markup{$content}
-  </div>
- </li>
- ]====]
-</ol>
+ </article>
+ ]======]
+</div>
+
+<ul class="post-toolbar">
+   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id}">_(TOP_REPLY)</a></li> 
+   <li><a href="$make_url{$new_id, "edit_new", comment_parent=$id, quote="true"}">_(TOP_QUOTE)</a></li> 
+</ul>
+
 ]=]

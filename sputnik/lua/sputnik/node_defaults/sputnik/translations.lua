@@ -259,6 +259,17 @@ EDIT_FORM_OWNERS = {
    pt_BR = "Donos",
 }
 
+-- A lable for the "creator" parameter
+EDIT_FORM_CREATOR = {
+   en_US = "Node creator",
+}
+
+-- A lable for the "creation_time" parameter
+EDIT_FORM_CREATION_TIME = {
+   en_US = "Node creation time",
+}
+
+
 -- A label for the section of the form with advanced parameters
 EDIT_FORM_ADVANCED_SECTION = {
    en_US = "Advanced Fields",
@@ -1108,6 +1119,14 @@ ADD_NEW_DISCUSSION_TOPIC = {
    en_US = "Add new discussion topic",
    ru = "Добавить тему",
    es_VE = "Agregar nuevo tema de discusión"
+}
+
+TOP_REPLY = {
+   en_US = "Post comment",
+}
+
+TOP_QUOTE = {
+   en_US = "Quote original",
 }
 
 ]=============]

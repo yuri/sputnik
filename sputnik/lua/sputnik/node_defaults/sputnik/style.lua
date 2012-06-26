@@ -375,20 +375,6 @@ ol {
  width: 80%;
 }
 
-ul.post-toolbar {
- list-display: none;
- padding: 0;
- border-bottom: 1px solid #aaa;
-}
-ul.post-toolbar li {
- display: inline;
- font-size: 70%;
-}
-ul.post-toolbar li a {
- text-decoration: none;
- color: #aaa;
-}
-
 pre {
  font-family: "monospace";
  margin-bottom: 2em;
@@ -649,6 +635,57 @@ form label {
   font-size: .7em
 }
 
+
+/*-- discussion -------------------------------------------------------------
+
+  Rules for discussion markup.
+----------------------------------------------------------------------------*/
+
+.disc_snippet {
+  display: none;
+}
+.comment {
+  border: 1px solid gray;
+  background: #ddd;
+  margin-bottom: 1em;
+  padding: 0;
+  background-color: white;
+}
+
+.comment > .content {
+  border-top: 1px solid purple;
+  padding: .5em;
+  margin: 0;
+}
+
+.comment > .post-header {
+  padding-left: .5em;
+  background-color: #ddd;
+}
+
+.comment > .post-header > .comment_id {
+  font-size: 120%;
+  font-weight: bold;
+  float:right;
+}
+
+ul.post-toolbar {
+ list-display: none;
+ padding: .5em;
+ margin: 0;
+}
+ul.post-toolbar li {
+ display: inline;
+}
+ul.post-toolbar li a {
+ text-decoration: none;
+ color: black;
+ border: 1px solid #bbb;
+ background-color: #ddd;
+ border-radius:3px;
+ padding: 2px;
+ font-size: 70%;
+}
 
 /*-- alternative media ------------------------------------------------------
 

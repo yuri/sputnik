@@ -228,8 +228,9 @@ p.site_subtitle { /* a subtitle for the site */
 /* #search contains a form for searching the site.*/
 #search {
  align:text;
- left: 900px;
+ left: auto;
  position:absolute;
+ right: 5px;
  top: 45px;
  z-index: 1000;
 }

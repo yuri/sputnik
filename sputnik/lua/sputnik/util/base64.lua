@@ -1,14 +1,11 @@
 module(..., package.seeall)
 
---require("mime")
---require("ltn12")
-
 CHUNK_LENGTH=78
 
-require("base64")
-
---local base64 = require("sputnik.util.base64")
-
+local base64_loaded, base64 = pcall(require, "base64")
+if not base64_loaded then
+   base64 = require("sputnik.util.base64_implementation")
+end
 encode = base64.encode
 decode = base64.decode
 
@@ -21,6 +18,3 @@ function encode_and_wrap(binary_content)
    return wrapped
 end
 
-
---base64_encode = base64.enc
---base64_decode = base64.dec

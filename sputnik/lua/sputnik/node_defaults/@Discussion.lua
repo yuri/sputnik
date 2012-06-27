@@ -47,8 +47,7 @@ NODE.html_content = [=[
    $markup{$content}
   </div>
   <span class="post-info">
-   Posted 
-   $if_creator[=====[by $if_creator_link[====[<a $creator_link>]====]$creator$if_creator_link[====[</a>]====] ]=====]
+   Posted by $format_user{$creator}
    on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
   </span>
 
@@ -60,8 +59,7 @@ NODE.html_content = [=[
   <header class="post-header">
       <span class="comment_id">$short_id</span>
       <span class="comment_info">
-       Posted
-       $if_creator[=====[by $if_creator_link[====[<a $creator_link>]====]$creator$if_creator_link[====[</a>]====] ]=====]
+       Posted $format_user{$creator, "Anonymous Coward"}
        on $format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}
       </span>
   </header>

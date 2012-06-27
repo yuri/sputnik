@@ -187,18 +187,18 @@ CHOOSE_ANOTHER_MONTH = {
 
 -- A phrase introducing the author of the edit
 BY_AUTHOR = {
-   en_US = "by $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] on $date at $time",
-   ru    = "$if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] ($date, $time)",
-   pt_BR = "por $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] ($date, $time)",
-   es_VE = "por $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] el ($date, a las $time)",
+   en_US = "by $format_user{$author, $alt_author} on $date at $time",
+   ru    = "$format_user{$author, $alt_author} ($date, $time)",
+   pt_BR = "por $format_user{$author, $alt_author} ($date, $time)",
+   es_VE = "por $format_user{$author, $alt_author} el ($date, a las $time)",
 }
 
 -- A phrase introducing the author of the edit in global history
 AUTHOR_SAVED_VERSION = {
-   en_US = "<img alt='author' src='$author_icon'/> $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] at $time: <a $version_link>$version</a>",
-   ru    = "<img alt='author' src='$author_icon'/> $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] сохранил <a $version_link>$version</a> в $time",
-   pt_BR = "<img alt='author' src='$author_icon'/> $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] guardou <a $version_link>$version</a> ás $time",
-   es_VE = "<img alt='author' src='$author_icon'/> $if_author_link[[<a $author_link>]]$author$if_author_link[[</a>]] at $time: <a $version_link>$version</a>",
+   en_US = "$format_user{$author, $alt_author} at $time: <a $version_link>$version</a>",
+   ru    = "$format_user{$author, $alt_author} сохранил <a $version_link>$version</a> в $time",
+   pt_BR = "$format_user{$author, $alt_author} guardou <a $version_link>$version</a> ás $time",
+   es_VE = "$format_user{$author, $alt_author} at $time: <a $version_link>$version</a>",
 }
 
 -- Diff link in history
@@ -572,6 +572,10 @@ EDIT_FORM_ACTIVITY_NODE = {
    es_VE = "Nodo de actividad",
 }
 
+EDIT_FORM_ACTIVITY_AUTHOR = {
+   en_US = "Activity Author",
+}
+
 EDIT_FORM_COMMENT_AUTHOR = {
    en_US = "Comment Author",
    es_VE = "Comentario de autor",
@@ -740,18 +744,18 @@ CANCEL = {
 
 -- In diff mode, this is the phrase introducing the user name of the first author
 BY_AUTHOR1 = {
-   en_US = "by $if_link_to_author1[====[<a $link>]====]$author1$if_link_to_author1[====[</a>]====] on $date1 at $time1",
-   ru    = "(автор: $if_link_to_author1[====[<a $link>]====]$author1[====[</a>]====], время: $date1, $time1)", 
-   pt_BR = "por $if_link_to_author1[====[<a $link>]====]$author1[====[</a>]====] ($date1, $time1)",
-   es_VE = "por $if_link_to_author1[====[<a $link>]====]$author1[====[</a>]====] ($date1, $time1)",
+   en_US = "by $format_user{$author1, $alt_author1} on $date1 at $time1",
+   ru    = "(автор: $format_user{$author1, $alt_author1}, время: $date1, $time1)", 
+   pt_BR = "por $format_user{$author1, $alt_author1} ($date1, $time1)",
+   es_VE = "por $format_user{$author1, $alt_author1} ($date1, $time1)",
 }
 
 -- In diff mode, this is the phrase introducing the user name of the second author
-BY_AUTHOR2 = { "by $author2",
-   en_US = "by $if_link_to_author1[====[<a $link>]====]$author1$if_link_to_author2[====[</a>]====] on $date2 at $time2",
-   ru    = "(автор: $if_link_to_author1[====[<a $link>]====]$author2[====[</a>]====], время: $date2, $time2)", 
-   pt_BR = "por $if_link_to_author1[====[<a $link>]====]$author2[====[</a>]====] ($date2, $time2)",
-   es_VE = "por $if_link_to_author1[====[<a $link>]====]$author2[====[</a>]====] ($date2, $time2)",
+BY_AUTHOR2 = {
+   en_US = "by $format_user{$author2, $alt_author2} on $date2 at $time2",
+   ru    = "(автор: $format_user{$author2, $alt_author2}, время: $date2, $time2)", 
+   pt_BR = "por $format_user{$author2, $alt_author2} ($date2, $time2)",
+   es_VE = "por $format_user{$author2, $alt_author2} ($date2, $time2)",
 }
 
 

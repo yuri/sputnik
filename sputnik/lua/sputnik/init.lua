@@ -123,7 +123,10 @@ function Sputnik:init(initial_config)
    end
 
    -- setup wrappers
-   self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers      
+   self.wrappers = sputnik.actions.wiki.wrappers -- same for "wiki" wrappers
+
+   -- prepare functions for use in cosmo  
+   self:setup_cosmo_functions()      
 end
 
 
@@ -1040,6 +1043,7 @@ end
 -----------------------------------------------------------------------------
 function Sputnik:get_user_icon(user)
    -- First, check if already have an icon for this user
+   user = user or ""
    self.user_icon_hash = self.user_icon_hash or {}
    if self.user_icon_hash[user] then
       return self.user_icon_hash[user]
@@ -1183,5 +1187,40 @@ function Sputnik:sendmail(args)
    end
 end
 
+-----------------------------------------------------------------------------
+-- Formats time for use in Cosmo.
+-----------------------------------------------------------------------------
+
+function Sputnik:setup_cosmo_functions()
+   self.cosmo_functions = {}
+   self.cosmo_functions.format_time = function(params)
+      if (params[1] or "")~="" then
+         return self:format_time(unpack(params))
+      else
+         return "unknown time"
+      end
+   end
+   self.cosmo_functions.format_user = function(params)
+      local username = params[1]
+      local alternative = params[2] or "Anonymous User"
+      local link = self:make_link_to_user(username)
+      local buffer = ""
+      if link then
+         buffer = string.format("<a %s>%s</a>", link, username)
+      elseif (username or "")~="" then
+         buffer = username
+      else
+         buffer = alternative
+      end
+      local icon = self:get_user_icon(username)
+      if icon then
+         buffer = string.format("<img alt='user' src='%s'/>%s", icon, buffer)
+      end
+      return buffer
+   end
+   self.cosmo_functions.make_link = function(params)
+      return self:make_link(unpack(params))
+   end
+end
 
 -- vim:ts=3 ss=3 sw=3 expandtab

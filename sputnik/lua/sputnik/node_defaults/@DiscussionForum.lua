@@ -34,10 +34,11 @@ $markup{$content}
  $do_nodes[[
  <tr>
   <td>
-   <div class="disc_info"><a href="$url">$title</a> posted by $author</div>
+   <div class="disc_info"><a href="$url">$title</a>  
+   by $format_user{$creator}</div>
    <div class="disc_snippet">$snippet</div>
   </td>
-  <td><a href="$make_url{$activity_node}">$format_time{$activity_time, "%Y/%m/%d %H:%M:%S"}</a> by $activity_author</td> 
+  <td><a href="$make_url{$activity_node}">$format_time{$activity_time, "%Y/%m/%d %H:%M:%S"}</a> by $format_user{$activity_author}</td> 
  </tr>
 ]]
 </table>

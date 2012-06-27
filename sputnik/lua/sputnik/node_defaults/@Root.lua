@@ -329,7 +329,7 @@ NODE.html_sidebar = [==[
 ]==]
 
 NODE.html_footer = [===[
-<p>_(POWERED_BY_SPUTNIK) | <a class="etc" href="href="http://validator.w3.org/check?uri=referer">HTML5</a></p>
+<p>_(POWERED_BY_SPUTNIK) | <a class="etc" href="http://validator.w3.org/check?uri=referer">HTML5</a></p>
 ]===]
 
 NODE.html_meta_keywords = " "

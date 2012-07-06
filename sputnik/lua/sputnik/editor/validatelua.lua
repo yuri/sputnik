@@ -1,25 +1,25 @@
 module(..., package.seeall) --sputnik.editor.resizeable
 
 local SNIPPET_TEMPLATE = [[
-$(document).ready(function() {
+$$(document).ready(function() {
    // Store the timer id
    var timerId = 0;
-   $("textarea.editor_validatelua").keyup(function (e) {
+   $$("textarea.editor_validatelua").keyup(function (e) {
       var field = this;
-      var code = $(this).val();
+      var code = $$(this).val();
       clearTimeout(timerId);
       timerId = setTimeout(function() {
-         $.post("$url"  ,
+         $$.post("$url"  ,
                 { p: "sputnik/scripts.validate_lua", code: code },
                 function(data) {
                    if (data == "valid") {
-                      $(field).css("background-color", "$valid");
+                      $$(field).css("background-color", "$valid");
                    }
                    else if (data == "invalid") {
-                      $(field).css("background-color", "$invalid");
+                      $$(field).css("background-color", "$invalid");
                    }
                    else {
-                      $(field).css("background-color", "$unknown");
+                      $$(field).css("background-color", "$unknown");
                    }
                 }
                );

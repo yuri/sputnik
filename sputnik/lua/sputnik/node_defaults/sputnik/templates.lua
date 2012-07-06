@@ -244,39 +244,6 @@ LUA_CODE = [===[
     ]]
 
     <div width="100%">
-     <style>
-      table.code {
-       width: 100%;
-       border-collapse: collapse
-       background: red;
-       border-style: none;
-      }
-      table.body {
-       background: yellow;
-      }
-      table.code tbody th {
-       font-size: 90%;
-      }
-      table.code tbody th a{
-       text-decoration: none;
-       color: white;
-      }
-      table.code th.lineno { 
-       width: 4em;
-      }
-      table.code th.bad {
-       background: red;
-      }
-      table.code tbody td {
-       border: none;
-      }
-      table.code tbody td code {
-       background: white;
-      }
-      table.code tbody td code.bad{
-       background: yellow;
-      }
-     </style>
      <table class="code">
       <tbody>
        $do_lines[[

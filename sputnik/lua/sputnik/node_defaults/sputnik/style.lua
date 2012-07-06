@@ -688,6 +688,41 @@ ul.post-toolbar li a {
  font-size: 70%;
 }
 
+/*-- Config code with issues ------------------------------------------------
+  Special rules for media other than screen.
+----------------------------------------------------------------------------*/
+
+
+table.code {
+ width: 100%;
+ border-style: none;
+ margin-bottom: 1em;
+}
+table.code th {
+ font-size: 90%;
+ line-height: 90%;
+}
+table.code th a{
+ text-decoration: none;
+ color: black;
+}
+table.code th.lineno { 
+ width: 4em;
+}
+table.code th.bad {
+ background: red;
+}
+table.code td {
+ border: 1px solid #999;
+  line-height: 90%;
+}
+table.code code {
+ background: white;
+}
+table.code code.bad{
+ background: yellow;
+}
+
 /*-- alternative media ------------------------------------------------------
 
   Special rules for media other than screen.

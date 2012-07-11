@@ -25,6 +25,8 @@ DULLER_LIGHT_TEXT_COLOR = "#DDDDDD" -- for text that should stand out less
 INACTIVE_MENU_COLOR = "#133D49"
 
 CONTAINER_WIDTH = "1100px"
+POPUP_WIDTH = "900px"
+POPUP_TOP = "200px"
 SUBMENU_HEIGHT = "20px"
 LEFT_MARGIN = "50px"
 LEFT_MARGIN_FOR_MENU = "40px"
@@ -494,6 +496,13 @@ form label {
  padding: .5em;
 }
 
+button {
+ font-size: 120%;
+}
+
+div.submit {
+ margin-top: .5em;
+}
 
 /*-- #menu ------------------------------------------------------------------
 
@@ -688,8 +697,35 @@ ul.post-toolbar li a {
  font-size: 70%;
 }
 
+/*-- Popups ------------------------------------------------
+----------------------------------------------------------------------------*/
+
+.popup_background {
+ z-index : 100000;
+ width: 100%;
+ height: 100%;
+ position: absolute;
+ top: 0;
+ left: 0;
+ background: rgba(0,0,0,0.2);
+}
+
+.popup_frame {
+ width: $POPUP_WIDTH;
+ margin-left: auto;
+ margin-right: auto;
+ margin-top: $POPUP_TOP;
+ background: white;
+ padding: 10px;
+ box-shadow: 10px 10px 5px #444;
+ border-radius: 10px;
+}
+
+.popup_content {
+ background: white;
+}
+
 /*-- Config code with issues ------------------------------------------------
-  Special rules for media other than screen.
 ----------------------------------------------------------------------------*/
 
 

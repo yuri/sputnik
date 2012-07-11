@@ -194,7 +194,9 @@ LOGIN_FORM              = [===[
        <input class="hidden" type="hidden" name="post_timestamp" value="$post_timestamp"/>
        <input class="hidden" type="hidden" name="post_fields" value="$post_fields"/>
        $html_for_fields
-       <button class="submit" type="submit" accesskey="c" name="action_login">_(LOGIN)</button>
+       <div class="submit">
+        <button class="submit" type="submit" accesskey="c" name="action_login">_(LOGIN)</button>
+       </div>
       </form>
 
       $if_can_reset_password[=[
@@ -268,13 +270,12 @@ ACTION_NOT_FOUND = [===[
 ]===]
 
 REGISTRATION = [===[
-<h3>Create new account</h3>
 <form class="register" method="post" enctype="multipart/form-data" action="$action_url">
  <input class="hidden" type="hidden" name="p" value="$node_name.post"/>
  $html_for_fields
  $captcha
  <div class="submit">
- <button class="submit positive" type="submit" accesskey="s" name="action_submit">$submit_label</button>
+ <button class="submit positive" type="submit" accesskey="s" name="action_submit">_(CREATE_NEW_ACCOUNT)</button>
  </div>
 </form> 
 ]===]

@@ -17,7 +17,9 @@ NODE.content = [======[
 
 $jquery
 
-function sputnik_init_page() {
+var sputnik = {};
+
+sputnik.init_page = function() {
   $$(".field input, .field textarea").not(".submit").focus(
     function(){$$(this).addClass("active_input");}
   ).blur(
@@ -26,22 +28,24 @@ function sputnik_init_page() {
   $$(".autofocus input").focus();
 }
 
-function sputnik_make_modal_popup(id, url) {
-   var login_form = document.createElement('div');
-   var selector = "#"+id;
-   $$(selector).fadeIn();
-   $$(selector).append('<div class="transparency">&nbsp;</div>');
-   $$(selector).append('<div class="popup_frame"><div class="close_popup">⨯</div><div class="actual_form"/></div>');
-   $$(selector+" div.actual_form").load(url);
-   $$(selector+" .close_popup").click(
-    function(){ $$(selector).hide(); return false; }
+sputnik.make_modal_popup = function (id, url) {
+   var parent = "body";
+   $$(parent).prepend('<div class="popup_background" id="'+id+'"></div>');
+   var popup = parent + " div.popup_background";
+   $$(popup).append('<div class="popup_frame"><div class="popup_content"/></div>');
+   $$("div.popup_content").load(url);
+   $$(popup).click(
+    function(){ $$(popup).hide(); }
    );
-   sputnik_init_page();
+   $$(".popup_frame").click(function(event){
+     event.stopPropagation();
+   });
+   setTimeout(function(){sputnik.init_page()}, 100);
 }
 
 $$(document).ready(function(){
 
- sputnik_init_page();
+ sputnik.init_page();
 
  $$("#sidebar ul#menu > li > a ").click(
   function(){
@@ -66,12 +70,18 @@ $$(document).ready(function(){
   }
  );
 
- /*$$("a.login_link").click(
+ $$("a.login_link").click(
   function(){
-   sputnik_make_modal_popup("login_form", "/sputnik2.ws?p=sputnik/login&skip_wrapper=1");
+   sputnik.make_modal_popup("login_form", "$make_url_without_wrapper{node = '$LOGIN_NODE'}");
    return false;
   }
- );*/
+ );
+ $$("a.registration_link").click(
+  function(){
+   sputnik.make_modal_popup("registration_form", "$make_url_without_wrapper{node = '$REGISTRATION_NODE'}");
+   return false;
+  }
+ ); 
 
  function addBookmark(title, url) {
   if (window.sidebar) { // firefox

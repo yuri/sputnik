@@ -871,7 +871,7 @@ INVALID_ACTIVATION_TICKET = {
 }
 
 CLICK_HERE_TO_RESET_PASSWORD = {
-   en_US = "Forgot your password? You can reset it <a $link>here</a>",
+   en_US = "Forgot your password? You can reset it <a $link>here</a>.",
 }
 
 PASSWORD_RESET_REQUEST = {
@@ -958,7 +958,9 @@ EDIT_FORM_AGREE_TOS = {
    es_VE = "Términos de servicio",
 }
 
-
+CREATE_NEW_ACCOUNT = {
+   en = "Create a new account",
+}
 -- Form label for confirming new password
 
 EDIT_FORM_NEW_PASSWORD_CONFIRM = {

@@ -707,7 +707,7 @@ ul.post-toolbar li a {
  position: absolute;
  top: 0;
  left: 0;
- background: rgba(0,0,0,0.2);
+ background: rgba(0,0,0,0.7);
 }
 
 .popup_frame {

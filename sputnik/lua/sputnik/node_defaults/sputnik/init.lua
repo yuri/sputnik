@@ -22,10 +22,10 @@ inforation. There would be little benefit to editing them.
 * [[sputnik/config]] - the site-wide configuration node. This is the first
   thing to try for any configuration.
 * [[sputnik/navigation]] - controls the navigation bar.
-* [[logo]] - the Sputnik logo. You can upload your own image file instead.
 * [[sputnik/style]] - the stylesheet.
 * [[sputnik/passwords]] - the password file. You can edit it to give certain
   users admin privileges, to delete accounts, etc.
+* [[logo]] - the Sputnik logo. You can upload your own image file instead.
 
 See also the @Root node below.
 
@@ -97,6 +97,10 @@ representation or configure them by changing ".raw" to ".configure".
 * [[icons/system]]
 * [[icons/star]]
 * [[icons/user]]
+
+## Font Nodes
+
+* [[sputnik/fonts/header]]
 
 ]=====]
 

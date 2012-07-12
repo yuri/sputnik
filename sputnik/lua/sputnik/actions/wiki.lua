@@ -106,6 +106,13 @@ end
 -----------------------------------------------------------------------------
 
 function check_post_parameters(node, request, sputnik)
+   -- First, see if the a user-specific API key was submitted.
+   -- If so, check whether it is correct.
+   local api_key = request.params.api_key
+   if api_key then
+      return api_key==sputnik.auth:get_metadata(request.user, "api_key")
+   end
+   -- Ok, no API key. There better be a good post token.
    local token = request.params.post_token
    local timestamp = request.params.post_timestamp
    local timeout = (sputnik.config.POST_TOKEN_TIMEOUT or 15) * 60

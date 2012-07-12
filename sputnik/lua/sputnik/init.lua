@@ -437,9 +437,17 @@ function Sputnik:translate_request (request)
    if request.params.logout then 
       request.user = nil
    elseif (request.params.user or ""):len() > 0 then
-      request.user, request.auth_token = self.auth:authenticate(
+      if request.params.password then
+         request.user, request.auth_token = self.auth:authenticate(
                                                       request.params.user, 
                                                       request.params.password)
+      elseif request.params.auth_token then
+         request.user = self.auth:validate_token(request.params.user, 
+                                                      request.params.auth_token)
+         if request.user then
+            request.auth_token = request.params.auth_token
+         end
+      end
       if not request.user then
          request.auth_message = "INCORRECT_PASSWORD"
          -- TODO: I am unsure what the behavior here should be.. 

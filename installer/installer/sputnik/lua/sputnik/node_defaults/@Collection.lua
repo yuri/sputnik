@@ -1,0 +1,88 @@
+module(..., package.seeall)
+NODE = {
+   title      = "@Collection",
+   actions    = [[
+      show = "collections.show"
+      rss = "collections.rss"
+      xml = "collections.list_children_as_xml"
+      new_child = "collections.edit_new_child"
+   ]],
+}
+
+NODE.fields = [=[
+child_proto = {1.1, proto="fallback"}
+--content_template = {1.2, proto="fallback"}
+xml_template = {1.3, proto="fallback"}
+child_uid_format = {1.4, proto="fallback"}
+sort_params = {1.5, proto="fallback", activate="lua"}
+]=]
+
+NODE.edit_ui = [=[
+ title           = {0.80, "text_field"}
+]=]
+
+NODE.admin_edit_ui = [=[
+collection_section = {1.401, "div_start", id="collection_section"}
+ child_proto = {1.401, "text_field"}
+ --content_template = {1.402, "textarea"}
+ xml_template = {1.403, "textarea"}
+ child_uid_format = {1.404, "text_field"}
+ sort_params = {1.405, "textarea", editor_modules={"validatelua"}}
+collection_section_end = {1.406, "div_end"}
+]=]
+
+NODE.html_content = [=[
+$markup{$content}
+Create <a href="$new_url">new item</a>.
+
+<br/><br/>
+
+<table class="sortable" width="100%">
+ <thead>
+  <tr>
+   <th>id</th>
+   <th>title</th>
+   <th>added by</th>
+   <th>time added</th>
+  </tr>
+ </thead>
+ $do_nodes[[
+  <tr>
+   <td><a href="$url">$id</a></td>
+   <td><a href="$url">$title</a></td>
+   <td>$if_creator[=====[$if_creator_link[====[<a $creator_link>]====]$creator$if_creator_link[====[</a>]====] ]=====]</td>
+   <td>$if_creation_time[=====[$creation_time]=====]</td>
+  </tr>
+ ]]
+ </table>
+]=]
+
+NODE.xml_template = [=[<?xml version="1.0" encoding="UTF-8"?>
+ <collection id="$id">
+  $do_nodes[[
+  <item id="$id" title="$title"/>
+  ]]
+ </collection>
+]=]
+
+NODE.child_defaults = [=[
+new = [[ 
+prototype = "$id/@Child"
+title     = "New Item"
+actions   = 'save="collections.save_new"'
+]]
+]=]
+
+NODE.permissions = [=[
+--deny(all_users, "edit")
+--deny(all_users, "save")
+--deny(all_users, "history")
+--deny(all_users, "rss")
+--allow(Admin, "edit")
+--allow(Admin, "save")
+--allow(Admin, "history")
+--allow(all_users, "edit")
+--allow(all_users, "new_child")
+]=]
+
+

@@ -1,0 +1,71 @@
+package    = 'Sputnik'
+versions   = {
+   {'12.07.12', 'July 12, 2012',  'bugfixes, new stylesheet, webfonts'},
+   {'12.06.04', 'June 4, 2012',  'use of crypt(3), merging sql auth modules, merging packages into fewer rocks, built-in help'},
+   {'10.12.28', 'December 28, 2010',  'new design, password reset, user nodes'},
+   {'9.03.16', 'March 16, 2009',  'better forums, save hooks'},
+   {'9.03.03', 'March 3, 2009',  'new editor system, configure action, defaults for parameters, configurable toolbar, buttons for creating nodes'},
+   {'9.02.16', 'February 16, 2009',  'replaced the icons with LGPL ones'},
+   {'9.02.15', 'February 15, 2009',  'misc changes since August 2008'},
+   {'8.08.13', 'August 13, 2008',  'a more useful default for sputnik.cgi'},
+   {'8.08.11', 'August 11, 2008',  'fixed the generation of the sputnik.cgi file'},
+   {'8.08.08', 'August 8, 2008',  '.reload action; fixing the registration system; fixing captcha logic; separating password and token salts'},
+   {'8.07.21', 'July 21, 2008',  'lots of small bug fixes'},
+   {'8.07.07', 'July 7, 2008',  'way too many fixes to list'},
+   {'8.06.22', 'June 22, 2008', 'updating to new diff module (a new dependency: lbase64), plus some cosmetic changes'},
+   {'8.06.12', 'June 12, 2008', 'added missing translation strings'},
+   {'8.06.11', 'June 11, 2008', 'added the registration system with recaptcha'},
+   {'8.05.24', 'May 24, 2008', 'test release of Earth Sputnik'},
+   {'8.03.08', 'March 8, 2008', 'moved to petrodoc, plus some bug fixes'},
+   {'8.02.16', 'Feb. 16, 2008', 'made Sputnik to work with Xavante out of the box'},
+   {'8.02.14', 'Feb. 8, 2008', "fixed a bunch of small bugs"},
+}
+summary    = 'A wiki and a framework for wiki-like applications'
+maintainer = 'Yuri Takhteyev (yuri@freewisdom.org)'
+
+detailed   = [[
+     Sputnik is a wiki written in Lua. It is also a platform for building a range of wiki-like 
+     applications, drawing on Lua's strengths as an extension language.
+
+     Out of the box Sputnik behaves like a wiki with all the standard wiki features: editable 
+     pages, protection against spam bots, history view of pages, diff, preview, per-page-RSS feed 
+     for site changes. (See http://sputnik.freewisdom.org/en/Features for more details.)
+
+     At the same time, Sputnik is designed to be used as a platform for a wide range of "social 
+     software" applications. A simple change of templates and perhaps a few spoons of Lua code can 
+     turn it into a photo album, a blog, a calendar, a mailing list viewer, or almost anything else.
+     So, you can think of it as a web framework of sorts. In addition to allowing you to add custom 
+     bells and whistles to a wiki, Sputnik provides a good foundation for anything that's kind of 
+     like a wiki but not quite. Sputnik stores its data as versioned "pages" that can be editable 
+     through the web (just like any wiki). However, it allows those pages to store any data that 
+     can be saved as text (prose, comma-separated values, lists of named parameters, Lua tables, 
+     mbox-formatted messages, XML, etc.) While by default the page is displayed as if it carried 
+     Markdown-formatted text, the way the page is viewed (or edited, or saved, etc.) can be 
+     overriden on a per-page basis by over-riding or adding "actions". 
+]]
+
+license    = 'MIT/X11'
+download   = 'http://spu.tnik.org/files/sputnik-$version.tar.gz'
+push       = "scp %s tnik.org:/var/www/sputnik.freewisdom.org/files/"
+--------------------------------------------------------------------------------
+
+dependencies = [[
+  'saci == 12.06.04',
+  'cosmo >= 8.04.14',
+  'xssfilter >= 8.07.07',
+  'markdown >= 0.32',
+  'md5 >= 1.1',
+  'wsapi >= 1.0',
+  'luasocket >= 2.0',
+  'coxpcall >= 1.13',
+  'lbase64 >= 20100323',
+  'wsapi-xavante >= 1.5',
+  'luaposix >= 5.1.19',
+  'lua-discount >= 1.2.10.1',
+]]
+
+bin = [[
+bin = {        ["sputnik"] = "bin/sputnik.lua" },
+]]
+-------------------------------------------------------------------------------
+

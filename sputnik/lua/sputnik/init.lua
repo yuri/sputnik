@@ -646,9 +646,9 @@ function Sputnik:decorate_node(node)
       media = media or "screen"
       return add(self.css_links, href.."|"..media, {href = href, media = media})
    end
-   function node:add_css_snippet(href, snippet, media)
+   function node:add_css_snippet(snippet, media)
       media = media or "screen"
-      return add(self.css_snippets, href.."|"..media, {snippet = snippet, media = media})
+      return add(self.css_snippets, snippet, {snippet = snippet, media = media})
    end
    function node:add_javascript_link(href)
       add(self.javascript_links, href, {href=href})

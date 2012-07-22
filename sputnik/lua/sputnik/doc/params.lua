@@ -432,6 +432,23 @@ USE_COMPRESSION
     If set to true and module zlib is available, then Sputnik will use
     http compression.  ]]
 
+topics.css = [[
+A number of parameters can be used to affect some of the values in the default style sheet.
+
+CSS_BOLD_COLOR_1
+CSS_BOLD_COLOR_2
+CSS_TEXT_BG_COLOR
+CSS_BRIGHT_LIGHT_TEXT_COLOR
+CSS_DULLER_LIGHT_TEXT_COLOR
+CSS_INACTIVE_MENU_COLOR
+CSS_CONTAINER_WIDTH
+CSS_POPUP_WIDTH
+CSS_POPUP_TOP
+CSS_SUBMENU_HEIGHT
+CSS_LEFT_MARGIN
+CSS_LEFT_MARGIN_FOR_MENU
+]]
+
 topics.errors = [[
 If you can set Sputnik to display stack traces in case of errors.
 

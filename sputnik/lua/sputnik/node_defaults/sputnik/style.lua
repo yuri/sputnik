@@ -17,19 +17,19 @@ NODE = {
 }
 
 NODE.css_config = [[
-BOLD_COLOR_1 = "#1B8B9A" -- a bold color used for the larger elements
-BOLD_COLOR_2 = "#093D59" -- a bold color used for the smaller elements
-TEXT_BG_COLOR = "#FFFEEF"  -- background for the main text
-BRIGHT_LIGHT_TEXT_COLOR = "white" -- for text on dark bg that should stand ot
-DULLER_LIGHT_TEXT_COLOR = "#DDDDDD" -- for text that should stand out less
-INACTIVE_MENU_COLOR = "#133D49"
+BOLD_COLOR_1 = config.CSS_BOLD_COLOR_1 or "#1B8B9A" -- a bold color used for the larger elements
+BOLD_COLOR_2 = config.CSS_BOLD_COLOR_2 or "#093D59" -- a bold color used for the smaller elements
+TEXT_BG_COLOR = config.CSS_TEXT_BG_COLOR or "#FFFEEF"  -- background for the main text
+BRIGHT_LIGHT_TEXT_COLOR = config.CSS_BRIGHT_LIGHT_TEXT_COLOR or "white" -- for text on dark bg that should stand ot
+DULLER_LIGHT_TEXT_COLOR = config.CSS_DULLER_LIGHT_TEXT_COLOR or "#DDDDDD" -- for text that should stand out less
+INACTIVE_MENU_COLOR = config.CSS_INACTIVE_MENU_COLOR or "#133D49"
 
-CONTAINER_WIDTH = "1100px"
-POPUP_WIDTH = "900px"
-POPUP_TOP = "200px"
-SUBMENU_HEIGHT = "20px"
-LEFT_MARGIN = "50px"
-LEFT_MARGIN_FOR_MENU = "40px"
+CONTAINER_WIDTH = config.CSS_CONTAINER_WIDTH or "1100px"
+POPUP_WIDTH = config.CSS_POPUP_WIDTH or "900px"
+POPUP_TOP = config.CSS_POPUP_TOP or "200px"
+SUBMENU_HEIGHT = config.CSS_SUBMENU_HEIGHT or "20px"
+LEFT_MARGIN = config.CSS_LEFT_MARGIN or "50px"
+LEFT_MARGIN_FOR_MENU = config.CSS_LEFT_MARGIN_FOR_MENU or "40px"
 ]]
 
 NODE.content = [===[
@@ -274,7 +274,7 @@ p.site_subtitle { /* a subtitle for the site */
  margin: 4em 1em 10px $LEFT_MARGIN;
 }
 #node_title a{
- color: $BOLD_COLOR_1;
+ color: $BOLD_COLOR_2;
  font-family: $if_use_web_fonts[['Sputnik Header Web Font',]] 'Arial', sans-serif;
  font-size: 240%;
  text-decoration: none;

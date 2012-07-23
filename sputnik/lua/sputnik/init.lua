@@ -940,15 +940,15 @@ function Sputnik:make_url(node_name, action, params, anchor)
    local interwiki_code = node_name:match("^([^%:]*)%:")
    local interwiki_handler = self.config.INTERWIKI[interwiki_code]
    if interwiki_handler then
-      node_name = node_name:gsub("^[^%:]*%:", "") -- crop the code
+      node_name = node_name:gsub("^[^%:]*%:", "") -- crop the interwiki code
    end
 
    local dirified = self:dirify(node_name) --wsapi.util.url_encode()
-   local url, node
+   local url
    local params = params or {}
 
-   -- interwiki urls
-   if interwiki_handler then
+   
+   if interwiki_handler then -- first handle the interwiki case
       -- first the node name
       local handler_type = type(interwiki_handler)
       if handler_type == "string" then
@@ -966,24 +966,21 @@ function Sputnik:make_url(node_name, action, params, anchor)
       -- then the action
       if action and action~="show" then
          url = url.."."..action
-      elseif dirified == self.config.HOME_PAGE then
-         url = self.config.HOME_PAGE_URL
       end
-
-   else
+   else -- now the normal case
       -- concatenate the action to the node_name
       if action and action ~= "show" then
-         node = dirified.."."..action
-      else
-         node = dirified
+         dirified = dirified.."."..action
       end
-
+      
       -- url without query string
-      if self.config.USE_NICE_URLS then
-         url = self.config.BASE_URL..node
+      if dirified == self.config.HOME_PAGE then
+         url = self.config.HOME_PAGE_URL or self.config.BASE_URL
+      elseif self.config.USE_NICE_URLS then
+         url = self.config.BASE_URL..dirified
       else
          url = self.config.BASE_URL
-         params["p"] = node
+         params["p"] = dirified
       end
 
       -- encode query string and create url

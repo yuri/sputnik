@@ -18,7 +18,7 @@ actions.configured_js = function(page, params, sputnik)
    config.LOGIN_NODE = sputnik.config.LOGIN_NODE or "foo"
    config.make_url_without_wrapper = function(arg)
          local node = cosmo.f(arg.node)(config)
-         return sputnik:make_url(node, nil, {skip_wrapper="1"})
+         return sputnik:make_url(node, nil, {skip_wrapper="1"}, nil, true)
    end
    return cosmo.fill(page.content, config), "text/javascript"
 end

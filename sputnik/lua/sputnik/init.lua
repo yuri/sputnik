@@ -1195,7 +1195,8 @@ end
 function Sputnik:setup_cosmo_functions()
    self.cosmo_functions = {}
    self.cosmo_functions.format_time = function(params)
-      if (params[1] or "")~="" then
+      local my_time = params[1]
+      if my_time and my_time~="nil" and my_time~="" then
          return self:format_time(unpack(params))
       else
          return "unknown time"

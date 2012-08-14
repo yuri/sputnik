@@ -928,9 +928,10 @@ local URL_PREFIX_CODE = 671521433 -- a random number
 -- @param action         action/command as a string.
 -- @param params         query parameters
 -- @param anchor         link anchor
+-- @param no_escape      whether or not URL escaping should be performed
 -- @return               a URL.
 -----------------------------------------------------------------------------
-function Sputnik:make_url(node_name, action, params, anchor)
+function Sputnik:make_url(node_name, action, params, anchor, no_escape)
    if not node_name or node_name=="" then
       node_name = self.config.HOME_PAGE
    elseif node_name == URL_PREFIX_CODE then
@@ -993,7 +994,10 @@ function Sputnik:make_url(node_name, action, params, anchor)
       url = url.."#"..anchor
    end
 
-   return self:escape(url), node_name
+   if not no_escape then
+      url = self:escape(url)
+   end
+   return url, node_name
 end
 
 -----------------------------------------------------------------------------

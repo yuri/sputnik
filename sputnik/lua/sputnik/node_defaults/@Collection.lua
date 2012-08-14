@@ -50,8 +50,8 @@ Create <a href="$new_url">new item</a>.
   <tr>
    <td><a href="$url">$id</a></td>
    <td><a href="$url">$title</a></td>
-   <td>$if_creator[=====[$if_creator_link[====[<a $creator_link>]====]$creator$if_creator_link[====[</a>]====] ]=====]</td>
-   <td>$if_creation_time[=====[$creation_time]=====]</td>
+   <td>$format_user{$creator}</td>
+   <td>$format_time{$creation_time, "%a, %d %b %Y %H:%M:%S"}</td>
   </tr>
  ]]
  </table>

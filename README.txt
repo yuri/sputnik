@@ -1,3 +1,8 @@
+WARNING: ABANDONED SOFTWARE, YMMV
+=================================
+
+Sputnik was a fun project but it has not been maintained since 2012 and
+none of the primary contributors have plans to maintain it in the future.
 
 INTRODUCTION
 ============
